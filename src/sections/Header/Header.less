@@ -1,0 +1,138 @@
+@import '../../styles/variables.less';
+@import '../../styles/mixins.less';
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: transparent;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+  padding: 20px 0;
+
+  @media (max-width: @breakpoint-md) {
+    height: 70px;
+    padding: 14px 0;
+  }
+
+  &__container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+
+    @media (max-width: @breakpoint-md) {
+      gap: 24px;
+      justify-content: center; // Center logo when nav is hidden
+      padding: 0 24px;
+    }
+  }
+
+  // White pill for logo
+  &__logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    transition: transform 0.2s ease;
+    background: white;
+    border-radius: 77px;
+    padding: 14px 48px;
+    box-shadow: 0 4px 3.3px 0 rgba(0, 0, 0, 0.14);
+
+    &:hover {
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: @breakpoint-md) {
+      padding: 12px 36px;
+    }
+
+    @media (max-width: @breakpoint-sm) {
+      padding: 10px 28px;
+    }
+  }
+
+  &__logo-text {
+    font-family: @font-family-heading;
+    font-size: 42.86px;
+    font-weight: 400;
+    line-height: 0.8588;
+    color: @text-primary;
+    letter-spacing: -0.5px;
+
+    @media (max-width: @breakpoint-md) {
+      font-size: 36px;
+    }
+
+    @media (max-width: @breakpoint-sm) {
+      font-size: 30px;
+    }
+  }
+
+  // Brown pill for navigation - HIDE ON MOBILE
+  &__nav-pill {
+    background: @primary-dark;
+    border-radius: 77px;
+    padding: 14px 133px;
+    box-shadow: 0 4px 3.3px 0 rgba(0, 0, 0, 0.14);
+    display: flex;
+    align-items: center;
+
+    @media (max-width: @breakpoint-lg) {
+      padding: 12px 60px;
+    }
+
+    // HIDE ON MOBILE
+    @media (max-width: @breakpoint-md) {
+      display: none;
+    }
+  }
+
+  &__nav {
+    display: flex;
+    align-items: center;
+    gap: 74px;
+    font-family: @font-family-primary;
+    font-size: 18px;
+    font-weight: 500;
+    color: @text-white;
+
+    @media (max-width: @breakpoint-lg) {
+      gap: 40px;
+    }
+
+    @media (max-width: @breakpoint-md) {
+      gap: 24px;
+      font-size: 16px;
+    }
+  }
+
+  &__nav-link {
+    color: @text-white;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    position: relative;
+    white-space: nowrap;
+
+    &:hover {
+      opacity: 0.8;
+    }
+
+    &--active {
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: @text-white;
+      }
+    }
+  }
+}

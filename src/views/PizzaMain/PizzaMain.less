@@ -1,0 +1,260 @@
+@import '../../styles/variables.less';
+@import '../../styles/mixins.less';
+
+.pizza-main {
+  min-height: 100vh;
+  background: @background-color;
+
+  &__hero {
+    position: relative;
+    background: @background-color url('/images/hero-bg.png') no-repeat left;
+    background-size: cover;
+    padding: 120px 0 80px;
+    overflow: hidden;
+    min-height: 700px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    @media (max-width: @breakpoint-md) {
+      padding: 100px 0 60px;
+      min-height: 600px;
+    }
+
+    @media (max-width: @breakpoint-sm) {
+      min-height: 500px;
+    }
+  }
+
+  &__hero-pizza-container {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 1300px;
+    height: 1300px;
+    margin-left: -650px; // Half of width to center
+    pointer-events: none;
+    transform-origin: center bottom;
+
+    @media (max-width: @breakpoint-lg) {
+      width: 1040px;
+      height: 1040px;
+      margin-left: -520px; // Half of width
+    }
+
+    @media (max-width: @breakpoint-md) {
+      width: 780px;
+      height: 780px;
+      margin-left: -390px; // Half of width
+    }
+
+    @media (max-width: @breakpoint-sm) {
+      width: 520px;
+      height: 520px;
+      margin-left: -260px; // Half of width
+    }
+  }
+
+   &__hero-pizza {
+    position: absolute;
+    bottom: 0; // pushes half the image below the hero
+    transform: translateY(50%);
+    width: 100%; // responsive size – adjust if needed
+    max-width: 800px; // optional limit so it's not oversized
+    pointer-events: none;
+    z-index: 1;
+
+    img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    @media (max-width: @breakpoint-md) {
+      width: 60%;
+      bottom: -45%;
+    }
+
+    @media (max-width: @breakpoint-sm) {
+      width: 75%;
+      bottom: -40%;
+    }
+  }
+
+  &__hero-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 @spacing-lg;
+  }
+
+  &__title {
+    font-family: @font-family-heading;
+    font-size: 73.137px;
+    font-weight: 400;
+    line-height: 1.177;
+    color: @text-primary;
+    margin-bottom: 24px;
+    text-align: center;
+
+    @media (max-width: @breakpoint-md) {
+      font-size: 48px;
+    }
+
+    @media (max-width: @breakpoint-sm) {
+      font-size: 36px;
+    }
+  }
+
+  &__subtitle {
+    font-family: @font-family-primary;
+    font-size: 28px;
+    font-weight: 300;
+    line-height: 1.177;
+    color: @text-primary;
+    margin-bottom: 48px;
+    max-width: 588px;
+    margin-left: auto;
+    margin-right: auto;
+
+    @media (max-width: @breakpoint-md) {
+      font-size: 20px;
+    }
+
+    @media (max-width: @breakpoint-sm) {
+      font-size: 18px;
+    }
+  }
+
+  &__cta-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15.118px 25.512px;
+    background: @primary-color;
+    color: @text-white;
+    font-family: @font-family-primary;
+    font-size: 20.517px;
+    font-weight: 500;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 70.866px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+
+    &:hover {
+      background: darken(@primary-color, 5%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(225, 124, 47, 0.3);
+    }
+
+    @media (max-width: @breakpoint-sm) {
+      font-size: 16px;
+      padding: 12px 20px;
+    }
+  }
+
+  &__menu-section {
+    background: linear-gradient(90deg, #2a2a2a 0%, #2a2a2a 100%);
+    padding: 80px 0;
+    position: relative;
+    z-index: 5; // Higher z-index to cover bottom pizza half
+
+    // Crumbs background image at top
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 720px; // 600px + 20% = 720px
+      height: 240px; // 200px + 20% = 240px
+      background: url('/images/crumbs.png') no-repeat center center;
+      background-size: contain;
+      pointer-events: none;
+      z-index: 1;
+
+      @media (max-width: @breakpoint-md) {
+        width: 480px; // 400px + 20% = 480px
+        height: 180px; // 150px + 20% = 180px
+      }
+
+      @media (max-width: @breakpoint-sm) {
+        width: 360px; // 300px + 20% = 360px
+        height: 144px; // 120px + 20% = 144px
+      }
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+    }
+
+    @media (max-width: @breakpoint-md) {
+      padding: 60px 0;
+    }
+  }
+
+  &__menu-header {
+    text-align: center;
+    margin-bottom: 60px;
+
+    @media (max-width: @breakpoint-md) {
+      margin-bottom: 40px;
+    }
+  }
+
+  &__menu-subtitle {
+    font-family: @font-family-primary;
+    font-size: 28px;
+    font-weight: 300;
+    line-height: 1.177;
+    color: @text-white;
+    margin-bottom: 12px;
+
+    @media (max-width: @breakpoint-md) {
+      font-size: 20px;
+    }
+  }
+
+  &__menu-title {
+    font-family: @font-family-heading;
+    font-size: 65px;
+    font-weight: 400;
+    line-height: 1.177;
+    color: @text-white;
+
+    @media (max-width: @breakpoint-md) {
+      font-size: 48px;
+    }
+
+    @media (max-width: @breakpoint-sm) {
+      font-size: 36px;
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(299px, 1fr));
+    gap: 32px;
+
+    @media (max-width: @breakpoint-md) {
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    @media (max-width: @breakpoint-sm) {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+  }
+
+  &__grid-item {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

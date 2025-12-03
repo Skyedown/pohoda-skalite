@@ -1,0 +1,183 @@
+@import '../../styles/variables.less';
+@import '../../styles/mixins.less';
+
+.pizza-card {
+  position: relative;
+  background: linear-gradient(to bottom, @card-gradient-from 0%, @card-gradient-to 100%);
+  border-radius: 20.787px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  &__image {
+    position: relative;
+    width: 100%;
+    height: 149px;
+    overflow: visible;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    // Ellipse background
+    &::before {
+      content: '';
+      position: absolute;
+      top: 39.64px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 245.029px;
+      height: 115.308px;
+      background: radial-gradient(ellipse, rgba(255,255,255,0.1) 0%, transparent 70%);
+    }
+
+    img {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+  }
+
+  &:hover &__image img {
+    transform: scale(1.05);
+  }
+
+  &__badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    padding: 6.418px 10.83px;
+    border-radius: 30.085px;
+    font-size: 8.71px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 10;
+    font-family: @font-family-primary;
+
+    &--classic {
+      background: @secondary-color;
+      color: @text-primary;
+    }
+
+    &--premium {
+      background: @secondary-color;
+      color: @text-primary;
+    }
+
+    &--special {
+      background: @accent-color;
+      color: @text-white;
+    }
+  }
+
+  &__content {
+    padding: 24px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    position: relative;
+  }
+
+  &__name {
+    font-family: @font-family-heading;
+    font-size: 28.827px;
+    font-weight: 400;
+    color: @text-white;
+    margin-bottom: 12px;
+    line-height: 1.177;
+    text-align: center;
+  }
+
+  &__description {
+    font-family: @font-family-primary;
+    font-size: 14px;
+    font-weight: 300;
+    color: @text-white;
+    line-height: 1.4;
+    margin-bottom: 12px;
+    text-align: center;
+    flex: 1;
+  }
+
+  &__weight {
+    font-family: @font-family-primary;
+    font-size: 10.81px;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.51);
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: space-around;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 0.54px solid rgba(255, 255, 255, 0.2);
+  }
+
+  &__price {
+    font-family: @font-family-primary;
+    font-size: 24.522px;
+    font-weight: 500;
+    color: @text-white;
+    text-align: center;
+    letter-spacing: -0.9809px;
+    line-height: 1.18;
+  }
+
+  &__button {
+    padding: 10.547px 17.798px;
+    background: @text-white;
+    color: @text-primary;
+    font-family: @font-family-primary;
+    font-size: 14.314px;
+    font-weight: 500;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 49.438px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    align-self: center;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.9);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: @breakpoint-sm) {
+    &__name {
+      font-size: 24px;
+    }
+
+    &__description {
+      font-size: 13px;
+    }
+
+    &__price {
+      font-size: 20px;
+    }
+
+    &__button {
+      font-size: 12px;
+      padding: 8px 14px;
+    }
+  }
+}

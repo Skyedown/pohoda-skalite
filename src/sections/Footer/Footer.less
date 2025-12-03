@@ -1,0 +1,29 @@
+@import '../../styles/variables.less';
+@import '../../styles/mixins.less';
+
+.footer {
+  padding: 32px 0;
+  background: white;
+  border-top: 1px solid @border-color;
+
+  &__credits {
+    font-family: @font-family-primary;
+    font-size: 16px;
+    font-weight: 300;
+    color: @text-secondary;
+    text-align: center;
+    margin: 0;
+  }
+
+  &__link {
+    color: @primary-color;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: darken(@primary-color, 10%);
+      text-decoration: underline;
+    }
+  }
+}

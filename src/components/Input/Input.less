@@ -1,0 +1,52 @@
+@import '../../styles/variables.less';
+
+.input {
+  display: flex;
+  flex-direction: column;
+  gap: @spacing-xs;
+
+  &--full-width {
+    width: 100%;
+  }
+
+  &__label {
+    font-size: @font-size-sm;
+    font-weight: @font-weight-medium;
+    color: @text-primary;
+  }
+
+  &__field {
+    padding: @spacing-md;
+    border: 2px solid @border-color;
+    border-radius: @border-radius-md;
+    font-size: @font-size-base;
+    font-family: inherit;
+    color: @text-primary;
+    background: @surface-color;
+    transition: all @transition-fast;
+
+    &:focus {
+      outline: none;
+      border-color: @primary-color;
+      box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+    }
+
+    &::placeholder {
+      color: @text-secondary;
+    }
+
+    &--error {
+      border-color: @error-color;
+
+      &:focus {
+        box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+      }
+    }
+  }
+
+  &__error {
+    font-size: @font-size-xs;
+    color: @error-color;
+    margin-top: @spacing-xs;
+  }
+}

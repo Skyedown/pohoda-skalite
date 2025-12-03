@@ -1,0 +1,105 @@
+@import '../../styles/variables.less';
+@import '../../styles/mixins.less';
+
+.testimonials-section {
+  padding: 80px 0;
+  background: @background-dark;
+
+  @media (max-width: @breakpoint-md) {
+    padding: 60px 0;
+  }
+
+  &__title {
+    font-family: @font-family-heading;
+    font-size: 45px;
+    font-weight: 400;
+    line-height: 1.2;
+    color: @text-white;
+    text-align: center;
+    margin-bottom: 60px;
+
+    @media (max-width: @breakpoint-md) {
+      font-size: 36px;
+      margin-bottom: 40px;
+    }
+
+    @media (max-width: @breakpoint-sm) {
+      font-size: 28px;
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+
+    @media (max-width: @breakpoint-md) {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+  }
+}
+
+.testimonial-card {
+  background: transparent;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+
+  @media (max-width: @breakpoint-md) {
+    padding: 24px 20px;
+  }
+
+  &__stars {
+    width: 120px;
+    height: 24px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
+
+    @media (max-width: @breakpoint-md) {
+      width: 100px;
+      height: 20px;
+    }
+  }
+
+  &__name {
+    font-family: @font-family-heading;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1.2;
+    color: @text-white;
+    margin: 0 0 16px;
+
+    @media (max-width: @breakpoint-md) {
+      font-size: 20px;
+    }
+  }
+
+  &__text {
+    font-family: @font-family-primary;
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+
+    @media (max-width: @breakpoint-md) {
+      font-size: 14px;
+    }
+  }
+}

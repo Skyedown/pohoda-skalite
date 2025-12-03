@@ -1,0 +1,113 @@
+@import '../../styles/variables.less';
+@import '../../styles/mixins.less';
+
+.quality-section {
+  padding: 80px 0;
+  background: @background-dark;
+
+  @media (max-width: @breakpoint-md) {
+    padding: 60px 0;
+  }
+
+  &__title {
+    font-family: @font-family-heading;
+    font-size: 65px;
+    font-weight: 400;
+    line-height: 1.177;
+    color: @text-white;
+    text-align: center;
+    margin-bottom: 60px;
+
+    @media (max-width: @breakpoint-md) {
+      font-size: 48px;
+      margin-bottom: 40px;
+    }
+
+    @media (max-width: @breakpoint-sm) {
+      font-size: 36px;
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+
+    @media (max-width: @breakpoint-md) {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+  }
+}
+
+.quality-card {
+  background: white;
+  border: 2px solid @primary-dark;
+  border-radius: 20px;
+  padding: 48px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  @media (max-width: @breakpoint-md) {
+    padding: 40px 24px;
+  }
+
+  &__icon {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    @media (max-width: @breakpoint-md) {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 20px;
+    }
+  }
+
+  &__title {
+    font-family: @font-family-heading;
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 1.2;
+    color: @text-primary;
+    margin: 0 0 16px;
+
+    @media (max-width: @breakpoint-md) {
+      font-size: 24px;
+    }
+
+    @media (max-width: @breakpoint-sm) {
+      font-size: 20px;
+    }
+  }
+
+  &__description {
+    font-family: @font-family-primary;
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1.5;
+    color: @text-secondary;
+    margin: 0;
+
+    @media (max-width: @breakpoint-md) {
+      font-size: 14px;
+    }
+  }
+}

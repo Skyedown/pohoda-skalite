@@ -1,0 +1,142 @@
+import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
+
+// Hook for hero pizza rotation animation
+export const useHeroPizzaAnimation = () => {
+  const pizzaRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!pizzaRef.current) return;
+
+    const pizzaContainer = pizzaRef.current;
+
+    // Create rotation animation tied to scroll for the entire pizza (both halves)
+    const scrollAnimation = gsap.to(pizzaContainer, {
+      rotation: 360, // Full 360 degree rotation
+      scrollTrigger: {
+        trigger: '.pizza-main__hero',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 1.5, // Smooth scrubbing effect
+        // markers: true, // Uncomment for debugging
+      },
+      transformOrigin: 'center cneter', // Rotate around bottom center
+      ease: 'none',
+    });
+
+    return () => {
+      scrollAnimation.kill();
+      ScrollTrigger.getAll().forEach(st => st.kill());
+    };
+  }, []);
+
+  return pizzaRef;
+};
+
+// Hook for menu items stagger animation
+export const useMenuItemsAnimation = (containerSelector: string) => {
+  useEffect(() => {
+    const menuItems = gsap.utils.toArray(`${containerSelector} .pizza-main__grid-item`);
+
+    if (menuItems.length === 0) return;
+
+    // Stagger animation for menu items bound to scroll depth
+    const staggerAnimation = gsap.fromTo(
+      menuItems,
+      { opacity: 0, y: 60, scale: 0.9 },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 1,
+        ease: 'power3.out',
+        stagger: 0.15,
+        scrollTrigger: {
+          trigger: containerSelector,
+          start: 'top 100%',
+          end: 'bottom 10%',
+          scrub: true,
+        },
+      }
+    );
+
+    return () => {
+      staggerAnimation.kill();
+      ScrollTrigger.getAll().forEach(st => st.kill());
+    };
+  }, [containerSelector]);
+};
+
+// Hook for burger items animation
+export const useBurgerItemsAnimation = () => {
+  useEffect(() => {
+    const burgerItems = gsap.utils.toArray('.burger-section .burger-card');
+
+    if (burgerItems.length === 0) return;
+
+    const staggerAnimation = gsap.fromTo(
+      burgerItems,
+      { opacity: 0, y: 60, scale: 0.9 },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 1,
+        ease: 'power3.out',
+        stagger: 0.2,
+        scrollTrigger: {
+          trigger: '.burger-section__grid',
+          start: 'top 100%',
+          end: 'bottom 10%',
+          scrub: true,
+        },
+      }
+    );
+
+    return () => {
+      staggerAnimation.kill();
+    };
+  }, []);
+};
+
+// Hook for drinks items animation
+export const useDrinksItemsAnimation = () => {
+  useEffect(() => {
+    const drinkItems = gsap.utils.toArray('.drinks-section .drink-card');
+
+    if (drinkItems.length === 0) return;
+
+    const staggerAnimation = gsap.fromTo(
+      drinkItems,
+      { opacity: 0, y: 60, scale: 0.9 },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 1,
+        ease: 'power3.out',
+        stagger: 0.15,
+        scrollTrigger: {
+          trigger: '.drinks-section__grid',
+          start: 'top 100%',
+          end: 'bottom 10%',
+          scrub: true,
+        },
+      }
+    );
+
+    return () => {
+      staggerAnimation.kill();
+    };
+  }, []);
+};
+
+// Combined hook for all menu sections
+export const useAllMenuAnimations = () => {
+  useMenuItemsAnimation('.pizza-main__grid');
+  useBurgerItemsAnimation();
+  useDrinksItemsAnimation();
+};

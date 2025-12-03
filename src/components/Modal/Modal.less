@@ -1,0 +1,104 @@
+@import '../../styles/variables.less';
+@import '../../styles/mixins.less';
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  .flex-center();
+  z-index: @z-index-modal;
+  padding: @spacing-lg;
+  animation: fadeIn @transition-base;
+}
+
+.modal {
+  background: @surface-color;
+  border-radius: @border-radius-xl;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: slideUp @transition-base;
+  box-shadow: @shadow-xl;
+
+  &__close {
+    .button-reset();
+    position: absolute;
+    top: @spacing-lg;
+    right: @spacing-lg;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    .flex-center();
+    background: @background-color;
+    color: @text-primary;
+    transition: all @transition-fast;
+    z-index: 1;
+
+    &:hover {
+      background: @primary-color;
+      color: white;
+      transform: rotate(90deg);
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  &__title {
+    .heading-2();
+    padding: @spacing-xl @spacing-xl @spacing-lg;
+    border-bottom: 2px solid @border-color;
+  }
+
+  &__content {
+    padding: @spacing-xl;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Scrollbar styling for modal
+.modal {
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: @background-color;
+    border-radius: 0 @border-radius-xl @border-radius-xl 0;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: @text-secondary;
+    border-radius: @border-radius-full;
+
+    &:hover {
+      background: @text-primary;
+    }
+  }
+}
