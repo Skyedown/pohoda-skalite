@@ -6,6 +6,7 @@ import Header from './sections/Header/Header';
 import PizzaMain from './views/PizzaMain/PizzaMain';
 import PizzaCart from './views/PizzaCart/PizzaCart';
 import FloatingCart from './components/FloatingCart/FloatingCart';
+import FloatingCall from './components/FloatingCall/FloatingCall';
 import './styles/global.less';
 
 const App: React.FC = () => {
@@ -22,6 +23,7 @@ const App: React.FC = () => {
               </Routes>
             </main>
             <FloatingCart />
+            <FloatingCall />
           </div>
         </Router>
       </CartProvider>

@@ -12,6 +12,7 @@
     padding: 120px 0 80px;
     overflow: hidden;
     min-height: 700px;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -59,11 +60,14 @@
    &__hero-pizza {
     position: absolute;
     bottom: 0; // pushes half the image below the hero
-    transform: translateY(50%);
+    // transform is handled by GSAP to prevent conflicts
     width: 100%; // responsive size – adjust if needed
     max-width: 800px; // optional limit so it's not oversized
     pointer-events: none;
     z-index: 1;
+    will-change: transform;
+    transform-origin: center center;
+    backface-visibility: hidden;
 
     img {
       width: 100%;
@@ -73,12 +77,10 @@
 
     @media (max-width: @breakpoint-md) {
       width: 60%;
-      bottom: -45%;
     }
 
     @media (max-width: @breakpoint-sm) {
       width: 75%;
-      bottom: -40%;
     }
   }
 

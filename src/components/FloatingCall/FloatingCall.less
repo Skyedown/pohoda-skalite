@@ -1,0 +1,65 @@
+@import '../../styles/variables.less';
+@import '../../styles/mixins.less';
+
+.floating-call {
+  position: fixed;
+  bottom: 112px; // Position above the cart button (64px + 32px gap + 16px)
+  right: 32px;
+  width: 64px;
+  height: 64px;
+  background: #27ae60; // Green background
+  border-radius: 50%;
+  display: none; // Hidden by default (will show on tablet and smaller)
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(39, 174, 96, 0.4);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 999;
+  text-decoration: none;
+  color: white;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(39, 174, 96, 0.5);
+    background: darken(#27ae60, 5%);
+  }
+
+  &:active {
+    transform: translateY(-2px);
+  }
+
+  svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  // Show only on tablet and smaller screens
+  @media (max-width: @breakpoint-md) {
+    display: flex;
+  }
+
+  @media (max-width: @breakpoint-sm) {
+    bottom: 96px; // Adjusted for smaller cart button on mobile
+    right: 20px;
+    width: 56px;
+    height: 56px;
+
+    svg {
+      width: 28px;
+      height: 28px;
+    }
+  }
+
+  // Animation
+  animation: callPulse 2s ease infinite;
+}
+
+@keyframes callPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}

@@ -2,46 +2,11 @@ import React, { useState } from 'react';
 import { useCart } from '../../context/CartContext';
 import Toast from '../../components/Toast/Toast';
 import type { Pizza } from '../../types';
+import { menuItems } from '../../data/menu';
 import './BurgerSection.less';
 
-const burgers: Pizza[] = [
-  { 
-    id: 'burger-1', 
-    name: 'Burger', 
-    description: 'Šťavnatý burger s čerstvými ingredienciami',
-    price: 5.50, 
-    image: '/images/pizza.png',
-    ingredients: ['Hovädzí burger', 'Syr', 'Rajčina', 'Šalát', 'Cibuľa'],
-    type: 'burger'
-  },
-  { 
-    id: 'burger-2', 
-    name: 'Cheese Burger', 
-    description: 'Burger s extra syrom',
-    price: 6.00, 
-    image: '/images/pizza.png',
-    ingredients: ['Hovädzí burger', 'Dvojitý syr', 'Rajčina', 'Šalát'],
-    type: 'burger'
-  },
-  { 
-    id: 'burger-3', 
-    name: 'Bacon Burger', 
-    description: 'Burger so slaninou',
-    price: 6.50, 
-    image: '/images/pizza.png',
-    ingredients: ['Hovädzí burger', 'Slanina', 'Syr', 'Rajčina', 'Šalát'],
-    type: 'burger'
-  },
-  { 
-    id: 'langos-1', 
-    name: 'Langoš', 
-    description: 'Tradičný maďarský langoš',
-    price: 5.50, 
-    image: '/images/pizza.png',
-    ingredients: ['Cesto', 'Cesnak', 'Syr', 'Kečup'],
-    type: 'langos'
-  },
-];
+// Filter burgers and langos from menu
+const burgers = menuItems.filter(item => item.type === 'burger' || item.type === 'langos');
 
 const BurgerSection: React.FC = () => {
   const { addToCart } = useCart();

@@ -1,0 +1,11 @@
+# robots.txt for pohodaskalite.sk
+
+User-agent: *
+Allow: /
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://pohodaskalite.sk/sitemap.xml
+
+# Crawl-delay (optional, helps prevent server overload)
+Crawl-delay: 1

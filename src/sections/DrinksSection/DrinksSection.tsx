@@ -1,83 +1,8 @@
 import React, { useState } from 'react';
 import { useCart } from '../../context/CartContext';
 import Toast from '../../components/Toast/Toast';
-import type { Pizza } from '../../types';
+import { drinksAndSnacks } from '../../data/menu';
 import './DrinksSection.less';
-
-const drinks: Pizza[] = [
-  { 
-    id: 'drink-1', 
-    name: 'Coca Cola', 
-    description: 'Osviežujúci nápoj 330ml',
-    price: 1.75, 
-    image: '/images/pizza.png',
-    ingredients: [],
-    type: 'burger'
-  },
-  { 
-    id: 'drink-2', 
-    name: 'Fanta', 
-    description: 'Pomarančový nápoj 330ml',
-    price: 1.75, 
-    image: '/images/pizza.png',
-    ingredients: [],
-    type: 'burger'
-  },
-  { 
-    id: 'drink-3', 
-    name: 'Natura neperlivá', 
-    description: 'Minerálka 500ml',
-    price: 1.50, 
-    image: '/images/pizza.png',
-    ingredients: [],
-    type: 'burger'
-  },
-  { 
-    id: 'drink-4', 
-    name: 'Rajec neperlivá', 
-    description: 'Minerálka 500ml',
-    price: 1.50, 
-    image: '/images/pizza.png',
-    ingredients: [],
-    type: 'burger'
-  },
-  { 
-    id: 'snack-1', 
-    name: 'Tyčinky Dru', 
-    description: 'Slané tyčinky 220g',
-    price: 2.25, 
-    image: '/images/pizza.png',
-    ingredients: [],
-    type: 'burger'
-  },
-  { 
-    id: 'drink-5', 
-    name: 'Sprite', 
-    description: 'Citrónový nápoj 330ml',
-    price: 1.75, 
-    image: '/images/pizza.png',
-    ingredients: [],
-    type: 'burger'
-  },
-  { 
-    id: 'drink-6', 
-    name: 'Kofola', 
-    description: 'Tradičný nápoj 330ml',
-    price: 1.50, 
-    image: '/images/pizza.png',
-    ingredients: [],
-    type: 'burger'
-  },
-  { 
-    id: 'drink-7', 
-    name: 'Tonic', 
-    description: 'Tonic water 250ml',
-    price: 1.50, 
-    image: '/images/pizza.png',
-    ingredients: [],
-    type: 'burger'
-  },
-];
 
 const DrinksSection: React.FC = () => {
   const { addToCart } = useCart();
@@ -98,7 +23,7 @@ const DrinksSection: React.FC = () => {
           <h2 className="drinks-section__title">Nápoje a pochutiny</h2>
           
           <div className="drinks-section__grid">
-            {drinks.map((item) => (
+            {drinksAndSnacks.map((item) => (
               <div key={item.id} className="drink-card">
                 <div className="drink-card__image">
                   <img src={item.image} alt={item.name} />

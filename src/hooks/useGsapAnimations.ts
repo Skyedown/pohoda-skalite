@@ -13,23 +13,38 @@ export const useHeroPizzaAnimation = () => {
 
     const pizzaContainer = pizzaRef.current;
 
-    // Create rotation animation tied to scroll for the entire pizza (both halves)
+    // Set initial state to ensure consistent starting position
+    // Preserve the translateY(50%) from CSS while setting rotation to 0
+    gsap.set(pizzaContainer, {
+      rotation: 0,
+      y: '50%',
+      transformOrigin: 'center center',
+      force3D: true,
+    });
+
+    // Create rotation animation tied to scroll for the entire pizza
+    // Important: include y: '50%' in the animation to preserve vertical position
     const scrollAnimation = gsap.to(pizzaContainer, {
-      rotation: 360, // Full 360 degree rotation
+      rotation: 90,
+      y: '50%', // Keep the vertical position constant
       scrollTrigger: {
         trigger: '.pizza-main__hero',
         start: 'top top',
         end: 'bottom top',
-        scrub: 1.5, // Smooth scrubbing effect
+        scrub: 1.5,
+        invalidateOnRefresh: true, // Recalculate on resize
         // markers: true, // Uncomment for debugging
       },
-      transformOrigin: 'center cneter', // Rotate around bottom center
+      transformOrigin: 'center center',
       ease: 'none',
+      force3D: true,
     });
 
     return () => {
+      if (scrollAnimation.scrollTrigger) {
+        scrollAnimation.scrollTrigger.kill();
+      }
       scrollAnimation.kill();
-      ScrollTrigger.getAll().forEach(st => st.kill());
     };
   }, []);
 
@@ -65,7 +80,6 @@ export const useMenuItemsAnimation = (containerSelector: string) => {
 
     return () => {
       staggerAnimation.kill();
-      ScrollTrigger.getAll().forEach(st => st.kill());
     };
   }, [containerSelector]);
 };

@@ -1,15 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import './FloatingCart.less';
 
 const FloatingCart: React.FC = () => {
   const { cart } = useCart();
-  
+  const location = useLocation();
+
   const itemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-  // Don't show if cart is empty
-  if (itemsCount === 0) {
+  // Don't show if cart is empty or on cart page
+  if (itemsCount === 0 || location.pathname === '/cart') {
     return null;
   }
 

@@ -13,11 +13,19 @@ export interface Pizza {
   type: ProductType;
 }
 
+export interface Extra {
+  id: string;
+  name: string;
+  price: number;
+}
+
 export interface CartItem {
   pizza: Pizza;
   quantity: number;
   size: PizzaSize;
   totalPrice: number;
+  extras?: Extra[];
+  extrasPrice?: number;
 }
 
 export const PIZZA_SIZE_MULTIPLIERS: Record<PizzaSize, number> = {

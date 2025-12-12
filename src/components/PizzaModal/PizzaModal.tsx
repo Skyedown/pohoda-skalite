@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import type { Pizza } from '../../types';
+import type { Pizza, Extra } from '../../types';
 import { useCart } from '../../context/CartContext';
 import './PizzaModal.less';
 
@@ -8,12 +8,6 @@ interface PizzaModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAddToCart?: (pizzaName: string) => void;
-}
-
-interface Extra {
-  id: string;
-  name: string;
-  price: number;
 }
 
 const availableExtras: Extra[] = [
@@ -85,7 +79,10 @@ const PizzaModal: React.FC<PizzaModalProps> = ({ pizza, isOpen, onClose, onAddTo
   const totalPrice = (pizza.price + extrasPrice) * quantity;
 
   const handleAddToCartClick = () => {
-    addToCart(pizza, 'medium', quantity);
+    const selectedExtrasObjects = selectedExtras.map(extraId =>
+      availableExtras.find(e => e.id === extraId)!
+    );
+    addToCart(pizza, 'medium', quantity, selectedExtrasObjects);
     if (onAddToCart) {
       onAddToCart(pizza.name);
     }
