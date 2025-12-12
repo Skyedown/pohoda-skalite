@@ -16,8 +16,9 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 app.use(cors());
 app.use(express.json());
 
-// Restaurant email - should be in .env
-const RESTAURANT_EMAIL = process.env.RESTAURANT_EMAIL || 'pohoda.skalite@example.com';
+// Restaurant contact info - uses VITE_ prefixed variables (same as frontend)
+const RESTAURANT_EMAIL = process.env.VITE_RESTAURANT_EMAIL || 'pohoda.skalite@example.com';
+const RESTAURANT_PHONE = process.env.VITE_RESTAURANT_PHONE || '+421948293923';
 
 // Health check endpoints
 app.get('/health', (req, res) => {
