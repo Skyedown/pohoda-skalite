@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useCart } from '../../context/CartContext';
 import Toast from '../../components/Toast/Toast';
-import { drinksAndSnacks } from '../../data/menu';
+import type { Pizza } from '../../types';
+import { drinksAndSnacks } from '../../data/drinks';
 import './DrinksSection.less';
 
 const DrinksSection: React.FC = () => {

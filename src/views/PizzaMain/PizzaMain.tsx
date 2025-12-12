@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import type { Pizza, ProductType } from '../../types';
-import { menuItems } from '../../data/menu';
+import { pizzas } from '../../data/pizzas';
 import PizzaCard from '../../components/PizzaCard/PizzaCard';
 import PizzaModal from '../../components/PizzaModal/PizzaModal';
 import Toast from '../../components/Toast/Toast';
@@ -36,10 +36,11 @@ const PizzaMain: React.FC = () => {
   const heroPizzaRef = useHeroPizzaAnimation();
   useAllMenuAnimations();
 
+  // Only show pizzas in the top menu section
   const filteredItems =
     selectedFilter === 'all'
-      ? menuItems
-      : menuItems.filter((item) => item.type === selectedFilter);
+      ? pizzas
+      : pizzas.filter((item) => item.type === selectedFilter);
 
   const handleAddToCart = (pizza: Pizza) => {
     setSelectedPizza(pizza);

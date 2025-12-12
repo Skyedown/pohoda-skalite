@@ -1,16 +1,48 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './Header.less';
 
 const Header: React.FC = () => {
   const location = useLocation();
-  const phoneNumber = '+421948293923';
+  const navigate = useNavigate();
+  const phoneNumber = import.meta.env.VITE_RESTAURANT_PHONE;
+
+  const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    // If we're already on the main page, scroll to top
+    if (location.pathname === '/') {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    // Otherwise, Link will navigate to "/" naturally
+  };
+
+  const scrollToSection = (sectionId: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+
+    if (location.pathname === '/') {
+      // We're on the main page, just scroll to the section
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      // Navigate to main page first, then scroll after navigation
+      navigate('/');
+      // Wait for navigation to complete, then scroll
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    }
+  };
 
   return (
     <header className="header">
       <div className="container">
         <div className="header__container">
-          <Link to="/" className="header__logo">
+          <Link to="/" className="header__logo" onClick={handleLogoClick}>
             <span className="header__logo-text">🍕</span>
           </Link>
 
@@ -40,14 +72,14 @@ const Header: React.FC = () => {
               </Link>
               <a
                 href="#about"
-                // onClick={() => scrollTo('#about')}
+                onClick={scrollToSection('about')}
                 className="header__nav-link"
               >
                 O nás
               </a>
               <a
                 href="#contact"
-                // onClick={() => scrollTo('#contact')}
+                onClick={scrollToSection('contact')}
                 className="header__nav-link"
               >
                 Kontakt

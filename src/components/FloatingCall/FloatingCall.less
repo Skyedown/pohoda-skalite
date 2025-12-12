@@ -51,6 +51,16 @@
     }
   }
 
+  // When cart is not visible, move to cart's position
+  // This must come after media queries to have proper specificity
+  &--no-cart {
+    bottom: 32px; // Position where the cart would be
+
+    @media (max-width: @breakpoint-sm) {
+      bottom: 20px; // Match the cart's mobile position
+    }
+  }
+
   // Animation
   animation: callPulse 2s ease infinite;
 }

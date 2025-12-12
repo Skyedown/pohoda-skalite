@@ -1,10 +1,17 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+import { useCart } from '../../context/CartContext';
 import './FloatingCall.less';
 
 const FloatingCall: React.FC = () => {
   const location = useLocation();
-  const phoneNumber = '+421948293923';
+  const { cart } = useCart();
+  const phoneNumber = import.meta.env.VITE_RESTAURANT_PHONE;
+
+  const itemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  // Check if cart would be visible (same logic as FloatingCart)
+  const isCartVisible = itemsCount > 0 && location.pathname !== '/cart';
 
   // Hide the call button when on cart page
   if (location.pathname === '/cart') {
@@ -14,7 +21,7 @@ const FloatingCall: React.FC = () => {
   return (
     <a
       href={`tel:${phoneNumber}`}
-      className="floating-call"
+      className={`floating-call ${!isCartVisible ? 'floating-call--no-cart' : ''}`}
       aria-label="Zavolať"
     >
       <svg

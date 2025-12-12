@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { useCart } from '../../context/CartContext';
 import Toast from '../../components/Toast/Toast';
 import type { Pizza } from '../../types';
-import { menuItems } from '../../data/menu';
+import { burgers } from '../../data/burgers';
+import { langos } from '../../data/langos';
 import './BurgerSection.less';
 
-// Filter burgers and langos from menu
-const burgers = menuItems.filter(item => item.type === 'burger' || item.type === 'langos');
+// Combine burgers and langos
+const burgersAndLangos = [...burgers, ...langos];
 
 const BurgerSection: React.FC = () => {
   const { addToCart } = useCart();
@@ -26,7 +27,7 @@ const BurgerSection: React.FC = () => {
           <h2 className="burger-section__title">Burgre a langoše</h2>
           
           <div className="burger-section__grid">
-            {burgers.map((item) => (
+            {burgersAndLangos.map((item) => (
               <div key={item.id} className="burger-card">
                 <div className="burger-card__image">
                   <img src={item.image} alt={item.name} />
