@@ -1,86 +1,13 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import sgMail from '@sendgrid/mail';
-import { sanitizeOrder, escapeHTML } from './utils/sanitize.js';
+import { escapeHTML } from './utils/sanitize.js';
 
-dotenv.config();
-
-const app = express();
-const PORT = process.env.PORT || 3001;
-
-// Initialize SendGrid
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-// Middleware
-app.use(cors());
-app.use(express.json());
-
-// Restaurant contact info - uses VITE_ prefixed variables (same as frontend)
-const RESTAURANT_EMAIL = process.env.VITE_RESTAURANT_EMAIL || 'pohoda.skalite@example.com';
-const RESTAURANT_PHONE = process.env.VITE_RESTAURANT_PHONE || '+421948293923';
-
-// Health check endpoints
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok' });
-});
-
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok' });
-});
-
-// Send order confirmation emails
-app.post('/api/send-order-emails', async (req, res) => {
-  try {
-    const { order } = req.body;
-
-    if (!order || !order.delivery || !order.delivery.email) {
-      return res.status(400).json({ error: 'Invalid order data' });
-    }
-
-    // Sanitize order data to prevent XSS and injection attacks
-    const sanitizedOrder = sanitizeOrder(order);
-
-    // Generate customer email content
-    const customerEmailContent = generateCustomerEmail(sanitizedOrder);
-
-    // Generate restaurant email content
-    const restaurantEmailContent = generateRestaurantEmail(sanitizedOrder);
-
-    // Send email to customer
-    const customerEmail = {
-      to: order.delivery.email,
-      from: process.env.SENDGRID_FROM_EMAIL || 'noreply@pizzapohoda.sk',
-      subject: 'Potvrdenie objednávky - Pizza Pohoda',
-      html: customerEmailContent,
-    };
-
-    // Send email to restaurant
-    const restaurantEmail = {
-      to: RESTAURANT_EMAIL,
-      from: process.env.SENDGRID_FROM_EMAIL || 'noreply@pizzapohoda.sk',
-      subject: `Nová objednávka #${order.timestamp.slice(0, 10)}`,
-      html: restaurantEmailContent,
-    };
-
-    // Send both emails
-    await Promise.all([
-      sgMail.send(customerEmail),
-      sgMail.send(restaurantEmail)
-    ]);
-
-    res.json({ success: true, message: 'Emails sent successfully' });
-  } catch (error) {
-    console.error('Error sending emails:', error);
-    res.status(500).json({
-      error: 'Failed to send emails',
-      details: error.message
-    });
-  }
-});
-
-// Generate customer confirmation email
-function generateCustomerEmail(order) {
+/**
+ * Generate customer confirmation email
+ * @param {Object} order - The order object
+ * @param {string} restaurantEmail - Restaurant contact email
+ * @param {string} restaurantPhone - Restaurant contact phone
+ * @returns {string} HTML email template
+ */
+export function generateCustomerEmail(order, restaurantEmail, restaurantPhone) {
   const itemsList = order.items.map(item => {
     const extrasText = item.extras && item.extras.length > 0
       ? `<br><small style="color: #634832; margin-top: 4px; display: block;">+ ${item.extras.map(e => `${escapeHTML(e.name)} (+${e.price.toFixed(2)}€)`).join(', ')}</small>`
@@ -287,8 +214,8 @@ function generateCustomerEmail(order) {
 
           <div class="contact-box">
             <p style="margin-bottom: 12px; font-size: 16px;"><strong>Máte otázky?</strong></p>
-            <p>📧 <a href="mailto:${RESTAURANT_EMAIL}">${RESTAURANT_EMAIL}</a></p>
-            <p>📞 <a href="tel:${RESTAURANT_PHONE}">${RESTAURANT_PHONE}</a></p>
+            <p>📧 <a href="mailto:${restaurantEmail}">${restaurantEmail}</a></p>
+            <p>📞 <a href="tel:${restaurantPhone}">${restaurantPhone}</a></p>
           </div>
         </div>
 
@@ -296,8 +223,8 @@ function generateCustomerEmail(order) {
           <p><strong>Pizza Pohoda</strong></p>
           <p>Skalité 1386, 023 14 Skalité, Kysuce</p>
           <p>
-            <a href="mailto:${RESTAURANT_EMAIL}">${RESTAURANT_EMAIL}</a> |
-            <a href="tel:${RESTAURANT_PHONE}">${RESTAURANT_PHONE}</a>
+            <a href="mailto:${restaurantEmail}">${restaurantEmail}</a> |
+            <a href="tel:${restaurantPhone}">${restaurantPhone}</a>
           </p>
         </div>
       </div>
@@ -306,8 +233,12 @@ function generateCustomerEmail(order) {
   `;
 }
 
-// Generate restaurant notification email
-function generateRestaurantEmail(order) {
+/**
+ * Generate restaurant notification email
+ * @param {Object} order - The order object
+ * @returns {string} HTML email template
+ */
+export function generateRestaurantEmail(order) {
   const itemsList = order.items.map(item => {
     const extrasText = item.extras && item.extras.length > 0
       ? `<br><small style="color: #666;">+ ${item.extras.map(e => `${escapeHTML(e.name)} (+${e.price.toFixed(2)}€)`).join(', ')}</small>`
@@ -408,7 +339,3 @@ function generateRestaurantEmail(order) {
     </html>
   `;
 }
-
-app.listen(PORT, () => {
-  console.log(`API server running on http://localhost:${PORT}`);
-});

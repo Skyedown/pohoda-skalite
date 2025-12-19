@@ -21,7 +21,12 @@ const availableExtras: Extra[] = [
   { id: 'oregano', name: 'Oregano', price: 0.5 },
 ];
 
-const PizzaModal: React.FC<PizzaModalProps> = ({ pizza, isOpen, onClose, onAddToCart }) => {
+const PizzaModal: React.FC<PizzaModalProps> = ({
+  pizza,
+  isOpen,
+  onClose,
+  onAddToCart,
+}) => {
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
@@ -79,8 +84,8 @@ const PizzaModal: React.FC<PizzaModalProps> = ({ pizza, isOpen, onClose, onAddTo
   const totalPrice = (pizza.price + extrasPrice) * quantity;
 
   const handleAddToCartClick = () => {
-    const selectedExtrasObjects = selectedExtras.map(extraId =>
-      availableExtras.find(e => e.id === extraId)!
+    const selectedExtrasObjects = selectedExtras.map(
+      (extraId) => availableExtras.find((e) => e.id === extraId)!
     );
     addToCart(pizza, 'medium', quantity, selectedExtrasObjects);
     if (onAddToCart) {
@@ -98,98 +103,162 @@ const PizzaModal: React.FC<PizzaModalProps> = ({ pizza, isOpen, onClose, onAddTo
       aria-labelledby="modal-title"
     >
       <div className="pizza-modal">
+        {/* Header with Pizza Image */}
         <div className="pizza-modal__header">
+          <div className="pizza-modal__image-container">
+            <img
+              src={pizza.image}
+              alt={pizza.name}
+              className="pizza-modal__image"
+            />
+          </div>
           <button
             className="pizza-modal__close"
             onClick={handleClose}
             aria-label="Zavrieť"
           >
-            <svg viewBox="0 0 24 24" fill="none">
-              <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            ✕
           </button>
-          <img
-            src={pizza.image}
-            alt={pizza.name}
-            className="pizza-modal__image"
-          />
         </div>
 
+        {/* Content */}
         <div className="pizza-modal__content">
-          <h2 id="modal-title" className="pizza-modal__title">
-            {pizza.name}
-          </h2>
-          <p className="pizza-modal__description">{pizza.description}</p>
-          <p className="pizza-modal__weight">800g</p>
-
-          <div className="pizza-modal__extras">
-            <h3 className="pizza-modal__section-title">Pridať extra prílohy</h3>
-            {availableExtras.map((extra) => (
-              <div
-                key={extra.id}
-                className="pizza-modal__extra-item"
-                onClick={() => toggleExtra(extra.id)}
-              >
-                <div className="pizza-modal__extra-label">
-                  <div
-                    className={`pizza-modal__checkbox ${
-                      selectedExtras.includes(extra.id)
-                        ? 'pizza-modal__checkbox--checked'
-                        : ''
-                    }`}
-                  />
-                  <span className="pizza-modal__extra-name">{extra.name}</span>
-                </div>
-                <span className="pizza-modal__extra-price">
-                  +{extra.price.toFixed(2)} €
-                </span>
-              </div>
-            ))}
+          {/* Pizza Info */}
+          <div className="pizza-modal__info">
+            <h2 id="modal-title" className="pizza-modal__name">
+              {pizza.name}
+            </h2>
+            <p className="pizza-modal__description">{pizza.description}</p>
+            <p className="pizza-modal__weight">
+              800g
+              {pizza.allergens && pizza.allergens.length > 0 && (
+                <span className="pizza-modal__allergens"> (Alergény: {pizza.allergens.join(', ')})</span>
+              )}
+            </p>
           </div>
 
-          <div className="pizza-modal__quantity">
+          {/* Extras Section */}
+          <div className="pizza-modal__extras-section">
+            <h3 className="pizza-modal__section-title">Pridať extra prílohy</h3>
+
+            <div className="pizza-modal__extras-container">
+              <div className="pizza-modal__extras-list">
+                {availableExtras.map((extra) => {
+                  const isSelected = selectedExtras.includes(extra.id);
+                  return (
+                    <label
+                      key={extra.id}
+                      className={`pizza-modal__extra-item ${
+                        isSelected ? 'pizza-modal__extra-item--selected' : ''
+                      }`}
+                    >
+                      <div className="pizza-modal__extra-checkbox-wrapper">
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => toggleExtra(extra.id)}
+                          className="pizza-modal__extra-checkbox"
+                        />
+                        <span className="pizza-modal__extra-checkbox-custom">
+                          {isSelected && (
+                            <svg
+                              width="10"
+                              height="8"
+                              viewBox="0 0 10 8"
+                              fill="none"
+                            >
+                              <path
+                                d="M1 4L3.5 6.5L9 1"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          )}
+                        </span>
+                        <span className="pizza-modal__extra-name">
+                          {extra.name}
+                        </span>
+                      </div>
+                      <span className="pizza-modal__extra-price">
+                        +{extra.price.toFixed(2)} €
+                      </span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Quantity Section */}
+          <div className="pizza-modal__quantity-section">
             <h3 className="pizza-modal__section-title">Počet kusov</h3>
             <div className="pizza-modal__quantity-controls">
               <button
-                className="pizza-modal__quantity-button"
+                className="pizza-modal__quantity-btn"
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
                 disabled={quantity <= 1}
                 aria-label="Znížiť množstvo"
               >
-                −
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path
+                    d="M5 10H15"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                </svg>
               </button>
               <span className="pizza-modal__quantity-value">{quantity}</span>
               <button
-                className="pizza-modal__quantity-button"
+                className="pizza-modal__quantity-btn"
                 onClick={() => setQuantity(Math.min(10, quantity + 1))}
                 disabled={quantity >= 10}
                 aria-label="Zvýšiť množstvo"
               >
-                +
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path
+                    d="M10 5V15M5 10H15"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                </svg>
               </button>
             </div>
           </div>
         </div>
 
-        <div className="pizza-modal__footer">
-          <div className="pizza-modal__summary">
+        {/* Bottom Summary Section */}
+        <div className="pizza-modal__summary">
+          <div className="pizza-modal__summary-rows">
             <div className="pizza-modal__summary-row">
-              <span>Základná cena</span>
-              <span>{pizza.price.toFixed(2)} €</span>
+              <span className="pizza-modal__summary-label">Základná cena</span>
+              <span className="pizza-modal__summary-value">
+                {pizza.price.toFixed(2)} €
+              </span>
             </div>
-            {extrasPrice > 0 && (
-              <div className="pizza-modal__summary-row">
-                <span>Prísady</span>
-                <span>+{extrasPrice.toFixed(2)} €</span>
-              </div>
-            )}
+            <div className="pizza-modal__summary-row">
+              <span className="pizza-modal__summary-label">Prísady</span>
+              <span className="pizza-modal__summary-value">
+                +{extrasPrice.toFixed(2)} €
+              </span>
+            </div>
+            <div className="pizza-modal__summary-divider"></div>
             <div className="pizza-modal__summary-row pizza-modal__summary-row--total">
-              <span>Celkom</span>
-              <span>{totalPrice.toFixed(2)} €</span>
+              <span className="pizza-modal__summary-label">Celkom</span>
+              <span className="pizza-modal__summary-value pizza-modal__summary-value--total">
+                {totalPrice.toFixed(2)} €
+              </span>
             </div>
           </div>
-          <button className="pizza-modal__add-button" onClick={handleAddToCartClick}>
-            Pridať do košíka
+
+          <button
+            className="pizza-modal__add-button"
+            onClick={handleAddToCartClick}
+          >
+            PRIDAŤ DO KOŠÍKA
           </button>
         </div>
       </div>

@@ -1,4 +1,4 @@
-export type ProductType = 'pizza' | 'burger' | 'langos';
+export type ProductType = 'pizza' | 'burger' | 'langos' | 'sides' | 'snack' | 'drink';
 
 export type PizzaSize = 'small' | 'medium' | 'large';
 
@@ -9,7 +9,8 @@ export interface Pizza {
   price: number;
   image: string;
   ingredients: string[];
-  category?: 'classic' | 'premium' | 'special';
+  allergens?: string[];
+  badge?: 'classic' | 'premium' | 'special';
   type: ProductType;
 }
 

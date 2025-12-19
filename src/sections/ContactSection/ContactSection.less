@@ -65,4 +65,37 @@
       }
     }
   }
+
+  &__social {
+    display: flex;
+    gap: 16px;
+    margin-top: 8px;
+  }
+
+  &__social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: @primary-dark;
+    color: @text-white;
+    transition: all 0.3s ease;
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    &:hover {
+      background: darken(@primary-dark, 10%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(99, 72, 50, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
 }

@@ -6,7 +6,8 @@ import PizzaCard from '../../components/PizzaCard/PizzaCard';
 import PizzaModal from '../../components/PizzaModal/PizzaModal';
 import Toast from '../../components/Toast/Toast';
 import BurgerSection from '../../sections/BurgerSection/BurgerSection';
-import DrinksSection from '../../sections/DrinksSection/DrinksSection';
+import LangosSection from '../../sections/LangosSection/LangosSection';
+import PrilohySection from '../../sections/PrilohySection/PrilohySection';
 import LocationSection from '../../sections/LocationSection/LocationSection';
 import QualitySection from '../../sections/QualitySection/QualitySection';
 import TestimonialsSection from '../../sections/TestimonialsSection/TestimonialsSection';
@@ -60,10 +61,10 @@ const PizzaMain: React.FC = () => {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Restaurant",
-    "name": "Pohoda Skalite",
+    "name": "Pizza Pohoda",
     "description": "Pizzeria a reštaurácia s donáškou v Skalitom. Špecializujeme sa na napoletánsku pizzu, burgre a langoše.",
-    "image": "https://pohodaskalite.sk/images/hero-pizza.png",
-    "url": "https://pohodaskalite.sk",
+    "image": "https://pizzapohoda.sk/images/hero-pizza.png",
+    "url": "https://pizzapohoda.sk",
     "telephone": "+421-XXX-XXX-XXX",
     "priceRange": "€€",
     "servesCuisine": ["Pizza", "Italian", "European"],
@@ -72,7 +73,7 @@ const PizzaMain: React.FC = () => {
       "streetAddress": "Skalité",
       "addressLocality": "Skalité",
       "addressRegion": "Žilina",
-      "postalCode": "02301",
+      "postalCode": "02314",
       "addressCountry": "SK"
     },
     "geo": {
@@ -95,7 +96,7 @@ const PizzaMain: React.FC = () => {
       }
     ],
     "sameAs": [
-      "https://www.facebook.com/pohodaskalite"
+      "https://www.facebook.com/profile.php?id=61585409280116"
     ],
     "hasMenu": {
       "@type": "Menu",
@@ -119,7 +120,7 @@ const PizzaMain: React.FC = () => {
   return (
     <div className="pizza-main">
       <Helmet>
-        <title>Pohoda Skalite - Pizzeria, Burger & Lángoš | Skalité</title>
+        <title>Pizza Pohoda - Pizza, Burger & Langos | Skalité</title>
         <meta
           name="description"
           content="Najlepšia napoletánska pizza, burgre a lángoše v Skalitom. Rýchle dodanie do Skalitého, Čierneho a Svrčinovca. Čerstvé ingrediencie a tradičná príprava."
@@ -186,11 +187,14 @@ const PizzaMain: React.FC = () => {
         </div>
       </section>
 
-      {/* Burger & Langoš Section */}
+      {/* Burger Section */}
       <BurgerSection />
 
-      {/* Drinks & Snacks Section */}
-      <DrinksSection />
+      {/* Langoš Section */}
+      <LangosSection />
+
+      {/* Prílohy Section */}
+      <PrilohySection />
 
       {/* Location & Hours Section */}
       <LocationSection />

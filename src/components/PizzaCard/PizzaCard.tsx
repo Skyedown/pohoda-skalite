@@ -8,26 +8,26 @@ interface PizzaCardProps {
 }
 
 const PizzaCard: React.FC<PizzaCardProps> = ({ pizza, onAddToCart }) => {
-  const getCategoryLabel = (category: string) => {
+  const getBadgeLabel = (badge: string) => {
     const labels: Record<string, string> = {
       classic: 'NAŠA VOĽBA',
       premium: 'NAŠA VOĽBA',
       special: 'BESTSELLER',
     };
-    return labels[category] || '';
+    return labels[badge] || '';
   };
 
   // Show badge for certain pizzas
   const showBadge =
-    pizza.category === 'classic' || pizza.category === 'special';
+    pizza.badge === 'classic' || pizza.badge === 'special';
 
   return (
     <article onClick={() => onAddToCart(pizza)} className="pizza-card">
-      {showBadge && pizza.category && (
+      {showBadge && pizza.badge && (
         <span
-          className={`pizza-card__badge pizza-card__badge--${pizza.category}`}
+          className={`pizza-card__badge pizza-card__badge--${pizza.badge}`}
         >
-          {getCategoryLabel(pizza.category)}
+          {getBadgeLabel(pizza.badge)}
         </span>
       )}
 
@@ -38,7 +38,12 @@ const PizzaCard: React.FC<PizzaCardProps> = ({ pizza, onAddToCart }) => {
       <div className="pizza-card__content">
         <h3 className="pizza-card__name">{pizza.name}</h3>
         <p className="pizza-card__description">{pizza.description}</p>
-        <p className="pizza-card__weight">850g</p>
+        <p className="pizza-card__weight">
+          850g
+          {pizza.allergens && pizza.allergens.length > 0 && (
+            <span className="pizza-card__allergens"> (Alergény: {pizza.allergens.join(', ')})</span>
+          )}
+        </p>
 
         <div className="pizza-card__footer">
           <div className="pizza-card__price">{pizza.price.toFixed(2)} €</div>

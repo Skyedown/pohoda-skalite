@@ -11,7 +11,7 @@ const LocationSection: React.FC = () => {
           </div>
           <div className="location-section__info">
             <h2 className="location-section__title">Pizza Pohoda</h2>
-            <p className="location-section__address">Skalité 172, 023 14</p>
+            <p className="location-section__address">Skalité 1386, 023 14</p>
 
             <h3 className="location-section__hours-title">Otváracie hodiny</h3>
             <div className="location-section__hours">

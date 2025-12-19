@@ -23,15 +23,20 @@
   padding: 20px 0;
 
   @media (max-width: @breakpoint-md) {
-    height: 70px;
-    padding: 14px 0;
+    height: 130px;
+    padding: 20px 0;
     mask-image: linear-gradient(
       to bottom,
       rgba(0, 0, 0, 1) 0%,
-      /* fully visible blur */ rgba(0, 0, 0, 1) 90%,
+      /* fully visible blur */ rgba(0, 0, 0, 1) 85%,
       /* keep logo fully visible */ rgba(0, 0, 0, 0) 100%
         /* blur fades out at bottom */
     );
+  }
+
+  @media (max-width: @breakpoint-sm) {
+    height: 110px;
+    padding: 18px 0;
   }
 
   &__container {
@@ -48,31 +53,25 @@
     }
   }
 
-  // White pill for logo
+  // Logo
   &__logo {
     display: flex;
     align-items: center;
     justify-content: center;
     text-decoration: none;
     transition: transform 0.2s ease;
-    background: white;
-    border-radius: 77px;
-    padding: 0 48px;
-    height: 61px; // Fixed height to match nav and call button
-    box-shadow: 0 4px 3.3px 0 rgba(0, 0, 0, 0.14);
+    height: 80px;
 
     &:hover {
       transform: translateY(-1px);
     }
 
     @media (max-width: @breakpoint-md) {
-      padding: 0 36px;
-      height: 48px;
+      height: 90px;
     }
 
     @media (max-width: @breakpoint-sm) {
-      padding: 0 28px;
-      height: 48px;
+      height: 72px;
     }
   }
 
@@ -83,6 +82,16 @@
     line-height: 0.8588;
     color: @text-primary;
     letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    height: 100%;
+
+    img {
+      width: auto;
+      height: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
 
     @media (max-width: @breakpoint-md) {
       font-size: 36px;
@@ -148,42 +157,8 @@
     }
   }
 
-  // Call button (dark pill) - HIDE ON TABLET/MOBILE
+  // Call button - HIDDEN
   &__call-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    transition: all 0.2s ease;
-    background: #2c3e50; // Dark background
-    border-radius: 77px;
-    padding: 0 24px;
-    height: 61px; // Match logo and nav pill height
-    box-shadow: 0 4px 3.3px 0 rgba(0, 0, 0, 0.14);
-    color: white;
-
-    &:hover {
-      transform: translateY(-1px);
-      background: lighten(#2c3e50, 5%);
-    }
-
-    svg {
-      width: 24px;
-      height: 24px;
-    }
-
-    @media (max-width: @breakpoint-lg) {
-      padding: 0 20px;
-
-      svg {
-        width: 20px;
-        height: 20px;
-      }
-    }
-
-    // HIDE ON TABLET AND MOBILE (show floating button instead)
-    @media (max-width: @breakpoint-md) {
-      display: none;
-    }
+    display: none;
   }
 }

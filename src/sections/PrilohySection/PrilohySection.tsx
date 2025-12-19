@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { useCart } from '../../context/CartContext';
 import Toast from '../../components/Toast/Toast';
 import type { Pizza } from '../../types';
-import { burgers } from '../../data/burgers';
-import './BurgerSection.less';
+import { prilohy } from '../../data/prilohy';
+import './PrilohySection.less';
 
-const BurgerSection: React.FC = () => {
+const PrilohySection: React.FC = () => {
   const { addToCart } = useCart();
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
@@ -27,32 +27,32 @@ const BurgerSection: React.FC = () => {
 
   return (
     <>
-      <section className="burger-section">
+      <section className="prilohy-section">
         <div className="container">
-          <h2 className="burger-section__title">Burgre</h2>
+          <h2 className="prilohy-section__title">Prílohy</h2>
 
-          <div className="burger-section__grid">
-            {burgers.map((item) => (
-              <div key={item.id} className="burger-card">
+          <div className="prilohy-section__grid">
+            {prilohy.map((item) => (
+              <div key={item.id} className="prilohy-card">
                 {item.badge && (
-                  <span className={`burger-card__badge burger-card__badge--${item.badge}`}>
+                  <span className={`prilohy-card__badge prilohy-card__badge--${item.badge}`}>
                     {getBadgeLabel(item.badge)}
                   </span>
                 )}
-                <div className="burger-card__image">
+                <div className="prilohy-card__image">
                   <img src={item.image} alt={item.name} />
                 </div>
-                <h3 className="burger-card__name">{item.name}</h3>
-                <p className="burger-card__weight">
-                  200g
+                <h3 className="prilohy-card__name">{item.name}</h3>
+                <p className="prilohy-card__description">
+                  {item.description}
                   {item.allergens && item.allergens.length > 0 && (
-                    <span className="burger-card__allergens"> (Alergény: {item.allergens.join(', ')})</span>
+                    <span className="prilohy-card__allergens"> (Alergény: {item.allergens.join(', ')})</span>
                   )}
                 </p>
-                <div className="burger-card__footer">
-                  <div className="burger-card__price">{item.price.toFixed(2)}€</div>
+                <div className="prilohy-card__footer">
+                  <div className="prilohy-card__price">{item.price.toFixed(2)}€</div>
                   <button
-                    className="burger-card__button"
+                    className="prilohy-card__button"
                     onClick={() => handleAddToCart(item)}
                   >
                     PRIDAŤ
@@ -63,8 +63,8 @@ const BurgerSection: React.FC = () => {
           </div>
         </div>
       </section>
-      
-      <Toast 
+
+      <Toast
         message={toastMessage}
         isVisible={showToast}
         onClose={() => setShowToast(false)}
@@ -73,4 +73,4 @@ const BurgerSection: React.FC = () => {
   );
 };
 
-export default BurgerSection;
+export default PrilohySection;

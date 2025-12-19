@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { useCart } from '../../context/CartContext';
 import Toast from '../../components/Toast/Toast';
 import type { Pizza } from '../../types';
-import { burgers } from '../../data/burgers';
-import './BurgerSection.less';
+import { langos } from '../../data/langos';
+import './LangosSection.less';
 
-const BurgerSection: React.FC = () => {
+const LangosSection: React.FC = () => {
   const { addToCart } = useCart();
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
@@ -27,32 +27,33 @@ const BurgerSection: React.FC = () => {
 
   return (
     <>
-      <section className="burger-section">
+      <section className="langos-section">
         <div className="container">
-          <h2 className="burger-section__title">Burgre</h2>
+          <p className="langos-section__subtitle">Chrumkavé a chutné</p>
+          <h2 className="langos-section__title">Langoše</h2>
 
-          <div className="burger-section__grid">
-            {burgers.map((item) => (
-              <div key={item.id} className="burger-card">
+          <div className="langos-section__grid">
+            {langos.map((item) => (
+              <div key={item.id} className="langos-card">
                 {item.badge && (
-                  <span className={`burger-card__badge burger-card__badge--${item.badge}`}>
+                  <span className={`langos-card__badge langos-card__badge--${item.badge}`}>
                     {getBadgeLabel(item.badge)}
                   </span>
                 )}
-                <div className="burger-card__image">
+                <div className="langos-card__image">
                   <img src={item.image} alt={item.name} />
                 </div>
-                <h3 className="burger-card__name">{item.name}</h3>
-                <p className="burger-card__weight">
-                  200g
+                <h3 className="langos-card__name">{item.name}</h3>
+                <p className="langos-card__size">
+                  {item.description}
                   {item.allergens && item.allergens.length > 0 && (
-                    <span className="burger-card__allergens"> (Alergény: {item.allergens.join(', ')})</span>
+                    <span className="langos-card__allergens"> (Alergény: {item.allergens.join(', ')})</span>
                   )}
                 </p>
-                <div className="burger-card__footer">
-                  <div className="burger-card__price">{item.price.toFixed(2)}€</div>
+                <div className="langos-card__footer">
+                  <div className="langos-card__price">{item.price.toFixed(2)} €</div>
                   <button
-                    className="burger-card__button"
+                    className="langos-card__button"
                     onClick={() => handleAddToCart(item)}
                   >
                     PRIDAŤ
@@ -63,8 +64,8 @@ const BurgerSection: React.FC = () => {
           </div>
         </div>
       </section>
-      
-      <Toast 
+
+      <Toast
         message={toastMessage}
         isVisible={showToast}
         onClose={() => setShowToast(false)}
@@ -73,4 +74,4 @@ const BurgerSection: React.FC = () => {
   );
 };
 
-export default BurgerSection;
+export default LangosSection;
