@@ -27,9 +27,7 @@ gsap.registerPlugin(ScrollTrigger);
 const PizzaMain: React.FC = () => {
   const [selectedPizza, setSelectedPizza] = useState<Pizza | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedFilter, ] = useState<ProductType | 'all'>(
-    'all'
-  );
+  const [selectedFilter] = useState<ProductType | 'all'>('all');
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
@@ -59,62 +57,61 @@ const PizzaMain: React.FC = () => {
   };
 
   const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "Restaurant",
-    "name": "Pizza Pohoda",
-    "description": "Pizzeria a reštaurácia s donáškou v Skalitom. Špecializujeme sa na napoletánsku pizzu, burgre a langoše.",
-    "image": "https://pizzapohoda.sk/images/hero-pizza.png",
-    "url": "https://pizzapohoda.sk",
-    "telephone": "+421-XXX-XXX-XXX",
-    "priceRange": "€€",
-    "servesCuisine": ["Pizza", "Italian", "European"],
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "Skalité",
-      "addressLocality": "Skalité",
-      "addressRegion": "Žilina",
-      "postalCode": "02314",
-      "addressCountry": "SK"
+    '@context': 'https://schema.org',
+    '@type': 'Restaurant',
+    name: 'Pizza Pohoda',
+    description:
+      'Pizzeria a reštaurácia s donáškou v Skalitom. Špecializujeme sa na napoletánsku pizzu, burgre a langoše.',
+    image: 'https://pizzapohoda.sk/images/hero-pizza.png',
+    url: 'https://pizzapohoda.sk',
+    telephone: '+421-XXX-XXX-XXX',
+    priceRange: '€€',
+    servesCuisine: ['Pizza', 'Italian', 'European'],
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'Skalité',
+      addressLocality: 'Skalité',
+      addressRegion: 'Žilina',
+      postalCode: '02314',
+      addressCountry: 'SK',
     },
-    "geo": {
-      "@type": "GeoCoordinates",
-      "latitude": 49.4167,
-      "longitude": 19.0167
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: 49.4167,
+      longitude: 19.0167,
     },
-    "openingHoursSpecification": [
+    openingHoursSpecification: [
       {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-        "opens": "11:00",
-        "closes": "22:00"
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+        opens: '11:00',
+        closes: '22:00',
       },
       {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": ["Saturday", "Sunday"],
-        "opens": "12:00",
-        "closes": "22:00"
-      }
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: ['Saturday', 'Sunday'],
+        opens: '12:00',
+        closes: '22:00',
+      },
     ],
-    "sameAs": [
-      "https://www.facebook.com/profile.php?id=61585409280116"
-    ],
-    "hasMenu": {
-      "@type": "Menu",
-      "hasMenuSection": [
+    sameAs: ['https://www.facebook.com/profile.php?id=61585409280116'],
+    hasMenu: {
+      '@type': 'Menu',
+      hasMenuSection: [
         {
-          "@type": "MenuSection",
-          "name": "Pizza",
-          "description": "Naše výborné pizze pripravené z čerstvých surovín"
+          '@type': 'MenuSection',
+          name: 'Pizza',
+          description: 'Naše výborné pizze pripravené z čerstvých surovín',
         },
         {
-          "@type": "MenuSection",
-          "name": "Burgre & Langoše",
-          "description": "Šťavnaté burgre a chrumkavé langoše"
-        }
-      ]
+          '@type': 'MenuSection',
+          name: 'Burgre & Langoše',
+          description: 'Šťavnaté burgre a chrumkavé langoše',
+        },
+      ],
     },
-    "acceptsReservations": false,
-    "paymentAccepted": "Cash, Card"
+    acceptsReservations: false,
+    paymentAccepted: 'Cash, Card',
   };
 
   return (
@@ -171,6 +168,7 @@ const PizzaMain: React.FC = () => {
 
           <div
             className="pizza-main__grid"
+            id="pizza-menu"
             role="list"
             aria-label="Položky menu"
           >

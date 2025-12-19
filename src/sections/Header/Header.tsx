@@ -57,6 +57,7 @@ const Header: React.FC = () => {
             >
               <Link
                 to="/"
+                onClick={scrollToSection('pizza-menu')}
                 className={`header__nav-link ${
                   location.pathname === '/' ? 'header__nav-link--active' : ''
                 }`}
