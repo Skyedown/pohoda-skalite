@@ -17,8 +17,9 @@ app.use(cors());
 app.use(express.json());
 
 // Restaurant contact info - uses VITE_ prefixed variables (same as frontend)
-const RESTAURANT_EMAIL = process.env.VITE_RESTAURANT_EMAIL || 'pohoda.skalite@example.com';
-const RESTAURANT_PHONE = process.env.VITE_RESTAURANT_PHONE || '+421948293923';
+const RESTAURANT_EMAIL =
+  process.env.VITE_RESTAURANT_EMAIL || 'objednavky@pizzapohoda.sk';
+const RESTAURANT_PHONE = process.env.VITE_RESTAURANT_PHONE || '+421918175571;';
 
 // Health check endpoints
 app.get('/health', (req, res) => {

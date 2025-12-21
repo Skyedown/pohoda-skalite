@@ -2,7 +2,7 @@ import React from 'react';
 import './ContactSection.less';
 
 const ContactSection: React.FC = () => {
-  const restaurantEmail = import.meta.env.VITE_RESTAURANT_EMAIL || 'info@pizzapohoda.sk';
+  const restaurantEmail = import.meta.env.VITE_RESTAURANT_EMAIL || 'objednavky@pizzapohoda.sk';
   const restaurantPhone = import.meta.env.VITE_RESTAURANT_PHONE || '+421918175571';
 
   // Format phone for display (add spaces)
