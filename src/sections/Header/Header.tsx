@@ -45,7 +45,7 @@ const Header: React.FC = () => {
         <div className="header__container">
           <Link to="/" className="header__logo" onClick={handleLogoClick}>
             <span className="header__logo-text">
-              <img src="/public/images/logo-pohoda.svg" alt="" />
+              <img src="/images/logo-pohoda.svg" alt="" />
             </span>
           </Link>
 
