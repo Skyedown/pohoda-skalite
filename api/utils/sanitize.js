@@ -3,7 +3,7 @@
  */
 
 import sanitizeHtml from 'sanitize-html';
-import validator from 'express-validator/lib/validator.js';
+import validator from 'validator';
 
 /**
  * Escape HTML to prevent XSS attacks using sanitize-html
