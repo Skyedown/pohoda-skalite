@@ -2,11 +2,11 @@ import React from 'react';
 import './ContactSection.less';
 
 const ContactSection: React.FC = () => {
-  const restaurantEmail = import.meta.env.VITE_RESTAURANT_EMAIL;
-  const restaurantPhone = import.meta.env.VITE_RESTAURANT_PHONE;
+  const restaurantEmail = import.meta.env.VITE_RESTAURANT_EMAIL || 'info@pizzapohoda.sk';
+  const restaurantPhone = import.meta.env.VITE_RESTAURANT_PHONE || '+421918175571';
 
   // Format phone for display (add spaces)
-  const formattedPhone = restaurantPhone.replace(/(\+\d{3})(\d{3})(\d{3})(\d{3})/, '$1 $2 $3 $4');
+  const formattedPhone = restaurantPhone?.replace(/(\+\d{3})(\d{3})(\d{3})(\d{3})/, '$1 $2 $3 $4') || restaurantPhone;
 
   return (
     <section id="contact" className="contact-section">
