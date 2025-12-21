@@ -6,7 +6,7 @@ import './FloatingCall.less';
 const FloatingCall: React.FC = () => {
   const location = useLocation();
   const { cart } = useCart();
-  const phoneNumber = import.meta.env.VITE_RESTAURANT_PHONE;
+  const phoneNumber = import.meta.env.VITE_RESTAURANT_PHONE || '+421918175571';
 
   const itemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 

@@ -5,7 +5,7 @@ import './Header.less';
 const Header: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const phoneNumber = import.meta.env.VITE_RESTAURANT_PHONE;
+  const phoneNumber = import.meta.env.VITE_RESTAURANT_PHONE || '+421918175571';
 
   const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     // If we're already on the main page, scroll to top
