@@ -116,15 +116,15 @@ export const useBurgerItemsAnimation = () => {
   }, []);
 };
 
-// Hook for drinks items animation
-export const useDrinksItemsAnimation = () => {
+// Hook for langos items animation
+export const useLangosItemsAnimation = () => {
   useEffect(() => {
-    const drinkItems = gsap.utils.toArray('.drinks-section .drink-card');
+    const langosItems = gsap.utils.toArray('.langos-section .langos-card');
 
-    if (drinkItems.length === 0) return;
+    if (langosItems.length === 0) return;
 
     const staggerAnimation = gsap.fromTo(
-      drinkItems,
+      langosItems,
       { opacity: 0, y: 60, scale: 0.9 },
       {
         opacity: 1,
@@ -134,7 +134,39 @@ export const useDrinksItemsAnimation = () => {
         ease: 'power3.out',
         stagger: 0.15,
         scrollTrigger: {
-          trigger: '.drinks-section__grid',
+          trigger: '.langos-section__grid',
+          start: 'top 100%',
+          end: 'bottom 10%',
+          scrub: true,
+        },
+      }
+    );
+
+    return () => {
+      staggerAnimation.kill();
+    };
+  }, []);
+};
+
+// Hook for prilohy items animation
+export const usePrilohyItemsAnimation = () => {
+  useEffect(() => {
+    const prilohyItems = gsap.utils.toArray('.prilohy-section .prilohy-card');
+
+    if (prilohyItems.length === 0) return;
+
+    const staggerAnimation = gsap.fromTo(
+      prilohyItems,
+      { opacity: 0, y: 60, scale: 0.9 },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 1,
+        ease: 'power3.out',
+        stagger: 0.2,
+        scrollTrigger: {
+          trigger: '.prilohy-section__grid',
           start: 'top 100%',
           end: 'bottom 10%',
           scrub: true,
@@ -152,5 +184,6 @@ export const useDrinksItemsAnimation = () => {
 export const useAllMenuAnimations = () => {
   useMenuItemsAnimation('.pizza-main__grid');
   useBurgerItemsAnimation();
-  useDrinksItemsAnimation();
+  useLangosItemsAnimation();
+  usePrilohyItemsAnimation();
 };
