@@ -17,7 +17,7 @@ const ContactSection: React.FC = () => {
           <div className="contact-section__column">
             <p>Skalité 1386</p>
             <p>023 14</p>
-            <p>Pohoda Skalite, s.r.o.</p>
+            <p>M&M MIKULA s.r.o.</p>
           </div>
 
           <div className="contact-section__column">
