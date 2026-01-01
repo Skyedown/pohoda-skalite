@@ -1,12 +1,24 @@
 import React, { useState } from 'react';
-import { useCart } from '../../context/CartContext';
 import Toast from '../../components/Toast/Toast';
-import type { Pizza } from '../../types';
+import ProductModal from '../../components/ProductModal/ProductModal';
+import type { Pizza, Extra } from '../../types';
 import { langos } from '../../data/langos';
 import './LangosSection.less';
 
+const langosExtras: Extra[] = [
+  { id: 'extra-cheese', name: 'Extra syr', price: 1.0 },
+  { id: 'sour-cream', name: 'Kyslá smotana', price: 0.5 },
+  { id: 'garlic', name: 'Cesnak', price: 0.3 },
+  { id: 'ketchup', name: 'Kečup', price: 0.3 },
+  { id: 'ham', name: 'Šunka', price: 1.5 },
+  { id: 'salami', name: 'Saláma', price: 1.5 },
+  { id: 'vegetables', name: 'Zelenina mix', price: 1.0 },
+  { id: 'nutella', name: 'Nutella', price: 1.5 },
+];
+
 const LangosSection: React.FC = () => {
-  const { addToCart } = useCart();
+  const [selectedItem, setSelectedItem] = useState<Pizza | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
@@ -19,9 +31,18 @@ const LangosSection: React.FC = () => {
     return labels[badge] || '';
   };
 
-  const handleAddToCart = (item: Pizza) => {
-    addToCart(item, 'medium', 1);
-    setToastMessage(`${item.name} pridaný do košíka!`);
+  const handleOpenModal = (item: Pizza) => {
+    setSelectedItem(item);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setTimeout(() => setSelectedItem(null), 300);
+  };
+
+  const handleItemAddedToCart = (itemName: string) => {
+    setToastMessage(`${itemName} pridaný do košíka!`);
     setShowToast(true);
   };
 
@@ -34,7 +55,7 @@ const LangosSection: React.FC = () => {
 
           <div className="langos-section__grid">
             {langos.map((item) => (
-              <div key={item.id} className="langos-card">
+              <div key={item.id} className="langos-card" onClick={() => handleOpenModal(item)}>
                 {item.badge && (
                   <span className={`langos-card__badge langos-card__badge--${item.badge}`}>
                     {getBadgeLabel(item.badge)}
@@ -44,7 +65,7 @@ const LangosSection: React.FC = () => {
                   <img src={item.image} alt={item.name} />
                 </div>
                 <h3 className="langos-card__name">{item.name}</h3>
-                <p className="langos-card__size">
+                <p className="langos-card__description">
                   {item.description}
                   {item.allergens && item.allergens.length > 0 && (
                     <span className="langos-card__allergens"> (Alergény: {item.allergens.join(', ')})</span>
@@ -54,7 +75,10 @@ const LangosSection: React.FC = () => {
                   <div className="langos-card__price">{item.price.toFixed(2)} €</div>
                   <button
                     className="langos-card__button"
-                    onClick={() => handleAddToCart(item)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleOpenModal(item);
+                    }}
                   >
                     PRIDAŤ
                   </button>
@@ -64,6 +88,14 @@ const LangosSection: React.FC = () => {
           </div>
         </div>
       </section>
+
+      <ProductModal
+        product={selectedItem}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onAddToCart={handleItemAddedToCart}
+        extras={langosExtras}
+      />
 
       <Toast
         message={toastMessage}

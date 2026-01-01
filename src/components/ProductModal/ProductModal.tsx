@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import type { Pizza, Extra } from '../../types';
 import { useCart } from '../../context/CartContext';
-import './PizzaModal.less';
+import './ProductModal.less';
 
-interface PizzaModalProps {
-  pizza: Pizza | null;
+interface ProductModalProps {
+  product: Pizza | null;
   isOpen: boolean;
   onClose: () => void;
-  onAddToCart?: (pizzaName: string) => void;
+  onAddToCart?: (productName: string) => void;
+  extras?: Extra[];
 }
 
-const availableExtras: Extra[] = [
+const defaultPizzaExtras: Extra[] = [
   { id: 'mozzarella', name: 'Extra mozzarella', price: 1.5 },
   { id: 'sunka', name: 'Šunka', price: 1.8 },
   { id: 'sampiony', name: 'Šampióny', price: 1.2 },
@@ -21,11 +22,12 @@ const availableExtras: Extra[] = [
   { id: 'oregano', name: 'Oregano', price: 0.5 },
 ];
 
-const PizzaModal: React.FC<PizzaModalProps> = ({
-  pizza,
+const ProductModal: React.FC<ProductModalProps> = ({
+  product,
   isOpen,
   onClose,
   onAddToCart,
+  extras = defaultPizzaExtras,
 }) => {
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
@@ -50,9 +52,9 @@ const PizzaModal: React.FC<PizzaModalProps> = ({
       setQuantity(1);
       setSelectedExtras([]);
     }
-  }, [isOpen, pizza]);
+  }, [isOpen, product]);
 
-  if (!isOpen || !pizza) return null;
+  if (!isOpen || !product) return null;
 
   const handleClose = () => {
     setIsClosing(true);
@@ -77,19 +79,19 @@ const PizzaModal: React.FC<PizzaModalProps> = ({
   };
 
   const extrasPrice = selectedExtras.reduce((sum, extraId) => {
-    const extra = availableExtras.find((e) => e.id === extraId);
+    const extra = extras.find((e) => e.id === extraId);
     return sum + (extra?.price || 0);
   }, 0);
 
-  const totalPrice = (pizza.price + extrasPrice) * quantity;
+  const totalPrice = (product.price + extrasPrice) * quantity;
 
   const handleAddToCartClick = () => {
     const selectedExtrasObjects = selectedExtras.map(
-      (extraId) => availableExtras.find((e) => e.id === extraId)!
+      (extraId) => extras.find((e) => e.id === extraId)!
     );
-    addToCart(pizza, 'medium', quantity, selectedExtrasObjects);
+    addToCart(product, 'medium', quantity, selectedExtrasObjects);
     if (onAddToCart) {
-      onAddToCart(pizza.name);
+      onAddToCart(product.name);
     }
     handleClose();
   };
@@ -103,36 +105,39 @@ const PizzaModal: React.FC<PizzaModalProps> = ({
       aria-labelledby="modal-title"
     >
       <div className="pizza-modal">
-        {/* Header with Pizza Image */}
+        <button
+          className="pizza-modal__close"
+          onClick={handleClose}
+          aria-label="Zavrieť"
+        >
+          ✕
+        </button>
+
+        {/* Header with Product Image */}
         <div className="pizza-modal__header">
           <div className="pizza-modal__image-container">
             <img
-              src={pizza.image}
-              alt={pizza.name}
+              src={product.image}
+              alt={product.name}
               className="pizza-modal__image"
             />
           </div>
-          <button
-            className="pizza-modal__close"
-            onClick={handleClose}
-            aria-label="Zavrieť"
-          >
-            ✕
-          </button>
         </div>
 
-        {/* Content */}
-        <div className="pizza-modal__content">
-          {/* Pizza Info */}
+        {/* Right Column */}
+        <div className="pizza-modal__right">
+          {/* Content */}
+          <div className="pizza-modal__content">
+          {/* Product Info */}
           <div className="pizza-modal__info">
             <h2 id="modal-title" className="pizza-modal__name">
-              {pizza.name}
+              {product.name}
             </h2>
-            <p className="pizza-modal__description">{pizza.description}</p>
+            <p className="pizza-modal__description">{product.description}</p>
             <p className="pizza-modal__weight">
               800g
-              {pizza.allergens && pizza.allergens.length > 0 && (
-                <span className="pizza-modal__allergens"> (Alergény: {pizza.allergens.join(', ')})</span>
+              {product.allergens && product.allergens.length > 0 && (
+                <span className="pizza-modal__allergens"> (Alergény: {product.allergens.join(', ')})</span>
               )}
             </p>
           </div>
@@ -143,7 +148,7 @@ const PizzaModal: React.FC<PizzaModalProps> = ({
 
             <div className="pizza-modal__extras-container">
               <div className="pizza-modal__extras-list">
-                {availableExtras.map((extra) => {
+                {extras.map((extra) => {
                   const isSelected = selectedExtras.includes(extra.id);
                   return (
                     <label
@@ -236,7 +241,7 @@ const PizzaModal: React.FC<PizzaModalProps> = ({
             <div className="pizza-modal__summary-row">
               <span className="pizza-modal__summary-label">Základná cena</span>
               <span className="pizza-modal__summary-value">
-                {pizza.price.toFixed(2)} €
+                {product.price.toFixed(2)} €
               </span>
             </div>
             <div className="pizza-modal__summary-row">
@@ -261,9 +266,10 @@ const PizzaModal: React.FC<PizzaModalProps> = ({
             PRIDAŤ DO KOŠÍKA
           </button>
         </div>
+        </div>
       </div>
     </div>
   );
 };
 
-export default PizzaModal;
+export default ProductModal;

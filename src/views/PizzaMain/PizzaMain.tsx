@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import type { Pizza, ProductType } from '../../types';
 import { pizzas } from '../../data/pizzas';
 import PizzaCard from '../../components/PizzaCard/PizzaCard';
-import PizzaModal from '../../components/PizzaModal/PizzaModal';
+import ProductModal from '../../components/ProductModal/ProductModal';
 import Toast from '../../components/Toast/Toast';
 import BurgerSection from '../../sections/BurgerSection/BurgerSection';
 import LangosSection from '../../sections/LangosSection/LangosSection';
@@ -209,9 +209,9 @@ const PizzaMain: React.FC = () => {
       {/* Footer with Credits */}
       <Footer />
 
-      {/* Pizza Modal */}
-      <PizzaModal
-        pizza={selectedPizza}
+      {/* Product Modal */}
+      <ProductModal
+        product={selectedPizza}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onAddToCart={handlePizzaAddedToCart}

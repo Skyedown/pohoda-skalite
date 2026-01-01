@@ -1,12 +1,24 @@
 import React, { useState } from 'react';
-import { useCart } from '../../context/CartContext';
 import Toast from '../../components/Toast/Toast';
-import type { Pizza } from '../../types';
+import ProductModal from '../../components/ProductModal/ProductModal';
+import type { Pizza, Extra } from '../../types';
 import { burgers } from '../../data/burgers';
 import './BurgerSection.less';
 
+const burgerExtras: Extra[] = [
+  { id: 'extra-patty', name: 'Extra hovädzie patty', price: 2.5 },
+  { id: 'extra-cheese', name: 'Extra syr', price: 1.0 },
+  { id: 'bacon', name: 'Slanina', price: 1.5 },
+  { id: 'egg', name: 'Vajce', price: 0.8 },
+  { id: 'jalapeno', name: 'Jalapeño', price: 0.6 },
+  { id: 'pickles', name: 'Extra pickles', price: 0.5 },
+  { id: 'onion-rings', name: 'Cibuľové krúžky', price: 1.2 },
+  { id: 'avocado', name: 'Avokádo', price: 1.5 },
+];
+
 const BurgerSection: React.FC = () => {
-  const { addToCart } = useCart();
+  const [selectedItem, setSelectedItem] = useState<Pizza | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
@@ -19,9 +31,18 @@ const BurgerSection: React.FC = () => {
     return labels[badge] || '';
   };
 
-  const handleAddToCart = (item: Pizza) => {
-    addToCart(item, 'medium', 1);
-    setToastMessage(`${item.name} pridaný do košíka!`);
+  const handleOpenModal = (item: Pizza) => {
+    setSelectedItem(item);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setTimeout(() => setSelectedItem(null), 300);
+  };
+
+  const handleItemAddedToCart = (itemName: string) => {
+    setToastMessage(`${itemName} pridaný do košíka!`);
     setShowToast(true);
   };
 
@@ -33,7 +54,7 @@ const BurgerSection: React.FC = () => {
 
           <div className="burger-section__grid">
             {burgers.map((item) => (
-              <div key={item.id} className="burger-card">
+              <div key={item.id} className="burger-card" onClick={() => handleOpenModal(item)}>
                 {item.badge && (
                   <span className={`burger-card__badge burger-card__badge--${item.badge}`}>
                     {getBadgeLabel(item.badge)}
@@ -43,6 +64,7 @@ const BurgerSection: React.FC = () => {
                   <img src={item.image} alt={item.name} />
                 </div>
                 <h3 className="burger-card__name">{item.name}</h3>
+                <p className="burger-card__description">{item.description}</p>
                 <p className="burger-card__weight">
                   200g
                   {item.allergens && item.allergens.length > 0 && (
@@ -53,7 +75,10 @@ const BurgerSection: React.FC = () => {
                   <div className="burger-card__price">{item.price.toFixed(2)}€</div>
                   <button
                     className="burger-card__button"
-                    onClick={() => handleAddToCart(item)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleOpenModal(item);
+                    }}
                   >
                     PRIDAŤ
                   </button>
@@ -63,8 +88,16 @@ const BurgerSection: React.FC = () => {
           </div>
         </div>
       </section>
-      
-      <Toast 
+
+      <ProductModal
+        product={selectedItem}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onAddToCart={handleItemAddedToCart}
+        extras={burgerExtras}
+      />
+
+      <Toast
         message={toastMessage}
         isVisible={showToast}
         onClose={() => setShowToast(false)}
