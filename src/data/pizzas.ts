@@ -7,7 +7,7 @@ export const pizzas: Pizza[] = [
     description:
       'Klasická napoletánska pizza s paradajkovou omáčkou, mozzarellou fior di latte a čerstvou bazalkou',
     price: 6.5,
-    image: '/images/pizza.png',
+    image: '/images/marherita.png',
     ingredients: [
       'Paradajková omáčka',
       'Mozzarella fior di latte',
@@ -24,7 +24,7 @@ export const pizzas: Pizza[] = [
     description:
       'Napoletánska pizza s prosciutto crudo, rukolou a parmigiano po upečení',
     price: 7.5,
-    image: '/images/pizza.png',
+    image: '/images/erucola.png',
     ingredients: [
       'Paradajková omáčka',
       'Mozzarella',
@@ -58,14 +58,16 @@ export const pizzas: Pizza[] = [
   {
     id: 'p5',
     name: 'Diavola',
-    description: 'Ostrá pizza s pikantnou salámou a chilli papričkami',
+    description:
+      'Ostrá pizza s pikantnou salámou, Piri-piri papričkami, červenou cibuľou a klobásou',
     price: 8.0,
-    image: '/images/pizza.png',
+    image: '/images/diavola.png',
     ingredients: [
       'Paradajková omáčka',
       'Mozzarella',
       'Pikantná saláma',
-      'Chilli',
+      'Piri-piri papričky',
+      'Klobása',
     ],
     badge: 'premium',
     type: 'pizza',
@@ -114,17 +116,16 @@ export const pizzas: Pizza[] = [
   },
   {
     id: 'p9',
-    name: 'Nduja',
-    description: 'Trendy pikantná pizza s ndujou, medom a rukolou po upečení',
+    name: 'Jallapeňo',
+    description: 'Pikantné papričky Jallapeno so slaninou a cibuľkou',
     price: 7.5,
     image: '/images/pizza.png',
     ingredients: [
       'Paradajková omáčka',
       'Mozzarella',
-      'Nduja',
-      'Červená cibuľka',
-      'Med',
-      'Rukola',
+      'Jallapeno',
+      'Chrumkavá slanina',
+      'Cibuľka',
     ],
     badge: 'premium',
     type: 'pizza',
