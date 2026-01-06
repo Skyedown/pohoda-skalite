@@ -62,7 +62,7 @@ const PizzaMain: React.FC = () => {
     name: 'Pizza Pohoda',
     description:
       'Pizzeria a reštaurácia s donáškou v Skalitom. Špecializujeme sa na napoletánsku pizzu, burgre a langoše.',
-    image: 'https://pizzapohoda.sk/images/hero-pizza.png',
+    image: 'https://pizzapohoda.sk/images/logo-social.png',
     url: 'https://pizzapohoda.sk',
     telephone: '+421-XXX-XXX-XXX',
     priceRange: '€€',
