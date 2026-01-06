@@ -8,6 +8,7 @@ import PizzaCart from './views/PizzaCart/PizzaCart';
 import PasswordProtection from './views/PasswordProtection/PasswordProtection';
 import FloatingCart from './components/FloatingCart/FloatingCart';
 import FloatingCall from './components/FloatingCall/FloatingCall';
+import OrderingStatusBanner from './components/OrderingStatusBanner/OrderingStatusBanner';
 import './styles/global.less';
 
 const App: React.FC = () => {
@@ -36,6 +37,7 @@ const App: React.FC = () => {
         <Router>
           <div className="app">
             <Header />
+            <OrderingStatusBanner />
             <main>
               <Routes>
                 <Route path="/" element={<PizzaMain />} />

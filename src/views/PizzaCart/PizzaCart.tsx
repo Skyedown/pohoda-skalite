@@ -7,6 +7,7 @@ import PaymentMethodSelector from '../../components/Cart/PaymentMethodSelector/P
 import DeliveryAddressForm from '../../components/Cart/DeliveryAddressForm/DeliveryAddressForm';
 import OrderSummary from '../../components/Cart/OrderSummary/OrderSummary';
 import { sanitizeCartForm } from '../../utils/sanitize';
+import { getOrderingStatus } from '../../utils/orderingStatus';
 import './PizzaCart.less';
 
 const PizzaCart: React.FC = () => {
@@ -23,10 +24,19 @@ const PizzaCart: React.FC = () => {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [canOrder, setCanOrder] = useState(getOrderingStatus().canOrder);
 
   // Scroll to top when cart view opens
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
+
+  // Update ordering status every minute
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCanOrder(getOrderingStatus().canOrder);
+    }, 60000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -209,7 +219,7 @@ const PizzaCart: React.FC = () => {
           <button
             className="checkout-button"
             onClick={handleSubmit}
-            disabled={isSubmitting}
+            disabled={isSubmitting || !canOrder}
           >
             {isSubmitting ? 'ODOSIELAM...' : 'POTVRDIŤ OBJEDNÁVKU'}
           </button>

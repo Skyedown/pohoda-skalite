@@ -1,0 +1,47 @@
+@import '../../styles/variables.less';
+@import '../../styles/mixins.less';
+
+.ordering-status-banner {
+  padding: 16px 0;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+
+  &--closed {
+    background: linear-gradient(135deg, #d4351c 0%, #b02a14 100%);
+    color: white;
+  }
+
+  &--preorder {
+    background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%);
+    color: white;
+  }
+
+  &__content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  &__icon {
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  &__message {
+    margin: 0;
+    font-family: @font-family-primary;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.4;
+    text-align: center;
+
+    @media (max-width: @breakpoint-sm) {
+      font-size: 14px;
+    }
+  }
+}
