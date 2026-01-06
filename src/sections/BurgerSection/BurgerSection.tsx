@@ -64,7 +64,7 @@ const BurgerSection: React.FC = () => {
                   <img src={item.image} alt={item.name} />
                 </div>
                 <h3 className="burger-card__name">{item.name}</h3>
-                <p className="burger-card__description">{item.description}</p>
+                <p className="burger-card__description">{item.ingredients.join(', ')}</p>
                 <p className="burger-card__weight">
                   200g
                   {item.allergens && item.allergens.length > 0 && (

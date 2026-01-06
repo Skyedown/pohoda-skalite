@@ -25,6 +25,12 @@ const CartItem: React.FC<CartItemProps> = ({ item, index, onRemove, onUpdateQuan
 
       <p className="cart-item__description">{item.pizza.description}</p>
 
+      {item.requiredOption && (
+        <p className="cart-item__required">
+          {item.requiredOption.name}: <strong>{item.requiredOption.selectedValue}</strong>
+        </p>
+      )}
+
       {item.extras && item.extras.length > 0 && (
         <p className="cart-item__extras">+ {item.extras.map(e => e.name).join(', ')}</p>
       )}

@@ -6,7 +6,13 @@ import { getCartFromStorage, saveCartToStorage, clearCartFromStorage } from '../
 
 interface CartContextType {
   cart: CartItem[];
-  addToCart: (pizza: Pizza, size: PizzaSize, quantity: number, extras?: Extra[]) => void;
+  addToCart: (
+    pizza: Pizza,
+    size: PizzaSize,
+    quantity: number,
+    extras?: Extra[],
+    requiredOption?: { name: string; selectedValue: string }
+  ) => void;
   removeFromCart: (index: number) => void;
   updateQuantity: (index: number, quantity: number) => void;
   clearCart: () => void;
@@ -39,7 +45,13 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     saveCartToStorage(cart);
   }, [cart]);
 
-  const addToCart = (pizza: Pizza, size: PizzaSize, quantity: number, extras?: Extra[]) => {
+  const addToCart = (
+    pizza: Pizza,
+    size: PizzaSize,
+    quantity: number,
+    extras?: Extra[],
+    requiredOption?: { name: string; selectedValue: string }
+  ) => {
     const sizeMultiplier = PIZZA_SIZE_MULTIPLIERS[size];
     const extrasPrice = extras?.reduce((sum, extra) => sum + extra.price, 0) || 0;
     const totalPrice = (pizza.price * sizeMultiplier + extrasPrice) * quantity;
@@ -51,6 +63,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
       totalPrice,
       extras,
       extrasPrice,
+      requiredOption,
     };
 
     setCart((prevCart) => [...prevCart, newItem]);

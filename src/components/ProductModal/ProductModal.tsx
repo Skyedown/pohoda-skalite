@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import type { Pizza, Extra } from '../../types';
+import type { Pizza, Extra, RequiredOption } from '../../types';
 import { useCart } from '../../context/CartContext';
+import RequiredOptionSelect from '../RequiredOptionSelect';
 import './ProductModal.less';
 
 interface ProductModalProps {
@@ -9,6 +10,7 @@ interface ProductModalProps {
   onClose: () => void;
   onAddToCart?: (productName: string) => void;
   extras?: Extra[];
+  requiredOption?: RequiredOption;
 }
 
 const defaultPizzaExtras: Extra[] = [
@@ -28,10 +30,12 @@ const ProductModal: React.FC<ProductModalProps> = ({
   onClose,
   onAddToCart,
   extras = defaultPizzaExtras,
+  requiredOption,
 }) => {
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
+  const [selectedRequiredOption, setSelectedRequiredOption] = useState<string>('');
   const [isClosing, setIsClosing] = useState(false);
 
   useEffect(() => {
@@ -51,8 +55,9 @@ const ProductModal: React.FC<ProductModalProps> = ({
     if (isOpen) {
       setQuantity(1);
       setSelectedExtras([]);
+      setSelectedRequiredOption(requiredOption?.options[0]?.id || '');
     }
-  }, [isOpen, product]);
+  }, [isOpen, product, requiredOption]);
 
   if (!isOpen || !product) return null;
 
@@ -86,10 +91,24 @@ const ProductModal: React.FC<ProductModalProps> = ({
   const totalPrice = (product.price + extrasPrice) * quantity;
 
   const handleAddToCartClick = () => {
+    // Validate required option if present
+    if (requiredOption && !selectedRequiredOption) {
+      alert(`Prosím, vyberte ${requiredOption.label.toLowerCase()}`);
+      return;
+    }
+
     const selectedExtrasObjects = selectedExtras.map(
       (extraId) => extras.find((e) => e.id === extraId)!
     );
-    addToCart(product, 'medium', quantity, selectedExtrasObjects);
+
+    const requiredOptionData = requiredOption && selectedRequiredOption
+      ? {
+          name: requiredOption.name,
+          selectedValue: requiredOption.options.find((opt) => opt.id === selectedRequiredOption)?.label || '',
+        }
+      : undefined;
+
+    addToCart(product, 'medium', quantity, selectedExtrasObjects, requiredOptionData);
     if (onAddToCart) {
       onAddToCart(product.name);
     }
@@ -133,7 +152,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
             <h2 id="modal-title" className="pizza-modal__name">
               {product.name}
             </h2>
-            <p className="pizza-modal__description">{product.description}</p>
+            <p className="pizza-modal__description">{product.ingredients.join(', ')}</p>
             <p className="pizza-modal__weight">
               800g
               {product.allergens && product.allergens.length > 0 && (
@@ -141,6 +160,15 @@ const ProductModal: React.FC<ProductModalProps> = ({
               )}
             </p>
           </div>
+
+          {/* Required Option Section */}
+          {requiredOption && (
+            <RequiredOptionSelect
+              requiredOption={requiredOption}
+              selectedValue={selectedRequiredOption}
+              onChange={setSelectedRequiredOption}
+            />
+          )}
 
           {/* Extras Section */}
           <div className="pizza-modal__extras-section">

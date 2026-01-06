@@ -20,6 +20,16 @@ export interface Extra {
   price: number;
 }
 
+export interface RequiredOption {
+  id: string;
+  name: string;
+  label: string;
+  options: {
+    id: string;
+    label: string;
+  }[];
+}
+
 export interface CartItem {
   pizza: Pizza;
   quantity: number;
@@ -27,6 +37,10 @@ export interface CartItem {
   totalPrice: number;
   extras?: Extra[];
   extrasPrice?: number;
+  requiredOption?: {
+    name: string;
+    selectedValue: string;
+  };
 }
 
 export const PIZZA_SIZE_MULTIPLIERS: Record<PizzaSize, number> = {

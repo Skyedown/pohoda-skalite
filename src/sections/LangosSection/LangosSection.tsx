@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Toast from '../../components/Toast/Toast';
 import ProductModal from '../../components/ProductModal/ProductModal';
-import type { Pizza, Extra } from '../../types';
+import type { Pizza, Extra, RequiredOption } from '../../types';
 import { langos } from '../../data/langos';
 import './LangosSection.less';
 
@@ -15,6 +15,16 @@ const langosExtras: Extra[] = [
   { id: 'vegetables', name: 'Zelenina mix', price: 1.0 },
   { id: 'nutella', name: 'Nutella', price: 1.5 },
 ];
+
+const langosKlasikRequiredOption: RequiredOption = {
+  id: 'sauce-choice',
+  name: 'Výber omáčky',
+  label: 'Vyberte omáčku',
+  options: [
+    { id: 'ketchup', label: 'Kečup' },
+    { id: 'tartarska', label: 'Tatarská' },
+  ],
+};
 
 const LangosSection: React.FC = () => {
   const [selectedItem, setSelectedItem] = useState<Pizza | null>(null);
@@ -66,7 +76,7 @@ const LangosSection: React.FC = () => {
                 </div>
                 <h3 className="langos-card__name">{item.name}</h3>
                 <p className="langos-card__description">
-                  {item.description}
+                  {item.ingredients.join(', ')}
                   {item.allergens && item.allergens.length > 0 && (
                     <span className="langos-card__allergens"> (Alergény: {item.allergens.join(', ')})</span>
                   )}
@@ -95,6 +105,7 @@ const LangosSection: React.FC = () => {
         onClose={handleCloseModal}
         onAddToCart={handleItemAddedToCart}
         extras={langosExtras}
+        requiredOption={selectedItem?.id === 'langos-3' ? langosKlasikRequiredOption : undefined}
       />
 
       <Toast

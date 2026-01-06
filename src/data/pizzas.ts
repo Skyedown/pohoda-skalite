@@ -31,7 +31,7 @@ export const pizzas: Pizza[] = [
       'Prosciutto crudo',
       'Rukola',
       'Parmigiano',
-      'čoierne olivy',
+      'Čierne olivy',
     ],
     allergens: ['1', '7','12'],
     badge: 'premium',

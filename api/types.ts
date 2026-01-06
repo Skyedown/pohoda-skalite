@@ -14,6 +14,10 @@ export interface OrderItem {
   basePrice: number;
   totalPrice: number;
   extras?: Extra[];
+  requiredOption?: {
+    name: string;
+    selectedValue: string;
+  };
 }
 
 export interface Delivery {

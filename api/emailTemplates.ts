@@ -14,6 +14,10 @@ export function generateCustomerEmail(
   restaurantPhone: string
 ): string {
   const itemsList = order.items.map(item => {
+    const requiredOptionText = item.requiredOption
+      ? `<br><small style="color: #e17c2f; margin-top: 4px; display: block; font-weight: 500;">${escapeHTML(item.requiredOption.name)}: ${escapeHTML(item.requiredOption.selectedValue)}</small>`
+      : '';
+
     const extrasText = item.extras && item.extras.length > 0
       ? `<br><small style="color: #634832; margin-top: 4px; display: block;">+ ${item.extras.map(e => `${escapeHTML(e.name)} (+${e.price.toFixed(2)}€)`).join(', ')}</small>`
       : '';
@@ -22,7 +26,7 @@ export function generateCustomerEmail(
       <tr>
         <td style="padding: 12px; border-bottom: 1px solid #f0ebe4;">
           <strong style="color: #1f2123; font-size: 15px;">${escapeHTML(item.name)}</strong>
-          <span style="color: #634832; margin-left: 8px;">(${escapeHTML(item.size)})</span>${extrasText}
+          <span style="color: #634832; margin-left: 8px;">(${escapeHTML(item.size)})</span>${requiredOptionText}${extrasText}
         </td>
         <td style="padding: 12px; border-bottom: 1px solid #f0ebe4; text-align: center; color: #634832;">${item.quantity}×</td>
         <td style="padding: 12px; border-bottom: 1px solid #f0ebe4; text-align: right; font-weight: 600; color: #1f2123;">${item.totalPrice.toFixed(2)} €</td>
@@ -227,6 +231,10 @@ export function generateCustomerEmail(
  */
 export function generateRestaurantEmail(order: SanitizedOrder): string {
   const itemsList = order.items.map(item => {
+    const requiredOptionText = item.requiredOption
+      ? `<br><small style="color: #d4351c; font-weight: bold;">⚠️ ${escapeHTML(item.requiredOption.name)}: ${escapeHTML(item.requiredOption.selectedValue)}</small>`
+      : '';
+
     const extrasText = item.extras && item.extras.length > 0
       ? `<br><small style="color: #666;">+ ${item.extras.map(e => `${escapeHTML(e.name)} (+${e.price.toFixed(2)}€)`).join(', ')}</small>`
       : '';
@@ -234,7 +242,7 @@ export function generateRestaurantEmail(order: SanitizedOrder): string {
     return `
       <tr>
         <td style="padding: 10px; border-bottom: 1px solid #eee;">
-          <strong>${escapeHTML(item.name)}</strong> (${escapeHTML(item.size)})${extrasText}
+          <strong>${escapeHTML(item.name)}</strong> (${escapeHTML(item.size)})${requiredOptionText}${extrasText}
         </td>
         <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: center;">${item.quantity}x</td>
         <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">${item.basePrice.toFixed(2)} €</td>
