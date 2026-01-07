@@ -89,7 +89,7 @@ export const pizzas: Pizza[] = [
   },
   {
     id: 'pizza-6',
-    name: 'Kontroverzale (Hawaii)',
+    name: 'Kontroverziale',
     description: 'Sladko-slaná kombinácia šunky a ananásu',
     price: 8.5,
     image: '/images/pizza.png',
