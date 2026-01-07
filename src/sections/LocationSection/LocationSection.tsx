@@ -7,7 +7,7 @@ const LocationSection: React.FC = () => {
       <div className="container">
         <div className="location-section__content">
           <div className="location-section__image">
-            <img src="/images/shop.png" alt="Pizza Pohoda" />
+            <img src="/images/bar-pohoda.webp" alt="Pizza Pohoda" />
           </div>
           <div className="location-section__info">
             <h2 className="location-section__title">Pizza Pohoda</h2>
@@ -30,7 +30,7 @@ const LocationSection: React.FC = () => {
             </div>
 
             <a
-            target='blank'
+              target="blank"
               href="https://maps.app.goo.gl/AykejpnffCGyhjin6"
               className="location-section__map-button"
             >

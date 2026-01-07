@@ -65,12 +65,14 @@ const BurgerSection: React.FC = () => {
                 </div>
                 <h3 className="burger-card__name">{item.name}</h3>
                 <p className="burger-card__description">{item.ingredients.join(', ')}</p>
-                <p className="burger-card__weight">
-                  200g
-                  {item.allergens && item.allergens.length > 0 && (
-                    <span className="burger-card__allergens"> (Alergény: {item.allergens.join(', ')})</span>
-                  )}
-                </p>
+                {(item.weight || item.allergens) && (
+                  <p className="burger-card__weight">
+                    {item.weight}
+                    {item.allergens && item.allergens.length > 0 && (
+                      <span className="burger-card__allergens"> (Alergény: {item.allergens.join(', ')})</span>
+                    )}
+                  </p>
+                )}
                 <div className="burger-card__footer">
                   <div className="burger-card__price">{item.price.toFixed(2)}€</div>
                   <button
@@ -94,7 +96,7 @@ const BurgerSection: React.FC = () => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onAddToCart={handleItemAddedToCart}
-        extras={burgerExtras}
+        extras={[]}
       />
 
       <Toast

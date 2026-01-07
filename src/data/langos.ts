@@ -11,6 +11,7 @@ export const langos: Pizza[] = [
     allergens: ['1', '7'],
     badge: 'classic',
     type: 'langos',
+    weight: '170g',
   },
   {
     id: 'langos-2',
@@ -28,6 +29,7 @@ export const langos: Pizza[] = [
     allergens: ['1', '7'],
     badge: 'classic',
     type: 'langos',
+    weight: '260g',
   },
   {
     id: 'langos-3',
@@ -39,6 +41,7 @@ export const langos: Pizza[] = [
     allergens: ['1', '3', '7'],
     badge: 'classic',
     type: 'langos',
+    weight: '260g',
   },
   {
     id: 'langos-4',
@@ -49,5 +52,6 @@ export const langos: Pizza[] = [
     ingredients: ['Nutella', 'Banán', 'Práškový cukor'],
     allergens: ['1', '7', '8'],
     type: 'langos',
+    weight: '260g',
   },
 ];

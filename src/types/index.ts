@@ -12,6 +12,7 @@ export interface Pizza {
   allergens?: string[];
   badge?: 'classic' | 'premium' | 'special';
   type: ProductType;
+  weight?: string;
 }
 
 export interface Extra {

@@ -6,14 +6,12 @@ import { langos } from '../../data/langos';
 import './LangosSection.less';
 
 const langosExtras: Extra[] = [
-  { id: 'extra-cheese', name: 'Extra syr', price: 1.0 },
-  { id: 'sour-cream', name: 'Kyslá smotana', price: 0.5 },
-  { id: 'garlic', name: 'Cesnak', price: 0.3 },
-  { id: 'ketchup', name: 'Kečup', price: 0.3 },
-  { id: 'ham', name: 'Šunka', price: 1.5 },
-  { id: 'salami', name: 'Saláma', price: 1.5 },
-  { id: 'vegetables', name: 'Zelenina mix', price: 1.0 },
-  { id: 'nutella', name: 'Nutella', price: 1.5 },
+  // All extras - 0.80 EUR (only ingredients from langos)
+  { id: 'extra-cheese', name: 'Extra syr', price: 0.80 },
+  { id: 'sour-cream', name: 'Kyslá smotana', price: 0.80 },
+  { id: 'garlic', name: 'Cesnak', price: 0.80 },
+  { id: 'nutella', name: 'Nutella', price: 0.80 },
+  { id: 'banana', name: 'Banán', price: 0.80 },
 ];
 
 const langosKlasikRequiredOption: RequiredOption = {

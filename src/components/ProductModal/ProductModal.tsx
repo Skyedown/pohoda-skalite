@@ -13,15 +13,33 @@ interface ProductModalProps {
   requiredOption?: RequiredOption;
 }
 
+export const sauceExtras: Extra[] = [
+  // Sauces - 0.80 EUR
+  { id: 'cheddarova', name: 'Cheddarová', price: 1.0 },
+  { id: 'horcicova', name: 'Horčicová', price: 1.0 },
+  { id: 'jallapeno-mayo', name: 'Jallapeňo', price: 1.0 },
+  { id: 'slaninova', name: 'Slaninová', price: 1.0 },
+  { id: 'haniball', name: 'Haniball', price: 1.0 },
+  { id: 'ketchup', name: 'Kečup', price: 1.0 },
+  { id: 'tartarska', name: 'Tatarská', price: 1.0 },
+];
+
 const defaultPizzaExtras: Extra[] = [
-  { id: 'mozzarella', name: 'Extra mozzarella', price: 1.5 },
-  { id: 'sunka', name: 'Šunka', price: 1.8 },
-  { id: 'sampiony', name: 'Šampióny', price: 1.2 },
-  { id: 'olivy', name: 'Olivy', price: 1.0 },
-  { id: 'paradajky', name: 'Paradajky', price: 0.8 },
-  { id: 'kukurica', name: 'Kukurica', price: 0.8 },
-  { id: 'chilli', name: 'Čili papričky', price: 0.6 },
-  { id: 'oregano', name: 'Oregano', price: 0.5 },
+  // Meat-based extras - 1.5 EUR
+  { id: 'sunka', name: 'Šunka', price: 1.5 },
+  { id: 'slanina', name: 'Slanina', price: 1.5 },
+  { id: 'salama', name: 'Saláma', price: 1.5 },
+  { id: 'klobasa', name: 'Klobása', price: 1.5 },
+  // Non-meat extras - 0.80 EUR
+  { id: 'mozzarella', name: 'Extra mozzarella', price: 0.80 },
+  { id: 'sampiony', name: 'Šampióny', price: 0.80 },
+  { id: 'cierne-olivy', name: 'Čierne olivy', price: 0.80 },
+  { id: 'rukola', name: 'Rukola', price: 0.80 },
+  { id: 'chilli', name: 'Chilli papričky', price: 0.80 },
+  { id: 'cervena-cibula', name: 'Červená cibuľa', price: 0.80 },
+  { id: 'kukurica', name: 'Kukurica', price: 0.80 },
+  { id: 'ananas', name: 'Ananás', price: 0.80 },
+  { id: 'cherry-paradajky', name: 'Cherry paradajky', price: 0.80 },
 ];
 
 const ProductModal: React.FC<ProductModalProps> = ({
@@ -153,12 +171,14 @@ const ProductModal: React.FC<ProductModalProps> = ({
               {product.name}
             </h2>
             <p className="pizza-modal__description">{product.ingredients.join(', ')}</p>
-            <p className="pizza-modal__weight">
-              800g
-              {product.allergens && product.allergens.length > 0 && (
-                <span className="pizza-modal__allergens"> (Alergény: {product.allergens.join(', ')})</span>
-              )}
-            </p>
+            {(product.weight || product.allergens) && (
+              <p className="pizza-modal__weight">
+                {product.weight}
+                {product.allergens && product.allergens.length > 0 && (
+                  <span className="pizza-modal__allergens"> (Alergény: {product.allergens.join(', ')})</span>
+                )}
+              </p>
+            )}
           </div>
 
           {/* Required Option Section */}
@@ -171,58 +191,60 @@ const ProductModal: React.FC<ProductModalProps> = ({
           )}
 
           {/* Extras Section */}
-          <div className="pizza-modal__extras-section">
-            <h3 className="pizza-modal__section-title">Pridať extra prílohy</h3>
+          {extras.length > 0 && (
+            <div className="pizza-modal__extras-section">
+              <h3 className="pizza-modal__section-title">Pridať extra prílohy</h3>
 
-            <div className="pizza-modal__extras-container">
-              <div className="pizza-modal__extras-list">
-                {extras.map((extra) => {
-                  const isSelected = selectedExtras.includes(extra.id);
-                  return (
-                    <label
-                      key={extra.id}
-                      className={`pizza-modal__extra-item ${
-                        isSelected ? 'pizza-modal__extra-item--selected' : ''
-                      }`}
-                    >
-                      <div className="pizza-modal__extra-checkbox-wrapper">
-                        <input
-                          type="checkbox"
-                          checked={isSelected}
-                          onChange={() => toggleExtra(extra.id)}
-                          className="pizza-modal__extra-checkbox"
-                        />
-                        <span className="pizza-modal__extra-checkbox-custom">
-                          {isSelected && (
-                            <svg
-                              width="10"
-                              height="8"
-                              viewBox="0 0 10 8"
-                              fill="none"
-                            >
-                              <path
-                                d="M1 4L3.5 6.5L9 1"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          )}
+              <div className="pizza-modal__extras-container">
+                <div className="pizza-modal__extras-list">
+                  {extras.map((extra) => {
+                    const isSelected = selectedExtras.includes(extra.id);
+                    return (
+                      <label
+                        key={extra.id}
+                        className={`pizza-modal__extra-item ${
+                          isSelected ? 'pizza-modal__extra-item--selected' : ''
+                        }`}
+                      >
+                        <div className="pizza-modal__extra-checkbox-wrapper">
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => toggleExtra(extra.id)}
+                            className="pizza-modal__extra-checkbox"
+                          />
+                          <span className="pizza-modal__extra-checkbox-custom">
+                            {isSelected && (
+                              <svg
+                                width="10"
+                                height="8"
+                                viewBox="0 0 10 8"
+                                fill="none"
+                              >
+                                <path
+                                  d="M1 4L3.5 6.5L9 1"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                            )}
+                          </span>
+                          <span className="pizza-modal__extra-name">
+                            {extra.name}
+                          </span>
+                        </div>
+                        <span className="pizza-modal__extra-price">
+                          +{extra.price.toFixed(2)} €
                         </span>
-                        <span className="pizza-modal__extra-name">
-                          {extra.name}
-                        </span>
-                      </div>
-                      <span className="pizza-modal__extra-price">
-                        +{extra.price.toFixed(2)} €
-                      </span>
-                    </label>
-                  );
-                })}
+                      </label>
+                    );
+                  })}
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Quantity Section */}
           <div className="pizza-modal__quantity-section">

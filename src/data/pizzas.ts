@@ -17,6 +17,7 @@ export const pizzas: Pizza[] = [
     allergens: ['1', '7'],
     badge: 'classic',
     type: 'pizza',
+    weight: '490g',
   },
   {
     id: 'pizza-2',
@@ -36,6 +37,7 @@ export const pizzas: Pizza[] = [
     allergens: ['1', '7','12'],
     badge: 'premium',
     type: 'pizza',
+    weight: '620g',
   },
   {
     id: 'pizza-3',
@@ -47,6 +49,7 @@ export const pizzas: Pizza[] = [
     allergens: ['1', '7', '12'],
     badge: 'classic',
     type: 'pizza',
+    weight: '650g',
   },
   {
     id: 'pizza-4',
@@ -64,6 +67,7 @@ export const pizzas: Pizza[] = [
     allergens: ['1', '7'],
     badge: 'premium',
     type: 'pizza',
+    weight: '650g',
   },
   {
     id: 'pizza-5',
@@ -81,6 +85,7 @@ export const pizzas: Pizza[] = [
     ],
     allergens: ['1', '7', '12'],
     type: 'pizza',
+    weight: '650g',
   },
   {
     id: 'pizza-6',
@@ -91,6 +96,7 @@ export const pizzas: Pizza[] = [
     ingredients: ['Paradajková omáčka', 'Mozzarella', 'Šunka', 'Ananás'],
     allergens: ['1', '7', '12'],
     type: 'pizza',
+    weight: '620g',
   },
   {
     id: 'pizza-7',
@@ -110,6 +116,7 @@ export const pizzas: Pizza[] = [
     allergens: ['1', '7', '12'],
     badge: 'special',
     type: 'pizza',
+    weight: '670g',
   },
   {
     id: 'pizza-8',
@@ -126,6 +133,7 @@ export const pizzas: Pizza[] = [
     ],
     allergens: ['1', '7'],
     type: 'pizza',
+    weight: '640g',
   },
   {
     id: 'pizza-9',
@@ -144,6 +152,7 @@ export const pizzas: Pizza[] = [
     ],
     allergens: ['1', '7', '12'],
     type: 'pizza',
+    weight: '720g',
   },
   {
     id: 'pizza-10',
@@ -154,5 +163,6 @@ export const pizzas: Pizza[] = [
     ingredients: ['Paradajková omáčka', 'Mozzarella', 'Šunka', 'Kukurica'],
     allergens: ['1', '7', '12'],
     type: 'pizza',
+    weight: '600g',
   },
 ];

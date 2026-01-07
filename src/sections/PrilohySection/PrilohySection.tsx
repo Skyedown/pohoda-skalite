@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { useCart } from '../../context/CartContext';
 import Toast from '../../components/Toast/Toast';
+import ProductModal from '../../components/ProductModal/ProductModal';
 import type { Pizza } from '../../types';
 import { prilohy } from '../../data/prilohy';
 import './PrilohySection.less';
 
 const PrilohySection: React.FC = () => {
-  const { addToCart } = useCart();
+  const [selectedItem, setSelectedItem] = useState<Pizza | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
@@ -19,9 +20,18 @@ const PrilohySection: React.FC = () => {
     return labels[badge] || '';
   };
 
-  const handleAddToCart = (item: Pizza) => {
-    addToCart(item, 'medium', 1);
-    setToastMessage(`${item.name} pridaný do košíka!`);
+  const handleOpenModal = (item: Pizza) => {
+    setSelectedItem(item);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setTimeout(() => setSelectedItem(null), 300);
+  };
+
+  const handleItemAddedToCart = (itemName: string) => {
+    setToastMessage(`${itemName} pridaný do košíka!`);
     setShowToast(true);
   };
 
@@ -33,7 +43,7 @@ const PrilohySection: React.FC = () => {
 
           <div className="prilohy-section__grid">
             {prilohy.map((item) => (
-              <div key={item.id} className="prilohy-card">
+              <div key={item.id} className="prilohy-card" onClick={() => handleOpenModal(item)}>
                 {item.badge && (
                   <span className={`prilohy-card__badge prilohy-card__badge--${item.badge}`}>
                     {getBadgeLabel(item.badge)}
@@ -53,7 +63,10 @@ const PrilohySection: React.FC = () => {
                   <div className="prilohy-card__price">{item.price.toFixed(2)}€</div>
                   <button
                     className="prilohy-card__button"
-                    onClick={() => handleAddToCart(item)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleOpenModal(item);
+                    }}
                   >
                     PRIDAŤ
                   </button>
@@ -63,6 +76,14 @@ const PrilohySection: React.FC = () => {
           </div>
         </div>
       </section>
+
+      <ProductModal
+        product={selectedItem}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onAddToCart={handleItemAddedToCart}
+        extras={[]}
+      />
 
       <Toast
         message={toastMessage}

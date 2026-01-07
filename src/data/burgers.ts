@@ -21,6 +21,7 @@ export const burgers: Pizza[] = [
     allergens: ['1', '3', '7', '10', '11', '12'],
     badge: 'classic',
     type: 'burger',
+    weight: '410g',
   },
   {
     id: 'burger-2',
@@ -40,6 +41,7 @@ export const burgers: Pizza[] = [
     allergens: ['1', '3', '7', '10', '11', '12'],
     badge: 'classic',
     type: 'burger',
+    weight: '420g',
   },
   {
     id: 'burger-3',
@@ -61,6 +63,7 @@ export const burgers: Pizza[] = [
     allergens: ['1', '3', '7', '10', '11', '12'],
     badge: 'classic',
     type: 'burger',
+    weight: '410g',
   },
   {
     id: 'burger-4',
@@ -78,6 +81,7 @@ export const burgers: Pizza[] = [
     ],
     allergens: ['1', '3', '7', '10', '11', '12'],
     type: 'burger',
+    weight: '310g',
   },
   {
     id: 'burger-5',
@@ -100,5 +104,6 @@ export const burgers: Pizza[] = [
     ],
     allergens: ['1', '3', '7', '10', '11', '12'],
     type: 'burger',
+    weight: '470g',
   },
 ];
