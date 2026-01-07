@@ -13,17 +13,6 @@ interface ProductModalProps {
   requiredOption?: RequiredOption;
 }
 
-export const sauceExtras: Extra[] = [
-  // Sauces - 0.80 EUR
-  { id: 'cheddarova', name: 'Cheddarová', price: 1.0 },
-  { id: 'horcicova', name: 'Horčicová', price: 1.0 },
-  { id: 'jallapeno-mayo', name: 'Jallapeňo', price: 1.0 },
-  { id: 'slaninova', name: 'Slaninová', price: 1.0 },
-  { id: 'haniball', name: 'Haniball', price: 1.0 },
-  { id: 'ketchup', name: 'Kečup', price: 1.0 },
-  { id: 'tartarska', name: 'Tatarská', price: 1.0 },
-];
-
 const defaultPizzaExtras: Extra[] = [
   // Meat-based extras - 1.5 EUR
   { id: 'sunka', name: 'Šunka', price: 1.5 },

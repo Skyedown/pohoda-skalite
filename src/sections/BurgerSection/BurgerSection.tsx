@@ -1,20 +1,9 @@
 import React, { useState } from 'react';
 import Toast from '../../components/Toast/Toast';
 import ProductModal from '../../components/ProductModal/ProductModal';
-import type { Pizza, Extra } from '../../types';
+import type { Pizza } from '../../types';
 import { burgers } from '../../data/burgers';
 import './BurgerSection.less';
-
-const burgerExtras: Extra[] = [
-  { id: 'extra-patty', name: 'Extra hovädzie patty', price: 2.5 },
-  { id: 'extra-cheese', name: 'Extra syr', price: 1.0 },
-  { id: 'bacon', name: 'Slanina', price: 1.5 },
-  { id: 'egg', name: 'Vajce', price: 0.8 },
-  { id: 'jalapeno', name: 'Jalapeño', price: 0.6 },
-  { id: 'pickles', name: 'Extra pickles', price: 0.5 },
-  { id: 'onion-rings', name: 'Cibuľové krúžky', price: 1.2 },
-  { id: 'avocado', name: 'Avokádo', price: 1.5 },
-];
 
 const BurgerSection: React.FC = () => {
   const [selectedItem, setSelectedItem] = useState<Pizza | null>(null);
