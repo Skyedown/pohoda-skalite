@@ -61,6 +61,28 @@
     }
   }
 
+  // When banner is visible, adjust position on tablet and mobile
+  &--with-banner {
+    @media (max-width: @breakpoint-md) {
+      bottom: 172px; // 112px + 60px banner height
+    }
+
+    @media (max-width: @breakpoint-sm) {
+      bottom: 156px; // 96px + 60px banner height
+    }
+
+    // When both banner is visible and cart is not visible
+    &.floating-call--no-cart {
+      @media (max-width: @breakpoint-md) {
+        bottom: 92px; // 32px + 60px banner height
+      }
+
+      @media (max-width: @breakpoint-sm) {
+        bottom: 80px; // 20px + 60px banner height
+      }
+    }
+  }
+
   // Animation
   animation: callPulse 2s ease infinite;
 }

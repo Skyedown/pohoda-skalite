@@ -14,6 +14,7 @@ import './styles/global.less';
 const App: React.FC = () => {
   const isProtectionEnabled = import.meta.env.VITE_SITE_PROTECTION_ENABLED === 'true';
   const [isUnlocked, setIsUnlocked] = useState(false);
+  const [isBannerVisible, setIsBannerVisible] = useState(false);
 
   useEffect(() => {
     // Check if site was previously unlocked in this session
@@ -37,15 +38,15 @@ const App: React.FC = () => {
         <Router>
           <div className="app">
             <Header />
-            <OrderingStatusBanner />
+            <OrderingStatusBanner onVisibilityChange={setIsBannerVisible} />
             <main>
               <Routes>
                 <Route path="/" element={<PizzaMain />} />
                 <Route path="/cart" element={<PizzaCart />} />
               </Routes>
             </main>
-            <FloatingCart />
-            <FloatingCall />
+            <FloatingCart bannerVisible={isBannerVisible} />
+            <FloatingCall bannerVisible={isBannerVisible} />
           </div>
         </Router>
       </CartProvider>

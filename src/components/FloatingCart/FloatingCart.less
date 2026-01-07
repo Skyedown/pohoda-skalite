@@ -71,6 +71,17 @@
     }
   }
 
+  // When banner is visible, adjust position on tablet and mobile
+  &--with-banner {
+    @media (max-width: @breakpoint-md) {
+      bottom: 92px; // 32px + 60px banner height
+    }
+
+    @media (max-width: @breakpoint-sm) {
+      bottom: 80px; // 20px + 60px banner height
+    }
+  }
+
   // Animation when items are added
   animation: cartBounce 0.5s ease;
 }

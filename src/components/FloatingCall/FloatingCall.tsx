@@ -3,7 +3,11 @@ import { useLocation } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import './FloatingCall.less';
 
-const FloatingCall: React.FC = () => {
+interface FloatingCallProps {
+  bannerVisible?: boolean;
+}
+
+const FloatingCall: React.FC<FloatingCallProps> = ({ bannerVisible = false }) => {
   const location = useLocation();
   const { cart } = useCart();
   const phoneNumber = import.meta.env.VITE_RESTAURANT_PHONE || '+421918175571';
@@ -18,10 +22,16 @@ const FloatingCall: React.FC = () => {
     return null;
   }
 
+  const className = [
+    'floating-call',
+    !isCartVisible && 'floating-call--no-cart',
+    bannerVisible && 'floating-call--with-banner',
+  ].filter(Boolean).join(' ');
+
   return (
     <a
       href={`tel:${phoneNumber}`}
-      className={`floating-call ${!isCartVisible ? 'floating-call--no-cart' : ''}`}
+      className={className}
       aria-label="Zavolať"
     >
       <svg

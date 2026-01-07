@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { getOrderingStatus, type OrderingStatusInfo } from '../../utils/orderingStatus';
 import './OrderingStatusBanner.less';
 
-const OrderingStatusBanner: React.FC = () => {
+interface OrderingStatusBannerProps {
+  onVisibilityChange?: (isVisible: boolean) => void;
+}
+
+const OrderingStatusBanner: React.FC<OrderingStatusBannerProps> = ({ onVisibilityChange }) => {
   const [statusInfo, setStatusInfo] = useState<OrderingStatusInfo>(getOrderingStatus());
 
   useEffect(() => {
@@ -14,8 +18,16 @@ const OrderingStatusBanner: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Determine if banner should be visible
+  const isVisible = statusInfo.status !== 'open' && !!statusInfo.message;
+
+  // Notify parent about visibility changes
+  useEffect(() => {
+    onVisibilityChange?.(isVisible);
+  }, [isVisible, onVisibilityChange]);
+
   // Don't show banner if we're open and operating normally
-  if (statusInfo.status === 'open' || !statusInfo.message) {
+  if (!isVisible) {
     return null;
   }
 

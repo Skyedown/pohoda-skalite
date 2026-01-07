@@ -3,7 +3,11 @@ import { Link, useLocation } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import './FloatingCart.less';
 
-const FloatingCart: React.FC = () => {
+interface FloatingCartProps {
+  bannerVisible?: boolean;
+}
+
+const FloatingCart: React.FC<FloatingCartProps> = ({ bannerVisible = false }) => {
   const { cart } = useCart();
   const location = useLocation();
 
@@ -15,7 +19,11 @@ const FloatingCart: React.FC = () => {
   }
 
   return (
-    <Link to="/cart" className="floating-cart" aria-label={`Košík s ${itemsCount} položkami`}>
+    <Link
+      to="/cart"
+      className={`floating-cart ${bannerVisible ? 'floating-cart--with-banner' : ''}`}
+      aria-label={`Košík s ${itemsCount} položkami`}
+    >
       <svg 
         width="32" 
         height="32" 
