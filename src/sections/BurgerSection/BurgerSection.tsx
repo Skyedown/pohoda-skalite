@@ -43,9 +43,15 @@ const BurgerSection: React.FC = () => {
 
           <div className="burger-section__grid">
             {burgers.map((item) => (
-              <div key={item.id} className="burger-card" onClick={() => handleOpenModal(item)}>
+              <div
+                key={item.id}
+                className="burger-card"
+                onClick={() => handleOpenModal(item)}
+              >
                 {item.badge && (
-                  <span className={`burger-card__badge burger-card__badge--${item.badge}`}>
+                  <span
+                    className={`burger-card__badge burger-card__badge--${item.badge}`}
+                  >
                     {getBadgeLabel(item.badge)}
                   </span>
                 )}
@@ -53,17 +59,24 @@ const BurgerSection: React.FC = () => {
                   <img src={item.image} alt={item.name} />
                 </div>
                 <h3 className="burger-card__name">{item.name}</h3>
-                <p className="burger-card__description">{item.ingredients.join(', ')}</p>
+                <p className="burger-card__description">
+                  {item.ingredients?.join(', ')}
+                </p>
                 {(item.weight || item.allergens) && (
                   <p className="burger-card__weight">
                     {item.weight}
                     {item.allergens && item.allergens.length > 0 && (
-                      <span className="burger-card__allergens"> (Alergény: {item.allergens.join(', ')})</span>
+                      <span className="burger-card__allergens">
+                        {' '}
+                        (Alergény: {item.allergens.join(', ')})
+                      </span>
                     )}
                   </p>
                 )}
                 <div className="burger-card__footer">
-                  <div className="burger-card__price">{item.price.toFixed(2)}€</div>
+                  <div className="burger-card__price">
+                    {item.price.toFixed(2)}€
+                  </div>
                   <button
                     className="burger-card__button"
                     onClick={(e) => {

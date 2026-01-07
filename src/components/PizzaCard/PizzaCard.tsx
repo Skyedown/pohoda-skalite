@@ -37,7 +37,7 @@ const PizzaCard: React.FC<PizzaCardProps> = ({ pizza, onAddToCart }) => {
 
       <div className="pizza-card__content">
         <h3 className="pizza-card__name">{pizza.name}</h3>
-        <p className="pizza-card__description">{pizza.ingredients.join(', ')}</p>
+        <p className="pizza-card__description">{pizza.ingredients?.join(', ')}</p>
         <p className="pizza-card__weight">
           {pizza.weight}
           {pizza.allergens && pizza.allergens.length > 0 && (
