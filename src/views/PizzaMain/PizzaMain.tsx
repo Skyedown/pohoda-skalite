@@ -135,10 +135,9 @@ const PizzaMain: React.FC = () => {
       <section className="pizza-main__hero">
         <div className="container">
           <div className="pizza-main__hero-content">
-            <h1 className="pizza-main__title">Všetko je lepšie s pizzou</h1>
+            <h1 className="pizza-main__title">Pizza? V Pohode!</h1>
             <p className="pizza-main__subtitle">
-              Vyskúšajte našu domácu pizzu, ktorú pre Vás pripravujeme priamo v
-              srdci Kysúc.
+              Vyskúšaj pravé chrumkavé a nadýchané neapolské cesto u nás alebo ti pizzu dovezieme až domov!
             </p>
             <button
               className="pizza-main__cta-button"
