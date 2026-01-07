@@ -73,12 +73,15 @@ const LangosSection: React.FC = () => {
                   <img src={item.image} alt={item.name} />
                 </div>
                 <h3 className="langos-card__name">{item.name}</h3>
-                <p className="langos-card__description">
-                  {item.ingredients.join(', ')}
-                  {item.allergens && item.allergens.length > 0 && (
-                    <span className="langos-card__allergens"> (Alergény: {item.allergens.join(', ')})</span>
-                  )}
-                </p>
+                <p className="langos-card__description">{item.ingredients.join(', ')}</p>
+                {(item.weight || item.allergens) && (
+                  <p className="langos-card__weight">
+                    {item.weight}
+                    {item.allergens && item.allergens.length > 0 && (
+                      <span className="langos-card__allergens"> (Alergény: {item.allergens.join(', ')})</span>
+                    )}
+                  </p>
+                )}
                 <div className="langos-card__footer">
                   <div className="langos-card__price">{item.price.toFixed(2)} €</div>
                   <button

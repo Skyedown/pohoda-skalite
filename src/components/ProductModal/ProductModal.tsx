@@ -159,7 +159,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
             <h2 id="modal-title" className="pizza-modal__name">
               {product.name}
             </h2>
-            <p className="pizza-modal__description">{product.ingredients.join(', ')}</p>
+            <p className="pizza-modal__description">{product.ingredients?.join(', ')}</p>
             {(product.weight || product.allergens) && (
               <p className="pizza-modal__weight">
                 {product.weight}

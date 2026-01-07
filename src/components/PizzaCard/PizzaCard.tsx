@@ -39,7 +39,7 @@ const PizzaCard: React.FC<PizzaCardProps> = ({ pizza, onAddToCart }) => {
         <h3 className="pizza-card__name">{pizza.name}</h3>
         <p className="pizza-card__description">{pizza.ingredients.join(', ')}</p>
         <p className="pizza-card__weight">
-          850g
+          {pizza.weight}
           {pizza.allergens && pizza.allergens.length > 0 && (
             <span className="pizza-card__allergens"> (Alergény: {pizza.allergens.join(', ')})</span>
           )}

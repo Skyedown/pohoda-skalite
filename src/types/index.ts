@@ -5,10 +5,10 @@ export type PizzaSize = 'small' | 'medium' | 'large';
 export interface Pizza {
   id: string;
   name: string;
-  description: string;
+  description?: string;
   price: number;
   image: string;
-  ingredients: string[];
+  ingredients?: string[];
   allergens?: string[];
   badge?: 'classic' | 'premium' | 'special';
   type: ProductType;

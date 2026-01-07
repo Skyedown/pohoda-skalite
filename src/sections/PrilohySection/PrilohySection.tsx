@@ -53,12 +53,15 @@ const PrilohySection: React.FC = () => {
                   <img src={item.image} alt={item.name} />
                 </div>
                 <h3 className="prilohy-card__name">{item.name}</h3>
-                <p className="prilohy-card__description">
-                  {item.description}
-                  {item.allergens && item.allergens.length > 0 && (
-                    <span className="prilohy-card__allergens"> (Alergény: {item.allergens.join(', ')})</span>
-                  )}
-                </p>
+                <p className="prilohy-card__description">{item.description}</p>
+                {(item.weight || item.allergens) && (
+                  <p className="prilohy-card__weight">
+                    {item.weight}
+                    {item.allergens && item.allergens.length > 0 && (
+                      <span className="prilohy-card__allergens"> (Alergény: {item.allergens.join(', ')})</span>
+                    )}
+                  </p>
+                )}
                 <div className="prilohy-card__footer">
                   <div className="prilohy-card__price">{item.price.toFixed(2)}€</div>
                   <button

@@ -35,8 +35,8 @@ const CartItem: React.FC<CartItemProps> = ({ item, index, onRemove, onUpdateQuan
         <p className="cart-item__extras">+ {item.extras.map(e => e.name).join(', ')}</p>
       )}
 
-      {item.pizza.type === 'pizza' && (
-        <p className="cart-item__weight">850g</p>
+      {item.pizza.weight && (
+        <p className="cart-item__weight">{item.pizza.weight}</p>
       )}
 
       <div className="cart-item__footer">
