@@ -6,7 +6,7 @@ export const burgers: Pizza[] = [
     name: 'Classic Cheeseburger',
     description: 'Klasický burger s hovädzím patty, cheddarom a burger omáčkou',
     price: 12.0,
-    image: '/images/burger.avif',
+    image: '/images/burgers/classic-cheeseburger.webp',
     ingredients: [
       'domáca žemľa',
       'hovadzie mäso (160g)',
@@ -28,7 +28,7 @@ export const burgers: Pizza[] = [
     name: 'Mushroom Smash Burger',
     description: 'Dva smashnuté patties s american cheese a špeciálnou omáčkou',
     price: 12.5,
-    image: '/images/burger.avif',
+    image: '/images/burgers/classic-smash-burger.webp',
     ingredients: [
       'domáca žemľa',
       '2x hovadzie mäso (80g)',
@@ -47,7 +47,7 @@ export const burgers: Pizza[] = [
     name: 'Jallapeňo Burger',
     description: 'Pikantný burger s jalapeño a pepper jack syrom',
     price: 12.0,
-    image: '/images/burger.avif',
+    image: '/images/burgers/jallapeno-burger.webp',
     ingredients: [
       'domáca žemľa',
       'hovadzie mäso (160g)',
@@ -68,7 +68,7 @@ export const burgers: Pizza[] = [
     name: 'Veggie Burger',
     description: 'Vegetariánsky burger s grilovaným enciánom a pesto majonézou',
     price: 10.0,
-    image: '/images/burger.avif',
+    image: '/images/burgers/veggie-burger.webp',
     ingredients: [
       'domáca žemľa',
       'grilovaný encián (110g)',
@@ -87,7 +87,7 @@ export const burgers: Pizza[] = [
     description:
       'Náš špeciálny burger s bryndzou, údenou slaninou a bryndzovou omáčkou',
     price: 13.5,
-    image: '/images/burger.avif',
+    image: '/images/burgers/vpohode-smash-burger.webp',
     ingredients: [
       'domáca žemľa',
       '2x hovadzie mäso (80g)',
