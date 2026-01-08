@@ -6,7 +6,7 @@ const testimonials = [
     id: 1,
     name: 'Martin A.',
     rating: 5,
-    text: 'Najlepšia pizza v Kysúcach! Vždy čerstvá, horúca a chutná. Odporúčam každému!',
+    text: 'Najlepšia pizza v Kysuciach! Vždy čerstvá, horúca a chutná. Odporúčam každému!',
   },
   {
     id: 2,

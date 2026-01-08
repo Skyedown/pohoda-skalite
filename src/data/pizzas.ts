@@ -79,7 +79,7 @@ export const pizzas: Pizza[] = [
       'pikantná saláma',
       'slanina',
       'chilli papričky piri-piri',
-      'červená cibuľa',
+      'červená cibuľka',
     ],
     allergens: ['1', '7', '12'],
     type: 'pizza',
@@ -123,7 +123,7 @@ export const pizzas: Pizza[] = [
     price: 10.0,
     image: '/images/pizzas/vegetariana.png',
     ingredients: [
-      'paradjkový základ',
+      'paradajkový základ',
       'mozzarela',
       'encián',
       'cherry paradajky',
@@ -135,7 +135,7 @@ export const pizzas: Pizza[] = [
   },
   {
     id: 'pizza-9',
-    name: 'Jallapeňó',
+    name: 'Jallapeňo',
     description: 'Trendy pikantná pizza s ndujou, medom a rukolou po upečení',
     price: 11.0,
     image: '/images/pizzas/jallapeno.png',

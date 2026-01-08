@@ -3,7 +3,7 @@ import type { Pizza } from '../types';
 export const langos: Pizza[] = [
   {
     id: 'langos-1',
-    name: 'Cesnakový Langoš',
+    name: 'Cesnakový langoš',
     description: 'Tradičný langoš s cesnakom',
     price: 3.0,
     image: '/images/langos/cesnak-langos.webp',
@@ -14,7 +14,7 @@ export const langos: Pizza[] = [
   },
   {
     id: 'langos-2',
-    name: 'Smotanový Lángoš',
+    name: 'Smotanový langoš',
     description:
       'Tradičný langoš s cesnakom, kyslou smotanou a syrom a jarnou cibuľkou alebo pažítkou podľa sezóny',
     price: 4.5,
@@ -32,8 +32,8 @@ export const langos: Pizza[] = [
   },
   {
     id: 'langos-3',
-    name: 'Lángoš Klasik',
-    description: 'Lángoš s tatarskou alebo kečupom podľa vyýberu a syr',
+    name: 'Langoš klasik',
+    description: 'Langoš s tatarskou alebo kečupom podľa vyýberu a syr',
     price: 4.5,
     image: '/images/langos/classic-langos.webp',
     ingredients: ['kečup alebo tatarka', 'syr'],
@@ -43,7 +43,7 @@ export const langos: Pizza[] = [
   },
   {
     id: 'langos-4',
-    name: 'Nutella Dream',
+    name: 'Nutellový langoš',
     description: 'Sladký langoš s Nutellou a čerstvým banánom',
     price: 4.5,
     image: '/images/langos/nutella-dream.webp',
