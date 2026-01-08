@@ -6,6 +6,7 @@ export type OrderingStatus =
   | 'before_preorder'   // Before preorder time - ordering disabled
   | 'preorder'          // Preorder time - accepting preorders
   | 'open'              // During opening hours - normal ordering
+  | 'orders_closed'     // After last order time - orders closed but still open
   | 'closed';           // After closing - ordering disabled
 
 export interface OrderingStatusInfo {
@@ -44,11 +45,13 @@ function timeToMinutes(timeStr: string): number {
 export function getOrderingStatus(): OrderingStatusInfo {
   const preorderStartTime = import.meta.env.VITE_PREORDER_START_TIME || '10:00';
   const openingTime = import.meta.env.VITE_OPENING_TIME || '11:00';
+  const lastOrderTime = import.meta.env.VITE_LAST_ORDER_TIME || '21:30';
   const closingTime = import.meta.env.VITE_CLOSING_TIME || '22:00';
 
   const currentMinutes = getCurrentTimeInMinutes();
   const preorderMinutes = timeToMinutes(preorderStartTime);
   const openingMinutes = timeToMinutes(openingTime);
+  const lastOrderMinutes = timeToMinutes(lastOrderTime);
   const closingMinutes = timeToMinutes(closingTime);
 
   // Before preorder time
@@ -69,12 +72,21 @@ export function getOrderingStatus(): OrderingStatusInfo {
     };
   }
 
-  // During opening hours
-  if (currentMinutes >= openingMinutes && currentMinutes < closingMinutes) {
+  // During opening hours (before last order time)
+  if (currentMinutes >= openingMinutes && currentMinutes < lastOrderMinutes) {
     return {
       status: 'open',
       canOrder: true,
       message: '',
+    };
+  }
+
+  // After last order time but before closing
+  if (currentMinutes >= lastOrderMinutes && currentMinutes < closingMinutes) {
+    return {
+      status: 'orders_closed',
+      canOrder: false,
+      message: `Objednávky na dnes sú už uzavreté. Ďakujeme za pochopenie.`,
     };
   }
 

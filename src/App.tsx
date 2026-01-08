@@ -5,6 +5,7 @@ import { CartProvider } from './context/CartContext';
 import Header from './sections/Header/Header';
 import PizzaMain from './views/PizzaMain/PizzaMain';
 import PizzaCart from './views/PizzaCart/PizzaCart';
+import PrivacyPolicy from './views/PrivacyPolicy/PrivacyPolicy';
 import PasswordProtection from './views/PasswordProtection/PasswordProtection';
 import FloatingCart from './components/FloatingCart/FloatingCart';
 import FloatingCall from './components/FloatingCall/FloatingCall';
@@ -43,6 +44,7 @@ const App: React.FC = () => {
               <Routes>
                 <Route path="/" element={<PizzaMain />} />
                 <Route path="/cart" element={<PizzaCart />} />
+                <Route path="/ochrana-osobnych-udajov" element={<PrivacyPolicy />} />
               </Routes>
             </main>
             <FloatingCart bannerVisible={isBannerVisible} />

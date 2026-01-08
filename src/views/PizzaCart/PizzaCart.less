@@ -176,6 +176,54 @@
       position: static;
     }
   }
+
+  // GDPR Consent
+  &__gdpr-consent {
+    padding: 16px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  &__gdpr-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  &__gdpr-checkbox {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+    cursor: pointer;
+    accent-color: @primary-color;
+  }
+
+  &__gdpr-text {
+    font-size: 14px;
+    color: @text-primary;
+    line-height: 1.5;
+  }
+
+  &__gdpr-link {
+    color: @primary-color;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: darken(@primary-color, 10%);
+    }
+  }
+
+  &__gdpr-error {
+    display: block;
+    margin-top: 8px;
+    font-size: 13px;
+    color: @error-color;
+  }
 }
 
 // Checkout Button

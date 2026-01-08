@@ -25,6 +25,7 @@ const PizzaCart: React.FC = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [canOrder, setCanOrder] = useState(getOrderingStatus().canOrder);
+  const [gdprConsent, setGdprConsent] = useState(false);
 
   // Scroll to top when cart view opens
   useEffect(() => {
@@ -66,6 +67,9 @@ const PizzaCart: React.FC = () => {
       newErrors.email = 'Email je povinný';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Zadajte platnú emailovú adresu';
+    }
+    if (!gdprConsent) {
+      newErrors.gdprConsent = 'Musíte súhlasiť so spracovaním osobných údajov';
     }
 
     setErrors(newErrors);
@@ -215,6 +219,31 @@ const PizzaCart: React.FC = () => {
             delivery={delivery}
             total={total}
           />
+
+          <div className="pizza-cart__gdpr-consent">
+            <label className="pizza-cart__gdpr-label">
+              <input
+                type="checkbox"
+                checked={gdprConsent}
+                onChange={(e) => {
+                  setGdprConsent(e.target.checked);
+                  if (errors.gdprConsent) {
+                    setErrors(prev => ({ ...prev, gdprConsent: '' }));
+                  }
+                }}
+                className="pizza-cart__gdpr-checkbox"
+              />
+              <span className="pizza-cart__gdpr-text">
+                Súhlasím so spracovaním{' '}
+                <Link to="/ochrana-osobnych-udajov" className="pizza-cart__gdpr-link">
+                  osobných údajov
+                </Link>
+              </span>
+            </label>
+            {errors.gdprConsent && (
+              <span className="pizza-cart__gdpr-error">{errors.gdprConsent}</span>
+            )}
+          </div>
 
           <button
             className="checkout-button"

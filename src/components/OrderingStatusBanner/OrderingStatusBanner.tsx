@@ -34,6 +34,7 @@ const OrderingStatusBanner: React.FC<OrderingStatusBannerProps> = ({ onVisibilit
   const getBannerClass = () => {
     switch (statusInfo.status) {
       case 'before_preorder':
+      case 'orders_closed':
       case 'closed':
         return 'ordering-status-banner--closed';
       case 'preorder':
