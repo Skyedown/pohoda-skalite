@@ -4,6 +4,9 @@ import { Helmet } from 'react-helmet-async';
 import './PrivacyPolicy.less';
 
 const PrivacyPolicy: React.FC = () => {
+  const restaurantEmail = import.meta.env.VITE_RESTAURANT_EMAIL || 'objednavky@pizzapohoda.sk';
+  const restaurantPhone = import.meta.env.VITE_RESTAURANT_PHONE || '+421 918 175 571';
+
   return (
     <div className="privacy-policy">
       <Helmet>
@@ -38,7 +41,7 @@ const PrivacyPolicy: React.FC = () => {
             <p>
               <strong>Obchodné meno:</strong> Pohoda Skalite<br />
               <strong>Adresa:</strong> Skalité, Slovenská republika<br />
-              <strong>Kontakt:</strong> info@pohodaskalite.sk
+              <strong>Kontakt:</strong> {restaurantEmail}
             </p>
           </div>
 
@@ -122,7 +125,7 @@ const PrivacyPolicy: React.FC = () => {
               <li><strong>Právo podať sťažnosť</strong> - máte právo podať sťažnosť na Úrad na ochranu osobných údajov SR</li>
             </ul>
             <p>
-              Ak chcete uplatniť ktorékoľvek z týchto práv alebo odvolať súhlas s marketingovou komunikáciou, kontaktujte nás na: <strong>info@pohodaskalite.sk</strong>
+              Ak chcete uplatniť ktorékoľvek z týchto práv alebo odvolať súhlas s marketingovou komunikáciou, kontaktujte nás na: <strong>{restaurantEmail}</strong>
             </p>
           </div>
 
@@ -161,8 +164,8 @@ const PrivacyPolicy: React.FC = () => {
               Ak máte akékoľvek otázky týkajúce sa ochrany osobných údajov, neváhajte nás kontaktovať:
             </p>
             <p>
-              <strong>E-mail:</strong> info@pohodaskalite.sk<br />
-              <strong>Telefón:</strong> +421 918 175 571
+              <strong>E-mail:</strong> {restaurantEmail}<br />
+              <strong>Telefón:</strong> {restaurantPhone}
             </p>
           </div>
 
