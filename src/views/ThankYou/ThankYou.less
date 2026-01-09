@@ -50,7 +50,7 @@
   }
 
   &__title {
-    font-family: @font-heading;
+    font-family: @font-family-heading;
     font-size: 36px;
     font-weight: 700;
     color: @primary-dark;
@@ -66,7 +66,7 @@
 
   &__message {
     font-size: 20px;
-    color: @text-color;
+    color: @text-primary;
     margin-bottom: 16px;
     animation: fadeInUp 0.6s ease 0.4s backwards;
 
@@ -78,7 +78,7 @@
 
   &__info {
     font-size: 16px;
-    color: @text-light;
+    color: @text-secondary;
     margin-bottom: 48px;
     line-height: 1.6;
     animation: fadeInUp 0.6s ease 0.5s backwards;
@@ -108,7 +108,7 @@
     align-items: center;
     gap: 20px;
     padding: 20px;
-    background: @bg-light;
+    background: @background-color;
     border-radius: 12px;
     transition: all 0.3s ease;
 
@@ -159,7 +159,7 @@
 
     span {
       font-size: 14px;
-      color: @text-light;
+      color: @text-secondary;
 
       @media (max-width: 768px) {
         font-size: 13px;
@@ -170,9 +170,9 @@
   &__button {
     display: inline-block;
     padding: 18px 48px;
-    background: linear-gradient(135deg, @secondary-color 0%, darken(@secondary-color, 10%) 100%);
+    background: linear-gradient(135deg, @primary-color 0%, darken(@primary-color, 10%) 100%);
     color: white;
-    font-family: @font-heading;
+    font-family: @font-family-heading;
     font-size: 18px;
     font-weight: 700;
     text-decoration: none;
