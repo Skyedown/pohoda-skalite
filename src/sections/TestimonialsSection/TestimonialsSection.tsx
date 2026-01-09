@@ -6,13 +6,13 @@ const testimonials = [
     id: 1,
     name: 'Martin A.',
     rating: 5,
-    text: 'Najlepšia pizza v Kysuciach! Vždy čerstvá, horúca a chutná. Odporúčam každému!',
+    text: 'Najlepšia pizza na Kysuciach! Vždy čerstvá, chrumkavá a chutná. Odporúčam každému!',
   },
   {
     id: 2,
     name: 'Lucia K.',
     rating: 5,
-    text: 'Úžasná obsluha a rýchle dodanie. Pizza bola perfektná, určite si objednáme znova.',
+    text: 'Úžasná a rýchla obsluha. Pizza bola perfektná, určite prídeme znova.',
   },
   {
     id: 3,
