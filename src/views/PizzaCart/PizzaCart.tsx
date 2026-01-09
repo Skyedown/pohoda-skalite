@@ -8,6 +8,7 @@ import DeliveryAddressForm from '../../components/Cart/DeliveryAddressForm/Deliv
 import OrderSummary from '../../components/Cart/OrderSummary/OrderSummary';
 import { sanitizeCartForm } from '../../utils/sanitize';
 import { getOrderingStatus } from '../../utils/orderingStatus';
+import { trackPurchase } from '../../utils/analytics';
 import './PizzaCart.less';
 
 const PizzaCart: React.FC = () => {
@@ -134,6 +135,20 @@ const PizzaCart: React.FC = () => {
       if (!response.ok) {
         throw new Error('Failed to send confirmation emails');
       }
+
+      // Track purchase conversion in GA4
+      trackPurchase({
+        transactionId: `order-${Date.now()}`,
+        value: total,
+        currency: 'EUR',
+        items: cart.map(item => ({
+          item_id: item.pizza.id,
+          item_name: item.pizza.name,
+          item_category: item.pizza.type,
+          price: item.totalPrice,
+          quantity: item.quantity,
+        })),
+      });
 
       alert('Objednávka bola úspešne odoslaná! Potvrdenie sme Vám poslali na email.');
       clearCart();
