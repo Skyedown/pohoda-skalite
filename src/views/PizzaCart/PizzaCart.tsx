@@ -150,9 +150,8 @@ const PizzaCart: React.FC = () => {
         })),
       });
 
-      alert('Objednávka bola úspešne odoslaná! Potvrdenie sme Vám poslali na email.');
       clearCart();
-      navigate('/');
+      navigate('/thank-you');
     } catch (error) {
       console.error('Error sending emails:', error);
       alert('Objednávka bola prijatá, ale nepodarilo sa odoslať potvrdzovacie emaily. Budeme Vás kontaktovať.');
