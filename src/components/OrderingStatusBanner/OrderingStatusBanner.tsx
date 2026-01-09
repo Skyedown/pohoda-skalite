@@ -49,7 +49,11 @@ const OrderingStatusBanner: React.FC<OrderingStatusBannerProps> = ({ onVisibilit
       <div className="container">
         <div className="ordering-status-banner__content">
           <span className="ordering-status-banner__icon">
-            {statusInfo.canOrder ? 'ℹ️' : '⏰'}
+            <img
+              src={statusInfo.canOrder ? '/icons/info.svg' : '/icons/clock.svg'}
+              alt={statusInfo.canOrder ? 'Info' : 'Clock'}
+              className="ordering-status-banner__icon-svg"
+            />
           </span>
           <p className="ordering-status-banner__message">{statusInfo.message}</p>
         </div>

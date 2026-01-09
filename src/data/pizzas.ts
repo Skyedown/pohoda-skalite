@@ -25,7 +25,7 @@ export const pizzas: Pizza[] = [
     description:
       'Napoletánska pizza s prosciutto crudo, rukolou a parmigiano po upečení',
     price: 11.0,
-    image: '/images/pizzas/rucola-prosciuto.png',
+    image: '/images/pizzas/prosciuto-rucola.png',
     ingredients: [
       'paradajková omáčka',
       'mozzarella',

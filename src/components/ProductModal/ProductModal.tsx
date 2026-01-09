@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import type { Pizza, Extra, RequiredOption } from '../../types';
 import { useCart } from '../../context/CartContext';
 import RequiredOptionSelect from '../RequiredOptionSelect';
+import { formatAllergens } from '../../constants/allergens';
 import './ProductModal.less';
 
 interface ProductModalProps {
@@ -160,12 +161,14 @@ const ProductModal: React.FC<ProductModalProps> = ({
               {product.name}
             </h2>
             <p className="pizza-modal__description">{product.ingredients?.join(', ')}</p>
-            {(product.weight || product.allergens) && (
+            {product.weight && (
               <p className="pizza-modal__weight">
                 {product.weight}
-                {product.allergens && product.allergens.length > 0 && (
-                  <span className="pizza-modal__allergens"> (Alergény: {product.allergens.join(', ')})</span>
-                )}
+              </p>
+            )}
+            {product.allergens && product.allergens.length > 0 && (
+              <p className="pizza-modal__allergens">
+                <strong>Alergény:</strong> <span className="pizza-modal__allergens-list">{formatAllergens(product.allergens, true)}</span>
               </p>
             )}
           </div>
