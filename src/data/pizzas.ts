@@ -84,6 +84,7 @@ export const pizzas: Pizza[] = [
     allergens: ['1', '7', '12'],
     type: 'pizza',
     weight: '650g',
+    spicy: true,
   },
   {
     id: 'pizza-6',
@@ -151,6 +152,7 @@ export const pizzas: Pizza[] = [
     allergens: ['1', '7', '12'],
     type: 'pizza',
     weight: '720g',
+    spicy: true,
   },
   {
     id: 'pizza-10',

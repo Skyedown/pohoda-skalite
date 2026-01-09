@@ -72,7 +72,7 @@ export const useMenuItemsAnimation = (containerSelector: string) => {
         scrollTrigger: {
           trigger: containerSelector,
           start: 'top 100%',
-          end: 'bottom 10%',
+          end: 'bottom 30%',
           scrub: true,
         },
       }
@@ -104,7 +104,7 @@ export const useBurgerItemsAnimation = () => {
         scrollTrigger: {
           trigger: '.burger-section__grid',
           start: 'top 100%',
-          end: 'bottom 10%',
+          end: 'bottom 30%',
           scrub: true,
         },
       }
@@ -136,7 +136,7 @@ export const useLangosItemsAnimation = () => {
         scrollTrigger: {
           trigger: '.langos-section__grid',
           start: 'top 100%',
-          end: 'bottom 10%',
+          end: 'bottom 30%',
           scrub: true,
         },
       }
@@ -168,7 +168,7 @@ export const usePrilohyItemsAnimation = () => {
         scrollTrigger: {
           trigger: '.prilohy-section__grid',
           start: 'top 100%',
-          end: 'bottom 10%',
+          end: 'bottom 30%',
           scrub: true,
         },
       }

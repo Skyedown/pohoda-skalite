@@ -125,15 +125,15 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
   return (
     <div
-      className={`pizza-modal-overlay ${isClosing ? 'closing' : ''}`}
+      className={`product-modal-overlay ${isClosing ? 'closing' : ''}`}
       onClick={handleOverlayClick}
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-title"
     >
-      <div className="pizza-modal">
+      <div className={`product-modal product-modal--${product.type}`}>
         <button
-          className="pizza-modal__close"
+          className="product-modal__close"
           onClick={handleClose}
           aria-label="Zavrieť"
         >
@@ -141,34 +141,41 @@ const ProductModal: React.FC<ProductModalProps> = ({
         </button>
 
         {/* Header with Product Image */}
-        <div className="pizza-modal__header">
-          <div className="pizza-modal__image-container">
+        <div className="product-modal__header">
+          <div className="product-modal__image-container">
             <img
               src={product.image}
               alt={product.name}
-              className="pizza-modal__image"
+              className="product-modal__image"
             />
           </div>
         </div>
 
         {/* Right Column */}
-        <div className="pizza-modal__right">
+        <div className="product-modal__right">
           {/* Content */}
-          <div className="pizza-modal__content">
+          <div className="product-modal__content">
           {/* Product Info */}
-          <div className="pizza-modal__info">
-            <h2 id="modal-title" className="pizza-modal__name">
+          <div className="product-modal__info">
+            <h2 id="modal-title" className="product-modal__name">
               {product.name}
+              {product.spicy && (
+                <img
+                  src="/icons/chilli.svg"
+                  alt="Spicy"
+                  className="product-modal__spicy-icon"
+                />
+              )}
             </h2>
-            <p className="pizza-modal__description">{product.ingredients?.join(', ')}</p>
+            <p className="product-modal__description">{product.ingredients?.join(', ')}</p>
             {product.weight && (
-              <p className="pizza-modal__weight">
+              <p className="product-modal__weight">
                 {product.weight}
               </p>
             )}
             {product.allergens && product.allergens.length > 0 && (
-              <p className="pizza-modal__allergens">
-                <strong>Alergény:</strong> <span className="pizza-modal__allergens-list">{formatAllergens(product.allergens, true)}</span>
+              <p className="product-modal__allergens">
+                <strong>Alergény:</strong> <span className="product-modal__allergens-list">{formatAllergens(product.allergens, true)}</span>
               </p>
             )}
           </div>
@@ -184,28 +191,28 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
           {/* Extras Section */}
           {extras.length > 0 && (
-            <div className="pizza-modal__extras-section">
-              <h3 className="pizza-modal__section-title">Pridať extra prílohy</h3>
+            <div className="product-modal__extras-section">
+              <h3 className="product-modal__section-title">Pridať extra prílohy</h3>
 
-              <div className="pizza-modal__extras-container">
-                <div className="pizza-modal__extras-list">
+              <div className="product-modal__extras-container">
+                <div className="product-modal__extras-list">
                   {extras.map((extra) => {
                     const isSelected = selectedExtras.includes(extra.id);
                     return (
                       <label
                         key={extra.id}
-                        className={`pizza-modal__extra-item ${
-                          isSelected ? 'pizza-modal__extra-item--selected' : ''
+                        className={`product-modal__extra-item ${
+                          isSelected ? 'product-modal__extra-item--selected' : ''
                         }`}
                       >
-                        <div className="pizza-modal__extra-checkbox-wrapper">
+                        <div className="product-modal__extra-checkbox-wrapper">
                           <input
                             type="checkbox"
                             checked={isSelected}
                             onChange={() => toggleExtra(extra.id)}
-                            className="pizza-modal__extra-checkbox"
+                            className="product-modal__extra-checkbox"
                           />
-                          <span className="pizza-modal__extra-checkbox-custom">
+                          <span className="product-modal__extra-checkbox-custom">
                             {isSelected && (
                               <svg
                                 width="10"
@@ -223,11 +230,11 @@ const ProductModal: React.FC<ProductModalProps> = ({
                               </svg>
                             )}
                           </span>
-                          <span className="pizza-modal__extra-name">
+                          <span className="product-modal__extra-name">
                             {extra.name}
                           </span>
                         </div>
-                        <span className="pizza-modal__extra-price">
+                        <span className="product-modal__extra-price">
                           +{extra.price.toFixed(2)} €
                         </span>
                       </label>
@@ -239,11 +246,11 @@ const ProductModal: React.FC<ProductModalProps> = ({
           )}
 
           {/* Quantity Section */}
-          <div className="pizza-modal__quantity-section">
-            <h3 className="pizza-modal__section-title">Počet kusov</h3>
-            <div className="pizza-modal__quantity-controls">
+          <div className="product-modal__quantity-section">
+            <h3 className="product-modal__section-title">Počet kusov</h3>
+            <div className="product-modal__quantity-controls">
               <button
-                className="pizza-modal__quantity-btn"
+                className="product-modal__quantity-btn"
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
                 disabled={quantity <= 1}
                 aria-label="Znížiť množstvo"
@@ -257,9 +264,9 @@ const ProductModal: React.FC<ProductModalProps> = ({
                   />
                 </svg>
               </button>
-              <span className="pizza-modal__quantity-value">{quantity}</span>
+              <span className="product-modal__quantity-value">{quantity}</span>
               <button
-                className="pizza-modal__quantity-btn"
+                className="product-modal__quantity-btn"
                 onClick={() => setQuantity(Math.min(10, quantity + 1))}
                 disabled={quantity >= 10}
                 aria-label="Zvýšiť množstvo"
@@ -278,31 +285,31 @@ const ProductModal: React.FC<ProductModalProps> = ({
         </div>
 
         {/* Bottom Summary Section */}
-        <div className="pizza-modal__summary">
-          <div className="pizza-modal__summary-rows">
-            <div className="pizza-modal__summary-row">
-              <span className="pizza-modal__summary-label">Základná cena</span>
-              <span className="pizza-modal__summary-value">
+        <div className="product-modal__summary">
+          <div className="product-modal__summary-rows">
+            <div className="product-modal__summary-row">
+              <span className="product-modal__summary-label">Základná cena</span>
+              <span className="product-modal__summary-value">
                 {product.price.toFixed(2)} €
               </span>
             </div>
-            <div className="pizza-modal__summary-row">
-              <span className="pizza-modal__summary-label">Prísady</span>
-              <span className="pizza-modal__summary-value">
+            <div className="product-modal__summary-row">
+              <span className="product-modal__summary-label">Prísady</span>
+              <span className="product-modal__summary-value">
                 +{extrasPrice.toFixed(2)} €
               </span>
             </div>
-            <div className="pizza-modal__summary-divider"></div>
-            <div className="pizza-modal__summary-row pizza-modal__summary-row--total">
-              <span className="pizza-modal__summary-label">Celkom</span>
-              <span className="pizza-modal__summary-value pizza-modal__summary-value--total">
+            <div className="product-modal__summary-divider"></div>
+            <div className="product-modal__summary-row product-modal__summary-row--total">
+              <span className="product-modal__summary-label">Celkom</span>
+              <span className="product-modal__summary-value product-modal__summary-value--total">
                 {totalPrice.toFixed(2)} €
               </span>
             </div>
           </div>
 
           <button
-            className="pizza-modal__add-button"
+            className="product-modal__add-button"
             onClick={handleAddToCartClick}
           >
             PRIDAŤ DO KOŠÍKA

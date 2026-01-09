@@ -52,7 +52,16 @@ const PrilohySection: React.FC = () => {
                 <div className="prilohy-card__image">
                   <img src={item.image} alt={item.name} />
                 </div>
-                <h3 className="prilohy-card__name">{item.name}</h3>
+                <h3 className="prilohy-card__name">
+                  {item.name}
+                  {item.spicy && (
+                    <img
+                      src="/icons/chilli.svg"
+                      alt="Spicy"
+                      className="prilohy-card__spicy-icon"
+                    />
+                  )}
+                </h3>
                 <p className="prilohy-card__description">{item.description}</p>
                 {(item.weight || item.allergens) && (
                   <p className="prilohy-card__weight">

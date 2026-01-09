@@ -13,6 +13,7 @@ export interface Pizza {
   badge?: 'classic' | 'premium' | 'special';
   type: ProductType;
   weight?: string;
+  spicy?: boolean;
 }
 
 export interface Extra {

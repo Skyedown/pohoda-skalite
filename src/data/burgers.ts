@@ -62,6 +62,7 @@ export const burgers: Pizza[] = [
     allergens: ['1', '3', '7', '10', '11', '12'],
     type: 'burger',
     weight: '410g',
+    spicy: true,
   },
   {
     id: 'burger-4',

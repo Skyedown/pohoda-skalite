@@ -1,7 +1,7 @@
 @import '../../styles/variables.less';
 @import '../../styles/mixins.less';
 
-.pizza-modal-overlay {
+.product-modal-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.75);
@@ -30,7 +30,7 @@
   }
 }
 
-.pizza-modal {
+.product-modal {
   background: white;
   width: 100%;
   max-width: 500px;
@@ -85,6 +85,13 @@
   &__image {
     width: 100%;
     height: 100%;
+    object-fit: contain;
+  }
+
+  // Type-specific image styling
+  &--burger &__image,
+  &--langos &__image,
+  &--sides &__image {
     object-fit: cover;
   }
 
@@ -159,6 +166,16 @@
     color: @text-primary;
     margin: 0;
     line-height: 24px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &__spicy-icon {
+    width: 18px;
+    height: 18px;
+    display: inline-block;
+    flex-shrink: 0;
   }
 
   &__description {
@@ -287,7 +304,7 @@
       color: #00a6ff;
     }
 
-    .pizza-modal__extra-item--selected & {
+    .product-modal__extra-item--selected & {
       background: #00a6ff;
       border-color: #00a6ff;
 
@@ -407,7 +424,7 @@
     color: @text-primary;
     line-height: 24px;
 
-    .pizza-modal__summary-row--total & {
+    .product-modal__summary-row--total & {
       font-weight: 500;
     }
   }

@@ -58,7 +58,16 @@ const BurgerSection: React.FC = () => {
                 <div className="burger-card__image">
                   <img src={item.image} alt={item.name} />
                 </div>
-                <h3 className="burger-card__name">{item.name}</h3>
+                <h3 className="burger-card__name">
+                  {item.name}
+                  {item.spicy && (
+                    <img
+                      src="/icons/chilli.svg"
+                      alt="Spicy"
+                      className="burger-card__spicy-icon"
+                    />
+                  )}
+                </h3>
                 <p className="burger-card__description">
                   {item.ingredients?.join(', ')}
                 </p>

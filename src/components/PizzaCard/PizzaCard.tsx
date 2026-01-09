@@ -36,7 +36,16 @@ const PizzaCard: React.FC<PizzaCardProps> = ({ pizza, onAddToCart }) => {
       </div>
 
       <div className="pizza-card__content">
-        <h3 className="pizza-card__name">{pizza.name}</h3>
+        <h3 className="pizza-card__name">
+          {pizza.name}
+          {pizza.spicy && (
+            <img
+              src="/icons/chilli.svg"
+              alt="Spicy"
+              className="pizza-card__spicy-icon"
+            />
+          )}
+        </h3>
         <p className="pizza-card__description">{pizza.ingredients?.join(', ')}</p>
         <p className="pizza-card__weight">
           {pizza.weight}
