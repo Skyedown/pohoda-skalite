@@ -4,7 +4,6 @@ export const prilohy: Pizza[] = [
   {
     id: 'prilohy-1',
     name: 'Hranolky',
-    description: 'Chrumkavé domáce ručne robené hranolky',
     price: 2.5,
     image: '/images/sides/hranolky.webp',
     type: 'sides',

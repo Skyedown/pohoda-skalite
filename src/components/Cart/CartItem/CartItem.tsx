@@ -9,7 +9,12 @@ interface CartItemProps {
   onUpdateQuantity: (index: number, quantity: number) => void;
 }
 
-const CartItem: React.FC<CartItemProps> = ({ item, index, onRemove, onUpdateQuantity }) => {
+const CartItem: React.FC<CartItemProps> = ({
+  item,
+  index,
+  onRemove,
+  onUpdateQuantity,
+}) => {
   return (
     <div className="cart-item">
       <div className="cart-item__header">
@@ -23,16 +28,23 @@ const CartItem: React.FC<CartItemProps> = ({ item, index, onRemove, onUpdateQuan
         </button>
       </div>
 
-      <p className="cart-item__description">{item.pizza.description}</p>
+      {item.pizza.ingredients && item.pizza.ingredients.length > 0 && (
+        <p className="cart-item__ingredients">
+          {item.pizza.ingredients.join(', ')}
+        </p>
+      )}
 
       {item.requiredOption && (
         <p className="cart-item__required">
-          {item.requiredOption.name}: <strong>{item.requiredOption.selectedValue}</strong>
+          {item.requiredOption.name}:{' '}
+          <strong>{item.requiredOption.selectedValue}</strong>
         </p>
       )}
 
       {item.extras && item.extras.length > 0 && (
-        <p className="cart-item__extras">+ {item.extras.map(e => e.name).join(', ')}</p>
+        <p className="cart-item__extras">
+          + {item.extras.map((e) => e.name).join(', ').toLocaleLowerCase()}
+        </p>
       )}
 
       {item.pizza.weight && (
@@ -57,9 +69,7 @@ const CartItem: React.FC<CartItemProps> = ({ item, index, onRemove, onUpdateQuan
           </button>
         </div>
 
-        <div className="cart-item__price">
-          {item.totalPrice.toFixed(2)} €
-        </div>
+        <div className="cart-item__price">{item.totalPrice.toFixed(2)} €</div>
       </div>
     </div>
   );

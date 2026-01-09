@@ -4,8 +4,6 @@ export const pizzas: Pizza[] = [
   {
     id: 'pizza-1',
     name: 'Margherita',
-    description:
-      'Klasická napoletánska pizza s paradajkovou omáčkou, mozzarellou fior di latte a čerstvou bazalkou',
     price: 7.5,
     image: '/images/pizzas/margherita.png',
     ingredients: [
@@ -22,8 +20,6 @@ export const pizzas: Pizza[] = [
   {
     id: 'pizza-2',
     name: 'Prosciutto e Rucola',
-    description:
-      'Napoletánska pizza s prosciutto crudo, rukolou a parmigiano po upečení',
     price: 11.0,
     image: '/images/pizzas/prosciuto-rucola.png',
     ingredients: [
@@ -42,7 +38,6 @@ export const pizzas: Pizza[] = [
   {
     id: 'pizza-3',
     name: 'Prosciutto e Funghi',
-    description: 'Klasická pizza so šunkou a čerstvými šampiňónmi',
     price: 9.0,
     image: '/images/pizzas/prosciuto-fungi.png',
     ingredients: ['paradajková omáčka', 'mozzarella', 'šunka', 'šampiňóny'],
@@ -53,7 +48,6 @@ export const pizzas: Pizza[] = [
   {
     id: 'pizza-4',
     name: 'Quattro Formaggi',
-    description: 'Pizza so štyrmi druhmi syrov bez paradajkovej omáčky',
     price: 10.0,
     image: '/images/pizzas/quattro-formaggi.png',
     ingredients: [
@@ -70,7 +64,6 @@ export const pizzas: Pizza[] = [
   {
     id: 'pizza-5',
     name: 'Diavola',
-    description: 'Ostrá pizza s pikantnou salámou a chilli papričkami',
     price: 10.0,
     image: '/images/pizzas/diavola.png',
     ingredients: [
@@ -89,7 +82,6 @@ export const pizzas: Pizza[] = [
   {
     id: 'pizza-6',
     name: 'Kontroverziale',
-    description: 'Sladko-slaná kombinácia šunky a ananásu',
     price: 8.5,
     image: '/images/pizzas/kontroverziale.png',
     ingredients: ['paradajková omáčka', 'mozzarella', 'šunka', 'ananás'],
@@ -100,8 +92,6 @@ export const pizzas: Pizza[] = [
   {
     id: 'pizza-7',
     name: 'Kysucká Pohoda',
-    description:
-      'Naša špeciálna pizza s bryndzou, slaninou a karamelizovanou cibuľou',
     price: 11.0,
     image: '/images/pizzas/kysucka-pohoda.png',
     ingredients: [
@@ -120,7 +110,6 @@ export const pizzas: Pizza[] = [
   {
     id: 'pizza-8',
     name: 'Vegetariana',
-    description: 'Obľúbená vegetariánska pizza so syrmi, paradjkami a špenátom',
     price: 10.0,
     image: '/images/pizzas/vegetariana.png',
     ingredients: [
@@ -137,7 +126,6 @@ export const pizzas: Pizza[] = [
   {
     id: 'pizza-9',
     name: 'Jallapeňo',
-    description: 'Trendy pikantná pizza s ndujou, medom a rukolou po upečení',
     price: 11.0,
     image: '/images/pizzas/jallapeno.png',
     ingredients: [
@@ -157,7 +145,6 @@ export const pizzas: Pizza[] = [
   {
     id: 'pizza-10',
     name: 'Cardinale',
-    description: 'Pizza so šunkou, mozzarellou a sladkou kukuricou',
     price: 9.0,
     image: '/images/pizzas/cardinale.png',
     ingredients: ['paradajková omáčka', 'mozzarella', 'šunka', 'kukurica'],
