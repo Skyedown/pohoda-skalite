@@ -16,17 +16,17 @@ const LocationSection: React.FC = () => {
             <h3 className="location-section__hours-title">Otváracie hodiny</h3>
             <div className="location-section__hours">
               <div className="location-section__hours-row">
-                <span>Po - Pi</span>
-                <span>8:00 - 18:00</span>
+                <span>Po - Ne</span>
+                <span>11:00 - 22:00</span>
               </div>
-              <div className="location-section__hours-row">
+              {/* <div className="location-section__hours-row">
                 <span>So</span>
                 <span>10:00 - 18:00</span>
               </div>
               <div className="location-section__hours-row">
                 <span>Ne</span>
                 <span>12:00 - 18:00</span>
-              </div>
+              </div> */}
             </div>
 
             <a

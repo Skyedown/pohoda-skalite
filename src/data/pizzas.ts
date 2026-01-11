@@ -97,7 +97,7 @@ export const pizzas: Pizza[] = [
     ingredients: [
       'smotanovo bryndzový základ',
       'mozzarella',
-      'chrumkavá slanina',
+      'slanina',
       'oškvarky',
       'karamelizovaná cibuľka',
       'jarná cibuľka/pažítka(sezónne)',
