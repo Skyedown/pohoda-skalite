@@ -1,5 +1,6 @@
 import React from 'react';
 import type { Pizza } from '../../types';
+import CartIcon from '../CartIcon/CartIcon';
 import './PizzaCard.less';
 
 interface PizzaCardProps {
@@ -60,7 +61,8 @@ const PizzaCard: React.FC<PizzaCardProps> = ({ pizza, onAddToCart }) => {
             className="pizza-card__button"
             aria-label={`Pridať ${pizza.name} do košíka`}
           >
-            Objednať
+            <CartIcon width={20} height={20} />
+            Pridať
           </button>
         </div>
       </div>

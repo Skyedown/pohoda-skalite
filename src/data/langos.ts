@@ -32,7 +32,7 @@ export const langos: Pizza[] = [
     name: 'Langoš klasik',
     price: 4.5,
     image: '/images/langos/classic-langos.webp',
-    ingredients: ['kečup alebo tatarka', 'syr'],
+    ingredients: ['kečup alebo tatarská omáčka', 'syr'],
     allergens: ['1', '3', '7'],
     type: 'langos',
     weight: '260g',
