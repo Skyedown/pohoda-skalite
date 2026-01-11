@@ -8,6 +8,7 @@ import Toast from '../../components/Toast/Toast';
 import BurgerSection from '../../sections/BurgerSection/BurgerSection';
 import LangosSection from '../../sections/LangosSection/LangosSection';
 import PrilohySection from '../../sections/PrilohySection/PrilohySection';
+import DeliveryInfoSection from '../../sections/DeliveryInfoSection/DeliveryInfoSection';
 import LocationSection from '../../sections/LocationSection/LocationSection';
 import QualitySection from '../../sections/QualitySection/QualitySection';
 import TestimonialsSection from '../../sections/TestimonialsSection/TestimonialsSection';
@@ -193,6 +194,9 @@ const PizzaMain: React.FC = () => {
 
       {/* Prílohy Section */}
       <PrilohySection />
+
+      {/* Delivery Info Section */}
+      <DeliveryInfoSection />
 
       {/* Location & Hours Section */}
       <LocationSection />

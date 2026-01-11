@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Toast from '../../components/Toast/Toast';
 import ProductModal from '../../components/ProductModal/ProductModal';
+import CartIcon from '../../components/CartIcon/CartIcon';
 import type { Pizza, Extra, RequiredOption } from '../../types';
 import { langos } from '../../data/langos';
 import './LangosSection.less';
@@ -100,6 +101,7 @@ const LangosSection: React.FC = () => {
                       handleOpenModal(item);
                     }}
                   >
+                    <CartIcon />
                     PRIDAŤ
                   </button>
                 </div>

@@ -61,7 +61,7 @@ const PizzaCard: React.FC<PizzaCardProps> = ({ pizza, onAddToCart }) => {
             className="pizza-card__button"
             aria-label={`Pridať ${pizza.name} do košíka`}
           >
-            <CartIcon width={20} height={20} />
+            <CartIcon />
             Pridať
           </button>
         </div>

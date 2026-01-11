@@ -25,7 +25,7 @@ const FloatingCart: React.FC<FloatingCartProps> = ({ bannerVisible = false }) =>
       className={`floating-cart ${bannerVisible ? 'floating-cart--with-banner' : ''}`}
       aria-label={`Košík s ${itemsCount} položkami`}
     >
-      <CartIcon width={32} height={32} />
+      <CartIcon />
       
       <span className="floating-cart__badge">{itemsCount}</span>
     </Link>

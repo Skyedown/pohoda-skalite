@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Toast from '../../components/Toast/Toast';
 import ProductModal from '../../components/ProductModal/ProductModal';
+import CartIcon from '../../components/CartIcon/CartIcon';
 import type { Pizza } from '../../types';
 import { prilohy } from '../../data/prilohy';
 import './PrilohySection.less';
@@ -62,7 +63,7 @@ const PrilohySection: React.FC = () => {
                     />
                   )}
                 </h3>
-                <p className="prilohy-card__description">{item.description}</p>
+                <p className="prilohy-card__description">{item.ingredients?.join(', ')}</p>
                 {(item.weight || item.allergens) && (
                   <p className="prilohy-card__weight">
                     {item.weight}
@@ -80,6 +81,7 @@ const PrilohySection: React.FC = () => {
                       handleOpenModal(item);
                     }}
                   >
+                    <CartIcon />
                     PRIDAŤ
                   </button>
                 </div>

@@ -1,0 +1,48 @@
+@import '../../../styles/variables.less';
+
+.minimum-order-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background: linear-gradient(135deg, #ffe6e6 0%, #ffcccc 100%);
+  border: 1px solid #dc3545;
+  border-radius: 8px;
+  margin-bottom: 24px;
+
+  &__icon {
+    flex-shrink: 0;
+    color: #721c24;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  &__message {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #721c24;
+    font-weight: 500;
+  }
+
+  @media (max-width: @breakpoint-sm) {
+    padding: 12px;
+    gap: 10px;
+
+    &__message {
+      font-size: 13px;
+    }
+
+    &__icon svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+}

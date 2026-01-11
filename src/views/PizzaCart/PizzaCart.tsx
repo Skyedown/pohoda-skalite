@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useCart } from '../../context/CartContext';
@@ -6,9 +6,11 @@ import CartItem from '../../components/Cart/CartItem/CartItem';
 import PaymentMethodSelector from '../../components/Cart/PaymentMethodSelector/PaymentMethodSelector';
 import DeliveryAddressForm from '../../components/Cart/DeliveryAddressForm/DeliveryAddressForm';
 import OrderSummary from '../../components/Cart/OrderSummary/OrderSummary';
+import MinimumOrderBanner from '../../components/Cart/MinimumOrderBanner/MinimumOrderBanner';
 import { sanitizeCartForm } from '../../utils/sanitize';
 import { getOrderingStatus } from '../../utils/orderingStatus';
 import { trackPurchase } from '../../utils/analytics';
+import { getDeliveryRule, getMinimumOrderMessage, isMinimumOrderMet } from '../../utils/deliveryRules';
 import './PizzaCart.less';
 
 const PizzaCart: React.FC = () => {
@@ -161,9 +163,12 @@ const PizzaCart: React.FC = () => {
     }
   };
 
-  const subtotal = getTotalPrice();
-  const delivery = 2.50;
+  const subtotal = useMemo(() => getTotalPrice(), [getTotalPrice]);
+  const deliveryRule = useMemo(() => getDeliveryRule(formData.city), [formData.city]);
+  const delivery = deliveryRule.fee;
   const total = subtotal + delivery;
+  const minimumOrderMessage = useMemo(() => getMinimumOrderMessage(formData.city, subtotal), [formData.city, subtotal]);
+  const canSubmitOrder = useMemo(() => isMinimumOrderMet(formData.city, subtotal) && canOrder, [formData.city, subtotal, canOrder]);
 
   if (cart.length === 0) {
     return (
@@ -214,6 +219,10 @@ const PizzaCart: React.FC = () => {
               />
             ))}
           </div>
+
+          {minimumOrderMessage && (
+            <MinimumOrderBanner message={minimumOrderMessage} />
+          )}
         </div>
 
         {/* Right Column - Forms & Summary */}
@@ -260,13 +269,20 @@ const PizzaCart: React.FC = () => {
             )}
           </div>
 
-          <button
-            className="checkout-button"
-            onClick={handleSubmit}
-            disabled={isSubmitting || !canOrder}
-          >
-            {isSubmitting ? 'ODOSIELAM...' : 'POTVRDIŤ OBJEDNÁVKU'}
-          </button>
+          <div className={`pizza-cart__button-wrapper ${!isMinimumOrderMet(formData.city, subtotal) && formData.city ? 'has-tooltip' : ''}`}>
+            {!isMinimumOrderMet(formData.city, subtotal) && formData.city && (
+              <div className="pizza-cart__tooltip">
+                {minimumOrderMessage}
+              </div>
+            )}
+            <button
+              className="checkout-button"
+              onClick={handleSubmit}
+              disabled={isSubmitting || !canSubmitOrder}
+            >
+              {isSubmitting ? 'ODOSIELAM...' : 'POTVRDIŤ OBJEDNÁVKU'}
+            </button>
+          </div>
         </div>
       </div>
     </div>

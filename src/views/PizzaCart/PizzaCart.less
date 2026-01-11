@@ -227,6 +227,62 @@
 }
 
 // Checkout Button
+.pizza-cart__button-wrapper {
+  position: relative;
+
+  &.has-tooltip {
+    .pizza-cart__tooltip {
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    &:hover .pizza-cart__tooltip {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+}
+
+.pizza-cart__tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 10px;
+  padding: 12px 16px;
+  background: #721c24;
+  color: white;
+  font-size: 13px;
+  line-height: 1.4;
+  border-radius: 8px;
+  white-space: normal;
+  max-width: 300px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  pointer-events: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid #721c24;
+  }
+
+  @media (max-width: @breakpoint-sm) {
+    max-width: 250px;
+    font-size: 12px;
+    padding: 10px 14px;
+  }
+}
+
 .checkout-button {
   width: 100%;
   padding: 16px;

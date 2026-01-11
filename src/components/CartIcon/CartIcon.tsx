@@ -1,14 +1,14 @@
 import React from 'react';
 
 interface CartIconProps {
-  width?: number;
-  height?: number;
+  width?: number | string;
+  height?: number | string;
   className?: string;
 }
 
 const CartIcon: React.FC<CartIconProps> = ({
-  width = 24,
-  height = 24,
+  width = '1em',
+  height = '1em',
   className = ''
 }) => {
   return (
@@ -22,6 +22,7 @@ const CartIcon: React.FC<CartIconProps> = ({
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}
+      style={{ verticalAlign: 'middle', display: 'inline-block' }}
     >
       <circle cx="9" cy="21" r="1"/>
       <circle cx="20" cy="21" r="1"/>

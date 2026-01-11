@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Toast from '../../components/Toast/Toast';
 import ProductModal from '../../components/ProductModal/ProductModal';
+import CartIcon from '../../components/CartIcon/CartIcon';
 import type { Pizza } from '../../types';
 import { burgers } from '../../data/burgers';
 import './BurgerSection.less';
@@ -93,6 +94,7 @@ const BurgerSection: React.FC = () => {
                       handleOpenModal(item);
                     }}
                   >
+                    <CartIcon />
                     PRIDAŤ
                   </button>
                 </div>
