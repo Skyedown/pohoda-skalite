@@ -3,7 +3,7 @@ import type { Pizza } from '../types';
 export const prilohy: Pizza[] = [
   {
     id: 'prilohy-1',
-    name: 'Hranolky',
+    name: 'Domáce hranolky',
     price: 2.5,
     image: '/images/sides/hranolky.webp',
     type: 'sides',
@@ -14,7 +14,7 @@ export const prilohy: Pizza[] = [
   // Sauces
   {
     id: 'prilohy-2',
-    name: 'Cheddarová omáčka',
+    name: 'Syrová omáčka',
     price: 1.0,
     image: '/images/sides/cheddar.webp',
     type: 'sides',
@@ -23,7 +23,7 @@ export const prilohy: Pizza[] = [
   },
   {
     id: 'prilohy-3',
-    name: 'Horčicová omáčka',
+    name: 'Medová horčica',
     price: 1.0,
     image: '/images/sides/horcica.webp',
     type: 'sides',

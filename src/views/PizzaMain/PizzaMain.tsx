@@ -121,11 +121,11 @@ const PizzaMain: React.FC = () => {
         <title>Pizza Pohoda - Pizza, Burger & Langos | Skalité</title>
         <meta
           name="description"
-          content="Najlepšia napoletánska pizza, burgre a lángoše v Skalitom. Rýchle dodanie do Skalitého, Čierneho a Svrčinovca. Čerstvé ingrediencie a tradičná príprava."
+          content="Pizza Pohoda - Najlepšia napoletánska pizza, burgre a lángoše v Skalitom. Donáška zadarmo do Skalitého, Čierneho, Oščadnice a Svrčinovca. Čerstvé ingrediencie a tradičná príprava."
         />
         <meta
           name="keywords"
-          content="pizza Skalité, burger Skalité, lángoš Skalité, pizzeria Skalité, rozvoz jedla Skalité, napoletánska pizza"
+          content="pizza pohoda, pizza Skalité, burger Skalité, lángoš Skalité, pizzeria Skalité, rozvoz jedla Skalité, napoletánska pizza, donáška pizze zadarmo, pizza Čierne, pizza Oščadnica"
         />
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
@@ -139,7 +139,7 @@ const PizzaMain: React.FC = () => {
             <h1 className="pizza-main__title">Pizza? V Pohode!</h1>
             <p className="pizza-main__subtitle">
               Vyskúšaj pravé chrumkavé a nadýchané neapolské cesto u nás alebo
-              ti pizzu dovezieme až domov!
+              ti pizzu dovezieme až domov! Donáška zadarmo do Skalitého, Čierneho, Oščadnice a Svrčinovca.
             </p>
             <button
               className="pizza-main__cta-button"

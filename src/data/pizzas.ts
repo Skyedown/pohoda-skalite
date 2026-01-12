@@ -113,7 +113,7 @@ export const pizzas: Pizza[] = [
     price: 10.0,
     image: '/images/pizzas/vegetariana.png',
     ingredients: [
-      'paradajkový základ',
+      'paradajková omáčka',
       'mozzarela',
       'encián',
       'cherry paradajky',
