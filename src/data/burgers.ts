@@ -15,7 +15,7 @@ export const burgers: Pizza[] = [
       'paradajka',
       'karamelizovaná cibuľka',
       'kyslá uhorka',
-      'cheddarová a horčicová omáčka',
+      'syrová a horčicová omáčka',
     ],
     allergens: ['1', '3', '7', '10', '11', '12'],
     badge: 'classic',
