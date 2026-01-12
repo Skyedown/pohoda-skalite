@@ -139,7 +139,7 @@ const PizzaMain: React.FC = () => {
             <h1 className="pizza-main__title">Pizza? V Pohode!</h1>
             <p className="pizza-main__subtitle">
               Vyskúšaj pravé chrumkavé a nadýchané neapolské cesto u nás alebo
-              ti pizzu dovezieme až domov! Donáška zadarmo do Skalitého, Čierneho, Oščadnice a Svrčinovca.
+              ti pizzu dovezieme až domov!
             </p>
             <button
               className="pizza-main__cta-button"
