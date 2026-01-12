@@ -59,7 +59,7 @@ export const prilohy: Pizza[] = [
   },
   {
     id: 'prilohy-6',
-    name: 'Haniball omáčka',
+    name: 'Hannibal omáčka',
     price: 1.0,
     image: '/images/sides/haniball.webp',
     type: 'sides',

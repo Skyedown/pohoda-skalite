@@ -72,7 +72,7 @@ export const burgers: Pizza[] = [
       'baby špenát',
       'paradajka',
       'karamelizovaná cibuľka',
-      'haniball omáčka',
+      'hannibal omáčka',
     ],
     allergens: ['1', '3', '7', '10', '11', '12'],
     type: 'burger',
