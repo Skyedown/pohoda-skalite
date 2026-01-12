@@ -3,7 +3,7 @@ import type { Pizza } from '../types';
 export const burgers: Pizza[] = [
   {
     id: 'burger-1',
-    name: 'Classic Cheeseburger',
+    name: '11. Classic Cheeseburger',
     price: 12.0,
     image: '/images/burgers/classic-cheeseburger.webp',
     ingredients: [
@@ -15,7 +15,7 @@ export const burgers: Pizza[] = [
       'paradajka',
       'karamelizovaná cibuľka',
       'kyslá uhorka',
-      'syrová a horčicová omáčka',
+      'syrová a medová horčica',
     ],
     allergens: ['1', '3', '7', '10', '11', '12'],
     badge: 'classic',
@@ -24,7 +24,7 @@ export const burgers: Pizza[] = [
   },
   {
     id: 'burger-2',
-    name: 'Mushroom Smash Burger',
+    name: '12. Classic Smash Burger',
     price: 12.5,
     image: '/images/burgers/classic-smash-burger.webp',
     ingredients: [
@@ -43,7 +43,7 @@ export const burgers: Pizza[] = [
   },
   {
     id: 'burger-3',
-    name: 'Jallapeňo Burger',
+    name: '13. Jallapeňo Burger',
     price: 12.0,
     image: '/images/burgers/jallapeno-burger.webp',
     ingredients: [
@@ -65,7 +65,7 @@ export const burgers: Pizza[] = [
   },
   {
     id: 'burger-4',
-    name: 'Veggie Burger',
+    name: '14. Veggie Burger',
     price: 10.0,
     image: '/images/burgers/veggie-burger.webp',
     ingredients: [
@@ -82,7 +82,7 @@ export const burgers: Pizza[] = [
   },
   {
     id: 'burger-5',
-    name: 'V Pohode Smash',
+    name: '15. V Pohode Smash',
     price: 13.5,
     image: '/images/burgers/vpohode-smash-burger.webp',
     ingredients: [

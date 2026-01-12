@@ -3,7 +3,7 @@ import type { Pizza } from '../types';
 export const pizzas: Pizza[] = [
   {
     id: 'pizza-1',
-    name: 'Margherita',
+    name: '1. Margherita',
     price: 8.0,
     image: '/images/pizzas/margherita.png',
     ingredients: [
@@ -19,7 +19,7 @@ export const pizzas: Pizza[] = [
   },
   {
     id: 'pizza-2',
-    name: 'Prosciutto e Rucola',
+    name: '2. Prosciutto e Rucola',
     price: 11.0,
     image: '/images/pizzas/prosciuto-rucola.png',
     ingredients: [
@@ -37,7 +37,7 @@ export const pizzas: Pizza[] = [
   },
   {
     id: 'pizza-3',
-    name: 'Prosciutto e Funghi',
+    name: '3. Prosciutto e Funghi',
     price: 9.0,
     image: '/images/pizzas/prosciuto-fungi.png',
     ingredients: ['paradajková omáčka', 'mozzarella', 'šunka', 'šampiňóny'],
@@ -47,7 +47,7 @@ export const pizzas: Pizza[] = [
   },
   {
     id: 'pizza-4',
-    name: 'Quattro Formaggi',
+    name: '4. Quattro Formaggi',
     price: 10.0,
     image: '/images/pizzas/quattro-formaggi.png',
     ingredients: [
@@ -63,7 +63,7 @@ export const pizzas: Pizza[] = [
   },
   {
     id: 'pizza-5',
-    name: 'Diavola',
+    name: '5. Diavola',
     price: 10.0,
     image: '/images/pizzas/diavola.png',
     ingredients: [
@@ -81,7 +81,7 @@ export const pizzas: Pizza[] = [
   },
   {
     id: 'pizza-6',
-    name: 'Kontroverziale',
+    name: '6. Kontroverziale',
     price: 8.5,
     image: '/images/pizzas/kontroverziale.png',
     ingredients: ['paradajková omáčka', 'mozzarella', 'šunka', 'ananás'],
@@ -91,7 +91,7 @@ export const pizzas: Pizza[] = [
   },
   {
     id: 'pizza-7',
-    name: 'Kysucká Pohoda',
+    name: '7. Kysucká Pohoda',
     price: 11.0,
     image: '/images/pizzas/kysucka-pohoda.png',
     ingredients: [
@@ -109,7 +109,7 @@ export const pizzas: Pizza[] = [
   },
   {
     id: 'pizza-8',
-    name: 'Vegetariana',
+    name: '8. Vegetariana',
     price: 10.0,
     image: '/images/pizzas/vegetariana.png',
     ingredients: [
@@ -125,7 +125,7 @@ export const pizzas: Pizza[] = [
   },
   {
     id: 'pizza-9',
-    name: 'Jallapeňo',
+    name: '9. Jallapeňo',
     price: 11.0,
     image: '/images/pizzas/jallapeno.png',
     ingredients: [
@@ -144,7 +144,7 @@ export const pizzas: Pizza[] = [
   },
   {
     id: 'pizza-10',
-    name: 'Cardinale',
+    name: '10. Cardinale',
     price: 9.0,
     image: '/images/pizzas/cardinale.png',
     ingredients: ['paradajková omáčka', 'mozzarella', 'šunka', 'kukurica'],
