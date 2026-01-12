@@ -18,7 +18,7 @@ const DeliveryInfoSection: React.FC = () => {
               </div>
               <h3 className="delivery-info-card__title">Skalité & Čierne</h3>
               <p className="delivery-info-card__min-order">
-                Minimálna objednávka: <strong>7,50 €</strong>
+                Minimálna objednávka: <strong>8,00 €</strong>
               </p>
               <p className="delivery-info-card__fee">
                 Donáška: <strong className="delivery-info-card__free">ZADARMO</strong>

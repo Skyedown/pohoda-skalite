@@ -4,7 +4,7 @@ export const pizzas: Pizza[] = [
   {
     id: 'pizza-1',
     name: 'Margherita',
-    price: 7.5,
+    price: 8.0,
     image: '/images/pizzas/margherita.png',
     ingredients: [
       'paradajková omáčka',

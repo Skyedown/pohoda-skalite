@@ -5,10 +5,10 @@ export interface DeliveryRule {
 }
 
 export const DELIVERY_RULES: Record<string, DeliveryRule> = {
-  'Skalité': { minOrder: 7.5, fee: 0, displayName: 'Skalité' },
-  'Skalite': { minOrder: 7.5, fee: 0, displayName: 'Skalité' },
-  'Čierne': { minOrder: 7.5, fee: 0, displayName: 'Čierne' },
-  'Cierne': { minOrder: 7.5, fee: 0, displayName: 'Čierne' },
+  'Skalité': { minOrder: 8.0, fee: 0, displayName: 'Skalité' },
+  'Skalite': { minOrder: 8.0, fee: 0, displayName: 'Skalité' },
+  'Čierne': { minOrder: 8.0, fee: 0, displayName: 'Čierne' },
+  'Cierne': { minOrder: 8.0, fee: 0, displayName: 'Čierne' },
   'Oščadnica': { minOrder: 30, fee: 0, displayName: 'Oščadnica' },
   'Oscadnica': { minOrder: 30, fee: 0, displayName: 'Oščadnica' },
   'Svrčinovec': { minOrder: 30, fee: 0, displayName: 'Svrčinovec' },

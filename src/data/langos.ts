@@ -4,7 +4,7 @@ export const langos: Pizza[] = [
   {
     id: 'langos-1',
     name: 'Cesnakový langoš',
-    price: 3.0,
+    price: 3.5,
     image: '/images/langos/cesnak-langos.webp',
     ingredients: ['cesnak'],
     allergens: ['1', '7'],
