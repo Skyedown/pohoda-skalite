@@ -170,13 +170,11 @@ function generateCustomerEmail(order) {
           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         .header {
-          background: linear-gradient(135deg, #e17c2f 0%, #d16a1f 100%);
           color: white;
-          padding: 10px;
           text-align: center;
         }
         .header img.logo {
-          height: 80px;
+          height: 60px;
           margin: 0 auto 15px auto;
           display: block;
         }
