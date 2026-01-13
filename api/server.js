@@ -32,7 +32,10 @@ app.get('/api/health', (req, res) => {
 
 // Send order confirmation emails
 app.post('/api/send-order-emails', async (req, res) => {
-  console.log('🚀 Received order email request at:', new Date().toLocaleString());
+  console.log(
+    '🚀 Received order email request at:',
+    new Date().toLocaleString()
+  );
 
   try {
     const { order } = req.body;
@@ -45,7 +48,7 @@ app.post('/api/send-order-emails', async (req, res) => {
     console.log('📦 Order details:', {
       email: order.delivery.email,
       total: order.pricing.total,
-      items: order.items.length
+      items: order.items.length,
     });
 
     // Sanitize order data to prevent XSS and injection attacks
@@ -81,43 +84,67 @@ app.post('/api/send-order-emails', async (req, res) => {
 
     await Promise.all([
       sgMail.send(customerEmail),
-      sgMail.send(restaurantEmail)
+      sgMail.send(restaurantEmail),
     ]);
 
     console.log('✅ Emails sent successfully!');
     res.json({ success: true, message: 'Emails sent successfully' });
   } catch (error) {
     console.error('❌ Error sending emails:', error.message);
-    console.error('📧 SendGrid Response Body:', JSON.stringify(error.response?.body, null, 2));
-    console.error('📮 From Email:', process.env.SENDGRID_FROM_EMAIL || 'noreply@pizzapohoda.sk');
-    console.error('📨 To Emails:', order.delivery.email, 'and', RESTAURANT_EMAIL);
+    console.error(
+      '📧 SendGrid Response Body:',
+      JSON.stringify(error.response?.body, null, 2)
+    );
+    console.error(
+      '📮 From Email:',
+      process.env.SENDGRID_FROM_EMAIL || 'noreply@pizzapohoda.sk'
+    );
+    console.error(
+      '📨 To Emails:',
+      order.delivery.email,
+      'and',
+      RESTAURANT_EMAIL
+    );
 
     res.status(500).json({
       error: 'Failed to send emails',
       details: error.message,
-      sendgridError: error.response?.body
+      sendgridError: error.response?.body,
     });
   }
 });
 
 // Generate customer confirmation email
 function generateCustomerEmail(order) {
-  const itemsList = order.items.map(item => {
-    const extrasText = item.extras && item.extras.length > 0
-      ? `<br><small style="color: #634832; margin-top: 4px; display: block;">+ ${item.extras.map(e => `${escapeHTML(e.name)} (+${e.price.toFixed(2)}€)`).join(', ')}</small>`
-      : '';
+  const itemsList = order.items
+    .map((item) => {
+      const extrasText =
+        item.extras && item.extras.length > 0
+          ? `<br><small style="color: #634832; margin-top: 4px; display: block;">+ ${item.extras
+              .map((e) => `${escapeHTML(e.name)} (+${e.price.toFixed(2)}€)`)
+              .join(', ')}</small>`
+          : '';
 
-    return `
+      return `
       <tr>
         <td style="padding: 12px; border-bottom: 1px solid #f0ebe4;">
-          <strong style="color: #1f2123; font-size: 15px;">${escapeHTML(item.name)}</strong>
-          <span style="color: #634832; margin-left: 8px;">(${escapeHTML(item.size)})</span>${extrasText}
+          <strong style="color: #1f2123; font-size: 15px;">${escapeHTML(
+            item.name
+          )}</strong>
+          <span style="color: #634832; margin-left: 8px;">(${escapeHTML(
+            item.size
+          )})</span>${extrasText}
         </td>
-        <td style="padding: 12px; border-bottom: 1px solid #f0ebe4; text-align: center; color: #634832;">${item.quantity}×</td>
-        <td style="padding: 12px; border-bottom: 1px solid #f0ebe4; text-align: right; font-weight: 600; color: #1f2123;">${item.totalPrice.toFixed(2)} €</td>
+        <td style="padding: 12px; border-bottom: 1px solid #f0ebe4; text-align: center; color: #634832;">${
+          item.quantity
+        }×</td>
+        <td style="padding: 12px; border-bottom: 1px solid #f0ebe4; text-align: right; font-weight: 600; color: #1f2123;">${item.totalPrice.toFixed(
+          2
+        )} €</td>
       </tr>
     `;
-  }).join('');
+    })
+    .join('');
 
   return `
     <!DOCTYPE html>
@@ -145,7 +172,7 @@ function generateCustomerEmail(order) {
         .header {
           background: linear-gradient(135deg, #e17c2f 0%, #d16a1f 100%);
           color: white;
-          padding: 40px 20px;
+          padding: 10px;
           text-align: center;
         }
         .header img.logo {
@@ -261,7 +288,7 @@ function generateCustomerEmail(order) {
     <body>
       <div class="container">
         <div class="header">
-          <img src="https://pizzapohoda.sk/images/logo-social.png" alt="Pizza Pohoda Logo" class="logo">
+          <img src="https://pizzapohoda.sk/images/logo-social.png" alt="Pizza Pohoda Logo" class="logo" style="height: 80px; max-height: 80px; width: auto; margin: 0 auto; display: block;">
           <h1>Pizza Pohoda</h1>
           <p>Ďakujeme za vašu objednávku!</p>
         </div>
@@ -302,7 +329,9 @@ function generateCustomerEmail(order) {
               order.delivery.street
             )}</strong></p>
             <p style="margin: 5px 0;">${escapeHTML(order.delivery.city)}</p>
-            <p style="margin: 5px 0;"><img src="https://pizzapohoda.sk/icons/phone.png" alt="" class="icon-inline">${escapeHTML(order.delivery.phone)}</p>
+            <p style="margin: 5px 0;"><img src="https://pizzapohoda.sk/icons/phone.png" alt="" class="icon-inline">${escapeHTML(
+              order.delivery.phone
+            )}</p>
             ${
               order.delivery.notes
                 ? `<p style="margin: 15px 0 5px 0; padding-top: 15px; border-top: 1px solid #f0ebe4;"><em style="color: #634832;">Poznámka: ${escapeHTML(
@@ -341,22 +370,35 @@ function generateCustomerEmail(order) {
 
 // Generate restaurant notification email
 function generateRestaurantEmail(order) {
-  const itemsList = order.items.map(item => {
-    const extrasText = item.extras && item.extras.length > 0
-      ? `<br><small style="color: #666;">+ ${item.extras.map(e => `${escapeHTML(e.name)} (+${e.price.toFixed(2)}€)`).join(', ')}</small>`
-      : '';
+  const itemsList = order.items
+    .map((item) => {
+      const extrasText =
+        item.extras && item.extras.length > 0
+          ? `<br><small style="color: #666;">+ ${item.extras
+              .map((e) => `${escapeHTML(e.name)} (+${e.price.toFixed(2)}€)`)
+              .join(', ')}</small>`
+          : '';
 
-    return `
+      return `
       <tr>
         <td style="padding: 10px; border-bottom: 1px solid #eee;">
-          <strong>${escapeHTML(item.name)}</strong> (${escapeHTML(item.size)})${extrasText}
+          <strong>${escapeHTML(item.name)}</strong> (${escapeHTML(
+        item.size
+      )})${extrasText}
         </td>
-        <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: center;">${item.quantity}x</td>
-        <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">${item.basePrice.toFixed(2)} €</td>
-        <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">${item.totalPrice.toFixed(2)} €</td>
+        <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: center;">${
+          item.quantity
+        }x</td>
+        <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">${item.basePrice.toFixed(
+          2
+        )} €</td>
+        <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">${item.totalPrice.toFixed(
+          2
+        )} €</td>
       </tr>
     `;
-  }).join('');
+    })
+    .join('');
 
   return `
     <!DOCTYPE html>
@@ -376,11 +418,15 @@ function generateRestaurantEmail(order) {
       <div class="container">
         <div class="header">
           <h1>NOVÁ OBJEDNÁVKA</h1>
-          <p>Čas objednávky: ${new Date(order.timestamp).toLocaleString('sk-SK')}</p>
+          <p>Čas objednávky: ${new Date(order.timestamp).toLocaleString(
+            'sk-SK'
+          )}</p>
         </div>
 
         <div class="urgent">
-          CELKOVÁ SUMA: ${order.pricing.total.toFixed(2)} € | PLATBA: ${order.paymentMethod === 'cash' ? 'HOTOVOSŤ' : 'KARTA'}
+          CELKOVÁ SUMA: ${order.pricing.total.toFixed(2)} € | PLATBA: ${
+    order.paymentMethod === 'cash' ? 'HOTOVOSŤ' : 'KARTA'
+  }
         </div>
 
         <h2>Objednané položky:</h2>
@@ -399,15 +445,21 @@ function generateRestaurantEmail(order) {
           <tfoot>
             <tr style="background-color: #f9f9f9;">
               <td colspan="3" style="padding: 10px; text-align: right;"><strong>Medzisúčet:</strong></td>
-              <td style="padding: 10px; text-align: right;"><strong>${order.pricing.subtotal.toFixed(2)} €</strong></td>
+              <td style="padding: 10px; text-align: right;"><strong>${order.pricing.subtotal.toFixed(
+                2
+              )} €</strong></td>
             </tr>
             <tr>
               <td colspan="3" style="padding: 10px; text-align: right;">Doprava:</td>
-              <td style="padding: 10px; text-align: right;">${order.pricing.delivery.toFixed(2)} €</td>
+              <td style="padding: 10px; text-align: right;">${order.pricing.delivery.toFixed(
+                2
+              )} €</td>
             </tr>
             <tr style="background-color: #d4351c; color: white; font-size: 16px;">
               <td colspan="3" style="padding: 15px; text-align: right;"><strong>CELKOM:</strong></td>
-              <td style="padding: 15px; text-align: right;"><strong>${order.pricing.total.toFixed(2)} €</strong></td>
+              <td style="padding: 15px; text-align: right;"><strong>${order.pricing.total.toFixed(
+                2
+              )} €</strong></td>
             </tr>
           </tfoot>
         </table>
@@ -425,12 +477,16 @@ function generateRestaurantEmail(order) {
             <strong>Email:</strong> ${escapeHTML(order.delivery.email)}
           </p>
 
-          ${order.delivery.notes ? `
+          ${
+            order.delivery.notes
+              ? `
             <h3>📝 POZNÁMKA OD ZÁKAZNÍKA:</h3>
             <p style="font-size: 16px; background: white; padding: 10px; border-radius: 5px;">
               <strong>${escapeHTML(order.delivery.notes)}</strong>
             </p>
-          ` : ''}
+          `
+              : ''
+          }
         </div>
 
         <p style="margin-top: 30px; text-align: center; color: #666;">
