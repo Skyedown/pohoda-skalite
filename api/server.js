@@ -89,7 +89,6 @@ app.post('/api/send-order-emails', async (req, res) => {
   } catch (error) {
     console.error('❌ Error sending emails:', error.message);
     console.error('📧 SendGrid Response Body:', JSON.stringify(error.response?.body, null, 2));
-    console.error('🔑 API Key being used:', process.env.SENDGRID_API_KEY ? `${process.env.SENDGRID_API_KEY.substring(0, 10)}...` : 'NOT SET');
     console.error('📮 From Email:', process.env.SENDGRID_FROM_EMAIL || 'noreply@pizzapohoda.sk');
     console.error('📨 To Emails:', order.delivery.email, 'and', RESTAURANT_EMAIL);
 
@@ -150,8 +149,7 @@ function generateCustomerEmail(order) {
           text-align: center;
         }
         .header img.logo {
-          max-width: 180px;
-          height: auto;
+          height: 80px;
           margin: 0 auto 15px auto;
           display: block;
         }
