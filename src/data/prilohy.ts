@@ -49,7 +49,7 @@ export const prilohy: Pizza[] = [
     weight: '50ml',
   },
   {
-    id: 'prilohy-5',
+    id: 'prilohy-6',
     name: 'Samuraj omáčka',
     price: 1.0,
     image: '/images/sides/samuraj.webp',
@@ -58,7 +58,7 @@ export const prilohy: Pizza[] = [
     weight: '50ml',
   },
   {
-    id: 'prilohy-6',
+    id: 'prilohy-7',
     name: 'Hannibal omáčka',
     price: 1.0,
     image: '/images/sides/haniball.webp',
@@ -67,7 +67,7 @@ export const prilohy: Pizza[] = [
     weight: '50ml',
   },
   {
-    id: 'prilohy-6',
+    id: 'prilohy-8',
     name: 'Pepper omáčka',
     price: 1.0,
     image: '/images/sides/pepper.webp',
@@ -76,7 +76,7 @@ export const prilohy: Pizza[] = [
     weight: '50ml',
   },
   {
-    id: 'prilohy-7',
+    id: 'prilohy-9',
     name: 'Kečup',
     price: 1.0,
     image: '/images/sides/kecup.webp',
@@ -85,7 +85,7 @@ export const prilohy: Pizza[] = [
     weight: '50ml',
   },
   {
-    id: 'prilohy-8',
+    id: 'prilohy-10',
     name: 'Tatarská omáčka',
     price: 1.0,
     image: '/images/sides/tatraska.webp',

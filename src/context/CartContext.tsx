@@ -84,7 +84,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
       const item = newCart[index];
       const sizeMultiplier = PIZZA_SIZE_MULTIPLIERS[item.size];
       item.quantity = quantity;
-      item.totalPrice = item.pizza.price * sizeMultiplier * quantity;
+      item.totalPrice = (item.pizza.price * sizeMultiplier + (item.extrasPrice || 0)) * quantity;
       return newCart;
     });
   };

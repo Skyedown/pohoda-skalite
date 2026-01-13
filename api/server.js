@@ -32,12 +32,21 @@ app.get('/api/health', (req, res) => {
 
 // Send order confirmation emails
 app.post('/api/send-order-emails', async (req, res) => {
+  console.log('🚀 Received order email request at:', new Date().toLocaleString());
+
   try {
     const { order } = req.body;
 
     if (!order || !order.delivery || !order.delivery.email) {
+      console.error('❌ Invalid order data received');
       return res.status(400).json({ error: 'Invalid order data' });
     }
+
+    console.log('📦 Order details:', {
+      email: order.delivery.email,
+      total: order.pricing.total,
+      items: order.items.length
+    });
 
     // Sanitize order data to prevent XSS and injection attacks
     const sanitizedOrder = sanitizeOrder(order);
@@ -65,17 +74,29 @@ app.post('/api/send-order-emails', async (req, res) => {
     };
 
     // Send both emails
+    console.log('📧 Attempting to send emails...');
+    console.log('   From:', customerEmail.from);
+    console.log('   To Customer:', customerEmail.to);
+    console.log('   To Restaurant:', restaurantEmail.to);
+
     await Promise.all([
       sgMail.send(customerEmail),
       sgMail.send(restaurantEmail)
     ]);
 
+    console.log('✅ Emails sent successfully!');
     res.json({ success: true, message: 'Emails sent successfully' });
   } catch (error) {
-    console.error('Error sending emails:', error);
+    console.error('❌ Error sending emails:', error.message);
+    console.error('📧 SendGrid Response Body:', JSON.stringify(error.response?.body, null, 2));
+    console.error('🔑 API Key being used:', process.env.SENDGRID_API_KEY ? `${process.env.SENDGRID_API_KEY.substring(0, 10)}...` : 'NOT SET');
+    console.error('📮 From Email:', process.env.SENDGRID_FROM_EMAIL || 'noreply@pizzapohoda.sk');
+    console.error('📨 To Emails:', order.delivery.email, 'and', RESTAURANT_EMAIL);
+
     res.status(500).json({
       error: 'Failed to send emails',
-      details: error.message
+      details: error.message,
+      sendgridError: error.response?.body
     });
   }
 });
@@ -127,6 +148,12 @@ function generateCustomerEmail(order) {
           color: white;
           padding: 40px 20px;
           text-align: center;
+        }
+        .header img.logo {
+          max-width: 180px;
+          height: auto;
+          margin: 0 auto 15px auto;
+          display: block;
         }
         .header h1 {
           margin: 0 0 10px 0;
@@ -230,7 +257,8 @@ function generateCustomerEmail(order) {
     <body>
       <div class="container">
         <div class="header">
-          <h1>🍕 Pizza Pohoda</h1>
+          <img src="https://pohodaskalite.sk/images/logo-social.png" alt="Pizza Pohoda Logo" class="logo">
+          <h1>Pizza Pohoda</h1>
           <p>Ďakujeme za vašu objednávku!</p>
         </div>
 

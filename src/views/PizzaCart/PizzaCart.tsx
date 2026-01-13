@@ -137,18 +137,13 @@ const PizzaCart: React.FC = () => {
 
       // Try to send order emails via API (non-blocking)
       try {
-        const response = await fetch('http://localhost:3001/api/send-order-emails', {
+        await fetch('http://localhost:3001/api/send-order-emails', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ order }),
         });
-
-        // Silently handle email errors
-        if (!response.ok) {
-          // Email failed but order was processed
-        }
       } catch (emailError) {
         // Email service unavailable but order was processed
       }
