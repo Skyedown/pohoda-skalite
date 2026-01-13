@@ -3,7 +3,7 @@ import type { Pizza } from '../types';
 export const burgers: Pizza[] = [
   {
     id: 'burger-1',
-    name: '11. Classic Cheeseburger',
+    name: '1. Classic Cheeseburger',
     price: 12.0,
     image: '/images/burgers/classic-cheeseburger.webp',
     ingredients: [
@@ -24,7 +24,7 @@ export const burgers: Pizza[] = [
   },
   {
     id: 'burger-2',
-    name: '12. Classic Smash Burger',
+    name: '2. Classic Smash Burger',
     price: 12.5,
     image: '/images/burgers/classic-smash-burger.webp',
     ingredients: [
@@ -43,7 +43,7 @@ export const burgers: Pizza[] = [
   },
   {
     id: 'burger-3',
-    name: '13. Jallapeňo Burger',
+    name: '3. Jallapeňo Burger',
     price: 12.0,
     image: '/images/burgers/jallapeno-burger.webp',
     ingredients: [
@@ -65,7 +65,7 @@ export const burgers: Pizza[] = [
   },
   {
     id: 'burger-4',
-    name: '14. Veggie Burger',
+    name: '4. Veggie Burger',
     price: 10.0,
     image: '/images/burgers/veggie-burger.webp',
     ingredients: [
@@ -82,7 +82,7 @@ export const burgers: Pizza[] = [
   },
   {
     id: 'burger-5',
-    name: '15. V Pohode Smash',
+    name: '5. V Pohode Smash',
     price: 13.5,
     image: '/images/burgers/vpohode-smash-burger.webp',
     ingredients: [

@@ -1,14 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import type { CartItem, Pizza, PizzaSize, Extra } from '../types';
-import { PIZZA_SIZE_MULTIPLIERS } from '../types';
+import type { CartItem, Pizza, Extra } from '../types';
 import { getCartFromStorage, saveCartToStorage, clearCartFromStorage } from '../utils/localStorage';
 
 interface CartContextType {
   cart: CartItem[];
   addToCart: (
     pizza: Pizza,
-    size: PizzaSize,
     quantity: number,
     extras?: Extra[],
     requiredOption?: { name: string; selectedValue: string }
@@ -47,19 +45,16 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
   const addToCart = (
     pizza: Pizza,
-    size: PizzaSize,
     quantity: number,
     extras?: Extra[],
     requiredOption?: { name: string; selectedValue: string }
   ) => {
-    const sizeMultiplier = PIZZA_SIZE_MULTIPLIERS[size];
     const extrasPrice = extras?.reduce((sum, extra) => sum + extra.price, 0) || 0;
-    const totalPrice = (pizza.price * sizeMultiplier + extrasPrice) * quantity;
+    const totalPrice = (pizza.price + extrasPrice) * quantity;
 
     const newItem: CartItem = {
       pizza,
       quantity,
-      size,
       totalPrice,
       extras,
       extrasPrice,
@@ -82,9 +77,8 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     setCart((prevCart) => {
       const newCart = [...prevCart];
       const item = newCart[index];
-      const sizeMultiplier = PIZZA_SIZE_MULTIPLIERS[item.size];
       item.quantity = quantity;
-      item.totalPrice = (item.pizza.price * sizeMultiplier + (item.extrasPrice || 0)) * quantity;
+      item.totalPrice = (item.pizza.price + (item.extrasPrice || 0)) * quantity;
       return newCart;
     });
   };

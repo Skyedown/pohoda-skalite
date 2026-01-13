@@ -130,10 +130,7 @@ function generateCustomerEmail(order) {
         <td style="padding: 12px; border-bottom: 1px solid #f0ebe4;">
           <strong style="color: #1f2123; font-size: 15px;">${escapeHTML(
             item.name
-          )}</strong>
-          <span style="color: #634832; margin-left: 8px;">(${escapeHTML(
-            item.size
-          )})</span>${extrasText}
+          )}</strong>${extrasText}
         </td>
         <td style="padding: 12px; border-bottom: 1px solid #f0ebe4; text-align: center; color: #634832;">${
           item.quantity
@@ -380,9 +377,7 @@ function generateRestaurantEmail(order) {
       return `
       <tr>
         <td style="padding: 10px; border-bottom: 1px solid #eee;">
-          <strong>${escapeHTML(item.name)}</strong> (${escapeHTML(
-        item.size
-      )})${extrasText}
+          <strong>${escapeHTML(item.name)}</strong>${extrasText}
         </td>
         <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: center;">${
           item.quantity

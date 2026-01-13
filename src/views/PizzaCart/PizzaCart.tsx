@@ -94,7 +94,6 @@ const PizzaCart: React.FC = () => {
           id: item.pizza.id,
           name: item.pizza.name,
           type: item.pizza.type,
-          size: item.size,
           quantity: item.quantity,
           basePrice: item.pizza.price,
           extras: item.extras?.map(extra => ({
@@ -137,7 +136,8 @@ const PizzaCart: React.FC = () => {
 
       // Try to send order emails via API (non-blocking)
       try {
-        await fetch('http://localhost:3001/api/send-order-emails', {
+        const apiUrl = import.meta.env.VITE_API_URL || 'https://pizzapohoda.sk';
+        await fetch(`${apiUrl}/api/send-order-emails`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
