@@ -216,7 +216,7 @@ const PizzaCart: React.FC = () => {
           </div>
 
           {minimumOrderMessage && (
-            <MinimumOrderBanner message={minimumOrderMessage} />
+            <MinimumOrderBanner message={minimumOrderMessage} className="pizza-cart__banner--desktop" />
           )}
         </div>
 
@@ -232,6 +232,10 @@ const PizzaCart: React.FC = () => {
             errors={errors}
             onChange={handleInputChange}
           />
+
+          {minimumOrderMessage && (
+            <MinimumOrderBanner message={minimumOrderMessage} className="pizza-cart__banner--mobile" />
+          )}
 
           <OrderSummary
             subtotal={subtotal}

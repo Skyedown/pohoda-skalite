@@ -103,6 +103,23 @@
     }
   }
 
+  // Banner visibility controls
+  &__banner--mobile {
+    display: none;
+
+    @media (max-width: @breakpoint-md) {
+      display: block;
+    }
+  }
+
+  &__banner--desktop {
+    display: block;
+
+    @media (max-width: @breakpoint-md) {
+      display: none;
+    }
+  }
+
   // Empty state
   &__empty {
     text-align: center;

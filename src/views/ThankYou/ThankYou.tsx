@@ -31,7 +31,9 @@ const ThankYou: React.FC = () => {
 
           <div className="thank-you__details">
             <div className="thank-you__detail-item">
-              <div className="thank-you__detail-icon">🍕</div>
+              <div className="thank-you__detail-icon">
+                <img src="/icons/pizza.svg" alt="Pizza" />
+              </div>
               <div className="thank-you__detail-text">
                 <strong>Príprava</strong>
                 <span>Vaša objednávka sa práve pripravuje</span>
@@ -39,7 +41,9 @@ const ThankYou: React.FC = () => {
             </div>
 
             <div className="thank-you__detail-item">
-              <div className="thank-you__detail-icon">🚗</div>
+              <div className="thank-you__detail-icon">
+                <img src="/icons/car.svg" alt="Delivery" />
+              </div>
               <div className="thank-you__detail-text">
                 <strong>Donáška</strong>
                 <span>Čoskoro bude na ceste k Vám</span>
@@ -47,7 +51,9 @@ const ThankYou: React.FC = () => {
             </div>
 
             <div className="thank-you__detail-item">
-              <div className="thank-you__detail-icon">📞</div>
+              <div className="thank-you__detail-icon">
+                <img src="/icons/phone-orange.svg" alt="Phone" />
+              </div>
               <div className="thank-you__detail-text">
                 <strong>Kontakt</strong>
                 <span>Voláme Vám pred doručením</span>

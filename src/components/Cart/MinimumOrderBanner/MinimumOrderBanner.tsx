@@ -3,11 +3,12 @@ import './MinimumOrderBanner.less';
 
 interface MinimumOrderBannerProps {
   message: string;
+  className?: string;
 }
 
-const MinimumOrderBanner: React.FC<MinimumOrderBannerProps> = ({ message }) => {
+const MinimumOrderBanner: React.FC<MinimumOrderBannerProps> = ({ message, className = '' }) => {
   return (
-    <div className="minimum-order-banner">
+    <div className={`minimum-order-banner ${className}`}>
       <div className="minimum-order-banner__icon">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <circle cx="12" cy="12" r="10"/>

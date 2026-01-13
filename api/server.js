@@ -238,6 +238,12 @@ function generateCustomerEmail(order) {
           text-decoration: none;
           font-weight: 600;
         }
+        .icon-inline {
+          width: 20px;
+          height: 20px;
+          vertical-align: middle;
+          margin-right: 8px;
+        }
         .footer {
           background-color: #634832;
           text-align: center;
@@ -266,7 +272,7 @@ function generateCustomerEmail(order) {
           <h2>Potvrdenie objednávky</h2>
           <p>Vaša objednávka bola úspešne prijatá a je v príprave. Tešíme sa, že vás čoskoro obsúžime!</p>
 
-          <h3>📋 Objednané položky:</h3>
+          <h3><img src="https://pohodaskalite.sk/icons/list.png" alt="" class="icon-inline">Objednané položky:</h3>
           <table class="order-table">
             <thead>
               <tr>
@@ -292,13 +298,13 @@ function generateCustomerEmail(order) {
             )} €</span></p>
           </div>
 
-          <h3>📍 Adresa doručenia:</h3>
+          <h3><img src="https://pohodaskalite.sk/icons/location.png" alt="" class="icon-inline">Adresa doručenia:</h3>
           <div class="delivery-info">
             <p style="margin: 5px 0;"><strong>${escapeHTML(
               order.delivery.street
             )}</strong></p>
             <p style="margin: 5px 0;">${escapeHTML(order.delivery.city)}</p>
-            <p style="margin: 5px 0;">📞 ${escapeHTML(order.delivery.phone)}</p>
+            <p style="margin: 5px 0;"><img src="https://pohodaskalite.sk/icons/phone.png" alt="" class="icon-inline">${escapeHTML(order.delivery.phone)}</p>
             ${
               order.delivery.notes
                 ? `<p style="margin: 15px 0 5px 0; padding-top: 15px; border-top: 1px solid #f0ebe4;"><em style="color: #634832;">Poznámka: ${escapeHTML(
@@ -308,7 +314,7 @@ function generateCustomerEmail(order) {
             }
           </div>
 
-          <p><strong>💳 Spôsob platby:</strong> ${
+          <p><strong><img src="https://pohodaskalite.sk/icons/card.png" alt="" class="icon-inline">Spôsob platby:</strong> ${
             order.paymentMethod === 'cash'
               ? 'Hotovosť pri dodaní'
               : 'Karta pri dodaní'
@@ -316,8 +322,8 @@ function generateCustomerEmail(order) {
 
           <div class="contact-box">
             <p style="margin-bottom: 12px; font-size: 16px;"><strong>Máte otázky?</strong></p>
-            <p>📧 <a href="mailto:${RESTAURANT_EMAIL}">${RESTAURANT_EMAIL}</a></p>
-            <p>📞 <a href="tel:${RESTAURANT_PHONE}">${RESTAURANT_PHONE}</a></p>
+            <p><img src="https://pohodaskalite.sk/icons/mail.png" alt="" class="icon-inline"><a href="mailto:${RESTAURANT_EMAIL}">${RESTAURANT_EMAIL}</a></p>
+            <p><img src="https://pohodaskalite.sk/icons/phone-orange.png" alt="" class="icon-inline"><a href="tel:${RESTAURANT_PHONE}">${RESTAURANT_PHONE}</a></p>
           </div>
         </div>
 
@@ -409,13 +415,13 @@ function generateRestaurantEmail(order) {
         </table>
 
         <div class="delivery-info">
-          <h3>📍 ADRESA DORUČENIA:</h3>
+          <h3><img src="https://pohodaskalite.sk/icons/location.png" alt="" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 8px;">ADRESA DORUČENIA:</h3>
           <p style="font-size: 16px;">
             <strong>${escapeHTML(order.delivery.street)}</strong><br>
             <strong>${escapeHTML(order.delivery.city)}</strong>
           </p>
 
-          <h3>📞 KONTAKT:</h3>
+          <h3><img src="https://pohodaskalite.sk/icons/phone.png" alt="" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 8px;">KONTAKT:</h3>
           <p style="font-size: 16px;">
             <strong>Telefón:</strong> ${escapeHTML(order.delivery.phone)}<br>
             <strong>Email:</strong> ${escapeHTML(order.delivery.email)}
