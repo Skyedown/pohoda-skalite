@@ -152,7 +152,7 @@ const PizzaMain: React.FC = () => {
         {/* Hero Pizza with rotation animation */}
         <div className="pizza-main__hero-pizza" ref={heroPizzaRef}>
           <img
-            src="/images/hero-pizza.png"
+            src="/images/large-hero-pizza.png"
             alt="Otáčajúca sa pizza"
             className="pizza-main__hero-pizza-image"
           />

@@ -26,7 +26,7 @@ const PasswordProtection: React.FC<PasswordProtectionProps> = ({ onUnlock }) => 
   return (
     <div className="password-protection">
       <div className="password-protection__pizza">
-        <img src="/images/hero-pizza.png" alt="Pizza" />
+        <img src="/images/large-hero-pizza.png" alt="Pizza" />
       </div>
 
       <div className="password-protection__content">
