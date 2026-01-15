@@ -13,12 +13,8 @@ export const validatePhone = (phone: string): boolean => {
 export const validateOrderForm = (formData: OrderFormData): ValidationErrors => {
   const errors: ValidationErrors = {};
 
-  if (!formData.firstName.trim()) {
-    errors.firstName = 'Meno je povinné';
-  }
-
-  if (!formData.lastName.trim()) {
-    errors.lastName = 'Priezvisko je povinné';
+  if (!formData.fullName.trim()) {
+    errors.fullName = 'Celé meno je povinné';
   }
 
   if (!formData.email.trim()) {
@@ -33,16 +29,19 @@ export const validateOrderForm = (formData: OrderFormData): ValidationErrors => 
     errors.phone = 'Neplatný formát telefónneho čísla';
   }
 
-  if (!formData.city) {
-    errors.city = 'Mesto je povinné';
-  }
+  // Address fields only required for delivery
+  if (formData.deliveryMethod === 'delivery') {
+    if (!formData.city) {
+      errors.city = 'Mesto je povinné';
+    }
 
-  if (!formData.street.trim()) {
-    errors.street = 'Ulica je povinná';
-  }
+    if (!formData.street?.trim()) {
+      errors.street = 'Ulica je povinná';
+    }
 
-  if (!formData.houseNumber.trim()) {
-    errors.houseNumber = 'Číslo domu je povinné';
+    if (!formData.houseNumber?.trim()) {
+      errors.houseNumber = 'Číslo domu je povinné';
+    }
   }
 
   return errors;
