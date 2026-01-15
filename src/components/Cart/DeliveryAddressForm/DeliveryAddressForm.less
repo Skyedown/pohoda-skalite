@@ -4,7 +4,7 @@
 .delivery-address {
   background: white;
   border-radius: 16px;
-  padding: 24px;
+  padding: 16px 24px 24px 24px;
 
   &__title {
     font-family: @font-family-heading;
@@ -12,6 +12,110 @@
     font-weight: 400;
     color: @text-primary;
     margin: 0 0 20px;
+  }
+}
+
+.delivery-method {
+  margin-bottom: 24px;
+
+  &__subtitle {
+    font-size: 16px;
+    font-weight: 500;
+    color: @text-primary;
+    margin: 0 0 12px;
+  }
+
+  &__option {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border: 2px solid @border-color;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 12px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &:hover {
+      border-color: @primary-color;
+      background: rgba(225, 124, 47, 0.02);
+    }
+
+    input[type="radio"]:checked ~ & {
+      border-color: @primary-color;
+      background: rgba(225, 124, 47, 0.05);
+    }
+  }
+
+  &__radio {
+    position: relative;
+    margin-right: 16px;
+    flex-shrink: 0;
+
+    input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+
+      &:checked + .delivery-method__radio-custom {
+        border-color: @primary-color;
+
+        &::after {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1);
+        }
+      }
+    }
+  }
+
+  &__radio-custom {
+    width: 20px;
+    height: 20px;
+    border: 2px solid @border-color;
+    border-radius: 50%;
+    display: block;
+    position: relative;
+    transition: all 0.2s ease;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: @primary-color;
+      opacity: 0;
+      transition: all 0.2s ease;
+    }
+  }
+
+  &__content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+
+    svg {
+      color: @text-secondary;
+      flex-shrink: 0;
+    }
+
+    span {
+      font-size: 16px;
+      color: @text-primary;
+      font-weight: 400;
+    }
+  }
+
+  &__option input[type="radio"]:checked ~ &__content svg {
+    color: @primary-color;
   }
 }
 

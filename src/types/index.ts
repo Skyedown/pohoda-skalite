@@ -42,14 +42,16 @@ export interface CartItem {
   };
 }
 
+export type DeliveryMethod = 'delivery' | 'pickup';
+
 export interface OrderFormData {
-  firstName: string;
-  lastName: string;
+  fullName: string;
   email: string;
   phone: string;
-  city: string;
-  street: string;
-  houseNumber: string;
+  deliveryMethod: DeliveryMethod;
+  city?: string;
+  street?: string;
+  houseNumber?: string;
   notes?: string;
 }
 

@@ -11,6 +11,7 @@ import { sanitizeCartForm } from '../../utils/sanitize';
 import { getOrderingStatus } from '../../utils/orderingStatus';
 import { trackPurchase } from '../../utils/analytics';
 import { getDeliveryRule, getMinimumOrderMessage, isMinimumOrderMet } from '../../utils/deliveryRules';
+import type { DeliveryMethod } from '../../types';
 import './PizzaCart.less';
 
 const PizzaCart: React.FC = () => {
@@ -18,7 +19,9 @@ const PizzaCart: React.FC = () => {
   const { cart, removeFromCart, updateQuantity, getTotalPrice, clearCart } = useCart();
 
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'card'>('cash');
+  const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>('delivery');
   const [formData, setFormData] = useState({
+    fullName: '',
     street: '',
     city: '',
     phone: '',
@@ -51,15 +54,34 @@ const PizzaCart: React.FC = () => {
     }
   };
 
+  const handleDeliveryMethodChange = (method: DeliveryMethod) => {
+    setDeliveryMethod(method);
+    // Clear address errors when switching to pickup
+    if (method === 'pickup') {
+      setErrors(prev => {
+        const { street, city, ...rest } = prev;
+        return rest;
+      });
+    }
+  };
+
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.street.trim()) {
-      newErrors.street = 'Ulica je povinná';
+    if (!formData.fullName.trim()) {
+      newErrors.fullName = 'Celé meno je povinné';
     }
-    if (!formData.city.trim()) {
-      newErrors.city = 'Mesto je povinné';
+
+    // Address fields only required for delivery
+    if (deliveryMethod === 'delivery') {
+      if (!formData.street.trim()) {
+        newErrors.street = 'Ulica je povinná';
+      }
+      if (!formData.city.trim()) {
+        newErrors.city = 'Mesto je povinné';
+      }
     }
+
     if (!formData.phone.trim()) {
       newErrors.phone = 'Telefónne číslo je povinné';
     } else if (!/^[+]?[\d\s()-]{9,}$/.test(formData.phone)) {
@@ -109,9 +131,11 @@ const PizzaCart: React.FC = () => {
           delivery: delivery,
           total: total
         },
+        deliveryMethod: deliveryMethod,
         delivery: {
-          street: sanitizedFormData.street,
-          city: sanitizedFormData.city,
+          fullName: sanitizedFormData.fullName,
+          street: sanitizedFormData.street || '',
+          city: sanitizedFormData.city || '',
           phone: sanitizedFormData.phone,
           email: sanitizedFormData.email,
           notes: sanitizedFormData.notes
@@ -160,10 +184,16 @@ const PizzaCart: React.FC = () => {
 
   const subtotal = useMemo(() => getTotalPrice(), [getTotalPrice]);
   const deliveryRule = useMemo(() => getDeliveryRule(formData.city), [formData.city]);
-  const delivery = deliveryRule.fee;
+  const delivery = deliveryMethod === 'pickup' ? 0 : deliveryRule.fee;
   const total = subtotal + delivery;
-  const minimumOrderMessage = useMemo(() => getMinimumOrderMessage(formData.city, subtotal), [formData.city, subtotal]);
-  const canSubmitOrder = useMemo(() => isMinimumOrderMet(formData.city, subtotal) && canOrder, [formData.city, subtotal, canOrder]);
+  const minimumOrderMessage = useMemo(() =>
+    deliveryMethod === 'delivery' ? getMinimumOrderMessage(formData.city, subtotal) : null,
+    [deliveryMethod, formData.city, subtotal]
+  );
+  const canSubmitOrder = useMemo(() =>
+    (deliveryMethod === 'pickup' || isMinimumOrderMet(formData.city, subtotal)) && canOrder,
+    [deliveryMethod, formData.city, subtotal, canOrder]
+  );
 
   if (cart.length === 0) {
     return (
@@ -228,9 +258,10 @@ const PizzaCart: React.FC = () => {
           />
 
           <DeliveryAddressForm
-            formData={formData}
+            formData={{ ...formData, deliveryMethod }}
             errors={errors}
             onChange={handleInputChange}
+            onDeliveryMethodChange={handleDeliveryMethodChange}
           />
 
           {minimumOrderMessage && (

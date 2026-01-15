@@ -103,6 +103,7 @@ export const sanitizeNotes = (text: string): string => {
  * @returns Sanitized form data
  */
 export interface CartFormData {
+  fullName: string;
   street: string;
   city: string;
   phone: string;
@@ -112,6 +113,7 @@ export interface CartFormData {
 
 export const sanitizeCartForm = (formData: CartFormData): CartFormData => {
   return {
+    fullName: sanitizeTextInput(formData.fullName, 100),
     street: sanitizeAddress(formData.street),
     city: sanitizeTextInput(formData.city, 100),
     phone: sanitizePhone(formData.phone),

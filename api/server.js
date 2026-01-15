@@ -318,12 +318,22 @@ function generateCustomerEmail(order) {
             )} €</span></p>
           </div>
 
-          <h3><img src="https://pizzapohoda.sk/icons/location.png" alt="" class="icon-inline">Adresa doručenia:</h3>
+          <h3><img src="https://pizzapohoda.sk/icons/location.png" alt="" class="icon-inline">${
+            order.deliveryMethod === 'pickup'
+              ? 'Vyzdvihnutie v reštaurácii'
+              : 'Adresa doručenia'
+          }:</h3>
           <div class="delivery-info">
-            <p style="margin: 5px 0;"><strong>${escapeHTML(
-              order.delivery.street
-            )}</strong></p>
-            <p style="margin: 5px 0;">${escapeHTML(order.delivery.city)}</p>
+            <p style="margin: 5px 0;"><strong>Meno:</strong> ${escapeHTML(
+              order.delivery.fullName
+            )}</p>
+            ${
+              order.deliveryMethod === 'delivery'
+                ? `<p style="margin: 5px 0;"><strong>Adresa:</strong> ${escapeHTML(
+                    order.delivery.street
+                  )}, ${escapeHTML(order.delivery.city)}</p>`
+                : ''
+            }
             <p style="margin: 5px 0;"><img src="https://pizzapohoda.sk/icons/phone.png" alt="" class="icon-inline">${escapeHTML(
               order.delivery.phone
             )}</p>
@@ -337,7 +347,11 @@ function generateCustomerEmail(order) {
           </div>
 
           <p><strong><img src="https://pizzapohoda.sk/icons/card.png" alt="" class="icon-inline">Spôsob platby:</strong> ${
-            order.paymentMethod === 'cash'
+            order.deliveryMethod === 'pickup'
+              ? order.paymentMethod === 'cash'
+                ? 'Hotovosť pri vyzdvihnutí'
+                : 'Karta pri vyzdvihnutí'
+              : order.paymentMethod === 'cash'
               ? 'Hotovosť pri dodaní'
               : 'Karta pri dodaní'
           }</p>
@@ -458,16 +472,39 @@ function generateRestaurantEmail(order) {
         </table>
 
         <div class="delivery-info">
-          <h3><img src="https://pizzapohoda.sk/icons/location.png" alt="" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 8px;">ADRESA DORUČENIA:</h3>
+          <h3><img src="https://pizzapohoda.sk/icons/location.png" alt="" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 8px;">${
+            order.deliveryMethod === 'pickup'
+              ? 'VYZDVIHNUTIE V REŠTAURÁCII'
+              : 'ADRESA DORUČENIA'
+          }:</h3>
           <p style="font-size: 16px;">
-            <strong>${escapeHTML(order.delivery.street)}</strong><br>
-            <strong>${escapeHTML(order.delivery.city)}</strong>
+            <strong>Meno:</strong> ${escapeHTML(order.delivery.fullName)}
+            ${
+              order.deliveryMethod === 'delivery'
+                ? `<br><strong>Adresa:</strong> ${escapeHTML(
+                    order.delivery.street
+                  )}, ${escapeHTML(order.delivery.city)}`
+                : ''
+            }
           </p>
 
           <h3><img src="https://pizzapohoda.sk/icons/phone.png" alt="" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 8px;">KONTAKT:</h3>
           <p style="font-size: 16px;">
             <strong>Telefón:</strong> ${escapeHTML(order.delivery.phone)}<br>
             <strong>Email:</strong> ${escapeHTML(order.delivery.email)}
+          </p>
+
+          <h3><img src="https://pizzapohoda.sk/icons/card.png" alt="" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 8px;">PLATBA:</h3>
+          <p style="font-size: 16px;">
+            <strong>${
+              order.deliveryMethod === 'pickup'
+                ? order.paymentMethod === 'cash'
+                  ? 'Hotovosť pri vyzdvihnutí'
+                  : 'Karta pri vyzdvihnutí'
+                : order.paymentMethod === 'cash'
+                ? 'Hotovosť pri dodaní'
+                : 'Karta pri dodaní'
+            }</strong>
           </p>
 
           ${
