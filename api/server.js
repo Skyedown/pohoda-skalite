@@ -63,7 +63,10 @@ app.post('/api/send-order-emails', async (req, res) => {
     // Send email to customer
     const customerEmail = {
       to: order.delivery.email,
-      from: process.env.SENDGRID_FROM_EMAIL || 'noreply@pizzapohoda.sk',
+      from: {
+        email: process.env.SENDGRID_FROM_EMAIL || 'noreply@pizzapohoda.sk',
+        name: 'Pizza Pohoda'
+      },
       subject: 'Potvrdenie objednávky - Pizza Pohoda',
       html: customerEmailContent,
     };
@@ -71,7 +74,10 @@ app.post('/api/send-order-emails', async (req, res) => {
     // Send email to restaurant
     const restaurantEmail = {
       to: RESTAURANT_EMAIL,
-      from: 'noreply@pizzapohoda.sk',
+      from: {
+        email: 'noreply@pizzapohoda.sk',
+        name: 'Pizza Pohoda'
+      },
       subject: `Nová objednávka #${order.timestamp.slice(0, 10)}`,
       html: restaurantEmailContent,
     };
