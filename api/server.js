@@ -67,6 +67,7 @@ app.post('/api/send-order-emails', async (req, res) => {
         email: process.env.SENDGRID_FROM_EMAIL || 'noreply@pizzapohoda.sk',
         name: 'Pizza Pohoda'
       },
+      replyTo: 'objednavky@pizzapohoda.sk',
       subject: 'Potvrdenie objednávky - Pizza Pohoda',
       html: customerEmailContent,
     };

@@ -3,9 +3,19 @@ import type { Pizza } from '../types';
 export const prilohy: Pizza[] = [
   {
     id: 'prilohy-1',
-    name: 'Domáce hranolky',
-    price: 2.5,
+    name: 'Klasické hranolky',
+    price: 2.0,
     image: '/images/sides/hranolky.webp',
+    type: 'sides',
+    ingredients: ['zemiaky', 'soľ'],
+    allergens: [],
+    weight: '100g',
+  },
+  {
+    id: 'prilohy-1',
+    name: 'Batátové hranolky',
+    price: 2.5,
+    image: '/images/sides/bataty.webp',
     type: 'sides',
     ingredients: ['zemiaky', 'soľ'],
     allergens: [],
