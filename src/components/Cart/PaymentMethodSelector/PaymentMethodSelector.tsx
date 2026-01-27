@@ -27,17 +27,18 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({ value, on
             <circle cx="12" cy="12" r="2"/>
             <path d="M6 12h.01M18 12h.01"/>
           </svg>
-          <span>Hotovosť pri dodaní</span>
+          <span>V hotovosti</span>
         </div>
       </label>
 
-      <label className="payment-method__option">
+      <label className="payment-method__option payment-method__option--disabled">
         <div className="payment-method__radio">
           <input
             type="radio"
             name="payment"
             checked={value === 'card'}
             onChange={() => onChange('card')}
+            disabled
           />
           <span className="payment-method__radio-custom"></span>
         </div>
@@ -46,8 +47,9 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({ value, on
             <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
             <line x1="1" y1="10" x2="23" y2="10"/>
           </svg>
-          <span>Karta pri dodaní</span>
+          <span>Kartou</span>
         </div>
+        <span className="payment-method__badge">Už čoskoro</span>
       </label>
     </div>
   );

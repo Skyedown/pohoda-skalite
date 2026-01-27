@@ -7,7 +7,6 @@ import PizzaMain from './views/PizzaMain/PizzaMain';
 import PizzaCart from './views/PizzaCart/PizzaCart';
 import ThankYou from './views/ThankYou/ThankYou';
 import PrivacyPolicy from './views/PrivacyPolicy/PrivacyPolicy';
-import PasswordProtection from './views/PasswordProtection/PasswordProtection';
 import FloatingCart from './components/FloatingCart/FloatingCart';
 import FloatingCall from './components/FloatingCall/FloatingCall';
 import OrderingStatusBanner from './components/OrderingStatusBanner/OrderingStatusBanner';
@@ -27,8 +26,6 @@ const PageTracker: React.FC = () => {
 };
 
 const App: React.FC = () => {
-  const isProtectionEnabled = import.meta.env.VITE_SITE_PROTECTION_ENABLED === 'true';
-  const [isUnlocked, setIsUnlocked] = useState(false);
   const [isBannerVisible, setIsBannerVisible] = useState(false);
 
   useEffect(() => {
@@ -40,21 +37,7 @@ const App: React.FC = () => {
     if (consent === 'accepted') {
       initGA();
     }
-
-    // Check if site was previously unlocked in this session
-    if (sessionStorage.getItem('siteUnlocked') === 'true') {
-      setIsUnlocked(true);
-    }
   }, []);
-
-  // If protection is enabled and site is not unlocked, show password protection
-  if (isProtectionEnabled && !isUnlocked) {
-    return (
-      <HelmetProvider>
-        <PasswordProtection onUnlock={() => setIsUnlocked(true)} />
-      </HelmetProvider>
-    );
-  }
 
   return (
     <HelmetProvider>

@@ -31,11 +31,11 @@ const PasswordProtection: React.FC<PasswordProtectionProps> = ({ onUnlock }) => 
 
       <div className="password-protection__content">
         <h1 className="password-protection__title">
-          Pečieme pre Vás novú webstránku!
+          Otvárame 2.2.2026
         </h1>
 
         <p className="password-protection__subtitle">
-          Pre viac informácií sledujte náš Instagram a Facebook
+          Tešíme sa na Vás! Sledujte nás na sociálnych sieťach pre viac informácií
         </p>
 
         <div className="password-protection__social">

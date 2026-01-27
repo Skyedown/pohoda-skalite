@@ -15,6 +15,7 @@
   }
 
   &__option {
+    position: relative;
     display: flex;
     align-items: center;
     padding: 16px;
@@ -36,6 +37,22 @@
     input[type="radio"]:checked ~ & {
       border-color: @primary-color;
       background: rgba(225, 124, 47, 0.05);
+    }
+
+    &--disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+      background: rgba(0, 0, 0, 0.02);
+
+      &:hover {
+        border-color: @border-color;
+        background: rgba(0, 0, 0, 0.02);
+      }
+
+      .payment-method__content svg,
+      .payment-method__content > span:first-of-type {
+        color: @text-secondary;
+      }
     }
   }
 
@@ -105,5 +122,21 @@
 
   &__option input[type="radio"]:checked ~ &__content svg {
     color: @primary-color;
+  }
+
+  &__badge {
+    position: absolute;
+    bottom: -8px;
+    right: -8px;
+    padding: 4px 10px;
+    background: @primary-color;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(225, 124, 47, 0.3);
+    z-index: 1;
   }
 }

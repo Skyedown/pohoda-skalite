@@ -354,13 +354,7 @@ function generateCustomerEmail(order) {
           </div>
 
           <p><strong><img src="https://pizzapohoda.sk/icons/card.png" alt="" class="icon-inline">Spôsob platby:</strong> ${
-            order.deliveryMethod === 'pickup'
-              ? order.paymentMethod === 'cash'
-                ? 'Hotovosť pri vyzdvihnutí'
-                : 'Karta pri vyzdvihnutí'
-              : order.paymentMethod === 'cash'
-              ? 'Hotovosť pri dodaní'
-              : 'Karta pri dodaní'
+            order.paymentMethod === 'cash' ? 'V hotovosti' : 'Kartou'
           }</p>
 
           <div class="contact-box">
@@ -504,13 +498,7 @@ function generateRestaurantEmail(order) {
           <h3><img src="https://pizzapohoda.sk/icons/card.png" alt="" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 8px;">PLATBA:</h3>
           <p style="font-size: 16px;">
             <strong>${
-              order.deliveryMethod === 'pickup'
-                ? order.paymentMethod === 'cash'
-                  ? 'Hotovosť pri vyzdvihnutí'
-                  : 'Karta pri vyzdvihnutí'
-                : order.paymentMethod === 'cash'
-                ? 'Hotovosť pri dodaní'
-                : 'Karta pri dodaní'
+              order.paymentMethod === 'cash' ? 'V hotovosti' : 'Kartou'
             }</strong>
           </p>
 
