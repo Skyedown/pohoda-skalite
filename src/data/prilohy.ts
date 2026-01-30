@@ -9,7 +9,7 @@ export const prilohy: Pizza[] = [
     type: 'sides',
     ingredients: ['zemiaky', 'soľ'],
     allergens: [],
-    weight: '100g',
+    weight: '150g',
   },
   {
     id: 'prilohy-1',
@@ -19,7 +19,7 @@ export const prilohy: Pizza[] = [
     type: 'sides',
     ingredients: ['zemiaky', 'soľ'],
     allergens: [],
-    weight: '100g',
+    weight: '150g',
   },
   // Sauces
   {
