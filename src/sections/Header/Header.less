@@ -43,7 +43,6 @@
     @media (max-width: @breakpoint-md) {
       gap: 24px;
       justify-content: space-between;
-      padding: 0 24px;
     }
   }
 
@@ -245,7 +244,7 @@
       border: none;
       cursor: pointer;
       padding: 0;
-      z-index: 2000;
+      z-index: 1100;
       position: fixed;
       right: 24px;
       top: 23.5px; // (91px header height - 44px button height) / 2
@@ -260,6 +259,8 @@
       }
 
       &--open {
+        z-index: 2000; // Higher z-index when menu is open to stay above menu backgrounds
+
         .header__hamburger-line {
           background: white;
 

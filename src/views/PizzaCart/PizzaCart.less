@@ -29,7 +29,7 @@
   // Close button
   &__close {
     position: fixed;
-    top: 32px;
+    top: 36px; // Vertically centered with header logo: 20px padding + 40px (logo center) - 24px (button half)
     right: 32px;
     width: 48px;
     height: 48px;
@@ -59,14 +59,14 @@
     }
 
     @media (max-width: @breakpoint-md) {
-      top: 24px;
+      top: 23.5px; // Vertically centered: 14px padding + 31.5px (logo center) - 22px (button half)
       right: 24px;
       width: 44px;
       height: 44px;
     }
 
     @media (max-width: @breakpoint-sm) {
-      top: 20px;
+      top: 17px; // Vertically centered: 12px padding + 25px (logo center) - 20px (button half)
       right: 20px;
       width: 40px;
       height: 40px;

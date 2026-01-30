@@ -198,15 +198,17 @@ const Header: React.FC = () => {
         </div>
       </header>
 
-      {/* Mobile Hamburger Button - Rendered outside header */}
-      <button
-        className={`header__hamburger ${isMobileMenuOpen ? 'header__hamburger--open' : ''}`}
-        onClick={handleMenuToggle}
-        aria-label="Menu"
-      >
-        <span className="header__hamburger-line"></span>
-        <span className="header__hamburger-line"></span>
-      </button>
+      {/* Mobile Hamburger Button - Rendered outside header - Hidden on cart page */}
+      {location.pathname !== '/cart' && (
+        <button
+          className={`header__hamburger ${isMobileMenuOpen ? 'header__hamburger--open' : ''}`}
+          onClick={handleMenuToggle}
+          aria-label="Menu"
+        >
+          <span className="header__hamburger-line"></span>
+          <span className="header__hamburger-line"></span>
+        </button>
+      )}
 
       {/* Mobile Menu - Rendered outside header */}
       {isMobileMenuOpen && (
