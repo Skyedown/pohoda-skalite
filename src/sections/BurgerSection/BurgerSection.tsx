@@ -38,7 +38,7 @@ const BurgerSection: React.FC = () => {
 
   return (
     <>
-      <section className="burger-section">
+      <section id="burger-menu" className="burger-section">
         <div className="container">
           <h2 className="burger-section__title">Burgre</h2>
 

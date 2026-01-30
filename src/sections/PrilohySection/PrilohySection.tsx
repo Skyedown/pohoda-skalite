@@ -38,7 +38,7 @@ const PrilohySection: React.FC = () => {
 
   return (
     <>
-      <section className="prilohy-section">
+      <section id="prilohy-menu" className="prilohy-section">
         <div className="container">
           <h2 className="prilohy-section__title">Prílohy</h2>
 

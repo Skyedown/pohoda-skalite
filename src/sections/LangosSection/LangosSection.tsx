@@ -57,7 +57,7 @@ const LangosSection: React.FC = () => {
 
   return (
     <>
-      <section className="langos-section">
+      <section id="langos-menu" className="langos-section">
         <div className="container">
           <p className="langos-section__subtitle">Chrumkavé a chutné</p>
           <h2 className="langos-section__title">Langoše</h2>
