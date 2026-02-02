@@ -33,6 +33,9 @@ const PizzaCart: React.FC = () => {
   const [canOrder, setCanOrder] = useState(getOrderingStatus().canOrder);
   const [gdprConsent, setGdprConsent] = useState(false);
 
+  // Check if orders are overloaded
+  const isOrdersOverload = import.meta.env.VITE_ORDERS_OVERLOAD === 'true';
+
   // Scroll to top when cart view opens
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -191,8 +194,8 @@ const PizzaCart: React.FC = () => {
     [deliveryMethod, formData.city, subtotal]
   );
   const canSubmitOrder = useMemo(() =>
-    (deliveryMethod === 'pickup' || isMinimumOrderMet(formData.city, subtotal)) && canOrder,
-    [deliveryMethod, formData.city, subtotal, canOrder]
+    (deliveryMethod === 'pickup' || isMinimumOrderMet(formData.city, subtotal)) && canOrder && !isOrdersOverload,
+    [deliveryMethod, formData.city, subtotal, canOrder, isOrdersOverload]
   );
 
   if (cart.length === 0) {
@@ -310,7 +313,7 @@ const PizzaCart: React.FC = () => {
               onClick={handleSubmit}
               disabled={isSubmitting || !canSubmitOrder}
             >
-              {isSubmitting ? 'ODOSIELAM...' : 'POTVRDIŤ OBJEDNÁVKU'}
+              {isSubmitting ? 'ODOSIELAM...' : isOrdersOverload ? 'OBJEDNÁVKY POZASTAVENÉ' : 'POTVRDIŤ OBJEDNÁVKU'}
             </button>
           </div>
         </div>

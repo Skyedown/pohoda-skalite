@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import type { Pizza, ProductType } from '../../types';
 import { pizzas } from '../../data/pizzas';
 import PizzaCard from '../../components/PizzaCard/PizzaCard';
 import ProductModal from '../../components/ProductModal/ProductModal';
 import Toast from '../../components/Toast/Toast';
+import OrderOverloadModal from '../../components/OrderOverloadModal/OrderOverloadModal';
 import BurgerSection from '../../sections/BurgerSection/BurgerSection';
 import LangosSection from '../../sections/LangosSection/LangosSection';
 import PrilohySection from '../../sections/PrilohySection/PrilohySection';
@@ -31,10 +32,21 @@ const PizzaMain: React.FC = () => {
   const [selectedFilter] = useState<ProductType | 'all'>('all');
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [showOverloadModal, setShowOverloadModal] = useState(false);
+
+  // Check if orders are overloaded
+  const isOrdersOverload = import.meta.env.VITE_ORDERS_OVERLOAD === 'true';
 
   // Initialize GSAP animations
   const heroPizzaRef = useHeroPizzaAnimation();
   useAllMenuAnimations();
+
+  // Show overload modal when page loads if orders are overloaded
+  useEffect(() => {
+    if (isOrdersOverload) {
+      setShowOverloadModal(true);
+    }
+  }, [isOrdersOverload]);
 
   // Only show pizzas in the top menu section
   const filteredItems =
@@ -226,6 +238,12 @@ const PizzaMain: React.FC = () => {
         message={toastMessage}
         isVisible={showToast}
         onClose={() => setShowToast(false)}
+      />
+
+      {/* Order Overload Modal */}
+      <OrderOverloadModal
+        isOpen={showOverloadModal}
+        onClose={() => setShowOverloadModal(false)}
       />
     </div>
   );
