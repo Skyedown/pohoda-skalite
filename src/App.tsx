@@ -26,9 +26,37 @@ const PageTracker: React.FC = () => {
   return null;
 };
 
-const App: React.FC = () => {
+// App content with route-based logic
+const AppContent: React.FC = () => {
+  const location = useLocation();
   const [isBannerVisible, setIsBannerVisible] = useState(false);
+  const isAdminPage = location.pathname === '/admin';
 
+  return (
+    <div className="app">
+      <Header isStatic={isAdminPage} />
+      {!isAdminPage && <OrderingStatusBanner onVisibilityChange={setIsBannerVisible} />}
+      <main>
+        <Routes>
+          <Route path="/" element={<PizzaMain />} />
+          <Route path="/cart" element={<PizzaCart />} />
+          <Route path="/thank-you" element={<ThankYou />} />
+          <Route path="/ochrana-osobnych-udajov" element={<PrivacyPolicy />} />
+          <Route path="/admin" element={<AdminPanel />} />
+        </Routes>
+      </main>
+      {!isAdminPage && (
+        <>
+          <FloatingCart bannerVisible={isBannerVisible} />
+          <FloatingCall bannerVisible={isBannerVisible} />
+        </>
+      )}
+      <CookieConsent />
+    </div>
+  );
+};
+
+const App: React.FC = () => {
   useEffect(() => {
     // Set default consent before any tracking
     setDefaultConsent();
@@ -45,22 +73,7 @@ const App: React.FC = () => {
       <CartProvider>
         <Router>
           <PageTracker />
-          <div className="app">
-            <Header />
-            <OrderingStatusBanner onVisibilityChange={setIsBannerVisible} />
-            <main>
-              <Routes>
-                <Route path="/" element={<PizzaMain />} />
-                <Route path="/cart" element={<PizzaCart />} />
-                <Route path="/thank-you" element={<ThankYou />} />
-                <Route path="/ochrana-osobnych-udajov" element={<PrivacyPolicy />} />
-                <Route path="/admin" element={<AdminPanel />} />
-              </Routes>
-            </main>
-            <FloatingCart bannerVisible={isBannerVisible} />
-            <FloatingCall bannerVisible={isBannerVisible} />
-            <CookieConsent />
-          </div>
+          <AppContent />
         </Router>
       </CartProvider>
     </HelmetProvider>

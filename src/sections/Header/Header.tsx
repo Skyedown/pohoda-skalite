@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './Header.less';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  isStatic?: boolean;
+}
+
+const Header: React.FC<HeaderProps> = ({ isStatic = false }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const phoneNumber = import.meta.env.VITE_RESTAURANT_PHONE || '+421918175571';
@@ -103,7 +107,7 @@ const Header: React.FC = () => {
 
   return (
     <>
-      <header className={`header ${isScrolled ? 'header--scrolled' : ''}`}>
+      <header className={`header ${isScrolled ? 'header--scrolled' : ''} ${isStatic ? 'header--static' : ''}`}>
         <div className="container">
           <div className="header__container">
             <Link to="/" className="header__logo" onClick={handleLogoClick}>
