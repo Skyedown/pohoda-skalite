@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { getAdminSettings, saveAdminSettings, WAIT_TIME_OPTIONS, formatWaitTime, type AdminSettings, type AnnouncementMode } from '../../utils/adminSettings';
 import './AdminPanel.less';
 
 const AdminPanel: React.FC = () => {
-  const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
