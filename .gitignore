@@ -21,6 +21,9 @@ api/.env
 api/.env.local
 api/.env.production
 
+# Admin settings data
+api/data/
+
 # Backups
 *.backup
 *.bak

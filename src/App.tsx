@@ -7,6 +7,7 @@ import PizzaMain from './views/PizzaMain/PizzaMain';
 import PizzaCart from './views/PizzaCart/PizzaCart';
 import ThankYou from './views/ThankYou/ThankYou';
 import PrivacyPolicy from './views/PrivacyPolicy/PrivacyPolicy';
+import AdminPanel from './views/AdminPanel/AdminPanel';
 import FloatingCart from './components/FloatingCart/FloatingCart';
 import FloatingCall from './components/FloatingCall/FloatingCall';
 import OrderingStatusBanner from './components/OrderingStatusBanner/OrderingStatusBanner';
@@ -53,6 +54,7 @@ const App: React.FC = () => {
                 <Route path="/cart" element={<PizzaCart />} />
                 <Route path="/thank-you" element={<ThankYou />} />
                 <Route path="/ochrana-osobnych-udajov" element={<PrivacyPolicy />} />
+                <Route path="/admin" element={<AdminPanel />} />
               </Routes>
             </main>
             <FloatingCart bannerVisible={isBannerVisible} />

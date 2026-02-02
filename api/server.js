@@ -2,9 +2,15 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import sgMail from '@sendgrid/mail';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { sanitizeOrder, escapeHTML } from './utils/sanitize.js';
 
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -30,11 +36,67 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
+// Admin settings file path
+const ADMIN_SETTINGS_FILE = path.join(__dirname, 'data', 'adminSettings.json');
+
+// Ensure data directory exists
+const dataDir = path.join(__dirname, 'data');
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir, { recursive: true });
+}
+
+// Initialize admin settings file if it doesn't exist
+if (!fs.existsSync(ADMIN_SETTINGS_FILE)) {
+  const defaultSettings = {
+    mode: 'off',
+    waitTimeMinutes: 60
+  };
+  fs.writeFileSync(ADMIN_SETTINGS_FILE, JSON.stringify(defaultSettings, null, 2));
+}
+
+// Get admin settings
+app.get('/api/admin-settings', (req, res) => {
+  try {
+    const data = fs.readFileSync(ADMIN_SETTINGS_FILE, 'utf8');
+    const settings = JSON.parse(data);
+    res.json(settings);
+  } catch (error) {
+    console.error('Error reading admin settings:', error);
+    res.status(500).json({ error: 'Failed to read settings' });
+  }
+});
+
+// Update admin settings
+app.post('/api/admin-settings', (req, res) => {
+  try {
+    const { mode, waitTimeMinutes } = req.body;
+
+    // Validate input
+    const validModes = ['off', 'disabled', 'waitTime'];
+    if (!validModes.includes(mode)) {
+      return res.status(400).json({ error: 'Invalid mode' });
+    }
+
+    if (typeof waitTimeMinutes !== 'number' || waitTimeMinutes < 0) {
+      return res.status(400).json({ error: 'Invalid waitTimeMinutes' });
+    }
+
+    const settings = { mode, waitTimeMinutes };
+    fs.writeFileSync(ADMIN_SETTINGS_FILE, JSON.stringify(settings, null, 2));
+
+    console.log('✅ Admin settings updated:', settings);
+    res.json({ success: true, settings });
+  } catch (error) {
+    console.error('Error saving admin settings:', error);
+    res.status(500).json({ error: 'Failed to save settings' });
+  }
+});
+
 // Send order confirmation emails
 app.post('/api/send-order-emails', async (req, res) => {
   console.log(
     '🚀 Received order email request at:',
-    new Date().toLocaleString()
+    new Date().toLocaleString('sk-SK', { timeZone: 'Europe/Bratislava' })
   );
 
   try {
@@ -433,7 +495,8 @@ function generateRestaurantEmail(order) {
         <div class="header">
           <h1>NOVÁ OBJEDNÁVKA</h1>
           <p>Čas objednávky: ${new Date(order.timestamp).toLocaleString(
-            'sk-SK'
+            'sk-SK',
+            { timeZone: 'Europe/Bratislava' }
           )}</p>
         </div>
 

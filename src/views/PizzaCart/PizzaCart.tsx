@@ -11,6 +11,7 @@ import { sanitizeCartForm } from '../../utils/sanitize';
 import { getOrderingStatus } from '../../utils/orderingStatus';
 import { trackPurchase } from '../../utils/analytics';
 import { getDeliveryRule, getMinimumOrderMessage, isMinimumOrderMet } from '../../utils/deliveryRules';
+import { getAdminSettings, type AdminSettings } from '../../utils/adminSettings';
 import type { DeliveryMethod } from '../../types';
 import './PizzaCart.less';
 
@@ -32,13 +33,35 @@ const PizzaCart: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [canOrder, setCanOrder] = useState(getOrderingStatus().canOrder);
   const [gdprConsent, setGdprConsent] = useState(false);
+  const [adminSettings, setAdminSettings] = useState<AdminSettings>({ mode: 'off', waitTimeMinutes: 60 });
 
-  // Check if orders are overloaded
-  const isOrdersOverload = import.meta.env.VITE_ORDERS_OVERLOAD === 'true';
+  // Check if orders are disabled via admin panel
+  const isOrdersDisabled = adminSettings.mode === 'disabled';
 
   // Scroll to top when cart view opens
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
+
+  // Load admin settings from server on mount
+  useEffect(() => {
+    const loadSettings = async () => {
+      const settings = await getAdminSettings();
+      setAdminSettings(settings);
+    };
+    loadSettings();
+  }, []);
+
+  // Listen for admin settings changes
+  useEffect(() => {
+    const handleSettingsChange = (event: CustomEvent<AdminSettings>) => {
+      setAdminSettings(event.detail);
+    };
+
+    window.addEventListener('adminSettingsChanged', handleSettingsChange as EventListener);
+    return () => {
+      window.removeEventListener('adminSettingsChanged', handleSettingsChange as EventListener);
+    };
   }, []);
 
   // Update ordering status every minute
@@ -194,8 +217,8 @@ const PizzaCart: React.FC = () => {
     [deliveryMethod, formData.city, subtotal]
   );
   const canSubmitOrder = useMemo(() =>
-    (deliveryMethod === 'pickup' || isMinimumOrderMet(formData.city, subtotal)) && canOrder && !isOrdersOverload,
-    [deliveryMethod, formData.city, subtotal, canOrder, isOrdersOverload]
+    (deliveryMethod === 'pickup' || isMinimumOrderMet(formData.city, subtotal)) && canOrder && !isOrdersDisabled,
+    [deliveryMethod, formData.city, subtotal, canOrder, isOrdersDisabled]
   );
 
   if (cart.length === 0) {
@@ -313,7 +336,7 @@ const PizzaCart: React.FC = () => {
               onClick={handleSubmit}
               disabled={isSubmitting || !canSubmitOrder}
             >
-              {isSubmitting ? 'ODOSIELAM...' : isOrdersOverload ? 'OBJEDNÁVKY POZASTAVENÉ' : 'POTVRDIŤ OBJEDNÁVKU'}
+              {isSubmitting ? 'ODOSIELAM...' : isOrdersDisabled ? 'OBJEDNÁVKY POZASTAVENÉ' : 'POTVRDIŤ OBJEDNÁVKU'}
             </button>
           </div>
         </div>

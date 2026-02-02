@@ -6,6 +6,7 @@ import PizzaCard from '../../components/PizzaCard/PizzaCard';
 import ProductModal from '../../components/ProductModal/ProductModal';
 import Toast from '../../components/Toast/Toast';
 import OrderOverloadModal from '../../components/OrderOverloadModal/OrderOverloadModal';
+import { getAdminSettings, type AdminSettings } from '../../utils/adminSettings';
 import BurgerSection from '../../sections/BurgerSection/BurgerSection';
 import LangosSection from '../../sections/LangosSection/LangosSection';
 import PrilohySection from '../../sections/PrilohySection/PrilohySection';
@@ -33,20 +34,38 @@ const PizzaMain: React.FC = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [showOverloadModal, setShowOverloadModal] = useState(false);
-
-  // Check if orders are overloaded
-  const isOrdersOverload = import.meta.env.VITE_ORDERS_OVERLOAD === 'true';
+  const [adminSettings, setAdminSettings] = useState<AdminSettings>({ mode: 'off', waitTimeMinutes: 60 });
 
   // Initialize GSAP animations
   const heroPizzaRef = useHeroPizzaAnimation();
   useAllMenuAnimations();
 
-  // Show overload modal when page loads if orders are overloaded
+  // Load admin settings from server on mount
   useEffect(() => {
-    if (isOrdersOverload) {
-      setShowOverloadModal(true);
-    }
-  }, [isOrdersOverload]);
+    const loadSettings = async () => {
+      const settings = await getAdminSettings();
+      setAdminSettings(settings);
+      if (settings.mode === 'disabled' || settings.mode === 'waitTime') {
+        setShowOverloadModal(true);
+      }
+    };
+    loadSettings();
+  }, []);
+
+  // Listen for admin settings changes
+  useEffect(() => {
+    const handleSettingsChange = (event: CustomEvent<AdminSettings>) => {
+      setAdminSettings(event.detail);
+      if (event.detail.mode === 'disabled' || event.detail.mode === 'waitTime') {
+        setShowOverloadModal(true);
+      }
+    };
+
+    window.addEventListener('adminSettingsChanged', handleSettingsChange as EventListener);
+    return () => {
+      window.removeEventListener('adminSettingsChanged', handleSettingsChange as EventListener);
+    };
+  }, []);
 
   // Only show pizzas in the top menu section
   const filteredItems =
@@ -244,6 +263,8 @@ const PizzaMain: React.FC = () => {
       <OrderOverloadModal
         isOpen={showOverloadModal}
         onClose={() => setShowOverloadModal(false)}
+        mode={adminSettings.mode}
+        waitTimeMinutes={adminSettings.waitTimeMinutes}
       />
     </div>
   );

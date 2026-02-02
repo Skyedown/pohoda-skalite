@@ -1,13 +1,23 @@
 import React from 'react';
+import { formatWaitTime, type AnnouncementMode } from '../../utils/adminSettings';
 import './OrderOverloadModal.less';
 
 interface OrderOverloadModalProps {
   isOpen: boolean;
   onClose: () => void;
+  mode?: AnnouncementMode;
+  waitTimeMinutes?: number;
 }
 
-const OrderOverloadModal: React.FC<OrderOverloadModalProps> = ({ isOpen, onClose }) => {
+const OrderOverloadModal: React.FC<OrderOverloadModalProps> = ({
+  isOpen,
+  onClose,
+  mode = 'disabled',
+  waitTimeMinutes = 60
+}) => {
   if (!isOpen) return null;
+
+  const isWaitTimeMode = mode === 'waitTime';
 
   return (
     <div className="order-overload-modal-overlay" onClick={onClose}>
@@ -18,29 +28,50 @@ const OrderOverloadModal: React.FC<OrderOverloadModalProps> = ({ isOpen, onClose
           </svg>
         </button>
 
-        <div className="order-overload-modal__icon">⚠️</div>
+        <div className="order-overload-modal__icon">
+          {isWaitTimeMode ? '⏰' : '⚠️'}
+        </div>
 
         <h2 className="order-overload-modal__title">
-          Online objednávky dočasne pozastavené
+          {isWaitTimeMode
+            ? 'Informácia o čakacej dobe'
+            : 'Online objednávky dočasne pozastavené'}
         </h2>
 
-        <p className="order-overload-modal__message">
-          Z dôvodu veľkého počtu objednávok sme momentálne nútení pozastaviť prijímanie nových online objednávok.
-        </p>
+        {isWaitTimeMode ? (
+          <>
+            <p className="order-overload-modal__message">
+              Z dôvodu veľkého počtu objednávok je čakacia doba momentálne{' '}
+              <strong className="order-overload-modal__highlight">
+                {formatWaitTime(waitTimeMinutes)}
+              </strong>.
+            </p>
 
-        <p className="order-overload-modal__message">
-          Ďakujeme za pochopenie a ospravedlňujeme sa za nepríjemnosti. Skúste to prosím neskôr alebo nás kontaktujte telefonicky.
-        </p>
+            <p className="order-overload-modal__message">
+              Vaša objednávka bude pripravená v predpokladanom čase. Ďakujeme za pochopenie a trpezlivosť!
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="order-overload-modal__message">
+              Z dôvodu veľkého počtu objednávok sme momentálne nútení pozastaviť prijímanie nových online objednávok.
+            </p>
+
+            <p className="order-overload-modal__message">
+              Ďakujeme za pochopenie a ospravedlňujeme sa za nepríjemnosti. Skúste to prosím neskôr alebo nás kontaktujte telefonicky.
+            </p>
+          </>
+        )}
 
         <div className="order-overload-modal__contact">
-          <p>Pre viac informácií nás môžete kontaktovať telefonicky:</p>
+          <p>{isWaitTimeMode ? 'Máte otázky?' : 'Pre viac informácií'} Kontaktujte nás telefonicky:</p>
           <a href={`tel:${import.meta.env.VITE_RESTAURANT_PHONE || '+421918175571'}`} className="order-overload-modal__phone">
             {import.meta.env.VITE_RESTAURANT_PHONE || '+421 918 175 571'}
           </a>
         </div>
 
         <button className="order-overload-modal__button" onClick={onClose}>
-          Rozumiem
+          {isWaitTimeMode ? 'Pokračovať v objednávke' : 'Rozumiem'}
         </button>
       </div>
     </div>
