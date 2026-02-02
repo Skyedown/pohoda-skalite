@@ -33,10 +33,6 @@ const PizzaCart: React.FC = () => {
   const [canOrder, setCanOrder] = useState(getOrderingStatus().canOrder);
   const [gdprConsent, setGdprConsent] = useState(false);
 
-  // Check if ordering is available (launch date: 2.2.2026)
-  const launchDate = new Date('2026-02-02T00:00:00');
-  const isBeforeLaunch = new Date() < launchDate;
-
   // Scroll to top when cart view opens
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -195,8 +191,8 @@ const PizzaCart: React.FC = () => {
     [deliveryMethod, formData.city, subtotal]
   );
   const canSubmitOrder = useMemo(() =>
-    (deliveryMethod === 'pickup' || isMinimumOrderMet(formData.city, subtotal)) && canOrder && !isBeforeLaunch,
-    [deliveryMethod, formData.city, subtotal, canOrder, isBeforeLaunch]
+    (deliveryMethod === 'pickup' || isMinimumOrderMet(formData.city, subtotal)) && canOrder,
+    [deliveryMethod, formData.city, subtotal, canOrder]
   );
 
   if (cart.length === 0) {
@@ -303,12 +299,8 @@ const PizzaCart: React.FC = () => {
             )}
           </div>
 
-          <div className={`pizza-cart__button-wrapper ${(!isMinimumOrderMet(formData.city, subtotal) && formData.city) || isBeforeLaunch ? 'has-tooltip' : ''}`}>
-            {isBeforeLaunch ? (
-              <div className="pizza-cart__tooltip">
-                Objednávanie bude dostupné od 2.2.2026
-              </div>
-            ) : !isMinimumOrderMet(formData.city, subtotal) && formData.city ? (
+          <div className={`pizza-cart__button-wrapper ${(!isMinimumOrderMet(formData.city, subtotal) && formData.city) ? 'has-tooltip' : ''}`}>
+            {!isMinimumOrderMet(formData.city, subtotal) && formData.city ? (
               <div className="pizza-cart__tooltip">
                 {minimumOrderMessage}
               </div>
@@ -318,7 +310,7 @@ const PizzaCart: React.FC = () => {
               onClick={handleSubmit}
               disabled={isSubmitting || !canSubmitOrder}
             >
-              {isSubmitting ? 'ODOSIELAM...' : isBeforeLaunch ? 'OBJEDNÁVANIE NIE JE DOSTUPNÉ' : 'POTVRDIŤ OBJEDNÁVKU'}
+              {isSubmitting ? 'ODOSIELAM...' : 'POTVRDIŤ OBJEDNÁVKU'}
             </button>
           </div>
         </div>

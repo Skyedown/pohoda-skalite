@@ -72,6 +72,9 @@ app.post('/api/send-order-emails', async (req, res) => {
       html: customerEmailContent,
     };
 
+    // Generate unique order ID from timestamp
+    const orderId = order.timestamp.replace(/[-:T.]/g, '').slice(0, 14); // Format: YYYYMMDDHHMMSS
+
     // Send email to restaurant
     const restaurantEmail = {
       to: RESTAURANT_EMAIL,
@@ -79,7 +82,7 @@ app.post('/api/send-order-emails', async (req, res) => {
         email: 'noreply@pizzapohoda.sk',
         name: 'Pizza Pohoda'
       },
-      subject: `Nová objednávka #${order.timestamp.slice(0, 10)}`,
+      subject: `Nová objednávka #${orderId}`,
       html: restaurantEmailContent,
     };
 
@@ -380,6 +383,9 @@ function generateCustomerEmail(order) {
 
 // Generate restaurant notification email
 function generateRestaurantEmail(order) {
+  // Generate unique order ID from timestamp
+  const orderId = order.timestamp.replace(/[-:T.]/g, '').slice(0, 14); // Format: YYYYMMDDHHMMSS
+
   const itemsList = order.items
     .map((item) => {
       const extrasText =
@@ -515,7 +521,7 @@ function generateRestaurantEmail(order) {
         </div>
 
         <p style="margin-top: 30px; text-align: center; color: #666;">
-          ID objednávky: ${order.timestamp}
+          ID objednávky: #${orderId}
         </p>
       </div>
     </body>

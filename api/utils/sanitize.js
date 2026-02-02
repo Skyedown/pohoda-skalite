@@ -94,6 +94,7 @@ export function sanitizeDelivery(delivery) {
   }
 
   return {
+    fullName: sanitizeTextInput(delivery.fullName, 100),
     street: sanitizeTextInput(delivery.street, 200),
     city: sanitizeTextInput(delivery.city, 100),
     phone: sanitizePhone(delivery.phone),

@@ -5,7 +5,6 @@ import { pizzas } from '../../data/pizzas';
 import PizzaCard from '../../components/PizzaCard/PizzaCard';
 import ProductModal from '../../components/ProductModal/ProductModal';
 import Toast from '../../components/Toast/Toast';
-import LaunchAnnouncementPopup from '../../components/LaunchAnnouncementPopup/LaunchAnnouncementPopup';
 import BurgerSection from '../../sections/BurgerSection/BurgerSection';
 import LangosSection from '../../sections/LangosSection/LangosSection';
 import PrilohySection from '../../sections/PrilohySection/PrilohySection';
@@ -132,9 +131,6 @@ const PizzaMain: React.FC = () => {
           {JSON.stringify(structuredData)}
         </script>
       </Helmet>
-
-      {/* Launch Announcement Popup */}
-      <LaunchAnnouncementPopup />
 
       {/* Hero Section */}
       <section className="pizza-main__hero">
