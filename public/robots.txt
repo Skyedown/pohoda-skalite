@@ -3,6 +3,7 @@
 User-agent: *
 Allow: /
 Disallow: /api/
+Disallow: /admin
 
 # Sitemap
 Sitemap: https://pizzapohoda.sk/sitemap.xml

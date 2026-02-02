@@ -87,6 +87,7 @@ const AdminPanel: React.FC = () => {
       <div className="admin-panel">
         <Helmet>
           <title>Admin Panel | Pohoda Skalite</title>
+          <meta name="robots" content="noindex, nofollow" />
         </Helmet>
 
         <div className="admin-panel__login">
@@ -139,6 +140,7 @@ const AdminPanel: React.FC = () => {
     <div className="admin-panel">
       <Helmet>
         <title>Admin Panel | Pohoda Skalite</title>
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
       <div className="admin-panel__container">
