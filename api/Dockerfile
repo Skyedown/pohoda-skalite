@@ -6,12 +6,19 @@ WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
+COPY tsconfig.json ./
 
-# Install production dependencies only
-RUN npm ci --only=production
+# Install all dependencies (including devDependencies for TypeScript build)
+RUN npm ci
 
-# Copy application files
+# Copy application source files
 COPY . .
+
+# Build TypeScript to JavaScript
+RUN npm run build
+
+# Remove dev dependencies after build to reduce image size
+RUN npm prune --production
 
 # Create a non-root user
 RUN addgroup -g 1001 -S nodejs && \
@@ -26,8 +33,8 @@ USER nodejs
 # Expose port 3001
 EXPOSE 3001
 
-# Start the application
-CMD ["node", "server.js"]
+# Start the compiled application
+CMD ["node", "dist/server.js"]
 
 # This tells Docker HOW to test if the container is working
 HEALTHCHECK --interval=10s --timeout=5s --start-period=15s --retries=3 \
