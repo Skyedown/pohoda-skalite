@@ -3,8 +3,8 @@
  */
 
 import sanitizeHtml from 'sanitize-html';
-import validator from 'express-validator/lib/validator.js';
-import type { Order, Delivery, SanitizedOrder } from '../types.js';
+import validator from 'validator';
+import type { Delivery, SanitizedOrder } from '../types.js';
 
 /**
  * Escape HTML to prevent XSS attacks using sanitize-html
@@ -95,6 +95,7 @@ export function sanitizeDelivery(delivery: Partial<Delivery>): Delivery {
   }
 
   return {
+    fullName: sanitizeTextInput(delivery.fullName || '', 100),
     street: sanitizeTextInput(delivery.street || '', 200),
     city: sanitizeTextInput(delivery.city || '', 100),
     phone: sanitizePhone(delivery.phone || ''),

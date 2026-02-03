@@ -140,8 +140,8 @@ const ProductModal: React.FC<ProductModalProps> = ({
           ✕
         </button>
 
-        {/* Header with Product Image */}
-        <div className="product-modal__header">
+        {/* Header with Product Image - Desktop only (side by side) */}
+        <div className="product-modal__header product-modal__header--desktop">
           <div className="product-modal__image-container">
             <img
               src={product.image}
@@ -155,6 +155,19 @@ const ProductModal: React.FC<ProductModalProps> = ({
         <div className="product-modal__right">
           {/* Content */}
           <div className="product-modal__content">
+
+          {/* Header with Product Image - Mobile/Tablet (inside scroll) */}
+          <div className="product-modal__header product-modal__header--mobile">
+            <div className="product-modal__image-container">
+              <img
+                src={product.image}
+                alt={product.name}
+                className="product-modal__image"
+              />
+            </div>
+          </div>
+
+          <div className="product-modal__content-inner">
           {/* Product Info */}
           <div className="product-modal__info">
             <h2 id="modal-title" className="product-modal__name">
@@ -281,6 +294,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
                 </svg>
               </button>
             </div>
+          </div>
           </div>
         </div>
 

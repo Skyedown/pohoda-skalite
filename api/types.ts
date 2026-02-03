@@ -21,6 +21,7 @@ export interface OrderItem {
 }
 
 export interface Delivery {
+  fullName: string;
   street: string;
   city: string;
   phone: string;
@@ -40,6 +41,7 @@ export interface Order {
   delivery: Delivery;
   pricing: Pricing;
   paymentMethod: 'cash' | 'card';
+  deliveryMethod?: 'delivery' | 'pickup';
 }
 
 export interface SanitizedOrder extends Order {

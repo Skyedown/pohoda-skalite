@@ -1,4 +1,51 @@
-<!DOCTYPE html>
+/**
+ * Customer confirmation email template
+ */
+
+import { escapeHTML } from '../utils/sanitize.js';
+import type { SanitizedOrder } from '../types.js';
+
+/**
+ * Generate customer confirmation email
+ * @param order - Sanitized order object
+ * @param restaurantEmail - Restaurant email address
+ * @param restaurantPhone - Restaurant phone number
+ * @returns HTML email content
+ */
+export function generateCustomerEmail(
+  order: SanitizedOrder,
+  restaurantEmail: string,
+  restaurantPhone: string
+): string {
+  const itemsList = order.items
+    .map((item) => {
+      const extrasText =
+        item.extras && item.extras.length > 0
+          ? `<br><small style="color: #634832; margin-top: 4px; display: block;">+ ${item.extras
+              .map((e) => `${escapeHTML(e.name)} (+${e.price.toFixed(2)}€)`)
+              .join(', ')}</small>`
+          : '';
+
+      return `
+      <tr>
+        <td style="padding: 12px; border-bottom: 1px solid #f0ebe4;">
+          <strong style="color: #1f2123; font-size: 15px;">${escapeHTML(
+            item.name
+          )}</strong>${extrasText}
+        </td>
+        <td style="padding: 12px; border-bottom: 1px solid #f0ebe4; text-align: center; color: #634832;">${
+          item.quantity
+        }×</td>
+        <td style="padding: 12px; border-bottom: 1px solid #f0ebe4; text-align: right; font-weight: 600; color: #1f2123;">${item.totalPrice.toFixed(
+          2
+        )} €</td>
+      </tr>
+    `;
+    })
+    .join('');
+
+  return `
+    <!DOCTYPE html>
     <html>
     <head>
       <meta charset="UTF-8">
@@ -21,10 +68,13 @@
           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         .header {
-          background: linear-gradient(135deg, #e17c2f 0%, #d16a1f 100%);
           color: white;
-          padding: 40px 20px;
           text-align: center;
+        }
+        .header img.logo {
+          height: 60px;
+          margin: 0 auto 15px auto;
+          display: block;
         }
         .header h1 {
           margin: 0 0 10px 0;
@@ -109,6 +159,12 @@
           text-decoration: none;
           font-weight: 600;
         }
+        .icon-inline {
+          width: 20px;
+          height: 20px;
+          vertical-align: middle;
+          margin-right: 8px;
+        }
         .footer {
           background-color: #634832;
           text-align: center;
@@ -128,7 +184,8 @@
     <body>
       <div class="container">
         <div class="header">
-          <h1>🍕 Pizza Pohoda</h1>
+          <img src="https://pizzapohoda.sk/images/logo-social.png" alt="Pizza Pohoda Logo" class="logo" style="height: 80px; max-height: 80px; width: auto; margin: 0 auto; display: block;">
+          <h1>Pizza Pohoda</h1>
           <p>Ďakujeme za vašu objednávku!</p>
         </div>
 
@@ -136,7 +193,7 @@
           <h2>Potvrdenie objednávky</h2>
           <p>Vaša objednávka bola úspešne prijatá a je v príprave. Tešíme sa, že vás čoskoro obsúžime!</p>
 
-          <h3>📋 Objednané položky:</h3>
+          <h3><img src="https://pizzapohoda.sk/icons/list.png" alt="" class="icon-inline">Objednané položky:</h3>
           <table class="order-table">
             <thead>
               <tr>
@@ -151,25 +208,53 @@
           </table>
 
           <div class="summary">
-            <p><strong>Medzisúčet:</strong> <span style="float: right;">${order.pricing.subtotal.toFixed(2)} €</span></p>
-            <p><strong>Doprava:</strong> <span style="float: right;">${order.pricing.delivery.toFixed(2)} €</span></p>
-            <p class="total-price"><strong>Celkom:</strong> <span style="float: right;">${order.pricing.total.toFixed(2)} €</span></p>
+            <p><strong>Medzisúčet:</strong> <span style="float: right;">${order.pricing.subtotal.toFixed(
+              2
+            )} €</span></p>
+            <p><strong>Doprava:</strong> <span style="float: right;">${order.pricing.delivery.toFixed(
+              2
+            )} €</span></p>
+            <p class="total-price"><strong>Celkom:</strong> <span style="float: right;">${order.pricing.total.toFixed(
+              2
+            )} €</span></p>
           </div>
 
-          <h3>📍 Adresa doručenia:</h3>
+          <h3><img src="https://pizzapohoda.sk/icons/location.png" alt="" class="icon-inline">${
+            order.deliveryMethod === 'pickup'
+              ? 'Vyzdvihnutie v reštaurácii'
+              : 'Adresa doručenia'
+          }:</h3>
           <div class="delivery-info">
-            <p style="margin: 5px 0;"><strong>${escapeHTML(order.delivery.street)}</strong></p>
-            <p style="margin: 5px 0;">${escapeHTML(order.delivery.city)}</p>
-            <p style="margin: 5px 0;">📞 ${escapeHTML(order.delivery.phone)}</p>
-            ${order.delivery.notes ? `<p style="margin: 15px 0 5px 0; padding-top: 15px; border-top: 1px solid #f0ebe4;"><em style="color: #634832;">Poznámka: ${escapeHTML(order.delivery.notes)}</em></p>` : ''}
+            <p style="margin: 5px 0;"><strong>Meno:</strong> ${escapeHTML(
+              order.delivery.fullName
+            )}</p>
+            ${
+              order.deliveryMethod === 'delivery'
+                ? `<p style="margin: 5px 0;"><strong>Adresa:</strong> ${escapeHTML(
+                    order.delivery.street
+                  )}, ${escapeHTML(order.delivery.city)}</p>`
+                : ''
+            }
+            <p style="margin: 5px 0;"><img src="https://pizzapohoda.sk/icons/phone.png" alt="" class="icon-inline">${escapeHTML(
+              order.delivery.phone
+            )}</p>
+            ${
+              order.delivery.notes
+                ? `<p style="margin: 15px 0 5px 0; padding-top: 15px; border-top: 1px solid #f0ebe4;"><em style="color: #634832;">Poznámka: ${escapeHTML(
+                    order.delivery.notes
+                  )}</em></p>`
+                : ''
+            }
           </div>
 
-          <p><strong>💳 Spôsob platby:</strong> ${order.paymentMethod === 'cash' ? 'Hotovosť pri dodaní' : 'Karta pri dodaní'}</p>
+          <p><strong><img src="https://pizzapohoda.sk/icons/card.png" alt="" class="icon-inline">Spôsob platby:</strong> ${
+            order.paymentMethod === 'cash' ? 'V hotovosti' : 'Kartou'
+          }</p>
 
           <div class="contact-box">
             <p style="margin-bottom: 12px; font-size: 16px;"><strong>Máte otázky?</strong></p>
-            <p>📧 <a href="mailto:${restaurantEmail}">${restaurantEmail}</a></p>
-            <p>📞 <a href="tel:${restaurantPhone}">${restaurantPhone}</a></p>
+            <p><img src="https://pizzapohoda.sk/icons/mail.png" alt="" class="icon-inline"><a href="mailto:${restaurantEmail}">${restaurantEmail}</a></p>
+            <p><img src="https://pizzapohoda.sk/icons/phone-orange.png" alt="" class="icon-inline"><a href="tel:${restaurantPhone}">${restaurantPhone}</a></p>
           </div>
         </div>
 
@@ -184,3 +269,5 @@
       </div>
     </body>
     </html>
+  `;
+}
