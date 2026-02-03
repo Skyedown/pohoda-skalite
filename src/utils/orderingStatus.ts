@@ -1,11 +1,14 @@
 
+import { getAdminSettings, formatWaitTime } from './adminSettings';
 
 export type OrderingStatus =
   | 'before_preorder'   // Before preorder time - ordering disabled
   | 'preorder'          // Preorder time - accepting preorders
   | 'open'              // During opening hours - normal ordering
   | 'orders_closed'     // After last order time - orders closed but still open
-  | 'closed';           // After closing - ordering disabled
+  | 'closed'            // After closing - ordering disabled
+  | 'admin_disabled'    // Admin disabled ordering
+  | 'admin_wait_time';  // Admin set wait time message
 
 export interface OrderingStatusInfo {
   status: OrderingStatus;
@@ -29,7 +32,39 @@ function timeToMinutes(timeStr: string): number {
   return hours * 60 + minutes;
 }
 
+export async function getOrderingStatusAsync(): Promise<OrderingStatusInfo> {
+  // First check admin settings
+  const adminSettings = await getAdminSettings();
+
+  // Admin has disabled ordering
+  if (adminSettings.mode === 'disabled') {
+    return {
+      status: 'admin_disabled',
+      canOrder: false,
+      message: 'Objednávky sú dočasne pozastavené. Ďakujeme za pochopenie.',
+    };
+  }
+
+  // Admin set wait time message
+  if (adminSettings.mode === 'waitTime') {
+    return {
+      status: 'admin_wait_time',
+      canOrder: true,
+      message: `Aktuálna čakacia doba: ${formatWaitTime(adminSettings.waitTimeMinutes)}`,
+    };
+  }
+
+  // If admin mode is 'off', proceed with time-based logic
+  return getTimeBasedStatus();
+}
+
 export function getOrderingStatus(): OrderingStatusInfo {
+  // This is a synchronous version that doesn't check admin settings
+  // Used for initial render, then replaced by async version
+  return getTimeBasedStatus();
+}
+
+function getTimeBasedStatus(): OrderingStatusInfo {
   const preorderStartTime = import.meta.env.VITE_PREORDER_START_TIME || '10:00';
   const openingTime = import.meta.env.VITE_OPENING_TIME || '11:00';
   const lastOrderTime = import.meta.env.VITE_LAST_ORDER_TIME || '21:30';

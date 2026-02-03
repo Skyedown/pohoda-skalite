@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getOrderingStatus, type OrderingStatusInfo } from '../../utils/orderingStatus';
+import { getOrderingStatus, getOrderingStatusAsync, type OrderingStatusInfo } from '../../utils/orderingStatus';
 import './OrderingStatusBanner.less';
 
 interface OrderingStatusBannerProps {
@@ -10,9 +10,17 @@ const OrderingStatusBanner: React.FC<OrderingStatusBannerProps> = ({ onVisibilit
   const [statusInfo, setStatusInfo] = useState<OrderingStatusInfo>(getOrderingStatus());
 
   useEffect(() => {
+    // Fetch initial status with admin settings
+    const fetchStatus = async () => {
+      const status = await getOrderingStatusAsync();
+      setStatusInfo(status);
+    };
+    fetchStatus();
+
     // Update status every minute
-    const interval = setInterval(() => {
-      setStatusInfo(getOrderingStatus());
+    const interval = setInterval(async () => {
+      const status = await getOrderingStatusAsync();
+      setStatusInfo(status);
     }, 60000); // 60 seconds
 
     return () => clearInterval(interval);
@@ -36,8 +44,10 @@ const OrderingStatusBanner: React.FC<OrderingStatusBannerProps> = ({ onVisibilit
       case 'before_preorder':
       case 'orders_closed':
       case 'closed':
+      case 'admin_disabled':
         return 'ordering-status-banner--closed';
       case 'preorder':
+      case 'admin_wait_time':
         return 'ordering-status-banner--preorder';
       default:
         return '';
