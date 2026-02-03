@@ -1,12 +1,4 @@
-/**
- * Sanitization utilities for user inputs
- */
 
-/**
- * Removes potentially dangerous HTML tags and scripts
- * @param input - The string to sanitize
- * @returns Sanitized string
- */
 export const sanitizeHTML = (input: string): string => {
   if (!input) return '';
 
@@ -19,12 +11,6 @@ export const sanitizeHTML = (input: string): string => {
     .replace(/\//g, '&#x2F;');
 };
 
-/**
- * Sanitizes text input by removing script tags and limiting length
- * @param input - The string to sanitize
- * @param maxLength - Maximum allowed length (default: 500)
- * @returns Sanitized string
- */
 export const sanitizeTextInput = (input: string, maxLength: number = 500): string => {
   if (!input) return '';
 
@@ -43,11 +29,6 @@ export const sanitizeTextInput = (input: string, maxLength: number = 500): strin
   return sanitized;
 };
 
-/**
- * Validates and sanitizes email address
- * @param email - Email address to validate
- * @returns Sanitized email or empty string if invalid
- */
 export const sanitizeEmail = (email: string): string => {
   if (!email) return '';
 

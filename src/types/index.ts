@@ -1,4 +1,4 @@
-export type ProductType = 'pizza' | 'burger' | 'langos' | 'sides' | 'snack' | 'drink';
+export type ProductType = 'pizza' | 'burger' | 'langos' | 'sides';
 
 export interface Pizza {
   id: string;

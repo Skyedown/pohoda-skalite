@@ -1,6 +1,4 @@
-/**
- * Utility functions for determining ordering status based on time
- */
+
 
 export type OrderingStatus =
   | 'before_preorder'   // Before preorder time - ordering disabled
@@ -15,33 +13,22 @@ export interface OrderingStatusInfo {
   message: string;
 }
 
-/**
- * Parse time string (HH:mm) and return hours and minutes
- */
+
 function parseTime(timeStr: string): { hours: number; minutes: number } {
   const [hours, minutes] = timeStr.split(':').map(Number);
   return { hours, minutes };
 }
 
-/**
- * Get current time in minutes since midnight
- */
 function getCurrentTimeInMinutes(): number {
   const now = new Date();
   return now.getHours() * 60 + now.getMinutes();
 }
 
-/**
- * Convert time string to minutes since midnight
- */
 function timeToMinutes(timeStr: string): number {
   const { hours, minutes } = parseTime(timeStr);
   return hours * 60 + minutes;
 }
 
-/**
- * Get the ordering status based on current time
- */
 export function getOrderingStatus(): OrderingStatusInfo {
   const preorderStartTime = import.meta.env.VITE_PREORDER_START_TIME || '10:00';
   const openingTime = import.meta.env.VITE_OPENING_TIME || '11:00';
