@@ -5,7 +5,7 @@ export interface AdminSettings {
   waitTimeMinutes: number;
 }
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const API_URL = import.meta.env.VITE_API_URL ?? '';
 
 export const WAIT_TIME_OPTIONS = [
   { value: 30, label: '30 minút' },
