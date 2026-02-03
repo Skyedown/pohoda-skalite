@@ -12,6 +12,9 @@ services:
       - '3001:3001'
     env_file:
       - ./api/.env
+    volumes:
+      # Persist admin settings between container restarts
+      - api-data:/app/dist/data
     networks:
       - pizza-network
     healthcheck:
@@ -44,3 +47,7 @@ services:
 networks:
   pizza-network:
     driver: bridge
+
+volumes:
+  api-data:
+    driver: local
