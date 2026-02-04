@@ -80,13 +80,25 @@
   }
 
   &__icon {
-    font-size: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-bottom: 24px;
-    line-height: 1;
+
+    svg {
+      width: 72px;
+      height: 72px;
+      color: @primary-color;
+      stroke-width: 2;
+    }
 
     @media (max-width: @breakpoint-sm) {
-      font-size: 56px;
       margin-bottom: 20px;
+
+      svg {
+        width: 56px;
+        height: 56px;
+      }
     }
   }
 

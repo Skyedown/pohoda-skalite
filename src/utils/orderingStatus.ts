@@ -116,7 +116,7 @@ function getTimeBasedStatus(): OrderingStatusInfo {
   return {
     status: 'closed',
     canOrder: false,
-    message: `Reštaurácia je momentálne zatvorená. Otvárame zajtra o ${openingTime}.`,
+    message: `Reštaurácia už momentálne nepríjma objednávky. Online predobjednávky sa otvárajú o ${preorderStartTime}.`,
   };
 }
 
