@@ -2,7 +2,7 @@ import type { Pizza } from '../types';
 
 export const prilohy: Pizza[] = [
   {
-    id: 'prilohy-1',
+    id: 'prilohy-0',
     name: 'Klasické hranolky',
     price: 2.0,
     image: '/images/sides/hranolky.webp',

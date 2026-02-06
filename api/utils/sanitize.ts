@@ -135,7 +135,11 @@ export function sanitizeOrder(order: any): SanitizedOrder {
     extras: item.extras ? item.extras.map((extra: any) => ({
       ...extra,
       name: sanitizeTextInput(extra.name, 100)
-    })) : []
+    })) : [],
+    requiredOption: item.requiredOption ? {
+      name: sanitizeTextInput(item.requiredOption.name, 100),
+      selectedValue: sanitizeTextInput(item.requiredOption.selectedValue, 100)
+    } : undefined
   }));
 
   // Validate payment method

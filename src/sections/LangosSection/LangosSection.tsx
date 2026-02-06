@@ -10,7 +10,6 @@ const langosExtras: Extra[] = [
   // All extras - 0.80 EUR (only ingredients from langos)
   { id: 'extra-cheese', name: 'Extra syr', price: 0.80 },
   { id: 'sour-cream', name: 'Kyslá smotana', price: 0.80 },
-  { id: 'garlic', name: 'Cesnak', price: 0.80 },
   { id: 'nutella', name: 'Nutella', price: 0.80 },
   { id: 'banana', name: 'Banán', price: 0.80 },
 ];

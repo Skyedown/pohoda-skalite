@@ -26,6 +26,11 @@ export function generateRestaurantEmail(order: SanitizedOrder): string {
 
   const itemsList = order.items
     .map((item) => {
+      const requiredOptionText =
+        item.requiredOption
+          ? `<br><small style="color: #666;">${escapeHTML(item.requiredOption.name)}: <strong>${escapeHTML(item.requiredOption.selectedValue)}</strong></small>`
+          : '';
+
       const extrasText =
         item.extras && item.extras.length > 0
           ? `<br><small style="color: #666;">+ ${item.extras
@@ -36,7 +41,7 @@ export function generateRestaurantEmail(order: SanitizedOrder): string {
       return `
       <tr>
         <td style="padding: 10px; border-bottom: 1px solid #eee;">
-          <strong>${escapeHTML(item.name)}</strong>${extrasText}
+          <strong>${escapeHTML(item.name)}</strong>${requiredOptionText}${extrasText}
         </td>
         <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: center;">${
           item.quantity
