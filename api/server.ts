@@ -118,12 +118,8 @@ app.post('/api/send-order-emails', async (req, res) => {
       items: order.items.length,
     });
 
-    console.log('📋 Raw order items:', JSON.stringify(order.items, null, 2));
-
     // Sanitize order data to prevent XSS and injection attacks
     const sanitizedOrder = sanitizeOrder(order);
-
-    console.log('✅ Sanitized order items:', JSON.stringify(sanitizedOrder.items, null, 2));
 
     // Generate customer email content
     const customerEmailContent = generateCustomerEmail(sanitizedOrder, RESTAURANT_EMAIL, RESTAURANT_PHONE);

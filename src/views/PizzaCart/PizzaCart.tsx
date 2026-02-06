@@ -138,25 +138,21 @@ const PizzaCart: React.FC = () => {
 
       // Create comprehensive order object
       const order = {
-        items: cart.map(item => {
-          console.log('Cart item:', item);
-          console.log('Required option:', item.requiredOption);
-          return {
-            id: item.pizza.id,
-            name: item.pizza.name,
-            type: item.pizza.type,
-            quantity: item.quantity,
-            basePrice: item.pizza.price,
-            extras: item.extras?.map(extra => ({
-              id: extra.id,
-              name: extra.name,
-              price: extra.price
-            })) || [],
-            extrasPrice: item.extrasPrice || 0,
-            totalPrice: item.totalPrice,
-            requiredOption: item.requiredOption
-          };
-        }),
+        items: cart.map(item => ({
+          id: item.pizza.id,
+          name: item.pizza.name,
+          type: item.pizza.type,
+          quantity: item.quantity,
+          basePrice: item.pizza.price,
+          extras: item.extras?.map(extra => ({
+            id: extra.id,
+            name: extra.name,
+            price: extra.price
+          })) || [],
+          extrasPrice: item.extrasPrice || 0,
+          totalPrice: item.totalPrice,
+          requiredOption: item.requiredOption
+        })),
         pricing: {
           subtotal: subtotal,
           delivery: delivery,
@@ -174,8 +170,6 @@ const PizzaCart: React.FC = () => {
         paymentMethod: paymentMethod,
         timestamp: new Date().toISOString()
       };
-
-      console.log('Order being sent:', JSON.stringify(order, null, 2));
 
       // Track purchase conversion in GA4 & Meta Pixel
       trackPurchase({
