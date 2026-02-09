@@ -12,6 +12,7 @@ const ThankYou: React.FC = () => {
     <div className="thank-you">
       <Helmet>
         <title>Ďakujeme za objednávku | Pohoda Skalité</title>
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
       <div className="container">

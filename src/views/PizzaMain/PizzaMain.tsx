@@ -152,12 +152,13 @@ const PizzaMain: React.FC = () => {
         <title>Pizza Pohoda - Pizza, Burger & Langos | Skalité</title>
         <meta
           name="description"
-          content="Pizza Pohoda - Najlepšia napoletánska pizza, burgre a lángoše v Skalitom. Donáška zadarmo do Skalitého, Čierneho, Oščadnice a Svrčinovca. Čerstvé ingrediencie a tradičná príprava."
+          content="Najlepšia pizza v Skalitom s donáškou zdarma od 8€! Čerstvé suroviny, burgre, langoše a prílohy. Doručíme do Skalitého, Čierneho, Oščadnice a Svrčinovca. Objednajte online - Pizza Pohoda."
         />
         <meta
           name="keywords"
           content="pizza pohoda, pizza Skalité, burger Skalité, lángoš Skalité, pizzeria Skalité, rozvoz jedla Skalité, napoletánska pizza, donáška pizze zadarmo, pizza Čierne, pizza Oščadnica"
         />
+        <link rel="canonical" href="https://pizzapohoda.sk/" />
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
         </script>

@@ -12,6 +12,8 @@ const PrivacyPolicy: React.FC = () => {
       <Helmet>
         <title>Ochrana osobných údajov | Pohoda Skalite</title>
         <meta name="description" content="Zásady ochrany osobných údajov reštaurácie Pohoda Skalite" />
+        <meta name="robots" content="noindex, follow" />
+        <link rel="canonical" href="https://pizzapohoda.sk/ochrana-osobnych-udajov" />
       </Helmet>
 
       {/* Close button */}

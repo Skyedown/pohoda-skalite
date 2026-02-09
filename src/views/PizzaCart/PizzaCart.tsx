@@ -227,6 +227,7 @@ const PizzaCart: React.FC = () => {
       <div className="pizza-cart">
         <Helmet>
           <title>Košík | Pohoda Skalite</title>
+          <meta name="robots" content="noindex, nofollow" />
         </Helmet>
         <div className="container">
           <div className="pizza-cart__empty">
@@ -248,6 +249,7 @@ const PizzaCart: React.FC = () => {
     <div className="pizza-cart">
       <Helmet>
         <title>Košík | Pohoda Skalite</title>
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
       {/* Close button */}

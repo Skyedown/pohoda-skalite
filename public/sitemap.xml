@@ -4,36 +4,12 @@
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
-  <!-- Homepage -->
+  <!-- Homepage - Only indexable page -->
   <url>
     <loc>https://pizzapohoda.sk/</loc>
-    <lastmod>2026-01-11</lastmod>
+    <lastmod>2026-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
-  </url>
-
-  <!-- Cart Page -->
-  <url>
-    <loc>https://pizzapohoda.sk/cart</loc>
-    <lastmod>2026-01-11</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <!-- Thank You Page -->
-  <url>
-    <loc>https://pizzapohoda.sk/thank-you</loc>
-    <lastmod>2026-01-11</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
-  </url>
-
-  <!-- Privacy Policy -->
-  <url>
-    <loc>https://pizzapohoda.sk/ochrana-osobnych-udajov</loc>
-    <lastmod>2026-01-11</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.4</priority>
   </url>
 
 </urlset>
