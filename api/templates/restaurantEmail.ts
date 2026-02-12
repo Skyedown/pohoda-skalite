@@ -122,6 +122,26 @@ export function generateRestaurantEmail(order: SanitizedOrder): string {
           </tfoot>
         </table>
 
+        ${
+          order.delivery.notes
+            ? `
+        <div style="background: #ff6b35; color: white; padding: 20px; margin: 20px 0; border-radius: 8px; border: 4px solid #d4351c; box-shadow: 0 4px 12px rgba(212, 53, 28, 0.3);">
+          <h2 style="margin: 0 0 12px 0; font-size: 22px; color: white; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 10px;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            POZNÁMKA OD ZÁKAZNÍKA
+          </h2>
+          <p style="font-size: 18px; margin: 0; line-height: 1.6; background: rgba(255, 255, 255, 0.95); color: #1f2123; padding: 15px; border-radius: 5px; font-weight: 600; border-left: 6px solid #d4351c;">
+            ${escapeHTML(order.delivery.notes)}
+          </p>
+        </div>
+        `
+            : ''
+        }
+
         <div class="delivery-info">
           <h3><img src="https://pizzapohoda.sk/icons/location.png" alt="" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 8px;">${
             order.deliveryMethod === 'pickup'
@@ -151,17 +171,6 @@ export function generateRestaurantEmail(order: SanitizedOrder): string {
               order.paymentMethod === 'cash' ? 'V hotovosti' : 'Kartou'
             }</strong>
           </p>
-
-          ${
-            order.delivery.notes
-              ? `
-            <h3>📝 POZNÁMKA OD ZÁKAZNÍKA:</h3>
-            <p style="font-size: 16px; background: white; padding: 10px; border-radius: 5px;">
-              <strong>${escapeHTML(order.delivery.notes)}</strong>
-            </p>
-          `
-              : ''
-          }
         </div>
 
         <p style="margin-top: 30px; text-align: center; color: #666;">
