@@ -25,7 +25,7 @@ export const pizzas: Pizza[] = [
     ingredients: [
       'paradajková omáčka',
       'mozzarella',
-      'prosciutto crudo',
+      'prosciutto crudo/schwartzwaldská šunka',
       'rukola',
       'parmigiano',
       'čierne olivy',
