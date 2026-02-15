@@ -74,10 +74,10 @@ app.get('/api/admin-settings', (req, res) => {
 // Update admin settings
 app.post('/api/admin-settings', (req, res) => {
   try {
-    const { mode, waitTimeMinutes } = req.body;
+    const { mode, waitTimeMinutes, customNote } = req.body;
 
     // Validate input
-    const validModes = ['off', 'disabled', 'waitTime'];
+    const validModes = ['off', 'disabled', 'waitTime', 'customNote'];
     if (!validModes.includes(mode)) {
       return res.status(400).json({ error: 'Invalid mode' });
     }
@@ -86,7 +86,15 @@ app.post('/api/admin-settings', (req, res) => {
       return res.status(400).json({ error: 'Invalid waitTimeMinutes' });
     }
 
-    const settings = { mode, waitTimeMinutes };
+    if (typeof customNote !== 'string') {
+      return res.status(400).json({ error: 'Invalid customNote' });
+    }
+
+    if (customNote.length > 500) {
+      return res.status(400).json({ error: 'Custom note too long (max 500 characters)' });
+    }
+
+    const settings = { mode, waitTimeMinutes, customNote };
     fs.writeFileSync(ADMIN_SETTINGS_FILE, JSON.stringify(settings, null, 2));
 
     console.log('✅ Admin settings updated:', settings);

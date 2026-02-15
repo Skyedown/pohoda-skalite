@@ -54,6 +54,15 @@ export async function getOrderingStatusAsync(): Promise<OrderingStatusInfo> {
     };
   }
 
+  // Admin set custom note
+  if (adminSettings.mode === 'customNote') {
+    return {
+      status: 'admin_wait_time', // Reuse same status type
+      canOrder: true,
+      message: adminSettings.customNote,
+    };
+  }
+
   // If admin mode is 'off', proceed with time-based logic
   return getTimeBasedStatus();
 }

@@ -1,31 +1,24 @@
-export type AnnouncementMode = 'off' | 'disabled' | 'waitTime';
+export type AnnouncementMode = 'off' | 'disabled' | 'waitTime' | 'customNote';
 
 export interface AdminSettings {
   mode: AnnouncementMode;
   waitTimeMinutes: number;
+  customNote: string;
 }
 
 const API_URL = import.meta.env.VITE_API_URL ?? '';
 
 export const WAIT_TIME_OPTIONS = [
-  { value: 30, label: '30 minút' },
-  { value: 45, label: '45 minút' },
   { value: 60, label: '1 hodina' },
-  { value: 75, label: '1 hodina 15 minút' },
   { value: 90, label: '1 hodina 30 minút' },
-  { value: 105, label: '1 hodina 45 minút' },
   { value: 120, label: '2 hodiny' },
-  { value: 135, label: '2 hodiny 15 minút' },
-  { value: 150, label: '2 hodiny 30 minút' },
-  { value: 165, label: '2 hodiny 45 minút' },
-  { value: 180, label: '3 hodiny' },
-  { value: 181, label: '3+ hodiny' },
 ];
 
 // Default settings
 const DEFAULT_SETTINGS: AdminSettings = {
   mode: 'off',
   waitTimeMinutes: 60,
+  customNote: 'Z dôvodu nepriaznivého počasia je donáška možná len k hlavnej ceste',
 };
 
 // Fetch admin settings from server

@@ -34,7 +34,11 @@ const PizzaMain: React.FC = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [showOverloadModal, setShowOverloadModal] = useState(false);
-  const [adminSettings, setAdminSettings] = useState<AdminSettings>({ mode: 'off', waitTimeMinutes: 60 });
+  const [adminSettings, setAdminSettings] = useState<AdminSettings>({
+    mode: 'off',
+    waitTimeMinutes: 60,
+    customNote: 'Z dôvodu nepriaznivého počasia je donáška možná len k hlavnej ceste'
+  });
 
   // Initialize GSAP animations
   const heroPizzaRef = useHeroPizzaAnimation();
@@ -45,7 +49,7 @@ const PizzaMain: React.FC = () => {
     const loadSettings = async () => {
       const settings = await getAdminSettings();
       setAdminSettings(settings);
-      if (settings.mode === 'disabled' || settings.mode === 'waitTime') {
+      if (settings.mode === 'disabled' || settings.mode === 'waitTime' || settings.mode === 'customNote') {
         setShowOverloadModal(true);
       }
     };
@@ -266,6 +270,7 @@ const PizzaMain: React.FC = () => {
         onClose={() => setShowOverloadModal(false)}
         mode={adminSettings.mode}
         waitTimeMinutes={adminSettings.waitTimeMinutes}
+        customNote={adminSettings.customNote}
       />
     </div>
   );

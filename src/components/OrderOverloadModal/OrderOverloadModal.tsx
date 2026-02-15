@@ -7,17 +7,20 @@ interface OrderOverloadModalProps {
   onClose: () => void;
   mode?: AnnouncementMode;
   waitTimeMinutes?: number;
+  customNote?: string;
 }
 
 const OrderOverloadModal: React.FC<OrderOverloadModalProps> = ({
   isOpen,
   onClose,
   mode = 'disabled',
-  waitTimeMinutes = 60
+  waitTimeMinutes = 60,
+  customNote = ''
 }) => {
   if (!isOpen) return null;
 
   const isWaitTimeMode = mode === 'waitTime';
+  const isCustomNoteMode = mode === 'customNote';
 
   return (
     <div className="order-overload-modal-overlay" onClick={onClose}>
@@ -44,12 +47,20 @@ const OrderOverloadModal: React.FC<OrderOverloadModalProps> = ({
         </div>
 
         <h2 className="order-overload-modal__title">
-          {isWaitTimeMode
+          {isCustomNoteMode
+            ? 'Oznámenie'
+            : isWaitTimeMode
             ? 'Informácia o čakacej dobe'
             : 'Online objednávky dočasne pozastavené'}
         </h2>
 
-        {isWaitTimeMode ? (
+        {isCustomNoteMode ? (
+          <>
+            <p className="order-overload-modal__message">
+              {customNote}
+            </p>
+          </>
+        ) : isWaitTimeMode ? (
           <>
             <p className="order-overload-modal__message">
               Z dôvodu veľkého počtu objednávok je čakacia doba momentálne{' '}
@@ -75,14 +86,14 @@ const OrderOverloadModal: React.FC<OrderOverloadModalProps> = ({
         )}
 
         <div className="order-overload-modal__contact">
-          <p>{isWaitTimeMode ? 'Máte otázky?' : 'Pre viac informácií'} Kontaktujte nás telefonicky:</p>
+          <p>{isWaitTimeMode || isCustomNoteMode ? 'Máte otázky?' : 'Pre viac informácií'} Kontaktujte nás telefonicky:</p>
           <a href={`tel:${import.meta.env.VITE_RESTAURANT_PHONE || '+421918175571'}`} className="order-overload-modal__phone">
             {import.meta.env.VITE_RESTAURANT_PHONE || '+421 918 175 571'}
           </a>
         </div>
 
         <button className="order-overload-modal__button" onClick={onClose}>
-          {isWaitTimeMode ? 'Pokračovať v objednávke' : 'Rozumiem'}
+          {isWaitTimeMode || isCustomNoteMode ? 'Pokračovať v objednávke' : 'Rozumiem'}
         </button>
       </div>
     </div>

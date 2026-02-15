@@ -9,7 +9,11 @@ const AdminPanel: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
-  const [settings, setSettings] = useState<AdminSettings>({ mode: 'off', waitTimeMinutes: 60 });
+  const [settings, setSettings] = useState<AdminSettings>({
+    mode: 'off',
+    waitTimeMinutes: 60,
+    customNote: 'Z dôvodu nepriaznivého počasia je donáška možná len k hlavnej ceste'
+  });
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState('');
 
@@ -26,6 +30,10 @@ const AdminPanel: React.FC = () => {
     if (isAuthenticated) {
       const loadSettings = async () => {
         const loadedSettings = await getAdminSettings();
+        // Ensure customNote exists (for backward compatibility)
+        if (!loadedSettings.customNote) {
+          loadedSettings.customNote = 'Z dôvodu nepriaznivého počasia je donáška možná len k hlavnej ceste';
+        }
         setSettings(loadedSettings);
       };
       loadSettings();
@@ -61,6 +69,11 @@ const AdminPanel: React.FC = () => {
 
   const handleWaitTimeChange = (minutes: number) => {
     setSettings({ ...settings, waitTimeMinutes: minutes });
+    setSaveSuccess(false);
+  };
+
+  const handleCustomNoteChange = (note: string) => {
+    setSettings({ ...settings, customNote: note });
     setSaveSuccess(false);
   };
 
@@ -204,6 +217,22 @@ const AdminPanel: React.FC = () => {
                   </span>
                 </div>
               </label>
+
+              <label className="admin-panel__radio">
+                <input
+                  type="radio"
+                  name="mode"
+                  value="customNote"
+                  checked={settings.mode === 'customNote'}
+                  onChange={() => handleModeChange('customNote')}
+                />
+                <div className="admin-panel__radio-content">
+                  <span className="admin-panel__radio-label">Vlastná poznámka</span>
+                  <span className="admin-panel__radio-description">
+                    Zobraziť vlastné oznámenie
+                  </span>
+                </div>
+              </label>
             </div>
           </div>
 
@@ -231,9 +260,37 @@ const AdminPanel: React.FC = () => {
               <div className="admin-panel__preview">
                 <h3>Náhľad oznámenia:</h3>
                 <p>
-                  "Z dôvodu veľkého počtu objednávok je čakacia doba momentálne{' '}
+                  Z dôvodu veľkého počtu objednávok je čakacia doba momentálne
                   <strong>{formatWaitTime(settings.waitTimeMinutes)}</strong>. Ďakujeme za pochopenie."
                 </p>
+              </div>
+            </div>
+          )}
+
+          {/* Custom Note Input */}
+          {settings.mode === 'customNote' && (
+            <div className="admin-panel__section">
+              <h2 className="admin-panel__section-title">Vlastná poznámka</h2>
+
+              <div className="admin-panel__textarea-group">
+                <label htmlFor="customNote">Text oznámenia:</label>
+                <textarea
+                  id="customNote"
+                  value={settings.customNote || ''}
+                  onChange={(e) => handleCustomNoteChange(e.target.value)}
+                  className="admin-panel__textarea"
+                  rows={4}
+                  maxLength={500}
+                  placeholder="Zadajte vlastné oznámenie pre zákazníkov..."
+                />
+                <div className="admin-panel__char-counter">
+                  {(settings.customNote || '').length} / 500 znakov
+                </div>
+              </div>
+
+              <div className="admin-panel__preview">
+                <h3>Náhľad oznámenia:</h3>
+                <p>"{settings.customNote || ''}"</p>
               </div>
             </div>
           )}
