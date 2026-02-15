@@ -33,7 +33,11 @@ const PizzaCart: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [canOrder, setCanOrder] = useState(getOrderingStatus().canOrder);
   const [gdprConsent, setGdprConsent] = useState(false);
-  const [adminSettings, setAdminSettings] = useState<AdminSettings>({ mode: 'off', waitTimeMinutes: 60 });
+  const [adminSettings, setAdminSettings] = useState<AdminSettings>({
+    mode: 'off',
+    waitTimeMinutes: 60,
+    customNote: 'Z dôvodu nepriaznivého počasia je donáška možná len k hlavnej ceste'
+  });
 
   // Check if orders are disabled via admin panel
   const isOrdersDisabled = adminSettings.mode === 'disabled';
