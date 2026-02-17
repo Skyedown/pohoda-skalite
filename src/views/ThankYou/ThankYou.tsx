@@ -26,7 +26,8 @@ const ThankYou: React.FC = () => {
           </p>
 
           <p className="thank-you__info">
-            Potvrdenie objednávky sme Vám poslali na email.<br />
+            Potvrdenie objednávky sme Vám poslali na email.
+            <br />
             Budeme Vás kontaktovať v prípade akýchkoľvek otázok.
           </p>
 
@@ -60,6 +61,22 @@ const ThankYou: React.FC = () => {
                 <span>Voláme Vám pred doručením</span>
               </div>
             </div>
+          </div>
+
+          <div className="thank-you__review-section">
+            <a
+              href="https://g.page/r/CdpjFWCP0ph1EBM/review"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="thank-you__review-link"
+            >
+              <img
+                src="/google-logo.svg"
+                alt="Google"
+                className="thank-you__review-icon"
+              />
+              Chutilo Vám? Recenzia nás veľmi poteší!
+            </a>
           </div>
 
           <Link to="/" className="thank-you__button">
