@@ -1,6 +1,6 @@
 export type ProductType = 'pizza' | 'burger' | 'langos' | 'sides';
 
-export interface Pizza {
+export interface Product {
   id: string;
   name: string;
   description?: string;
@@ -31,7 +31,7 @@ export interface RequiredOption {
 }
 
 export interface CartItem {
-  pizza: Pizza;
+  product: Product;
   quantity: number;
   totalPrice: number;
   extras?: Extra[];

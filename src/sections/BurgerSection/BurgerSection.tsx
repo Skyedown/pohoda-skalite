@@ -2,12 +2,35 @@ import React, { useState } from 'react';
 import Toast from '../../components/Toast/Toast';
 import ProductModal from '../../components/ProductModal/ProductModal';
 import CartIcon from '../../components/CartIcon/CartIcon';
-import type { Pizza } from '../../types';
+import type { Product, Extra } from '../../types';
 import { burgers } from '../../data/burgers';
 import './BurgerSection.less';
 
+const burgerExtras: Extra[] = [
+  // Special extras
+  {
+    id: 'extra-patty',
+    name: 'Extra mäso',
+    price: 4.5,
+  },
+  { id: 'extra-cheddar', name: 'Extra cheddar', price: 1.2 },
+  { id: 'grilovan-encian', name: 'Grilovaný encián', price: 3.5 },
+  // Meat-based extras - 1.5 EUR
+  { id: 'slanina', name: 'Slanina', price: 1.5 },
+  // Non-meat extras - 0.80 EUR
+  { id: 'salat', name: 'Šalát', price: 0.8 },
+  { id: 'paradajka', name: 'Paradajka', price: 0.8 },
+  { id: 'karamelizona-cibuľka', name: 'Karamelizovaná cibuľka', price: 0.8 },
+  { id: 'kysla-uhorka', name: 'Kyslá uhorka', price: 0.8 },
+  { id: 'sampiony', name: 'Šampióny', price: 0.8 },
+  { id: 'cibuľka', name: 'Cibuľka', price: 0.8 },
+  { id: 'jalapeno', name: 'Jalapeño', price: 0.8 },
+  { id: 'baby-spenat', name: 'Baby špenát', price: 0.8 },
+  { id: 'volske-oko', name: 'Volské oko', price: 0.8 },
+];
+
 const BurgerSection: React.FC = () => {
-  const [selectedItem, setSelectedItem] = useState<Pizza | null>(null);
+  const [selectedItem, setSelectedItem] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
@@ -21,7 +44,7 @@ const BurgerSection: React.FC = () => {
     return labels[badge] || '';
   };
 
-  const handleOpenModal = (item: Pizza) => {
+  const handleOpenModal = (item: Product) => {
     setSelectedItem(item);
     setIsModalOpen(true);
   };
@@ -109,7 +132,7 @@ const BurgerSection: React.FC = () => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onAddToCart={handleItemAddedToCart}
-        extras={[]}
+        extras={burgerExtras}
       />
 
       <Toast

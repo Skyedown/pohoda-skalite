@@ -1,9 +1,13 @@
 @import '../../styles/variables.less';
 @import '../../styles/mixins.less';
 
-.pizza-card {
+.product-card {
   position: relative;
-  background: linear-gradient(to bottom, @card-gradient-from 0%, @card-gradient-to 100%);
+  background: linear-gradient(
+    to bottom,
+    @card-gradient-from 0%,
+    @card-gradient-to 100%
+  );
   border-radius: 20.787px;
   overflow: hidden;
   transition: all 0.3s ease;
@@ -20,7 +24,7 @@
   &__image {
     position: relative;
     width: 100%;
-    height: 350px; // ← Change this value to adjust the pizza image height
+    height: 350px;
     overflow: visible;
     display: flex;
     align-items: center;
@@ -35,7 +39,11 @@
       transform: translate(-50%, -50%);
       width: 80%;
       height: 40%;
-      background: radial-gradient(ellipse, rgba(255,255,255,0.1) 0%, transparent 70%);
+      background: radial-gradient(
+        ellipse,
+        rgba(255, 255, 255, 0.1) 0%,
+        transparent 70%
+      );
     }
 
     img {

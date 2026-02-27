@@ -18,7 +18,7 @@ const CartItem: React.FC<CartItemProps> = ({
   return (
     <div className="cart-item">
       <div className="cart-item__header">
-        <h3 className="cart-item__name">{item.pizza.name}</h3>
+        <h3 className="cart-item__name">{item.product.name}</h3>
         <button
           className="cart-item__remove"
           onClick={() => onRemove(index)}
@@ -28,9 +28,9 @@ const CartItem: React.FC<CartItemProps> = ({
         </button>
       </div>
 
-      {item.pizza.ingredients && item.pizza.ingredients.length > 0 && (
+      {item.product.ingredients && item.product.ingredients.length > 0 && (
         <p className="cart-item__ingredients">
-          {item.pizza.ingredients.join(', ')}
+          {item.product.ingredients.join(', ')}
         </p>
       )}
 
@@ -43,12 +43,16 @@ const CartItem: React.FC<CartItemProps> = ({
 
       {item.extras && item.extras.length > 0 && (
         <p className="cart-item__extras">
-          + {item.extras.map((e) => e.name).join(', ').toLocaleLowerCase()}
+          +{' '}
+          {item.extras
+            .map((e) => e.name)
+            .join(', ')
+            .toLocaleLowerCase()}
         </p>
       )}
 
-      {item.pizza.weight && (
-        <p className="cart-item__weight">{item.pizza.weight}</p>
+      {item.product.weight && (
+        <p className="cart-item__weight">{item.product.weight}</p>
       )}
 
       <div className="cart-item__footer">

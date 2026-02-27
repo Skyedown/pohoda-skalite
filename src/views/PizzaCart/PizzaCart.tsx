@@ -10,24 +10,33 @@ import MinimumOrderBanner from '../../components/Cart/MinimumOrderBanner/Minimum
 import { sanitizeCartForm } from '../../utils/sanitize';
 import { getOrderingStatus } from '../../utils/orderingStatus';
 import { trackPurchase } from '../../utils/analytics';
-import { getDeliveryRule, getMinimumOrderMessage, isMinimumOrderMet } from '../../utils/deliveryRules';
-import { getAdminSettings, type AdminSettings } from '../../utils/adminSettings';
+import {
+  getDeliveryRule,
+  getMinimumOrderMessage,
+  isMinimumOrderMet,
+} from '../../utils/deliveryRules';
+import {
+  getAdminSettings,
+  type AdminSettings,
+} from '../../utils/adminSettings';
 import type { DeliveryMethod } from '../../types';
 import './PizzaCart.less';
 
 const PizzaCart: React.FC = () => {
   const navigate = useNavigate();
-  const { cart, removeFromCart, updateQuantity, getTotalPrice, clearCart } = useCart();
+  const { cart, removeFromCart, updateQuantity, getTotalPrice, clearCart } =
+    useCart();
 
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'card'>('cash');
-  const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>('delivery');
+  const [deliveryMethod, setDeliveryMethod] =
+    useState<DeliveryMethod>('delivery');
   const [formData, setFormData] = useState({
     fullName: '',
     street: '',
     city: '',
     phone: '',
     email: '',
-    notes: ''
+    notes: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -36,7 +45,8 @@ const PizzaCart: React.FC = () => {
   const [adminSettings, setAdminSettings] = useState<AdminSettings>({
     mode: 'off',
     waitTimeMinutes: 60,
-    customNote: 'Z dôvodu nepriaznivého počasia je donáška možná len k hlavnej ceste'
+    customNote:
+      'Z dôvodu nepriaznivého počasia je donáška možná len k hlavnej ceste',
   });
 
   // Check if orders are disabled via admin panel
@@ -62,9 +72,15 @@ const PizzaCart: React.FC = () => {
       setAdminSettings(event.detail);
     };
 
-    window.addEventListener('adminSettingsChanged', handleSettingsChange as EventListener);
+    window.addEventListener(
+      'adminSettingsChanged',
+      handleSettingsChange as EventListener,
+    );
     return () => {
-      window.removeEventListener('adminSettingsChanged', handleSettingsChange as EventListener);
+      window.removeEventListener(
+        'adminSettingsChanged',
+        handleSettingsChange as EventListener,
+      );
     };
   }, []);
 
@@ -76,11 +92,15 @@ const PizzaCart: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: '' }));
     }
   };
 
@@ -88,7 +108,7 @@ const PizzaCart: React.FC = () => {
     setDeliveryMethod(method);
     // Clear address errors when switching to pickup
     if (method === 'pickup') {
-      setErrors(prev => {
+      setErrors((prev) => {
         const { street, city, ...rest } = prev;
         return rest;
       });
@@ -142,25 +162,26 @@ const PizzaCart: React.FC = () => {
 
       // Create comprehensive order object
       const order = {
-        items: cart.map(item => ({
-          id: item.pizza.id,
-          name: item.pizza.name,
-          type: item.pizza.type,
+        items: cart.map((item) => ({
+          id: item.product.id,
+          name: item.product.name,
+          type: item.product.type,
           quantity: item.quantity,
-          basePrice: item.pizza.price,
-          extras: item.extras?.map(extra => ({
-            id: extra.id,
-            name: extra.name,
-            price: extra.price
-          })) || [],
+          basePrice: item.product.price,
+          extras:
+            item.extras?.map((extra) => ({
+              id: extra.id,
+              name: extra.name,
+              price: extra.price,
+            })) || [],
           extrasPrice: item.extrasPrice || 0,
           totalPrice: item.totalPrice,
-          requiredOption: item.requiredOption
+          requiredOption: item.requiredOption,
         })),
         pricing: {
           subtotal: subtotal,
           delivery: delivery,
-          total: total
+          total: total,
         },
         deliveryMethod: deliveryMethod,
         delivery: {
@@ -169,10 +190,10 @@ const PizzaCart: React.FC = () => {
           city: sanitizedFormData.city || '',
           phone: sanitizedFormData.phone,
           email: sanitizedFormData.email,
-          notes: sanitizedFormData.notes
+          notes: sanitizedFormData.notes,
         },
         paymentMethod: paymentMethod,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
 
       // Track purchase conversion in GA4 & Meta Pixel
@@ -180,10 +201,10 @@ const PizzaCart: React.FC = () => {
         transactionId: `order-${Date.now()}`,
         value: total,
         currency: 'EUR',
-        items: cart.map(item => ({
-          item_id: item.pizza.id,
-          item_name: item.pizza.name,
-          item_category: item.pizza.type,
+        items: cart.map((item) => ({
+          item_id: item.product.id,
+          item_name: item.product.name,
+          item_category: item.product.type,
           price: item.totalPrice,
           quantity: item.quantity,
         })),
@@ -207,23 +228,35 @@ const PizzaCart: React.FC = () => {
       clearCart();
       navigate('/thank-you');
     } catch (error) {
-      alert('Vyskytla sa chyba pri spracovaní objednávky. Skúste to prosím znova.');
+      alert(
+        'Vyskytla sa chyba pri spracovaní objednávky. Skúste to prosím znova.',
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const subtotal = useMemo(() => getTotalPrice(), [getTotalPrice]);
-  const deliveryRule = useMemo(() => getDeliveryRule(formData.city), [formData.city]);
+  const deliveryRule = useMemo(
+    () => getDeliveryRule(formData.city),
+    [formData.city],
+  );
   const delivery = deliveryMethod === 'pickup' ? 0 : deliveryRule.fee;
   const total = subtotal + delivery;
-  const minimumOrderMessage = useMemo(() =>
-    deliveryMethod === 'delivery' ? getMinimumOrderMessage(formData.city, subtotal) : null,
-    [deliveryMethod, formData.city, subtotal]
+  const minimumOrderMessage = useMemo(
+    () =>
+      deliveryMethod === 'delivery'
+        ? getMinimumOrderMessage(formData.city, subtotal)
+        : null,
+    [deliveryMethod, formData.city, subtotal],
   );
-  const canSubmitOrder = useMemo(() =>
-    (deliveryMethod === 'pickup' || isMinimumOrderMet(formData.city, subtotal)) && canOrder && !isOrdersDisabled,
-    [deliveryMethod, formData.city, subtotal, canOrder, isOrdersDisabled]
+  const canSubmitOrder = useMemo(
+    () =>
+      (deliveryMethod === 'pickup' ||
+        isMinimumOrderMet(formData.city, subtotal)) &&
+      canOrder &&
+      !isOrdersDisabled,
+    [deliveryMethod, formData.city, subtotal, canOrder, isOrdersDisabled],
   );
 
   if (cart.length === 0) {
@@ -258,8 +291,19 @@ const PizzaCart: React.FC = () => {
 
       {/* Close button */}
       <Link to="/" className="pizza-cart__close" aria-label="Zavrieť košík">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" />
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path
+            d="M18 6L6 18M6 6l12 12"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
         </svg>
       </Link>
 
@@ -269,7 +313,7 @@ const PizzaCart: React.FC = () => {
           <div className="pizza-cart__items">
             {cart.map((item, index) => (
               <CartItem
-                key={`${item.pizza.id}-${index}`}
+                key={`${item.product.id}-${index}`}
                 item={item}
                 index={index}
                 onRemove={removeFromCart}
@@ -279,7 +323,10 @@ const PizzaCart: React.FC = () => {
           </div>
 
           {minimumOrderMessage && (
-            <MinimumOrderBanner message={minimumOrderMessage} className="pizza-cart__banner--desktop" />
+            <MinimumOrderBanner
+              message={minimumOrderMessage}
+              className="pizza-cart__banner--desktop"
+            />
           )}
         </div>
 
@@ -298,14 +345,13 @@ const PizzaCart: React.FC = () => {
           />
 
           {minimumOrderMessage && (
-            <MinimumOrderBanner message={minimumOrderMessage} className="pizza-cart__banner--mobile" />
+            <MinimumOrderBanner
+              message={minimumOrderMessage}
+              className="pizza-cart__banner--mobile"
+            />
           )}
 
-          <OrderSummary
-            subtotal={subtotal}
-            delivery={delivery}
-            total={total}
-          />
+          <OrderSummary subtotal={subtotal} delivery={delivery} total={total} />
 
           <div className="pizza-cart__gdpr-consent">
             <label className="pizza-cart__gdpr-label">
@@ -315,35 +361,44 @@ const PizzaCart: React.FC = () => {
                 onChange={(e) => {
                   setGdprConsent(e.target.checked);
                   if (errors.gdprConsent) {
-                    setErrors(prev => ({ ...prev, gdprConsent: '' }));
+                    setErrors((prev) => ({ ...prev, gdprConsent: '' }));
                   }
                 }}
                 className="pizza-cart__gdpr-checkbox"
               />
               <span className="pizza-cart__gdpr-text">
                 Súhlasím so spracovaním{' '}
-                <Link to="/ochrana-osobnych-udajov" className="pizza-cart__gdpr-link">
+                <Link
+                  to="/ochrana-osobnych-udajov"
+                  className="pizza-cart__gdpr-link"
+                >
                   osobných údajov
                 </Link>
               </span>
             </label>
             {errors.gdprConsent && (
-              <span className="pizza-cart__gdpr-error">{errors.gdprConsent}</span>
+              <span className="pizza-cart__gdpr-error">
+                {errors.gdprConsent}
+              </span>
             )}
           </div>
 
-          <div className={`pizza-cart__button-wrapper ${(!isMinimumOrderMet(formData.city, subtotal) && formData.city) ? 'has-tooltip' : ''}`}>
+          <div
+            className={`pizza-cart__button-wrapper ${!isMinimumOrderMet(formData.city, subtotal) && formData.city ? 'has-tooltip' : ''}`}
+          >
             {!isMinimumOrderMet(formData.city, subtotal) && formData.city ? (
-              <div className="pizza-cart__tooltip">
-                {minimumOrderMessage}
-              </div>
+              <div className="pizza-cart__tooltip">{minimumOrderMessage}</div>
             ) : null}
             <button
               className="checkout-button"
               onClick={handleSubmit}
               disabled={isSubmitting || !canSubmitOrder}
             >
-              {isSubmitting ? 'ODOSIELAM...' : isOrdersDisabled ? 'OBJEDNÁVKY POZASTAVENÉ' : 'POTVRDIŤ OBJEDNÁVKU'}
+              {isSubmitting
+                ? 'ODOSIELAM...'
+                : isOrdersDisabled
+                  ? 'OBJEDNÁVKY POZASTAVENÉ'
+                  : 'POTVRDIŤ OBJEDNÁVKU'}
             </button>
           </div>
         </div>

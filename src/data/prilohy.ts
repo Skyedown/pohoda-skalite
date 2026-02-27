@@ -1,6 +1,6 @@
-import type { Pizza } from '../types';
+import type { Product } from '../types';
 
-export const prilohy: Pizza[] = [
+export const prilohy: Product[] = [
   {
     id: 'prilohy-0',
     name: 'Klasické hranolky',

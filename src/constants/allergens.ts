@@ -1,8 +1,3 @@
-/**
- * EU-mandated allergen list (14 major allergens)
- * Mapped according to Slovak food labeling requirements
- */
-
 export const ALLERGEN_MAP: Record<string, string> = {
   '1': 'Obilniny obsahujúce lepok',
   '2': 'Kôrovce a výrobky z nich',
@@ -20,21 +15,10 @@ export const ALLERGEN_MAP: Record<string, string> = {
   '14': 'Mäkkýše a výrobky z nich',
 };
 
-/**
- * Convert allergen numbers to human-readable names
- * @param allergenNumbers - Array of allergen numbers as strings (e.g., ['1', '7', '12'])
- * @returns Array of allergen names
- */
 export function getAllergenNames(allergenNumbers: string[]): string[] {
   return allergenNumbers.map((num) => ALLERGEN_MAP[num] || `Alergén ${num}`);
 }
 
-/**
- * Get formatted allergen string for display
- * @param allergenNumbers - Array of allergen numbers as strings
- * @param useNames - Whether to use full names (true) or just numbers (false)
- * @returns Formatted string
- */
 export function formatAllergens(
   allergenNumbers: string[],
   useNames: boolean = false

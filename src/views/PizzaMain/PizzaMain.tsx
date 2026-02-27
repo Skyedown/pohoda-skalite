@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import type { Pizza, ProductType } from '../../types';
+import type { Product, ProductType } from '../../types';
 import { pizzas } from '../../data/pizzas';
-import PizzaCard from '../../components/PizzaCard/PizzaCard';
+import ProductCard from '../../components/ProductCard/ProductCard';
 import ProductModal from '../../components/ProductModal/ProductModal';
 import Toast from '../../components/Toast/Toast';
 import OrderOverloadModal from '../../components/OrderOverloadModal/OrderOverloadModal';
-import { getAdminSettings, type AdminSettings } from '../../utils/adminSettings';
+import {
+  getAdminSettings,
+  type AdminSettings,
+} from '../../utils/adminSettings';
 import BurgerSection from '../../sections/BurgerSection/BurgerSection';
 import LangosSection from '../../sections/LangosSection/LangosSection';
 import PrilohySection from '../../sections/PrilohySection/PrilohySection';
@@ -28,7 +31,7 @@ import './PizzaMain.less';
 gsap.registerPlugin(ScrollTrigger);
 
 const PizzaMain: React.FC = () => {
-  const [selectedPizza, setSelectedPizza] = useState<Pizza | null>(null);
+  const [selectedPizza, setSelectedPizza] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedFilter] = useState<ProductType | 'all'>('all');
   const [showToast, setShowToast] = useState(false);
@@ -37,7 +40,8 @@ const PizzaMain: React.FC = () => {
   const [adminSettings, setAdminSettings] = useState<AdminSettings>({
     mode: 'off',
     waitTimeMinutes: 60,
-    customNote: 'Z dôvodu nepriaznivého počasia je donáška možná len k hlavnej ceste'
+    customNote:
+      'Z dôvodu nepriaznivého počasia je donáška možná len k hlavnej ceste',
   });
 
   // Initialize GSAP animations
@@ -49,7 +53,11 @@ const PizzaMain: React.FC = () => {
     const loadSettings = async () => {
       const settings = await getAdminSettings();
       setAdminSettings(settings);
-      if (settings.mode === 'disabled' || settings.mode === 'waitTime' || settings.mode === 'customNote') {
+      if (
+        settings.mode === 'disabled' ||
+        settings.mode === 'waitTime' ||
+        settings.mode === 'customNote'
+      ) {
         setShowOverloadModal(true);
       }
     };
@@ -60,14 +68,23 @@ const PizzaMain: React.FC = () => {
   useEffect(() => {
     const handleSettingsChange = (event: CustomEvent<AdminSettings>) => {
       setAdminSettings(event.detail);
-      if (event.detail.mode === 'disabled' || event.detail.mode === 'waitTime') {
+      if (
+        event.detail.mode === 'disabled' ||
+        event.detail.mode === 'waitTime'
+      ) {
         setShowOverloadModal(true);
       }
     };
 
-    window.addEventListener('adminSettingsChanged', handleSettingsChange as EventListener);
+    window.addEventListener(
+      'adminSettingsChanged',
+      handleSettingsChange as EventListener,
+    );
     return () => {
-      window.removeEventListener('adminSettingsChanged', handleSettingsChange as EventListener);
+      window.removeEventListener(
+        'adminSettingsChanged',
+        handleSettingsChange as EventListener,
+      );
     };
   }, []);
 
@@ -77,7 +94,7 @@ const PizzaMain: React.FC = () => {
       ? pizzas
       : pizzas.filter((item) => item.type === selectedFilter);
 
-  const handleAddToCart = (pizza: Pizza) => {
+  const handleAddToCart = (pizza: Product) => {
     setSelectedPizza(pizza);
     setIsModalOpen(true);
   };
@@ -215,7 +232,7 @@ const PizzaMain: React.FC = () => {
                 className="pizza-main__grid-item"
                 role="listitem"
               >
-                <PizzaCard pizza={item} onAddToCart={handleAddToCart} />
+                <ProductCard product={item} onAddToCart={handleAddToCart} />
               </div>
             ))}
           </div>

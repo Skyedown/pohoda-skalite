@@ -54,7 +54,9 @@ export const useHeroPizzaAnimation = () => {
 // Hook for menu items stagger animation
 export const useMenuItemsAnimation = (containerSelector: string) => {
   useEffect(() => {
-    const menuItems = gsap.utils.toArray(`${containerSelector} .pizza-main__grid-item`);
+    const menuItems = gsap.utils.toArray(
+      `${containerSelector} .pizza-main__grid-item`,
+    );
 
     if (menuItems.length === 0) return;
 
@@ -75,7 +77,7 @@ export const useMenuItemsAnimation = (containerSelector: string) => {
           end: 'top 25%',
           scrub: true,
         },
-      }
+      },
     );
 
     return () => {
@@ -107,7 +109,7 @@ export const useBurgerItemsAnimation = () => {
           end: 'top 25%',
           scrub: true,
         },
-      }
+      },
     );
 
     return () => {
@@ -139,7 +141,7 @@ export const useLangosItemsAnimation = () => {
           end: 'top 25%',
           scrub: true,
         },
-      }
+      },
     );
 
     return () => {
@@ -167,11 +169,11 @@ export const usePrilohyItemsAnimation = () => {
         stagger: 0.2,
         scrollTrigger: {
           trigger: '.prilohy-section__grid',
-          start: 'top 100%',
+          start: 'top 90%',
           end: 'top 30%',
           scrub: true,
         },
-      }
+      },
     );
 
     return () => {

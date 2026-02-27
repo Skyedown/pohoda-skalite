@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import Toast from '../../components/Toast/Toast';
 import ProductModal from '../../components/ProductModal/ProductModal';
 import CartIcon from '../../components/CartIcon/CartIcon';
-import type { Pizza } from '../../types';
+import type { Product } from '../../types';
 import { prilohy } from '../../data/prilohy';
 import './PrilohySection.less';
 
 const PrilohySection: React.FC = () => {
-  const [selectedItem, setSelectedItem] = useState<Pizza | null>(null);
+  const [selectedItem, setSelectedItem] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
@@ -21,7 +21,7 @@ const PrilohySection: React.FC = () => {
     return labels[badge] || '';
   };
 
-  const handleOpenModal = (item: Pizza) => {
+  const handleOpenModal = (item: Product) => {
     setSelectedItem(item);
     setIsModalOpen(true);
   };
@@ -44,9 +44,15 @@ const PrilohySection: React.FC = () => {
 
           <div className="prilohy-section__grid">
             {prilohy.map((item) => (
-              <div key={item.id} className="prilohy-card" onClick={() => handleOpenModal(item)}>
+              <div
+                key={item.id}
+                className="prilohy-card"
+                onClick={() => handleOpenModal(item)}
+              >
                 {item.badge && (
-                  <span className={`prilohy-card__badge prilohy-card__badge--${item.badge}`}>
+                  <span
+                    className={`prilohy-card__badge prilohy-card__badge--${item.badge}`}
+                  >
                     {getBadgeLabel(item.badge)}
                   </span>
                 )}
@@ -63,17 +69,24 @@ const PrilohySection: React.FC = () => {
                     />
                   )}
                 </h3>
-                <p className="prilohy-card__description">{item.ingredients?.join(', ')}</p>
+                <p className="prilohy-card__description">
+                  {item.ingredients?.join(', ')}
+                </p>
                 {(item.weight || item.allergens) && (
                   <p className="prilohy-card__weight">
                     {item.weight}
                     {item.allergens && item.allergens.length > 0 && (
-                      <span className="prilohy-card__allergens"> (Alergény: {item.allergens.join(', ')})</span>
+                      <span className="prilohy-card__allergens">
+                        {' '}
+                        (Alergény: {item.allergens.join(', ')})
+                      </span>
                     )}
                   </p>
                 )}
                 <div className="prilohy-card__footer">
-                  <div className="prilohy-card__price">{item.price.toFixed(2)}€</div>
+                  <div className="prilohy-card__price">
+                    {item.price.toFixed(2)}€
+                  </div>
                   <button
                     className="prilohy-card__button"
                     onClick={(e) => {

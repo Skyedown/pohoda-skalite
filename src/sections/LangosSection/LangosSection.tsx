@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import Toast from '../../components/Toast/Toast';
 import ProductModal from '../../components/ProductModal/ProductModal';
 import CartIcon from '../../components/CartIcon/CartIcon';
-import type { Pizza, Extra, RequiredOption } from '../../types';
+import type { Product, Extra, RequiredOption } from '../../types';
 import { langos } from '../../data/langos';
 import './LangosSection.less';
 
 const langosExtras: Extra[] = [
   // All extras - 0.80 EUR (only ingredients from langos)
-  { id: 'extra-cheese', name: 'Extra syr', price: 0.80 },
-  { id: 'sour-cream', name: 'Kyslá smotana', price: 0.80 },
-  { id: 'nutella', name: 'Nutella', price: 0.80 },
-  { id: 'banana', name: 'Banán', price: 0.80 },
+  { id: 'extra-cheese', name: 'Extra syr', price: 0.8 },
+  { id: 'sour-cream', name: 'Kyslá smotana', price: 0.8 },
+  { id: 'nutella', name: 'Nutella', price: 0.8 },
+  { id: 'banana', name: 'Banán', price: 0.8 },
 ];
 
 const langosKlasikRequiredOption: RequiredOption = {
@@ -25,7 +25,7 @@ const langosKlasikRequiredOption: RequiredOption = {
 };
 
 const LangosSection: React.FC = () => {
-  const [selectedItem, setSelectedItem] = useState<Pizza | null>(null);
+  const [selectedItem, setSelectedItem] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
@@ -39,7 +39,7 @@ const LangosSection: React.FC = () => {
     return labels[badge] || '';
   };
 
-  const handleOpenModal = (item: Pizza) => {
+  const handleOpenModal = (item: Product) => {
     setSelectedItem(item);
     setIsModalOpen(true);
   };
@@ -63,9 +63,15 @@ const LangosSection: React.FC = () => {
 
           <div className="langos-section__grid">
             {langos.map((item) => (
-              <div key={item.id} className="langos-card" onClick={() => handleOpenModal(item)}>
+              <div
+                key={item.id}
+                className="langos-card"
+                onClick={() => handleOpenModal(item)}
+              >
                 {item.badge && (
-                  <span className={`langos-card__badge langos-card__badge--${item.badge}`}>
+                  <span
+                    className={`langos-card__badge langos-card__badge--${item.badge}`}
+                  >
                     {getBadgeLabel(item.badge)}
                   </span>
                 )}
@@ -82,17 +88,24 @@ const LangosSection: React.FC = () => {
                     />
                   )}
                 </h3>
-                <p className="langos-card__description">{item.ingredients?.join(', ')}</p>
+                <p className="langos-card__description">
+                  {item.ingredients?.join(', ')}
+                </p>
                 {(item.weight || item.allergens) && (
                   <p className="langos-card__weight">
                     {item.weight}
                     {item.allergens && item.allergens.length > 0 && (
-                      <span className="langos-card__allergens"> (Alergény: {item.allergens.join(', ')})</span>
+                      <span className="langos-card__allergens">
+                        {' '}
+                        (Alergény: {item.allergens.join(', ')})
+                      </span>
                     )}
                   </p>
                 )}
                 <div className="langos-card__footer">
-                  <div className="langos-card__price">{item.price.toFixed(2)} €</div>
+                  <div className="langos-card__price">
+                    {item.price.toFixed(2)} €
+                  </div>
                   <button
                     className="langos-card__button"
                     onClick={(e) => {
@@ -116,7 +129,11 @@ const LangosSection: React.FC = () => {
         onClose={handleCloseModal}
         onAddToCart={handleItemAddedToCart}
         extras={langosExtras}
-        requiredOption={selectedItem?.id === 'langos-3' ? langosKlasikRequiredOption : undefined}
+        requiredOption={
+          selectedItem?.id === 'langos-3'
+            ? langosKlasikRequiredOption
+            : undefined
+        }
       />
 
       <Toast

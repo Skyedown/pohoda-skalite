@@ -1,15 +1,19 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import type { CartItem, Pizza, Extra } from '../types';
-import { getCartFromStorage, saveCartToStorage, clearCartFromStorage } from '../utils/localStorage';
+import type { CartItem, Product, Extra } from '../types';
+import {
+  getCartFromStorage,
+  saveCartToStorage,
+  clearCartFromStorage,
+} from '../utils/localStorage';
 
 interface CartContextType {
   cart: CartItem[];
   addToCart: (
-    pizza: Pizza,
+    pizza: Product,
     quantity: number,
     extras?: Extra[],
-    requiredOption?: { name: string; selectedValue: string }
+    requiredOption?: { name: string; selectedValue: string },
   ) => void;
   removeFromCart: (index: number) => void;
   updateQuantity: (index: number, quantity: number) => void;
@@ -44,16 +48,17 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   }, [cart]);
 
   const addToCart = (
-    pizza: Pizza,
+    product: Product,
     quantity: number,
     extras?: Extra[],
-    requiredOption?: { name: string; selectedValue: string }
+    requiredOption?: { name: string; selectedValue: string },
   ) => {
-    const extrasPrice = extras?.reduce((sum, extra) => sum + extra.price, 0) || 0;
-    const totalPrice = (pizza.price + extrasPrice) * quantity;
+    const extrasPrice =
+      extras?.reduce((sum, extra) => sum + extra.price, 0) || 0;
+    const totalPrice = (product.price + extrasPrice) * quantity;
 
     const newItem: CartItem = {
-      pizza,
+      product,
       quantity,
       totalPrice,
       extras,
@@ -78,7 +83,8 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
       const newCart = [...prevCart];
       const item = newCart[index];
       item.quantity = quantity;
-      item.totalPrice = (item.pizza.price + (item.extrasPrice || 0)) * quantity;
+      item.totalPrice =
+        (item.product.price + (item.extrasPrice || 0)) * quantity;
       return newCart;
     });
   };

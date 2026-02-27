@@ -1,6 +1,6 @@
-import type { Pizza } from '../types';
+import type { Product } from '../types';
 
-export const langos: Pizza[] = [
+export const langos: Product[] = [
   {
     id: 'langos-1',
     name: '1. Cesnakový langoš',
