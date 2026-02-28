@@ -22,9 +22,9 @@ const burgerExtras: Extra[] = [
   { id: 'paradajka', name: 'Paradajka', price: 0.8 },
   { id: 'karamelizona-cibuľka', name: 'Karamelizovaná cibuľka', price: 0.8 },
   { id: 'kysla-uhorka', name: 'Kyslá uhorka', price: 0.8 },
-  { id: 'sampiony', name: 'Šampióny', price: 0.8 },
+  { id: 'sampiony', name: 'Šampiňóny', price: 0.8 },
   { id: 'cibuľka', name: 'Cibuľka', price: 0.8 },
-  { id: 'jalapeno', name: 'Jalapeño', price: 0.8 },
+  { id: 'jalapeno', name: 'Jallapeño', price: 0.8 },
   { id: 'baby-spenat', name: 'Baby špenát', price: 0.8 },
   { id: 'volske-oko', name: 'Volské oko', price: 0.8 },
 ];

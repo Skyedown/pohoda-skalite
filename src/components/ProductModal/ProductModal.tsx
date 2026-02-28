@@ -22,7 +22,7 @@ const defaultPizzaExtras: Extra[] = [
   { id: 'klobasa', name: 'Klobása', price: 1.5 },
   // Non-meat extras - 0.80 EUR
   { id: 'mozzarella', name: 'Extra mozzarella', price: 0.8 },
-  { id: 'sampiony', name: 'Šampióny', price: 0.8 },
+  { id: 'sampiony', name: 'Šampiňóny', price: 0.8 },
   { id: 'cierne-olivy', name: 'Čierne olivy', price: 0.8 },
   { id: 'rukola', name: 'Rukola', price: 0.8 },
   { id: 'chilli', name: 'Chilli papričky', price: 0.8 },
