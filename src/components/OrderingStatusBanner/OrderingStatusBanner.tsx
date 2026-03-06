@@ -36,7 +36,7 @@ const OrderingStatusBanner: React.FC<OrderingStatusBannerProps> = ({
   // Determine if banner should be visible
   const isVisible =
     (statusInfo.status !== 'open' && !!statusInfo.message) ||
-    (statusInfo.disabledProductTypes &&
+    (!!statusInfo.disabledProductTypes &&
       statusInfo.disabledProductTypes.length > 0);
 
   // Notify parent about visibility changes

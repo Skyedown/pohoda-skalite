@@ -5,6 +5,8 @@ export interface AdminSettings {
   waitTimeMinutes: number;
   customNote: string;
   disabledProductTypes?: ProductType[];
+  cardPaymentDeliveryEnabled?: boolean;
+  cardPaymentPickupEnabled?: boolean;
 }
 
 export interface Product {
