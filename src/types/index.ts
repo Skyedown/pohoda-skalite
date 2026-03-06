@@ -1,5 +1,12 @@
 export type ProductType = 'pizza' | 'burger' | 'langos' | 'sides';
 
+export interface AdminSettings {
+  mode: 'off' | 'disabled' | 'waitTime' | 'customNote';
+  waitTimeMinutes: number;
+  customNote: string;
+  disabledProductTypes?: ProductType[];
+}
+
 export interface Product {
   id: string;
   name: string;

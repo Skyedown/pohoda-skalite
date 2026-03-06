@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { getAdminSettings, saveAdminSettings, WAIT_TIME_OPTIONS, formatWaitTime, type AdminSettings, type AnnouncementMode } from '../../utils/adminSettings';
+import {
+  getAdminSettings,
+  saveAdminSettings,
+  WAIT_TIME_OPTIONS,
+  formatWaitTime,
+  type AdminSettings,
+  type AnnouncementMode,
+} from '../../utils/adminSettings';
 import './AdminPanel.less';
 
 const AdminPanel: React.FC = () => {
@@ -12,7 +19,11 @@ const AdminPanel: React.FC = () => {
   const [settings, setSettings] = useState<AdminSettings>({
     mode: 'off',
     waitTimeMinutes: 60,
-    customNote: 'Z dôvodu nepriaznivého počasia je donáška možná len k hlavnej ceste'
+    customNote:
+      'Z dôvodu nepriaznivého počasia je donáška možná len k hlavnej ceste',
+    disabledProductTypes: [],
+    cardPaymentDeliveryEnabled: false,
+    cardPaymentPickupEnabled: false,
   });
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState('');
@@ -32,7 +43,15 @@ const AdminPanel: React.FC = () => {
         const loadedSettings = await getAdminSettings();
         // Ensure customNote exists (for backward compatibility)
         if (!loadedSettings.customNote) {
-          loadedSettings.customNote = 'Z dôvodu nepriaznivého počasia je donáška možná len k hlavnej ceste';
+          loadedSettings.customNote =
+            'Z dôvodu nepriaznivého počasia je donáška možná len k hlavnej ceste';
+        }
+        // Ensure card flags default to false if missing
+        if (loadedSettings.cardPaymentDeliveryEnabled === undefined) {
+          loadedSettings.cardPaymentDeliveryEnabled = false;
+        }
+        if (loadedSettings.cardPaymentPickupEnabled === undefined) {
+          loadedSettings.cardPaymentPickupEnabled = false;
         }
         setSettings(loadedSettings);
       };
@@ -77,6 +96,36 @@ const AdminPanel: React.FC = () => {
     setSaveSuccess(false);
   };
 
+  const handleProductTypeToggle = (
+    productType: 'pizza' | 'burger' | 'langos' | 'sides',
+  ) => {
+    const currentDisabled = settings.disabledProductTypes || [];
+    const isCurrentlyDisabled = currentDisabled.includes(productType);
+
+    setSettings({
+      ...settings,
+      disabledProductTypes: isCurrentlyDisabled
+        ? currentDisabled.filter((type) => type !== productType)
+        : [...currentDisabled, productType],
+    });
+    setSaveSuccess(false);
+  };
+
+  const handleCardPaymentToggle = (type: 'delivery' | 'pickup') => {
+    if (type === 'delivery') {
+      setSettings({
+        ...settings,
+        cardPaymentDeliveryEnabled: !settings.cardPaymentDeliveryEnabled,
+      });
+    } else {
+      setSettings({
+        ...settings,
+        cardPaymentPickupEnabled: !settings.cardPaymentPickupEnabled,
+      });
+    }
+    setSaveSuccess(false);
+  };
+
   const handleSave = async () => {
     setSaveSuccess(false);
     setSaveError('');
@@ -88,7 +137,9 @@ const AdminPanel: React.FC = () => {
       setTimeout(() => setSaveSuccess(false), 3000);
 
       // Dispatch custom event to notify other components
-      window.dispatchEvent(new CustomEvent('adminSettingsChanged', { detail: settings }));
+      window.dispatchEvent(
+        new CustomEvent('adminSettingsChanged', { detail: settings }),
+      );
     } else {
       setSaveError('Nepodarilo sa uložiť nastavenia. Skúste to znova.');
       setTimeout(() => setSaveError(''), 5000);
@@ -135,7 +186,10 @@ const AdminPanel: React.FC = () => {
                 )}
               </div>
 
-              <button type="submit" className="admin-panel__button admin-panel__button--primary">
+              <button
+                type="submit"
+                className="admin-panel__button admin-panel__button--primary"
+              >
                 Prihlásiť sa
               </button>
 
@@ -179,7 +233,9 @@ const AdminPanel: React.FC = () => {
                   onChange={() => handleModeChange('off')}
                 />
                 <div className="admin-panel__radio-content">
-                  <span className="admin-panel__radio-label">Bez obmedzení</span>
+                  <span className="admin-panel__radio-label">
+                    Bez obmedzení
+                  </span>
                   <span className="admin-panel__radio-description">
                     Žiadne oznámenie, objednávky fungují normálne
                   </span>
@@ -227,7 +283,9 @@ const AdminPanel: React.FC = () => {
                   onChange={() => handleModeChange('customNote')}
                 />
                 <div className="admin-panel__radio-content">
-                  <span className="admin-panel__radio-label">Vlastná poznámka</span>
+                  <span className="admin-panel__radio-label">
+                    Vlastná poznámka
+                  </span>
                   <span className="admin-panel__radio-description">
                     Zobraziť vlastné oznámenie
                   </span>
@@ -261,7 +319,8 @@ const AdminPanel: React.FC = () => {
                 <h3>Náhľad oznámenia:</h3>
                 <p>
                   Z dôvodu veľkého počtu objednávok je čakacia doba momentálne
-                  <strong>{formatWaitTime(settings.waitTimeMinutes)}</strong>. Ďakujeme za pochopenie."
+                  <strong>{formatWaitTime(settings.waitTimeMinutes)}</strong>.
+                  Ďakujeme za pochopenie."
                 </p>
               </div>
             </div>
@@ -295,6 +354,185 @@ const AdminPanel: React.FC = () => {
             </div>
           )}
 
+          {/* Product Availability */}
+          <div className="admin-panel__section">
+            <h2 className="admin-panel__section-title">Dostupnosť produktov</h2>
+            <p className="admin-panel__section-description">
+              Vypnite jednotlivé kategórie ak hľadáte vydané. Zákazníci budú
+              vidieť oznámenie v baneri a nebudú môcť pridávať produkty do
+              košíka.
+            </p>
+
+            <div className="admin-panel__checkbox-group">
+              {(['pizza', 'burger', 'langos', 'sides'] as const).map(
+                (productType) => {
+                  const isDisabled = (
+                    settings.disabledProductTypes || []
+                  ).includes(productType);
+                  const labels: Record<string, string> = {
+                    pizza: 'Pizzy',
+                    burger: 'Burgery',
+                    langos: 'Langoš',
+                    sides: 'Prílohy',
+                  };
+
+                  return (
+                    <label key={productType} className="admin-panel__checkbox">
+                      <input
+                        type="checkbox"
+                        checked={isDisabled}
+                        onChange={() => handleProductTypeToggle(productType)}
+                        className="admin-panel__checkbox-input"
+                      />
+                      <div className="admin-panel__checkbox-content">
+                        <span className="admin-panel__checkbox-label">
+                          {isDisabled ? (
+                            <svg
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              className="admin-panel__checkbox-icon"
+                            >
+                              <circle cx="12" cy="12" r="10" />
+                              <line x1="15" y1="9" x2="9" y2="15" />
+                              <line x1="9" y1="9" x2="15" y2="15" />
+                            </svg>
+                          ) : (
+                            <svg
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              className="admin-panel__checkbox-icon"
+                            >
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                          )}
+                          {labels[productType]} -{' '}
+                          {isDisabled ? 'Vypnuté' : 'Dostupné'}
+                        </span>
+                      </div>
+                    </label>
+                  );
+                },
+              )}
+            </div>
+          </div>
+
+          {/* Card Payment Availability */}
+          <div className="admin-panel__section">
+            <h2 className="admin-panel__section-title">Platba kartou</h2>
+            <p className="admin-panel__section-description">
+              Zapnite alebo vypnite možnosť platby kartou pre jednotlivé spôsoby
+              donášky.
+            </p>
+
+            <div className="admin-panel__checkbox-group">
+              <label className="admin-panel__checkbox">
+                <input
+                  type="checkbox"
+                  checked={settings.cardPaymentDeliveryEnabled || false}
+                  onChange={() => handleCardPaymentToggle('delivery')}
+                  className="admin-panel__checkbox-input"
+                />
+                <div className="admin-panel__checkbox-content">
+                  <span className="admin-panel__checkbox-label">
+                    {settings.cardPaymentDeliveryEnabled ? (
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="admin-panel__checkbox-icon"
+                      >
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    ) : (
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="admin-panel__checkbox-icon"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="15" y1="9" x2="9" y2="15" />
+                        <line x1="9" y1="9" x2="15" y2="15" />
+                      </svg>
+                    )}
+                    Donáška - Platba kartou{' '}
+                    {settings.cardPaymentDeliveryEnabled
+                      ? 'Zapnutá'
+                      : 'Vypnutá'}
+                  </span>
+                </div>
+              </label>
+
+              <label className="admin-panel__checkbox">
+                <input
+                  type="checkbox"
+                  checked={settings.cardPaymentPickupEnabled || false}
+                  onChange={() => handleCardPaymentToggle('pickup')}
+                  className="admin-panel__checkbox-input"
+                />
+                <div className="admin-panel__checkbox-content">
+                  <span className="admin-panel__checkbox-label">
+                    {settings.cardPaymentPickupEnabled ? (
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="admin-panel__checkbox-icon"
+                      >
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    ) : (
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="admin-panel__checkbox-icon"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="15" y1="9" x2="9" y2="15" />
+                        <line x1="9" y1="9" x2="15" y2="15" />
+                      </svg>
+                    )}
+                    Osobný odber - Platba kartou{' '}
+                    {settings.cardPaymentPickupEnabled ? 'Zapnutá' : 'Vypnutá'}
+                  </span>
+                </div>
+              </label>
+            </div>
+          </div>
+
           {/* Save Button */}
           <div className="admin-panel__actions">
             <button
@@ -311,9 +549,7 @@ const AdminPanel: React.FC = () => {
             )}
 
             {saveError && (
-              <div className="admin-panel__error-message">
-                ✗ {saveError}
-              </div>
+              <div className="admin-panel__error-message">✗ {saveError}</div>
             )}
           </div>
 

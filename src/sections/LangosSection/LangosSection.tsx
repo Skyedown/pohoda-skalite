@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Toast from '../../components/Toast/Toast';
 import ProductModal from '../../components/ProductModal/ProductModal';
 import CartIcon from '../../components/CartIcon/CartIcon';
-import type { Product, Extra, RequiredOption } from '../../types';
+import type {
+  Product,
+  Extra,
+  RequiredOption,
+  AdminSettings,
+} from '../../types';
 import { langos } from '../../data/langos';
+import { getAdminSettings } from '../../utils/adminSettings';
 import './LangosSection.less';
 
 const langosExtras: Extra[] = [
@@ -29,6 +35,38 @@ const LangosSection: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [adminSettings, setAdminSettings] = useState<AdminSettings>({
+    mode: 'off',
+    waitTimeMinutes: 60,
+    customNote:
+      'Z dôvodu nepriaznivého počasia je donáška možná len k hlavnej ceste',
+    disabledProductTypes: [],
+  });
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      const settings = await getAdminSettings();
+      setAdminSettings(settings);
+    };
+    loadSettings();
+  }, []);
+
+  useEffect(() => {
+    const handleSettingsChange = (event: CustomEvent<AdminSettings>) => {
+      setAdminSettings(event.detail);
+    };
+
+    window.addEventListener(
+      'adminSettingsChanged',
+      handleSettingsChange as EventListener,
+    );
+    return () => {
+      window.removeEventListener(
+        'adminSettingsChanged',
+        handleSettingsChange as EventListener,
+      );
+    };
+  }, []);
 
   const getBadgeLabel = (badge: string) => {
     const labels: Record<string, string> = {
@@ -65,7 +103,7 @@ const LangosSection: React.FC = () => {
             {langos.map((item) => (
               <div
                 key={item.id}
-                className="langos-card"
+                className={`langos-card ${(adminSettings.disabledProductTypes || []).includes('langos') ? 'langos-card--disabled' : ''}`}
                 onClick={() => handleOpenModal(item)}
               >
                 {item.badge && (
@@ -107,14 +145,18 @@ const LangosSection: React.FC = () => {
                     {item.price.toFixed(2)} €
                   </div>
                   <button
-                    className="langos-card__button"
+                    className={`langos-card__button ${(adminSettings.disabledProductTypes || []).includes('langos') ? 'langos-card__button--disabled' : ''}`}
                     onClick={(e) => {
                       e.stopPropagation();
                       handleOpenModal(item);
                     }}
                   >
                     <CartIcon />
-                    PRIDAŤ
+                    {(adminSettings.disabledProductTypes || []).includes(
+                      'langos',
+                    )
+                      ? 'NEDOSTUPNÉ'
+                      : 'PRIDAŤ'}
                   </button>
                 </div>
               </div>
@@ -133,6 +175,11 @@ const LangosSection: React.FC = () => {
           selectedItem?.id === 'langos-3'
             ? langosKlasikRequiredOption
             : undefined
+        }
+        isDisabled={
+          selectedItem
+            ? (adminSettings.disabledProductTypes || []).includes('langos')
+            : false
         }
       />
 

@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Toast from '../../components/Toast/Toast';
 import ProductModal from '../../components/ProductModal/ProductModal';
 import CartIcon from '../../components/CartIcon/CartIcon';
-import type { Product, Extra } from '../../types';
+import type { Product, Extra, AdminSettings } from '../../types';
 import { burgers } from '../../data/burgers';
+import { getAdminSettings } from '../../utils/adminSettings';
 import './BurgerSection.less';
 
 const burgerExtras: Extra[] = [
@@ -34,6 +35,38 @@ const BurgerSection: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [adminSettings, setAdminSettings] = useState<AdminSettings>({
+    mode: 'off',
+    waitTimeMinutes: 60,
+    customNote:
+      'Z dôvodu nepriaznivého počasia je donáška možná len k hlavnej ceste',
+    disabledProductTypes: [],
+  });
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      const settings = await getAdminSettings();
+      setAdminSettings(settings);
+    };
+    loadSettings();
+  }, []);
+
+  useEffect(() => {
+    const handleSettingsChange = (event: CustomEvent<AdminSettings>) => {
+      setAdminSettings(event.detail);
+    };
+
+    window.addEventListener(
+      'adminSettingsChanged',
+      handleSettingsChange as EventListener,
+    );
+    return () => {
+      window.removeEventListener(
+        'adminSettingsChanged',
+        handleSettingsChange as EventListener,
+      );
+    };
+  }, []);
 
   const getBadgeLabel = (badge: string) => {
     const labels: Record<string, string> = {
@@ -69,7 +102,7 @@ const BurgerSection: React.FC = () => {
             {burgers.map((item) => (
               <div
                 key={item.id}
-                className="burger-card"
+                className={`burger-card ${(adminSettings.disabledProductTypes || []).includes('burger') ? 'burger-card--disabled' : ''}`}
                 onClick={() => handleOpenModal(item)}
               >
                 {item.badge && (
@@ -111,14 +144,18 @@ const BurgerSection: React.FC = () => {
                     {item.price.toFixed(2)}€
                   </div>
                   <button
-                    className="burger-card__button"
+                    className={`burger-card__button ${(adminSettings.disabledProductTypes || []).includes('burger') ? 'burger-card__button--disabled' : ''}`}
                     onClick={(e) => {
                       e.stopPropagation();
                       handleOpenModal(item);
                     }}
                   >
                     <CartIcon />
-                    PRIDAŤ
+                    {(adminSettings.disabledProductTypes || []).includes(
+                      'burger',
+                    )
+                      ? 'NEDOSTUPNÉ'
+                      : 'PRIDAŤ'}
                   </button>
                 </div>
               </div>
@@ -133,6 +170,11 @@ const BurgerSection: React.FC = () => {
         onClose={handleCloseModal}
         onAddToCart={handleItemAddedToCart}
         extras={burgerExtras}
+        isDisabled={
+          selectedItem
+            ? (adminSettings.disabledProductTypes || []).includes('burger')
+            : false
+        }
       />
 
       <Toast

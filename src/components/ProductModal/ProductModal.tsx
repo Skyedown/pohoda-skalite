@@ -12,6 +12,7 @@ interface ProductModalProps {
   onAddToCart?: (productName: string) => void;
   extras?: Extra[];
   requiredOption?: RequiredOption;
+  isDisabled?: boolean;
 }
 
 const defaultPizzaExtras: Extra[] = [
@@ -39,6 +40,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
   onAddToCart,
   extras = defaultPizzaExtras,
   requiredOption,
+  isDisabled = false,
 }) => {
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
@@ -100,6 +102,12 @@ const ProductModal: React.FC<ProductModalProps> = ({
   const totalPrice = (product.price + extrasPrice) * quantity;
 
   const handleAddToCartClick = () => {
+    // Prevent adding to cart if product is disabled
+    if (isDisabled) {
+      alert('Táto položka nie je momentálne dostupná');
+      return;
+    }
+
     // Validate required option if present
     if (requiredOption && !selectedRequiredOption) {
       alert(`Prosím, vyberte ${requiredOption.label.toLowerCase()}`);
@@ -338,10 +346,11 @@ const ProductModal: React.FC<ProductModalProps> = ({
             </div>
 
             <button
-              className="product-modal__add-button"
+              className={`product-modal__add-button ${isDisabled ? 'product-modal__add-button--disabled' : ''}`}
               onClick={handleAddToCartClick}
+              disabled={isDisabled}
             >
-              PRIDAŤ DO KOŠÍKA
+              {isDisabled ? 'NEDOSTUPNÉ' : 'PRIDAŤ DO KOŠÍKA'}
             </button>
           </div>
         </div>

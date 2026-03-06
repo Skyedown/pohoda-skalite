@@ -7,13 +7,18 @@ interface ProductCardProps {
   product: Product;
   onAddToCart: (product: Product) => void;
   showBadge?: boolean;
+  isDisabled?: boolean;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
   product,
   onAddToCart,
   showBadge = true,
+  isDisabled = false,
 }) => {
+  const handleClick = () => {
+    onAddToCart(product);
+  };
   const getBadgeLabel = (badge: string) => {
     const labels: Record<string, string> = {
       classic: 'NAŠA VOĽBA',
@@ -24,7 +29,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   return (
-    <article onClick={() => onAddToCart(product)} className="product-card">
+    <article
+      onClick={handleClick}
+      className={`product-card ${isDisabled ? 'product-card--disabled' : ''}`}
+    >
       {showBadge && product.badge && (
         <span
           className={`product-card__badge product-card__badge--${product.badge}`}
@@ -66,11 +74,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
             {product.price.toFixed(2)} €
           </div>
           <button
-            className="product-card__button"
+            className={`product-card__button ${isDisabled ? 'product-card__button--disabled' : ''}`}
             aria-label={`Pridať ${product.name} do košíka`}
           >
             <CartIcon />
-            Pridať
+            {isDisabled ? 'Nedostupné' : 'Pridať'}
           </button>
         </div>
       </div>

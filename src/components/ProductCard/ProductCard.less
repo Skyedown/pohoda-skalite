@@ -21,6 +21,16 @@
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   }
 
+  &--disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+
+    &:hover {
+      transform: none;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+  }
+
   &__image {
     position: relative;
     width: 100%;
@@ -186,6 +196,17 @@
 
     &:active {
       transform: translateY(0);
+    }
+
+    &--disabled {
+      background: #d0d0d0;
+      color: #666;
+      cursor: not-allowed;
+
+      &:hover {
+        transform: none;
+        box-shadow: none;
+      }
     }
   }
 

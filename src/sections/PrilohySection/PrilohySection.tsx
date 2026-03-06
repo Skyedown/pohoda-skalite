@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Toast from '../../components/Toast/Toast';
 import ProductModal from '../../components/ProductModal/ProductModal';
 import CartIcon from '../../components/CartIcon/CartIcon';
-import type { Product } from '../../types';
+import type { Product, AdminSettings } from '../../types';
 import { prilohy } from '../../data/prilohy';
+import { getAdminSettings } from '../../utils/adminSettings';
 import './PrilohySection.less';
 
 const PrilohySection: React.FC = () => {
@@ -11,6 +12,38 @@ const PrilohySection: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [adminSettings, setAdminSettings] = useState<AdminSettings>({
+    mode: 'off',
+    waitTimeMinutes: 60,
+    customNote:
+      'Z dôvodu nepriaznivého počasia je donáška možná len k hlavnej ceste',
+    disabledProductTypes: [],
+  });
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      const settings = await getAdminSettings();
+      setAdminSettings(settings);
+    };
+    loadSettings();
+  }, []);
+
+  useEffect(() => {
+    const handleSettingsChange = (event: CustomEvent<AdminSettings>) => {
+      setAdminSettings(event.detail);
+    };
+
+    window.addEventListener(
+      'adminSettingsChanged',
+      handleSettingsChange as EventListener,
+    );
+    return () => {
+      window.removeEventListener(
+        'adminSettingsChanged',
+        handleSettingsChange as EventListener,
+      );
+    };
+  }, []);
 
   const getBadgeLabel = (badge: string) => {
     const labels: Record<string, string> = {
@@ -46,7 +79,7 @@ const PrilohySection: React.FC = () => {
             {prilohy.map((item) => (
               <div
                 key={item.id}
-                className="prilohy-card"
+                className={`prilohy-card ${(adminSettings.disabledProductTypes || []).includes('sides') ? 'prilohy-card--disabled' : ''}`}
                 onClick={() => handleOpenModal(item)}
               >
                 {item.badge && (
@@ -88,14 +121,18 @@ const PrilohySection: React.FC = () => {
                     {item.price.toFixed(2)}€
                   </div>
                   <button
-                    className="prilohy-card__button"
+                    className={`prilohy-card__button ${(adminSettings.disabledProductTypes || []).includes('sides') ? 'prilohy-card__button--disabled' : ''}`}
                     onClick={(e) => {
                       e.stopPropagation();
                       handleOpenModal(item);
                     }}
                   >
                     <CartIcon />
-                    PRIDAŤ
+                    {(adminSettings.disabledProductTypes || []).includes(
+                      'sides',
+                    )
+                      ? 'NEDOSTUPNÉ'
+                      : 'PRIDAŤ'}
                   </button>
                 </div>
               </div>
@@ -110,6 +147,11 @@ const PrilohySection: React.FC = () => {
         onClose={handleCloseModal}
         onAddToCart={handleItemAddedToCart}
         extras={[]}
+        isDisabled={
+          selectedItem
+            ? (adminSettings.disabledProductTypes || []).includes('sides')
+            : false
+        }
       />
 
       <Toast

@@ -335,6 +335,7 @@ const PizzaCart: React.FC = () => {
           <PaymentMethodSelector
             value={paymentMethod}
             onChange={setPaymentMethod}
+            deliveryMethod={deliveryMethod}
           />
 
           <DeliveryAddressForm

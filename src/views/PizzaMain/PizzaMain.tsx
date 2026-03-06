@@ -232,7 +232,13 @@ const PizzaMain: React.FC = () => {
                 className="pizza-main__grid-item"
                 role="listitem"
               >
-                <ProductCard product={item} onAddToCart={handleAddToCart} />
+                <ProductCard
+                  product={item}
+                  onAddToCart={handleAddToCart}
+                  isDisabled={(
+                    adminSettings.disabledProductTypes || []
+                  ).includes(item.type)}
+                />
               </div>
             ))}
           </div>
@@ -272,6 +278,13 @@ const PizzaMain: React.FC = () => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onAddToCart={handlePizzaAddedToCart}
+        isDisabled={
+          selectedPizza
+            ? (adminSettings.disabledProductTypes || []).includes(
+                selectedPizza.type,
+              )
+            : false
+        }
       />
 
       {/* Toast Notification */}

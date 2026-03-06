@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { getOrderingStatus, getOrderingStatusAsync, type OrderingStatusInfo } from '../../utils/orderingStatus';
+import {
+  getOrderingStatus,
+  getOrderingStatusAsync,
+  type OrderingStatusInfo,
+} from '../../utils/orderingStatus';
 import './OrderingStatusBanner.less';
 
 interface OrderingStatusBannerProps {
   onVisibilityChange?: (isVisible: boolean) => void;
 }
 
-const OrderingStatusBanner: React.FC<OrderingStatusBannerProps> = ({ onVisibilityChange }) => {
-  const [statusInfo, setStatusInfo] = useState<OrderingStatusInfo>(getOrderingStatus());
+const OrderingStatusBanner: React.FC<OrderingStatusBannerProps> = ({
+  onVisibilityChange,
+}) => {
+  const [statusInfo, setStatusInfo] =
+    useState<OrderingStatusInfo>(getOrderingStatus());
 
   useEffect(() => {
     // Fetch initial status with admin settings
@@ -27,7 +34,10 @@ const OrderingStatusBanner: React.FC<OrderingStatusBannerProps> = ({ onVisibilit
   }, []);
 
   // Determine if banner should be visible
-  const isVisible = statusInfo.status !== 'open' && !!statusInfo.message;
+  const isVisible =
+    (statusInfo.status !== 'open' && !!statusInfo.message) ||
+    (statusInfo.disabledProductTypes &&
+      statusInfo.disabledProductTypes.length > 0);
 
   // Notify parent about visibility changes
   useEffect(() => {
@@ -40,6 +50,14 @@ const OrderingStatusBanner: React.FC<OrderingStatusBannerProps> = ({ onVisibilit
   }
 
   const getBannerClass = () => {
+    // If only disabled products (no other status issue), use info styling
+    if (
+      statusInfo.status === 'open' &&
+      statusInfo.disabledProductTypes?.length
+    ) {
+      return 'ordering-status-banner--info';
+    }
+
     switch (statusInfo.status) {
       case 'before_preorder':
       case 'orders_closed':
@@ -65,7 +83,9 @@ const OrderingStatusBanner: React.FC<OrderingStatusBannerProps> = ({ onVisibilit
               className="ordering-status-banner__icon-svg"
             />
           </span>
-          <p className="ordering-status-banner__message">{statusInfo.message}</p>
+          <p className="ordering-status-banner__message">
+            {statusInfo.message}
+          </p>
         </div>
       </div>
     </div>

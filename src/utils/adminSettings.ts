@@ -4,6 +4,9 @@ export interface AdminSettings {
   mode: AnnouncementMode;
   waitTimeMinutes: number;
   customNote: string;
+  disabledProductTypes?: ('pizza' | 'burger' | 'langos' | 'sides')[];
+  cardPaymentDeliveryEnabled?: boolean;
+  cardPaymentPickupEnabled?: boolean;
 }
 
 const API_URL = import.meta.env.VITE_API_URL ?? '';
@@ -18,7 +21,11 @@ export const WAIT_TIME_OPTIONS = [
 const DEFAULT_SETTINGS: AdminSettings = {
   mode: 'off',
   waitTimeMinutes: 60,
-  customNote: 'Z dôvodu nepriaznivého počasia je donáška možná len k hlavnej ceste',
+  customNote:
+    'Z dôvodu nepriaznivého počasia je donáška možná len k hlavnej ceste',
+  disabledProductTypes: [],
+  cardPaymentDeliveryEnabled: false,
+  cardPaymentPickupEnabled: false,
 };
 
 // Fetch admin settings from server
@@ -37,7 +44,9 @@ export async function getAdminSettings(): Promise<AdminSettings> {
 }
 
 // Save admin settings to server
-export async function saveAdminSettings(settings: AdminSettings): Promise<boolean> {
+export async function saveAdminSettings(
+  settings: AdminSettings,
+): Promise<boolean> {
   try {
     const response = await fetch(`${API_URL}/api/admin-settings`, {
       method: 'POST',

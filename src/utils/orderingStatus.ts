@@ -1,21 +1,20 @@
-
 import { getAdminSettings, formatWaitTime } from './adminSettings';
 
 export type OrderingStatus =
-  | 'before_preorder'   // Before preorder time - ordering disabled
-  | 'preorder'          // Preorder time - accepting preorders
-  | 'open'              // During opening hours - normal ordering
-  | 'orders_closed'     // After last order time - orders closed but still open
-  | 'closed'            // After closing - ordering disabled
-  | 'admin_disabled'    // Admin disabled ordering
-  | 'admin_wait_time';  // Admin set wait time message
+  | 'before_preorder' // Before preorder time - ordering disabled
+  | 'preorder' // Preorder time - accepting preorders
+  | 'open' // During opening hours - normal ordering
+  | 'orders_closed' // After last order time - orders closed but still open
+  | 'closed' // After closing - ordering disabled
+  | 'admin_disabled' // Admin disabled ordering
+  | 'admin_wait_time'; // Admin set wait time message
 
 export interface OrderingStatusInfo {
   status: OrderingStatus;
   canOrder: boolean;
   message: string;
+  disabledProductTypes?: ('pizza' | 'burger' | 'langos' | 'sides')[];
 }
-
 
 function parseTime(timeStr: string): { hours: number; minutes: number } {
   const [hours, minutes] = timeStr.split(':').map(Number);
@@ -35,6 +34,7 @@ function timeToMinutes(timeStr: string): number {
 export async function getOrderingStatusAsync(): Promise<OrderingStatusInfo> {
   // First check admin settings
   const adminSettings = await getAdminSettings();
+  const disabledProductTypes = adminSettings.disabledProductTypes || [];
 
   // Admin has disabled ordering
   if (adminSettings.mode === 'disabled') {
@@ -42,29 +42,86 @@ export async function getOrderingStatusAsync(): Promise<OrderingStatusInfo> {
       status: 'admin_disabled',
       canOrder: false,
       message: 'Objednávky sú dočasne pozastavené. Ďakujeme za pochopenie.',
+      disabledProductTypes,
     };
   }
 
   // Admin set wait time message
   if (adminSettings.mode === 'waitTime') {
+    let message = `Aktuálna čakacia doba: ${formatWaitTime(adminSettings.waitTimeMinutes)}`;
+
+    // Add info about disabled products if any
+    if (disabledProductTypes.length > 0) {
+      const disabledLabels = getDisabledProductLabels(disabledProductTypes);
+      message += `. ${disabledLabels} sú na dnes vypredané.`;
+    }
+
     return {
       status: 'admin_wait_time',
       canOrder: true,
-      message: `Aktuálna čakacia doba: ${formatWaitTime(adminSettings.waitTimeMinutes)}`,
+      message,
+      disabledProductTypes,
     };
   }
 
   // Admin set custom note
   if (adminSettings.mode === 'customNote') {
+    let message = adminSettings.customNote;
+
+    // Add info about disabled products if any
+    if (disabledProductTypes.length > 0) {
+      const disabledLabels = getDisabledProductLabels(disabledProductTypes);
+      message += ` (${disabledLabels} sú vypredané)`;
+    }
+
     return {
       status: 'admin_wait_time', // Reuse same status type
       canOrder: true,
-      message: adminSettings.customNote,
+      message,
+      disabledProductTypes,
     };
   }
 
   // If admin mode is 'off', proceed with time-based logic
-  return getTimeBasedStatus();
+  const timeBasedStatus = getTimeBasedStatus();
+
+  // Add info about disabled products if any
+  let message = timeBasedStatus.message;
+  if (disabledProductTypes.length > 0) {
+    const disabledLabels = getDisabledProductLabels(disabledProductTypes);
+    if (message) {
+      message += ` ${disabledLabels} sú na dnes vypredané.`;
+    } else {
+      message = `${disabledLabels} sú na dnes vypredané.`;
+    }
+  }
+
+  return {
+    ...timeBasedStatus,
+    message,
+    disabledProductTypes,
+  };
+}
+
+function getDisabledProductLabels(
+  disabledProductTypes: ('pizza' | 'burger' | 'langos' | 'sides')[],
+): string {
+  const labels: Record<string, string> = {
+    pizza: 'Pizze',
+    burger: 'Burgre',
+    langos: 'Langoše',
+    sides: 'Prílohy',
+  };
+
+  const names = disabledProductTypes.map((type) => labels[type]);
+
+  if (names.length === 1) {
+    return names[0];
+  } else if (names.length === 2) {
+    return `${names[0]} a ${names[1]}`;
+  } else {
+    return names.slice(0, -1).join(', ') + ' a ' + names[names.length - 1];
+  }
 }
 
 export function getOrderingStatus(): OrderingStatusInfo {
@@ -91,6 +148,7 @@ function getTimeBasedStatus(): OrderingStatusInfo {
       status: 'before_preorder',
       canOrder: false,
       message: `Objednávky sú momentálne uzavreté. Predobjednávky budú možné od ${preorderStartTime}.`,
+      disabledProductTypes: [],
     };
   }
 
@@ -100,6 +158,7 @@ function getTimeBasedStatus(): OrderingStatusInfo {
       status: 'preorder',
       canOrder: true,
       message: `Aktuálne prijímame predobjednávky. Jedlo bude doručené po otvorení o ${openingTime}.`,
+      disabledProductTypes: [],
     };
   }
 
@@ -109,6 +168,7 @@ function getTimeBasedStatus(): OrderingStatusInfo {
       status: 'open',
       canOrder: true,
       message: '',
+      disabledProductTypes: [],
     };
   }
 
@@ -118,6 +178,7 @@ function getTimeBasedStatus(): OrderingStatusInfo {
       status: 'orders_closed',
       canOrder: false,
       message: `Objednávky na dnes sú už uzavreté. Ďakujeme za pochopenie.`,
+      disabledProductTypes: [],
     };
   }
 
@@ -126,6 +187,7 @@ function getTimeBasedStatus(): OrderingStatusInfo {
     status: 'closed',
     canOrder: false,
     message: `Reštaurácia už momentálne nepríjma objednávky. Online predobjednávky sa otvárajú o ${preorderStartTime}.`,
+    disabledProductTypes: [],
   };
 }
 
