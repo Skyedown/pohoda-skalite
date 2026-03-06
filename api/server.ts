@@ -54,9 +54,16 @@ if (!fs.existsSync(dataDir)) {
 if (!fs.existsSync(ADMIN_SETTINGS_FILE)) {
   const defaultSettings = {
     mode: 'off',
-    waitTimeMinutes: 60
+    waitTimeMinutes: 60,
+    customNote: '',
+    disabledProductTypes: [],
+    cardPaymentDeliveryEnabled: false,
+    cardPaymentPickupEnabled: false,
   };
-  fs.writeFileSync(ADMIN_SETTINGS_FILE, JSON.stringify(defaultSettings, null, 2));
+  fs.writeFileSync(
+    ADMIN_SETTINGS_FILE,
+    JSON.stringify(defaultSettings, null, 2),
+  );
 }
 
 // Get admin settings
@@ -74,7 +81,14 @@ app.get('/api/admin-settings', (req, res) => {
 // Update admin settings
 app.post('/api/admin-settings', (req, res) => {
   try {
-    const { mode, waitTimeMinutes, customNote } = req.body;
+    const {
+      mode,
+      waitTimeMinutes,
+      customNote,
+      disabledProductTypes,
+      cardPaymentDeliveryEnabled,
+      cardPaymentPickupEnabled,
+    } = req.body;
 
     // Validate input
     const validModes = ['off', 'disabled', 'waitTime', 'customNote'];
@@ -91,10 +105,47 @@ app.post('/api/admin-settings', (req, res) => {
     }
 
     if (customNote.length > 500) {
-      return res.status(400).json({ error: 'Custom note too long (max 500 characters)' });
+      return res
+        .status(400)
+        .json({ error: 'Custom note too long (max 500 characters)' });
     }
 
-    const settings = { mode, waitTimeMinutes, customNote };
+    // Validate disabledProductTypes
+    const validProductTypes = ['pizza', 'burger', 'langos', 'sides'];
+    if (disabledProductTypes && Array.isArray(disabledProductTypes)) {
+      if (
+        !disabledProductTypes.every((type) => validProductTypes.includes(type))
+      ) {
+        return res.status(400).json({ error: 'Invalid product type' });
+      }
+    }
+
+    // Validate card payment flags
+    if (
+      typeof cardPaymentDeliveryEnabled !== 'boolean' &&
+      cardPaymentDeliveryEnabled !== undefined
+    ) {
+      return res
+        .status(400)
+        .json({ error: 'Invalid cardPaymentDeliveryEnabled' });
+    }
+    if (
+      typeof cardPaymentPickupEnabled !== 'boolean' &&
+      cardPaymentPickupEnabled !== undefined
+    ) {
+      return res
+        .status(400)
+        .json({ error: 'Invalid cardPaymentPickupEnabled' });
+    }
+
+    const settings = {
+      mode,
+      waitTimeMinutes,
+      customNote,
+      disabledProductTypes: disabledProductTypes || [],
+      cardPaymentDeliveryEnabled: !!cardPaymentDeliveryEnabled,
+      cardPaymentPickupEnabled: !!cardPaymentPickupEnabled,
+    };
     fs.writeFileSync(ADMIN_SETTINGS_FILE, JSON.stringify(settings, null, 2));
 
     console.log('✅ Admin settings updated:', settings);
@@ -109,7 +160,7 @@ app.post('/api/admin-settings', (req, res) => {
 app.post('/api/send-order-emails', async (req, res) => {
   console.log(
     '🚀 Received order email request at:',
-    new Date().toLocaleString('sk-SK', { timeZone: 'Europe/Bratislava' })
+    new Date().toLocaleString('sk-SK', { timeZone: 'Europe/Bratislava' }),
   );
 
   try {
@@ -130,7 +181,11 @@ app.post('/api/send-order-emails', async (req, res) => {
     const sanitizedOrder = sanitizeOrder(order);
 
     // Generate customer email content
-    const customerEmailContent = generateCustomerEmail(sanitizedOrder, RESTAURANT_EMAIL, RESTAURANT_PHONE);
+    const customerEmailContent = generateCustomerEmail(
+      sanitizedOrder,
+      RESTAURANT_EMAIL,
+      RESTAURANT_PHONE,
+    );
 
     // Generate restaurant email content
     const restaurantEmailContent = generateRestaurantEmail(sanitizedOrder);
@@ -140,7 +195,7 @@ app.post('/api/send-order-emails', async (req, res) => {
       to: order.delivery.email,
       from: {
         email: process.env.SENDGRID_FROM_EMAIL || 'noreply@pizzapohoda.sk',
-        name: 'Pizza Pohoda'
+        name: 'Pizza Pohoda',
       },
       replyTo: 'objednavky@pizzapohoda.sk',
       subject: 'Potvrdenie objednávky - Pizza Pohoda',
@@ -149,23 +204,25 @@ app.post('/api/send-order-emails', async (req, res) => {
 
     // Generate unique order ID from timestamp in Europe/Bratislava timezone
     const orderDate = new Date(order.timestamp);
-    const orderId = orderDate.toLocaleString('sk-SK', {
-      timeZone: 'Europe/Bratislava',
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false
-    }).replace(/[^\d]/g, ''); // Format: YYYYMMDDHHMMSS
+    const orderId = orderDate
+      .toLocaleString('sk-SK', {
+        timeZone: 'Europe/Bratislava',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+      })
+      .replace(/[^\d]/g, ''); // Format: YYYYMMDDHHMMSS
 
     // Send email to restaurant
     const restaurantEmail = {
       to: RESTAURANT_EMAIL,
       from: {
         email: 'noreply@pizzapohoda.sk',
-        name: 'Pizza Pohoda'
+        name: 'Pizza Pohoda',
       },
       subject: `Nová objednávka #${orderId}`,
       html: restaurantEmailContent,
@@ -185,22 +242,20 @@ app.post('/api/send-order-emails', async (req, res) => {
     console.log('✅ Emails sent successfully!');
     res.json({ success: true, message: 'Emails sent successfully' });
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error';
     const errorResponse = (error as any)?.response?.body;
 
     console.error('❌ Error sending emails:', errorMessage);
     console.error(
       '📧 SendGrid Response Body:',
-      JSON.stringify(errorResponse, null, 2)
+      JSON.stringify(errorResponse, null, 2),
     );
     console.error(
       '📮 From Email:',
-      process.env.SENDGRID_FROM_EMAIL || 'noreply@pizzapohoda.sk'
+      process.env.SENDGRID_FROM_EMAIL || 'noreply@pizzapohoda.sk',
     );
-    console.error(
-      '📨 To Restaurant:',
-      RESTAURANT_EMAIL
-    );
+    console.error('📨 To Restaurant:', RESTAURANT_EMAIL);
 
     res.status(500).json({
       error: 'Failed to send emails',
