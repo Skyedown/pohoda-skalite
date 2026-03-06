@@ -65,7 +65,8 @@ const PizzaCart: React.FC = () => {
         // Ensure card payment flags exist with defaults
         const safeSettings: AdminSettings = {
           ...settings,
-          cardPaymentDeliveryEnabled: settings.cardPaymentDeliveryEnabled ?? false,
+          cardPaymentDeliveryEnabled:
+            settings.cardPaymentDeliveryEnabled ?? false,
           cardPaymentPickupEnabled: settings.cardPaymentPickupEnabled ?? false,
         };
         setAdminSettings(safeSettings);
@@ -85,7 +86,8 @@ const PizzaCart: React.FC = () => {
         // Ensure card payment flags exist with defaults
         const safeSettings: AdminSettings = {
           ...settings,
-          cardPaymentDeliveryEnabled: settings.cardPaymentDeliveryEnabled ?? false,
+          cardPaymentDeliveryEnabled:
+            settings.cardPaymentDeliveryEnabled ?? false,
           cardPaymentPickupEnabled: settings.cardPaymentPickupEnabled ?? false,
         };
         setAdminSettings(safeSettings);

@@ -24,7 +24,9 @@ const CartItem: React.FC<CartItemProps> = ({
   return (
     <div className="cart-item">
       <div className="cart-item__header">
-        <h3 className="cart-item__name">{item.product.name || 'Neznámy produkt'}</h3>
+        <h3 className="cart-item__name">
+          {item.product.name || 'Neznámy produkt'}
+        </h3>
         <button
           className="cart-item__remove"
           onClick={() => onRemove(index)}
