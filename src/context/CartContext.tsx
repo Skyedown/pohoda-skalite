@@ -39,7 +39,12 @@ interface CartProviderProps {
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   // Initialize cart from localStorage on mount (lazy initialization)
   const [cart, setCart] = useState<CartItem[]>(() => {
-    return getCartFromStorage();
+    try {
+      return getCartFromStorage();
+    } catch (error) {
+      console.error('Failed to initialize cart from storage:', error);
+      return [];
+    }
   });
 
   // Save cart to localStorage whenever it changes
@@ -53,6 +58,12 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     extras?: Extra[],
     requiredOption?: { name: string; selectedValue: string },
   ) => {
+    // Validate product
+    if (!product || !product.id || !product.name) {
+      console.error('Invalid product added to cart:', product);
+      return;
+    }
+
     const extrasPrice =
       extras?.reduce((sum, extra) => sum + extra.price, 0) || 0;
     const totalPrice = (product.price + extrasPrice) * quantity;

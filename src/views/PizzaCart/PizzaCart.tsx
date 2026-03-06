@@ -60,8 +60,19 @@ const PizzaCart: React.FC = () => {
   // Load admin settings from server on mount
   useEffect(() => {
     const loadSettings = async () => {
-      const settings = await getAdminSettings();
-      setAdminSettings(settings);
+      try {
+        const settings = await getAdminSettings();
+        // Ensure card payment flags exist with defaults
+        const safeSettings: AdminSettings = {
+          ...settings,
+          cardPaymentDeliveryEnabled: settings.cardPaymentDeliveryEnabled ?? false,
+          cardPaymentPickupEnabled: settings.cardPaymentPickupEnabled ?? false,
+        };
+        setAdminSettings(safeSettings);
+      } catch (error) {
+        console.error('Failed to load admin settings:', error);
+        // Keep default settings on error
+      }
     };
     loadSettings();
   }, []);
@@ -69,7 +80,18 @@ const PizzaCart: React.FC = () => {
   // Listen for admin settings changes
   useEffect(() => {
     const handleSettingsChange = (event: CustomEvent<AdminSettings>) => {
-      setAdminSettings(event.detail);
+      try {
+        const settings = event.detail;
+        // Ensure card payment flags exist with defaults
+        const safeSettings: AdminSettings = {
+          ...settings,
+          cardPaymentDeliveryEnabled: settings.cardPaymentDeliveryEnabled ?? false,
+          cardPaymentPickupEnabled: settings.cardPaymentPickupEnabled ?? false,
+        };
+        setAdminSettings(safeSettings);
+      } catch (error) {
+        console.error('Failed to handle admin settings change:', error);
+      }
     };
 
     window.addEventListener(
@@ -313,7 +335,7 @@ const PizzaCart: React.FC = () => {
           <div className="pizza-cart__items">
             {cart.map((item, index) => (
               <CartItem
-                key={`${item.product.id}-${index}`}
+                key={`${item.product?.id || 'unknown'}-${index}`}
                 item={item}
                 index={index}
                 onRemove={removeFromCart}
@@ -332,17 +354,17 @@ const PizzaCart: React.FC = () => {
 
         {/* Right Column - Forms & Summary */}
         <div className="pizza-cart__sidebar">
-          <PaymentMethodSelector
-            value={paymentMethod}
-            onChange={setPaymentMethod}
-            deliveryMethod={deliveryMethod}
-          />
-
           <DeliveryAddressForm
             formData={{ ...formData, deliveryMethod }}
             errors={errors}
             onChange={handleInputChange}
             onDeliveryMethodChange={handleDeliveryMethodChange}
+          />
+
+          <PaymentMethodSelector
+            value={paymentMethod}
+            onChange={setPaymentMethod}
+            deliveryMethod={deliveryMethod}
           />
 
           {minimumOrderMessage && (
