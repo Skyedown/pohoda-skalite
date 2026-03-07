@@ -71,6 +71,7 @@ export const burgers: Product[] = [
     ingredients: [
       'domáca žemľa',
       'grilovaný encián (110g)',
+      'brusnicová omáčka',
       'baby špenát',
       'paradajka',
       'karamelizovaná cibuľka',
