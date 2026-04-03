@@ -17,13 +17,15 @@ interface DeliveryAddressFormProps {
   errors: Record<string, string>;
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
   onDeliveryMethodChange: (method: DeliveryMethod) => void;
+  hideEmail?: boolean;
 }
 
 const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
   formData,
   errors,
   onChange,
-  onDeliveryMethodChange
+  onDeliveryMethodChange,
+  hideEmail = false,
 }) => {
   return (
     <div className="delivery-address">
@@ -153,22 +155,24 @@ const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
         )}
       </div>
 
-      <div className="form-group">
-        <label className="form-group__label">Email</label>
-        <input
-          type="email"
-          name="email"
-          className={`form-group__input ${
-            errors.email ? 'form-group__input--error' : ''
-          }`}
-          placeholder="vas@email.sk"
-          value={formData.email}
-          onChange={onChange}
-        />
-        {errors.email && (
-          <span className="form-group__error">{errors.email}</span>
-        )}
-      </div>
+      {!hideEmail && (
+        <div className="form-group">
+          <label className="form-group__label">Email</label>
+          <input
+            type="email"
+            name="email"
+            className={`form-group__input ${
+              errors.email ? 'form-group__input--error' : ''
+            }`}
+            placeholder="vas@email.sk"
+            value={formData.email}
+            onChange={onChange}
+          />
+          {errors.email && (
+            <span className="form-group__error">{errors.email}</span>
+          )}
+        </div>
+      )}
 
       <div className="form-group">
         <label className="form-group__label">Poznámka (voliteľné)</label>
