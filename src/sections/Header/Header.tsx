@@ -20,7 +20,6 @@ const Header: React.FC<HeaderProps> = ({ isStatic = false }) => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -107,7 +106,9 @@ const Header: React.FC<HeaderProps> = ({ isStatic = false }) => {
 
   return (
     <>
-      <header className={`header ${isScrolled ? 'header--scrolled' : ''} ${isStatic ? 'header--static' : ''}`}>
+      <header
+        className={`header ${isScrolled ? 'header--scrolled' : ''} ${isStatic ? 'header--static' : ''}`}
+      >
         <div className="container">
           <div className="header__container">
             <Link to="/" className="header__logo" onClick={handleLogoClick}>
@@ -132,15 +133,31 @@ const Header: React.FC<HeaderProps> = ({ isStatic = false }) => {
                     to="/"
                     onClick={scrollToSection('pizza-menu')}
                     className={`header__nav-link ${
-                      location.pathname === '/' ? 'header__nav-link--active' : ''
+                      location.pathname === '/'
+                        ? 'header__nav-link--active'
+                        : ''
                     }`}
                   >
                     Menu
-                    <svg width="12" height="8" viewBox="0 0 12 8" fill="none" className="header__nav-arrow">
-                      <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <svg
+                      width="12"
+                      height="8"
+                      viewBox="0 0 12 8"
+                      fill="none"
+                      className="header__nav-arrow"
+                    >
+                      <path
+                        d="M1 1.5L6 6.5L11 1.5"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
                   </Link>
-                  <div className={`header__dropdown-menu ${isMenuDropdownOpen ? 'header__dropdown-menu--visible' : ''}`}>
+                  <div
+                    className={`header__dropdown-menu ${isMenuDropdownOpen ? 'header__dropdown-menu--visible' : ''}`}
+                  >
                     {menuItems.map((item) => (
                       <a
                         key={item.id}
@@ -217,11 +234,21 @@ const Header: React.FC<HeaderProps> = ({ isStatic = false }) => {
       {/* Mobile Menu - Rendered outside header */}
       {isMobileMenuOpen && (
         <>
-          <div className={`header__mobile-bg header__mobile-bg--white ${isMenuClosing ? 'header__mobile-bg--closing' : ''}`}></div>
-          <div className={`header__mobile-bg header__mobile-bg--orange ${isMenuClosing ? 'header__mobile-bg--closing' : ''}`}></div>
-          <nav className={`header__mobile-menu ${isMenuClosing ? 'header__mobile-menu--closing' : ''}`}>
+          <div
+            className={`header__mobile-bg header__mobile-bg--white ${isMenuClosing ? 'header__mobile-bg--closing' : ''}`}
+          ></div>
+          <div
+            className={`header__mobile-bg header__mobile-bg--orange ${isMenuClosing ? 'header__mobile-bg--closing' : ''}`}
+          ></div>
+          <nav
+            className={`header__mobile-menu ${isMenuClosing ? 'header__mobile-menu--closing' : ''}`}
+          >
             <div className="header__mobile-menu-content">
-              <Link to="/" className="header__mobile-menu-logo" onClick={handleLogoClick}>
+              <Link
+                to="/"
+                className="header__mobile-menu-logo"
+                onClick={handleLogoClick}
+              >
                 <img src="/images/logo-pohoda-white.svg" alt="Pizza Pohoda" />
               </Link>
 
@@ -255,10 +282,7 @@ const Header: React.FC<HeaderProps> = ({ isStatic = false }) => {
                 Kontakt
               </a>
 
-              <Link
-                to="/cart"
-                className="header__mobile-menu-link"
-              >
+              <Link to="/cart" className="header__mobile-menu-link">
                 Online Objednávka
               </Link>
             </div>

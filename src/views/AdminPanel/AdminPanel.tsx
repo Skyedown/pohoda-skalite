@@ -9,13 +9,12 @@ import {
   type AdminSettings,
   type AnnouncementMode,
 } from '../../utils/adminSettings';
+import AdminOrderCreationModal from '../../components/AdminOrderCreation/AdminOrderCreationModal';
 import './AdminPanel.less';
 
 const AdminPanel: React.FC = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordError, setPasswordError] = useState('');
+  const [isOrderCreationModalOpen, setIsOrderCreationModalOpen] =
+    useState(false);
   const [settings, setSettings] = useState<AdminSettings>({
     mode: 'off',
     waitTimeMinutes: 60,
@@ -28,57 +27,28 @@ const AdminPanel: React.FC = () => {
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState('');
 
-  // Check if already authenticated in this session
+  // Load settings from server
   useEffect(() => {
-    const authenticated = sessionStorage.getItem('admin_authenticated');
-    if (authenticated === 'true') {
-      setIsAuthenticated(true);
-    }
+    const loadSettings = async () => {
+      const loadedSettings = await getAdminSettings();
+      if (!loadedSettings.customNote) {
+        loadedSettings.customNote =
+          'Z dôvodu nepriaznivého počasia je donáška možná len k hlavnej ceste';
+      }
+      if (loadedSettings.cardPaymentDeliveryEnabled === undefined) {
+        loadedSettings.cardPaymentDeliveryEnabled = false;
+      }
+      if (loadedSettings.cardPaymentPickupEnabled === undefined) {
+        loadedSettings.cardPaymentPickupEnabled = false;
+      }
+      setSettings(loadedSettings);
+    };
+    loadSettings();
   }, []);
 
-  // Load settings from server when authenticated
-  useEffect(() => {
-    if (isAuthenticated) {
-      const loadSettings = async () => {
-        const loadedSettings = await getAdminSettings();
-        // Ensure customNote exists (for backward compatibility)
-        if (!loadedSettings.customNote) {
-          loadedSettings.customNote =
-            'Z dôvodu nepriaznivého počasia je donáška možná len k hlavnej ceste';
-        }
-        // Ensure card flags default to false if missing
-        if (loadedSettings.cardPaymentDeliveryEnabled === undefined) {
-          loadedSettings.cardPaymentDeliveryEnabled = false;
-        }
-        if (loadedSettings.cardPaymentPickupEnabled === undefined) {
-          loadedSettings.cardPaymentPickupEnabled = false;
-        }
-        setSettings(loadedSettings);
-      };
-      loadSettings();
-    }
-  }, [isAuthenticated]);
-
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Check credentials from .env
-    const validUsername = import.meta.env.VITE_ADMIN_NAME || 'admin';
-    const validPassword = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
-
-    if (username === validUsername && password === validPassword) {
-      setIsAuthenticated(true);
-      sessionStorage.setItem('admin_authenticated', 'true');
-      setPasswordError('');
-    } else {
-      setPasswordError('Nesprávne prihlasovacie údaje');
-    }
-  };
-
   const handleLogout = () => {
-    setIsAuthenticated(false);
     sessionStorage.removeItem('admin_authenticated');
-    setUsername('');
-    setPassword('');
+    window.location.href = '/admin';
   };
 
   const handleModeChange = (mode: AnnouncementMode) => {
@@ -146,63 +116,6 @@ const AdminPanel: React.FC = () => {
     }
   };
 
-  if (!isAuthenticated) {
-    return (
-      <div className="admin-panel">
-        <Helmet>
-          <title>Admin Panel | Pohoda Skalite</title>
-          <meta name="robots" content="noindex, nofollow" />
-        </Helmet>
-
-        <div className="admin-panel__login">
-          <div className="admin-panel__login-box">
-            <h1 className="admin-panel__title">Admin Panel</h1>
-            <p className="admin-panel__subtitle">Zadajte prihlasovacie údaje</p>
-
-            <form onSubmit={handleLogin} className="admin-panel__login-form">
-              <div className="admin-panel__input-group">
-                <label htmlFor="username">Používateľské meno</label>
-                <input
-                  type="text"
-                  id="username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Zadajte používateľské meno"
-                  autoFocus
-                />
-              </div>
-
-              <div className="admin-panel__input-group">
-                <label htmlFor="password">Heslo</label>
-                <input
-                  type="password"
-                  id="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Zadajte heslo"
-                />
-                {passwordError && (
-                  <span className="admin-panel__error">{passwordError}</span>
-                )}
-              </div>
-
-              <button
-                type="submit"
-                className="admin-panel__button admin-panel__button--primary"
-              >
-                Prihlásiť sa
-              </button>
-
-              <Link to="/" className="admin-panel__back-link">
-                ← Späť na hlavnú stránku
-              </Link>
-            </form>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="admin-panel">
       <Helmet>
@@ -219,6 +132,49 @@ const AdminPanel: React.FC = () => {
         </div>
 
         <div className="admin-panel__content">
+          {/* Quick Actions */}
+          <div className="admin-panel__quick-actions">
+            <button
+              onClick={() => setIsOrderCreationModalOpen(true)}
+              className="admin-panel__action-btn admin-panel__action-btn--order"
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              Nová objednávka
+            </button>
+            <Link
+              to="/admin/analytics"
+              className="admin-panel__action-btn admin-panel__action-btn--analytics"
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="18" y1="20" x2="18" y2="10" />
+                <line x1="12" y1="20" x2="12" y2="4" />
+                <line x1="6" y1="20" x2="6" y2="14" />
+              </svg>
+              Štatistiky
+            </Link>
+          </div>
+
           {/* Mode Selection */}
           <div className="admin-panel__section">
             <h2 className="admin-panel__section-title">Stav objednávok</h2>
@@ -560,6 +516,11 @@ const AdminPanel: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <AdminOrderCreationModal
+        isOpen={isOrderCreationModalOpen}
+        onClose={() => setIsOrderCreationModalOpen(false)}
+      />
     </div>
   );
 };

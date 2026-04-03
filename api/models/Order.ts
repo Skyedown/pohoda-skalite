@@ -1,0 +1,90 @@
+import mongoose, { Schema, type Document } from 'mongoose';
+
+export interface IOrder extends Document {
+  items: {
+    product: {
+      id: string;
+      name: string;
+      price: number;
+      type: string;
+    };
+    quantity: number;
+    extras: { id: string; name: string; price: number }[];
+    totalPrice: number;
+  }[];
+  delivery: {
+    method: 'delivery' | 'pickup';
+    fullName: string;
+    street?: string;
+    city?: string;
+    phone: string;
+    email: string;
+    notes?: string;
+  };
+  payment: {
+    method: 'cash' | 'card';
+  };
+  pricing: {
+    subtotal: number;
+    delivery: number;
+    total: number;
+  };
+  printed: boolean;
+  createdBy: 'customer' | 'admin';
+  createdAt: Date;
+}
+
+const orderSchema = new Schema<IOrder>(
+  {
+    items: [
+      {
+        product: {
+          id: { type: String, required: true },
+          name: { type: String, required: true },
+          price: { type: Number, required: true },
+          type: { type: String, required: true },
+        },
+        quantity: { type: Number, required: true },
+        extras: [
+          {
+            id: { type: String },
+            name: { type: String },
+            price: { type: Number },
+          },
+        ],
+        totalPrice: { type: Number, required: true },
+      },
+    ],
+    delivery: {
+      method: { type: String, enum: ['delivery', 'pickup'], required: true },
+      fullName: { type: String, required: true },
+      street: { type: String },
+      city: { type: String },
+      phone: { type: String, required: true },
+      email: { type: String, required: true },
+      notes: { type: String },
+    },
+    payment: {
+      method: { type: String, enum: ['cash', 'card'], required: true },
+    },
+    pricing: {
+      subtotal: { type: Number, required: true },
+      delivery: { type: Number, required: true },
+      total: { type: Number, required: true },
+    },
+    printed: { type: Boolean, default: false },
+    createdBy: {
+      type: String,
+      enum: ['customer', 'admin'],
+      default: 'customer',
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
+
+// Index for date-based queries (order stats)
+orderSchema.index({ createdAt: 1 });
+
+export const Order = mongoose.model<IOrder>('Order', orderSchema);

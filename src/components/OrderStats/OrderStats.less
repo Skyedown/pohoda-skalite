@@ -1,0 +1,166 @@
+.order-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.order-stats__presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  button {
+    padding: 8px 14px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    color: #555;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+
+    &:hover {
+      border-color: #ff6b35;
+      color: #ff6b35;
+      background: #fff5f0;
+    }
+
+    &:active,
+    &.active {
+      background: #ff6b35;
+      color: white;
+      border-color: #ff6b35;
+    }
+  }
+}
+
+.order-stats__date-picker {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.order-stats__date-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  input[type='date'] {
+    padding: 10px 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    color: #333;
+    transition: border-color 0.2s ease;
+    min-width: 160px;
+
+    &:focus {
+      outline: none;
+      border-color: #ff6b35;
+    }
+  }
+}
+
+.order-stats__error {
+  margin: 0;
+  padding: 12px;
+  background-color: #fadbd8;
+  color: #e74c3c;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.order-stats__loading {
+  margin: 0;
+  padding: 24px;
+  text-align: center;
+  color: #666;
+  font-size: 14px;
+}
+
+.order-stats__summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.order-stats__summary-card {
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+
+  &--revenue {
+    background: linear-gradient(135deg, #fff5f0 0%, #ffe8dd 100%);
+    border: 1px solid #ffccb3;
+  }
+
+  &--orders {
+    background: linear-gradient(135deg, #e8f4fd 0%, #d0e8f9 100%);
+    border: 1px solid #a3d4f7;
+  }
+}
+
+.order-stats__summary-label {
+  margin: 0 0 8px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.order-stats__summary-value {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+
+  .order-stats__summary-card--revenue & {
+    color: #ff6b35;
+  }
+
+  .order-stats__summary-card--orders & {
+    color: #2196f3;
+  }
+}
+
+.order-stats__charts {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.order-stats__chart {
+  background: white;
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+
+  // Override Highcharts font
+  .highcharts-root {
+    font-family: inherit !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .order-stats__date-picker {
+    flex-direction: column;
+  }
+
+  .order-stats__date-field input[type='date'] {
+    width: 100%;
+  }
+
+  .order-stats__summary-value {
+    font-size: 22px;
+  }
+}

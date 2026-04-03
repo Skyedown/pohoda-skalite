@@ -1,0 +1,91 @@
+@import '../../styles/variables.less';
+@import '../../styles/mixins.less';
+
+.protected-route {
+  min-height: 100vh;
+  padding: 40px 20px;
+
+  &__login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  &__login-box {
+    background: white;
+    border-radius: 16px;
+    padding: 48px;
+    max-width: 450px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+
+    @media (max-width: @breakpoint-sm) {
+      padding: 32px 24px;
+    }
+
+    h2 {
+      font-family: @font-family-heading;
+      font-size: 24px;
+      color: @text-primary;
+      margin: 0 0 24px;
+      text-align: center;
+    }
+  }
+
+  &__login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    label {
+      font-size: 14px;
+      font-weight: 600;
+      color: @text-primary;
+    }
+
+    input {
+      padding: 12px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 16px;
+      font-family: inherit;
+      transition: border-color 0.2s ease;
+
+      &:focus {
+        outline: none;
+        border-color: @primary-color;
+      }
+    }
+  }
+
+  &__error {
+    color: #e53e3e;
+    font-size: 14px;
+    margin: 0;
+    text-align: center;
+  }
+
+  &__submit {
+    padding: 14px 24px;
+    background: @primary-color;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: darken(@primary-color, 10%);
+    }
+  }
+}
