@@ -409,6 +409,74 @@ app.post('/api/orders', async (req, res) => {
   }
 });
 
+// Get recent orders (last 50)
+app.get('/api/orders/recent', async (req, res) => {
+  try {
+    if (!isMongoConnected()) {
+      return res.status(503).json({ error: 'Database not available' });
+    }
+
+    const orders = await Order.find()
+      .sort({ createdAt: -1 })
+      .limit(50)
+      .lean();
+
+    res.json({ orders });
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error';
+    console.error('❌ Error fetching recent orders:', errorMessage);
+    res.status(500).json({
+      error: 'Failed to fetch orders',
+      details: errorMessage,
+    });
+  }
+});
+
+// Reprint order (re-publish to RabbitMQ)
+app.post('/api/orders/:id/reprint', async (req, res) => {
+  try {
+    if (!isMongoConnected()) {
+      return res.status(503).json({ error: 'Database not available' });
+    }
+
+    const { id } = req.params;
+
+    // Verify order exists
+    const order = await Order.findById(id);
+    if (!order) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    console.log('🔄 Reprinting order:', id);
+
+    // Publish to RabbitMQ
+    const published = await publishOrder({
+      _id: id,
+    });
+
+    if (!published) {
+      console.warn('⚠️ Failed to publish order to RabbitMQ:', id);
+      return res.status(500).json({ error: 'Failed to publish to printer' });
+    }
+
+    console.log('✅ Order republished to RabbitMQ:', id);
+
+    res.json({
+      success: true,
+      message: 'Order sent to printer',
+    });
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error';
+    console.error('❌ Error reprinting order:', errorMessage);
+    res.status(500).json({
+      error: 'Failed to reprint order',
+      details: errorMessage,
+    });
+  }
+});
+
 // Get order stats for date range
 app.get('/api/orders/stats', async (req, res) => {
   try {

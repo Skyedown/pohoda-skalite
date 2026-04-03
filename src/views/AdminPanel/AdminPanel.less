@@ -100,8 +100,12 @@
 
   &__quick-actions {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
     gap: 16px;
+
+    @media (max-width: @breakpoint-md) {
+      grid-template-columns: 1fr 1fr;
+    }
 
     @media (max-width: @breakpoint-sm) {
       grid-template-columns: 1fr;
@@ -138,6 +142,10 @@
 
     &--order {
       background: linear-gradient(135deg, #ff6b35 0%, #e55a24 100%);
+    }
+
+    &--orders {
+      background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
     }
 
     &--analytics {
