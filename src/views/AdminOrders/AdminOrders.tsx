@@ -49,7 +49,7 @@ const AdminOrders: React.FC = () => {
     try {
       setLoading(true);
       const response = await fetch(`${API_URL}/api/orders/recent`);
-      
+
       if (!response.ok) {
         throw new Error('Failed to fetch orders');
       }

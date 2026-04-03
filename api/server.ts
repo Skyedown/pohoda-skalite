@@ -416,10 +416,7 @@ app.get('/api/orders/recent', async (req, res) => {
       return res.status(503).json({ error: 'Database not available' });
     }
 
-    const orders = await Order.find()
-      .sort({ createdAt: -1 })
-      .limit(50)
-      .lean();
+    const orders = await Order.find().sort({ createdAt: -1 }).limit(50).lean();
 
     res.json({ orders });
   } catch (error: unknown) {

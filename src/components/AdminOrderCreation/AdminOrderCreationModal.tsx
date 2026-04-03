@@ -96,8 +96,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
     [orderItems],
   );
 
-  const deliveryFee =
-    orderType === 'dine-in' ? 0 : deliveryMethod === 'delivery' ? 2.0 : 0;
+  const deliveryFee = 0; // Delivery is always free
   const total = subtotal + deliveryFee;
 
   // Handle adding/removing products
