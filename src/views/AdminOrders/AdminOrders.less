@@ -1,0 +1,254 @@
+.admin-orders {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding: 20px;
+}
+
+.admin-orders__container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.admin-orders__header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.admin-orders__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s ease;
+  width: fit-content;
+
+  &:hover {
+    color: #ff6b35;
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+.admin-orders__title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+.admin-orders__loading,
+.admin-orders__error,
+.admin-orders__empty {
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 16px;
+  color: #666;
+  background: white;
+  border-radius: 8px;
+}
+
+.admin-orders__error {
+  color: #e74c3c;
+}
+
+.admin-orders__list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-orders__item {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid;
+  transition: all 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.admin-orders__item--printed {
+  border-left-color: #27ae60;
+}
+
+.admin-orders__item--not-printed {
+  border-left-color: #e74c3c;
+}
+
+.admin-orders__item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.admin-orders__item-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 14px;
+
+  .admin-orders__item--printed & {
+    color: #27ae60;
+  }
+
+  .admin-orders__item--not-printed & {
+    color: #e74c3c;
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+.admin-orders__item-date {
+  font-size: 13px;
+  color: #666;
+}
+
+.admin-orders__item-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.admin-orders__item-row {
+  display: flex;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.admin-orders__item-label {
+  color: #666;
+  font-weight: 500;
+}
+
+.admin-orders__item-value {
+  color: #333;
+  font-weight: 600;
+}
+
+.admin-orders__item-products {
+  background: #f9f9f9;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.admin-orders__item-product {
+  display: flex;
+  gap: 8px;
+  padding: 6px 0;
+  font-size: 14px;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #e0e0e0;
+  }
+}
+
+.admin-orders__item-product-qty {
+  font-weight: 700;
+  color: #ff6b35;
+  min-width: 32px;
+}
+
+.admin-orders__item-product-name {
+  color: #333;
+}
+
+.admin-orders__item-product-extras {
+  color: #666;
+  font-size: 13px;
+  font-style: italic;
+}
+
+.admin-orders__item-notes {
+  background: #fff5f0;
+  border-left: 3px solid #ff6b35;
+  padding: 12px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: #333;
+  border-radius: 4px;
+
+  strong {
+    color: #ff6b35;
+  }
+}
+
+.admin-orders__item-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 12px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.admin-orders__reprint-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background-color: #ff6b35;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background-color: #e55a24;
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-orders {
+    padding: 16px;
+  }
+
+  .admin-orders__title {
+    font-size: 24px;
+  }
+
+  .admin-orders__item {
+    padding: 16px;
+  }
+
+  .admin-orders__item-info {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-orders__item-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
