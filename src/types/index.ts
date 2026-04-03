@@ -51,7 +51,7 @@ export interface CartItem {
   };
 }
 
-export type DeliveryMethod = 'delivery' | 'pickup';
+export type DeliveryMethod = 'delivery' | 'pickup' | 'dine-in';
 
 export interface OrderFormData {
   fullName: string;

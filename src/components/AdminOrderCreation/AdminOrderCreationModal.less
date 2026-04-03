@@ -408,3 +408,60 @@
     width: 100%;
   }
 }
+
+// Order Type Selection
+.admin-order-modal__order-type {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-order-modal__order-type-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  input[type="radio"] {
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  &:hover {
+    border-color: #ff6b35;
+    background-color: #fff5f0;
+  }
+
+  input[type="radio"]:checked ~ .admin-order-modal__order-type-content {
+    .admin-order-modal__order-type-label {
+      font-weight: 600;
+      color: #ff6b35;
+    }
+    
+    svg {
+      color: #ff6b35;
+    }
+  }
+}
+
+.admin-order-modal__order-type-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+
+  svg {
+    flex-shrink: 0;
+    transition: color 0.2s ease;
+  }
+}
+
+.admin-order-modal__order-type-label {
+  font-size: 15px;
+  color: #333;
+  transition: all 0.2s ease;
+}

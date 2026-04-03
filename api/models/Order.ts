@@ -13,12 +13,12 @@ export interface IOrder extends Document {
     totalPrice: number;
   }[];
   delivery: {
-    method: 'delivery' | 'pickup';
-    fullName: string;
+    method: 'delivery' | 'pickup' | 'dine-in';
+    fullName?: string;
     street?: string;
     city?: string;
-    phone: string;
-    email: string;
+    phone?: string;
+    email?: string;
     notes?: string;
   };
   payment: {
@@ -56,12 +56,12 @@ const orderSchema = new Schema<IOrder>(
       },
     ],
     delivery: {
-      method: { type: String, enum: ['delivery', 'pickup'], required: true },
-      fullName: { type: String, required: true },
+      method: { type: String, enum: ['delivery', 'pickup', 'dine-in'], required: true },
+      fullName: { type: String },
       street: { type: String },
       city: { type: String },
-      phone: { type: String, required: true },
-      email: { type: String, required: true },
+      phone: { type: String },
+      email: { type: String },
       notes: { type: String },
     },
     payment: {

@@ -46,6 +46,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
 }) => {
   const [orderItems, setOrderItems] = useState<AdminOrderItem[]>([]);
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'card'>('cash');
+  const [orderType, setOrderType] = useState<'dine-in' | 'customer'>('dine-in');
   const [deliveryMethod, setDeliveryMethod] =
     useState<DeliveryMethod>('delivery');
   const [editingItemIndex, setEditingItemIndex] = useState<number | null>(null);
@@ -95,7 +96,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
     [orderItems],
   );
 
-  const deliveryFee = deliveryMethod === 'delivery' ? 2.0 : 0;
+  const deliveryFee = orderType === 'dine-in' ? 0 : (deliveryMethod === 'delivery' ? 2.0 : 0);
   const total = subtotal + deliveryFee;
 
   // Handle adding/removing products
@@ -221,17 +222,24 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.fullName.trim()) newErrors.fullName = 'Meno je povinné';
-    if (!formData.phone.trim()) newErrors.phone = 'Telefón je povinný';
-    if (!formData.email.trim()) newErrors.email = 'Email je povinný';
+    // For dine-in orders, only validate that items are selected
+    if (orderType === 'dine-in') {
+      if (orderItems.length === 0) {
+        newErrors.items = 'Musíte vybrať aspoň jeden produkt';
+      }
+    } else {
+      // For customer orders, validate all fields
+      if (!formData.fullName.trim()) newErrors.fullName = 'Meno je povinné';
+      if (!formData.phone.trim()) newErrors.phone = 'Telefón je povinný';
 
-    if (deliveryMethod === 'delivery') {
-      if (!formData.street.trim()) newErrors.street = 'Ulica je povinná';
-      if (!formData.city.trim()) newErrors.city = 'Mesto je povinné';
-    }
+      if (deliveryMethod === 'delivery') {
+        if (!formData.street.trim()) newErrors.street = 'Ulica je povinná';
+        if (!formData.city.trim()) newErrors.city = 'Mesto je povinné';
+      }
 
-    if (orderItems.length === 0) {
-      newErrors.items = 'Musíte vybrať aspoň jeden produkt';
+      if (orderItems.length === 0) {
+        newErrors.items = 'Musíte vybrať aspoň jeden produkt';
+      }
     }
 
     setErrors(newErrors);
@@ -240,14 +248,10 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('🚀 Admin order submit triggered');
 
     if (!validateForm()) {
-      console.error('❌ Form validation failed:', errors);
       return;
     }
-
-    console.log('✅ Form validation passed');
     const order = {
       items: orderItems.map((item) => ({
         product: {
@@ -263,13 +267,16 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
             item.extras.reduce((sum, e) => sum + e.price, 0)) *
           item.quantity,
       })),
-      delivery: {
+      delivery: orderType === 'dine-in' ? {
+        method: 'dine-in' as const,
+        notes: formData.notes,
+      } : {
         method: deliveryMethod,
         fullName: formData.fullName,
         street: deliveryMethod === 'delivery' ? formData.street : undefined,
         city: deliveryMethod === 'delivery' ? formData.city : undefined,
         phone: formData.phone,
-        email: formData.email,
+        email: formData.email || undefined,
         notes: formData.notes,
       },
       payment: {
@@ -277,15 +284,13 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
       },
       pricing: {
         subtotal: subtotal,
-        delivery: deliveryFee,
-        total: total,
+        delivery: orderType === 'dine-in' ? 0 : deliveryFee,
+        total: orderType === 'dine-in' ? subtotal : total,
       },
       createdBy: 'admin',
     };
 
     setIsSubmitting(true);
-    console.log('📤 Sending order to API:', `${API_URL}/api/orders`);
-    console.log('📦 Order payload:', JSON.stringify(order, null, 2));
     try {
       const res = await fetch(`${API_URL}/api/orders`, {
         method: 'POST',
@@ -295,12 +300,8 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        console.error('❌ API responded with error:', res.status, data);
         throw new Error(data.error || `HTTP ${res.status}`);
       }
-
-      const data = await res.json();
-      console.log('✅ Order saved successfully:', data);
 
       // Reset form
       setOrderItems([]);
@@ -314,6 +315,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
         deliveryMethod: 'delivery',
       });
       setPaymentMethod('cash');
+      setOrderType('dine-in');
       setDeliveryMethod('delivery');
       setErrors({});
       setEditingItemIndex(null);
@@ -321,7 +323,6 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
       onClose();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Unknown error';
-      console.error('❌ Order submission failed:', msg);
       setErrors((prev) => ({
         ...prev,
         submit: `Chyba pri ukladaní objednávky: ${msg}`,
@@ -349,6 +350,53 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
 
         <div className="admin-order-modal__content">
           <form onSubmit={handleSubmit} className="admin-order-modal__form">
+            {/* Order Type Selection */}
+            <div className="admin-order-modal__section">
+              <h3 className="admin-order-modal__section-title">Typ objednávky</h3>
+              <div className="admin-order-modal__order-type">
+                <label className="admin-order-modal__order-type-option">
+                  <input
+                    type="radio"
+                    name="orderType"
+                    value="dine-in"
+                    checked={orderType === 'dine-in'}
+                    onChange={(e) => setOrderType(e.target.value as 'dine-in')}
+                  />
+                  <div className="admin-order-modal__order-type-content">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
+                      <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
+                      <line x1="6" y1="1" x2="6" y2="4" />
+                      <line x1="10" y1="1" x2="10" y2="4" />
+                      <line x1="14" y1="1" x2="14" y2="4" />
+                    </svg>
+                    <span className="admin-order-modal__order-type-label">
+                      Konzumácia v reštaurácii
+                    </span>
+                  </div>
+                </label>
+                <label className="admin-order-modal__order-type-option">
+                  <input
+                    type="radio"
+                    name="orderType"
+                    value="customer"
+                    checked={orderType === 'customer'}
+                    onChange={(e) => setOrderType(e.target.value as 'customer')}
+                  />
+                  <div className="admin-order-modal__order-type-content">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                      <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                      <line x1="12" y1="22.08" x2="12" y2="12" />
+                    </svg>
+                    <span className="admin-order-modal__order-type-label">
+                      Objednávka so zákazníckymi údajmi
+                    </span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
             {/* Product Selection */}
             <div className="admin-order-modal__section">
               <h3 className="admin-order-modal__section-title">
@@ -475,36 +523,67 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
               </div>
             )}
 
-            {/* Order Details Form */}
-            <div className="admin-order-modal__section">
-              <h3 className="admin-order-modal__section-title">
-                Detaily objednávky
-              </h3>
+            {/* Order Details Form - only show for customer orders */}
+            {orderType === 'customer' && (
+              <div className="admin-order-modal__section">
+                <h3 className="admin-order-modal__section-title">
+                  Detaily objednávky
+                </h3>
 
-              {/* Delivery/Pickup Selection */}
-              <DeliveryAddressForm
-                formData={formData}
-                errors={errors}
-                onChange={handleFormChange}
-                onDeliveryMethodChange={handleDeliveryMethodChange}
-              />
+                {/* Delivery/Pickup Selection */}
+                <DeliveryAddressForm
+                  formData={formData}
+                  errors={errors}
+                  onChange={handleFormChange}
+                  onDeliveryMethodChange={handleDeliveryMethodChange}
+                  hideEmail={true}
+                />
 
-              {/* Payment Method */}
-              <PaymentMethodSelector
-                value={paymentMethod}
-                onChange={setPaymentMethod}
-                deliveryMethod={deliveryMethod}
-              />
+                {/* Payment Method */}
+                <PaymentMethodSelector
+                  value={paymentMethod}
+                  onChange={setPaymentMethod}
+                  deliveryMethod={deliveryMethod}
+                />
 
-              {/* Order Summary */}
-              {orderItems.length > 0 && (
+                {/* Order Summary */}
+                {orderItems.length > 0 && (
+                  <OrderSummary
+                    subtotal={subtotal}
+                    delivery={deliveryFee}
+                    total={total}
+                  />
+                )}
+              </div>
+            )}
+
+            {/* For dine-in orders, show simplified summary */}
+            {orderType === 'dine-in' && orderItems.length > 0 && (
+              <div className="admin-order-modal__section">
+                <h3 className="admin-order-modal__section-title">
+                  Súhrn objednávky
+                </h3>
+
+                {/* Notes field for dine-in */}
+                <div className="form-group">
+                  <label className="form-group__label">Poznámka (voliteľné)</label>
+                  <textarea
+                    name="notes"
+                    className="form-group__textarea"
+                    placeholder="Napr. číslo stola, špeciálne požiadavky..."
+                    value={formData.notes}
+                    onChange={handleFormChange}
+                    rows={3}
+                  />
+                </div>
+
                 <OrderSummary
                   subtotal={subtotal}
-                  delivery={deliveryFee}
-                  total={total}
+                  delivery={0}
+                  total={subtotal}
                 />
-              )}
-            </div>
+              </div>
+            )}
 
             {/* Submit Button */}
             {errors.submit && (
@@ -515,7 +594,6 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
                 type="submit"
                 className="admin-order-modal__submit-btn"
                 disabled={isSubmitting}
-                onClick={() => console.log('🔘 Submit button clicked')}
               >
                 {isSubmitting ? 'Ukladám…' : 'Vytvoriť objednávku'}
               </button>
