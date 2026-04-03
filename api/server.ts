@@ -8,6 +8,13 @@ import { fileURLToPath } from 'url';
 import { sanitizeOrder } from './utils/sanitize.js';
 import { generateCustomerEmail } from './templates/customerEmail.js';
 import { generateRestaurantEmail } from './templates/restaurantEmail.js';
+import { connectToMongoDB, isMongoConnected } from './utils/db.js';
+import {
+  connectToRabbitMQ,
+  publishOrder,
+  closeRabbitMQ,
+} from './utils/messageQueue.js';
+import { Order } from './models/Order.js';
 
 dotenv.config();
 
@@ -240,7 +247,78 @@ app.post('/api/send-order-emails', async (req, res) => {
     ]);
 
     console.log('✅ Emails sent successfully!');
-    res.json({ success: true, message: 'Emails sent successfully' });
+
+    // Save order to MongoDB
+    let savedOrderId = null;
+    let published = false;
+
+    if (isMongoConnected()) {
+      try {
+        console.log('💾 Saving customer order to MongoDB...');
+
+        // Map customer order format to Order model format
+        const orderData = {
+          items: order.items.map((item: Record<string, unknown>) => ({
+            product: {
+              id: item.id || (item.product as Record<string, unknown>)?.id,
+              name:
+                item.name || (item.product as Record<string, unknown>)?.name,
+              price:
+                item.basePrice ||
+                (item.product as Record<string, unknown>)?.price,
+              type:
+                item.type || (item.product as Record<string, unknown>)?.type,
+            },
+            quantity: item.quantity,
+            extras: item.extras || [],
+            totalPrice: item.totalPrice,
+          })),
+          delivery: {
+            method: order.deliveryMethod || order.delivery?.method,
+            fullName: order.delivery?.fullName,
+            street: order.delivery?.street,
+            city: order.delivery?.city,
+            phone: order.delivery?.phone,
+            email: order.delivery?.email,
+            notes: order.delivery?.notes,
+          },
+          payment: {
+            method: order.paymentMethod || order.payment?.method,
+          },
+          pricing: order.pricing,
+          printed: false,
+          createdBy: 'customer',
+        };
+
+        const savedOrder = await Order.create(orderData);
+        savedOrderId = savedOrder._id;
+        console.log('✅ Order saved to MongoDB:', savedOrder._id);
+
+        // Publish to RabbitMQ for the printer
+        published = await publishOrder({
+          _id: savedOrder._id.toString(),
+        });
+
+        if (published) {
+          console.log('📤 Order published to RabbitMQ:', savedOrder._id);
+        } else {
+          console.warn('⚠️ Order NOT published to RabbitMQ:', savedOrder._id);
+        }
+      } catch (dbError) {
+        console.error('❌ Failed to save customer order to MongoDB:', dbError);
+      }
+    } else {
+      console.warn(
+        '⚠️ MongoDB not connected — customer order not saved to database',
+      );
+    }
+
+    res.json({
+      success: true,
+      message: 'Emails sent successfully',
+      orderId: savedOrderId,
+      published,
+    });
   } catch (error: unknown) {
     const errorMessage =
       error instanceof Error ? error.message : 'Unknown error';
@@ -265,6 +343,178 @@ app.post('/api/send-order-emails', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`API server running on http://localhost:${PORT}`);
+// ===== Order Management Endpoints =====
+
+// Submit a new order (save to MongoDB, publish to RabbitMQ)
+app.post('/api/orders', async (req, res) => {
+  console.log(
+    '🚀 Received order request at:',
+    new Date().toLocaleString('sk-SK', { timeZone: 'Europe/Bratislava' }),
+  );
+
+  try {
+    const { order } = req.body;
+
+    if (!order || !order.items || !order.delivery || !order.pricing) {
+      console.error('❌ Invalid order data received');
+      return res.status(400).json({ error: 'Invalid order data' });
+    }
+
+    console.log('📦 Order details:', {
+      items: order.items.length,
+      total: order.pricing.total,
+      createdBy: order.createdBy || 'customer',
+    });
+
+    if (!isMongoConnected()) {
+      console.error('❌ Database not available');
+      return res.status(503).json({ error: 'Database not available' });
+    }
+
+    // Save order to MongoDB
+    const savedOrder = await Order.create({
+      items: order.items,
+      delivery: order.delivery,
+      payment: order.payment,
+      pricing: order.pricing,
+      printed: false,
+      createdBy: order.createdBy || 'customer',
+    });
+
+    console.log('✅ Order saved to MongoDB:', savedOrder._id);
+
+    // Publish to RabbitMQ for the printer
+    const published = await publishOrder({
+      _id: savedOrder._id.toString(),
+    });
+
+    if (published) {
+      console.log('📤 Order published to RabbitMQ:', savedOrder._id);
+    } else {
+      console.warn('⚠️ Order NOT published to RabbitMQ:', savedOrder._id);
+    }
+
+    res.status(201).json({
+      success: true,
+      orderId: savedOrder._id,
+      published,
+    });
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error';
+    console.error('❌ Error saving order:', errorMessage);
+    res
+      .status(500)
+      .json({ error: 'Failed to save order', details: errorMessage });
+  }
+});
+
+// Get order stats for date range
+app.get('/api/orders/stats', async (req, res) => {
+  try {
+    if (!isMongoConnected()) {
+      return res.status(503).json({ error: 'Database not available' });
+    }
+
+    const { from, to } = req.query;
+
+    if (!from || !to) {
+      return res
+        .status(400)
+        .json({ error: 'from and to query params are required (YYYY-MM-DD)' });
+    }
+
+    // Parse dates as local timezone (Europe/Bratislava) to avoid UTC offset issues
+    const [fromYear, fromMonth, fromDay] = (from as string)
+      .split('-')
+      .map(Number);
+    const [toYear, toMonth, toDay] = (to as string).split('-').map(Number);
+    const fromDate = new Date(fromYear, fromMonth - 1, fromDay, 0, 0, 0, 0);
+    const toDate = new Date(toYear, toMonth - 1, toDay, 23, 59, 59, 999);
+
+    if (isNaN(fromDate.getTime()) || isNaN(toDate.getTime())) {
+      return res.status(400).json({ error: 'Invalid date format' });
+    }
+
+    const stats = await Order.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: fromDate, $lte: toDate },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            $dateToString: {
+              format: '%Y-%m-%d',
+              date: '$createdAt',
+              timezone: 'Europe/Bratislava',
+            },
+          },
+          totalOrders: { $sum: 1 },
+          totalValue: { $sum: '$pricing.total' },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    // Fill in missing dates with zeros using local date strings
+    const result: { date: string; totalOrders: number; totalValue: number }[] =
+      [];
+    const current = new Date(fromYear, fromMonth - 1, fromDay);
+    const end = new Date(toYear, toMonth - 1, toDay);
+    while (current <= end) {
+      const dateStr = `${current.getFullYear()}-${String(current.getMonth() + 1).padStart(2, '0')}-${String(current.getDate()).padStart(2, '0')}`;
+      const found = stats.find((s: { _id: string }) => s._id === dateStr);
+      result.push({
+        date: dateStr,
+        totalOrders: found ? found.totalOrders : 0,
+        totalValue: found ? found.totalValue : 0,
+      });
+      current.setDate(current.getDate() + 1);
+    }
+
+    res.json(result);
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error';
+    console.error('❌ Error fetching order stats:', errorMessage);
+    res
+      .status(500)
+      .json({ error: 'Failed to fetch stats', details: errorMessage });
+  }
+});
+
+// Initialize services and start server
+async function startServer() {
+  try {
+    await connectToMongoDB();
+  } catch {
+    console.warn('⚠️ MongoDB connection failed — continuing without database');
+  }
+
+  try {
+    await connectToRabbitMQ();
+  } catch {
+    console.warn(
+      '⚠️ RabbitMQ connection failed — continuing without message queue',
+    );
+  }
+
+  app.listen(PORT, () => {
+    console.log(`API server running on http://localhost:${PORT}`);
+  });
+}
+
+startServer();
+
+// Graceful shutdown
+process.on('SIGINT', async () => {
+  await closeRabbitMQ();
+  process.exit(0);
+});
+
+process.on('SIGTERM', async () => {
+  await closeRabbitMQ();
+  process.exit(0);
 });

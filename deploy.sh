@@ -5,6 +5,7 @@ set -e
 APP_DIR="/root/pohoda-skalite"
 API_CONTAINER="pizza-pohoda-api"
 FRONTEND_CONTAINER="pizza-pohoda-frontend"
+RABBITMQ_CONTAINER="pizza-pohoda-rabbitmq"
 SERVICES=("api:pohoda-api" "frontend:pohoda-frontend")
 
 cd $APP_DIR
@@ -29,7 +30,9 @@ git reset --hard origin/main
 # 4. Build and Start
 echo "🏗️ Rebuilding containers..."
 # Use 'docker compose' (with space). If your server requires hyphen, change to 'docker-compose'
-docker compose down --remove-orphans
+# Stop only app containers, keep RabbitMQ running to avoid losing queued messages
+docker compose stop api frontend
+docker compose rm -f api frontend
 docker compose up -d --build
 
 # 5. Health Check Phase
@@ -42,17 +45,18 @@ for ((i=1; i<=MAX_RETRIES; i++)); do
     # Safe inspect: checks if Health object exists to avoid "map has no entry" error
     API_HEALTH=$(docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}starting{{end}}' $API_CONTAINER)
     FRONT_STATUS=$(docker inspect --format='{{.State.Status}}' $FRONTEND_CONTAINER)
+    RABBIT_HEALTH=$(docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}starting{{end}}' $RABBITMQ_CONTAINER)
 
-    echo "   - Attempt $i: API is [$API_HEALTH], Frontend is [$FRONT_STATUS]"
+    echo "   - Attempt $i: API [$API_HEALTH], Frontend [$FRONT_STATUS], RabbitMQ [$RABBIT_HEALTH]"
 
-    if [ "$API_HEALTH" == "healthy" ] && [ "$FRONT_STATUS" == "running" ]; then
+    if [ "$API_HEALTH" == "healthy" ] && [ "$FRONT_STATUS" == "running" ] && [ "$RABBIT_HEALTH" == "healthy" ]; then
         echo "✅ SUCCESS: All services are healthy!"
         ALL_HEALTHY=true
         break
     fi
     
-    if [ "$API_HEALTH" == "unhealthy" ]; then
-        echo "❌ FAILURE: API reported UNHEALTHY status."
+    if [ "$API_HEALTH" == "unhealthy" ] || [ "$RABBIT_HEALTH" == "unhealthy" ]; then
+        echo "❌ FAILURE: A service reported UNHEALTHY status."
         break
     fi
     
