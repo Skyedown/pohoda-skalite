@@ -1,0 +1,35 @@
+.order-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: visible;
+  padding-right: 8px;
+  position: relative;
+
+  /* Custom scrollbar */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+
+    &:hover {
+      background: #999;
+    }
+  }
+}
+
+.order-items-list__summary {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 2px solid #e0e0e0;
+}

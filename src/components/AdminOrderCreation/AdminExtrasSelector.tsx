@@ -82,7 +82,7 @@ const AdminExtrasSelector: React.FC<AdminExtrasSelectorProps> = ({
       {selectedExtras.length > 0 && (
         <div className="admin-extras-selector__summary">
           <p className="admin-extras-selector__summary-text">
-            Suma priľah: <strong>{extrasPrice.toFixed(2)} €</strong>
+            Suma príloh: <strong>{extrasPrice.toFixed(2)} €</strong>
           </p>
         </div>
       )}
