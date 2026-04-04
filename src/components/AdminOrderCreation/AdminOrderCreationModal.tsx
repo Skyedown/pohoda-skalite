@@ -159,7 +159,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
     >,
   ) => {
     const { name, value } = e.target;
-    
+
     // For street (house number), only allow numeric values
     if (name === 'street') {
       const numericValue = value.replace(/[^0-9]/g, '');
@@ -167,7 +167,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
-    
+
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));
     }

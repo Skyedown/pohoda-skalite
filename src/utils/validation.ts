@@ -10,7 +10,9 @@ export const validatePhone = (phone: string): boolean => {
   return phoneRegex.test(phone.replace(/\s/g, ''));
 };
 
-export const validateOrderForm = (formData: OrderFormData): ValidationErrors => {
+export const validateOrderForm = (
+  formData: OrderFormData,
+): ValidationErrors => {
   const errors: ValidationErrors = {};
 
   if (!formData.fullName.trim()) {

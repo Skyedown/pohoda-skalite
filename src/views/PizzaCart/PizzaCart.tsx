@@ -123,7 +123,7 @@ const PizzaCart: React.FC = () => {
     >,
   ) => {
     const { name, value } = e.target;
-    
+
     // For street (house number), only allow numeric values
     if (name === 'street') {
       const numericValue = value.replace(/[^0-9]/g, '');
@@ -131,7 +131,7 @@ const PizzaCart: React.FC = () => {
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
-    
+
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));
     }

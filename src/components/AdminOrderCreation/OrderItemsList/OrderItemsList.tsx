@@ -51,7 +51,7 @@ const OrderItemsList: React.FC<OrderItemsListProps> = ({
           onCancelExtras={onCancelExtras}
         />
       ))}
-      
+
       {/* Order Summary */}
       <div className="order-items-list__summary">
         <OrderSummary

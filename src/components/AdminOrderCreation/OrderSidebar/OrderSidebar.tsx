@@ -64,9 +64,7 @@ const OrderSidebar: React.FC<OrderSidebarProps> = ({
           />
 
           {/* Submit Button */}
-          {submitError && (
-            <p className="order-sidebar__error">{submitError}</p>
-          )}
+          {submitError && <p className="order-sidebar__error">{submitError}</p>}
           <div className="order-sidebar__actions">
             <button
               type="submit"
