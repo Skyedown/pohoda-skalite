@@ -2,26 +2,28 @@
 @import '../../styles/mixins.less';
 
 .protected-route {
-  min-height: 100vh;
   padding: 40px 20px;
 
   &__login {
     display: flex;
-    align-items: center;
+    align-items: top;
     justify-content: center;
     min-height: 100vh;
   }
 
   &__login-box {
+    margin-top: 60px;
     background: white;
     border-radius: 16px;
     padding: 48px;
+    height: fit-content;
     max-width: 450px;
     width: 100%;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 
     @media (max-width: @breakpoint-sm) {
       padding: 32px 24px;
+      margin-top: 20px;
     }
 
     h2 {

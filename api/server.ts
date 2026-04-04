@@ -474,6 +474,48 @@ app.post('/api/orders/:id/reprint', async (req, res) => {
   }
 });
 
+// Delete order
+app.delete('/api/orders/:id', async (req, res) => {
+  try {
+    if (!isMongoConnected()) {
+      return res.status(503).json({ error: 'Database not available' });
+    }
+
+    const { id } = req.params;
+
+    // Validate ObjectId format
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      console.warn('⚠️ Invalid ObjectId format:', id);
+      return res.status(400).json({ error: 'Invalid order ID format' });
+    }
+
+    console.log('🗑️ Attempting to delete order:', id);
+
+    // Delete the order
+    const deletedOrder = await Order.findByIdAndDelete(id);
+
+    if (!deletedOrder) {
+      console.warn('⚠️ Order not found:', id);
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    console.log('✅ Order deleted successfully:', id);
+
+    res.json({
+      success: true,
+      message: 'Order deleted successfully',
+    });
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error';
+    console.error('❌ Error deleting order:', errorMessage);
+    res.status(500).json({
+      error: 'Failed to delete order',
+      details: errorMessage,
+    });
+  }
+});
+
 // Get order stats for date range
 app.get('/api/orders/stats', async (req, res) => {
   try {

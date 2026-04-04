@@ -206,6 +206,7 @@
 .admin-orders__item-actions {
   display: flex;
   justify-content: flex-end;
+  gap: 12px;
   padding-top: 12px;
   border-top: 1px solid #e0e0e0;
 }
@@ -227,6 +228,39 @@
   &:hover:not(:disabled) {
     background-color: #e55a24;
     box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+.admin-orders__delete-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background-color: #c0392b;
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
   }
 
   &:active:not(:disabled) {
