@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { pizzas } from '../../data/pizzas';
 import { burgers } from '../../data/burgers';
 import { langos } from '../../data/langos';
@@ -82,6 +82,28 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
     langos: 'Langoš',
     sides: 'Prílohy',
   };
+
+  // Reset form when modal is closed
+  useEffect(() => {
+    if (!isOpen) {
+      setOrderItems([]);
+      setFormData({
+        fullName: '',
+        street: '',
+        city: '',
+        phone: '',
+        email: '',
+        notes: '',
+        deliveryMethod: 'delivery',
+      });
+      setPaymentMethod('cash');
+      setOrderType('dine-in');
+      setDeliveryMethod('delivery');
+      setErrors({});
+      setEditingItemIndex(null);
+      setTempSelectedExtras([]);
+    }
+  }, [isOpen]);
 
   // Calculate totals
   const subtotal = useMemo(

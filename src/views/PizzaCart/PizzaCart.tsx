@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useCart } from '../../context/CartContext';
 import CartItem from '../../components/Cart/CartItem/CartItem';
+import CartIcon from '../../components/CartIcon/CartIcon';
 import PaymentMethodSelector from '../../components/Cart/PaymentMethodSelector/PaymentMethodSelector';
 import DeliveryAddressForm from '../../components/Cart/DeliveryAddressForm/DeliveryAddressForm';
 import OrderSummary from '../../components/Cart/OrderSummary/OrderSummary';
@@ -292,7 +293,9 @@ const PizzaCart: React.FC = () => {
         </Helmet>
         <div className="container">
           <div className="pizza-cart__empty">
-            <div className="pizza-cart__empty-icon">🛒</div>
+            <div className="pizza-cart__empty-icon">
+              <CartIcon width="80" height="80" />
+            </div>
             <h1 className="pizza-cart__empty-title">Váš košík je prázdny</h1>
             <p className="pizza-cart__empty-text">
               Pozrite si naše menu a vyberte si niečo chutné!
