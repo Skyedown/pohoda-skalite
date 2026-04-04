@@ -99,7 +99,11 @@ export const validateOrderForm = (
     if (!formData.phone.trim()) errors.phone = 'Telefón je povinný';
 
     if (deliveryMethod === 'delivery') {
-      if (!formData.street.trim()) errors.street = 'Ulica je povinná';
+      if (!formData.street.trim()) {
+        errors.street = 'Číslo domu je povinné';
+      } else if (!/^[0-9]+$/.test(formData.street.trim())) {
+        errors.street = 'Číslo domu musí obsahovať len čísla';
+      }
       if (!formData.city.trim()) errors.city = 'Mesto je povinné';
     }
 

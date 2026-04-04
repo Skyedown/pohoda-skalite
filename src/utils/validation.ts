@@ -36,7 +36,9 @@ export const validateOrderForm = (formData: OrderFormData): ValidationErrors => 
     }
 
     if (!formData.street?.trim()) {
-      errors.street = 'Ulica je povinná';
+      errors.street = 'Číslo domu je povinné';
+    } else if (!/^[0-9]+$/.test(formData.street.trim())) {
+      errors.street = 'Číslo domu musí obsahovať len čísla';
     }
 
     if (!formData.houseNumber?.trim()) {

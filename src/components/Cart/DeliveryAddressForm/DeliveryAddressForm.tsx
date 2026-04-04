@@ -98,23 +98,6 @@ const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
       {formData.deliveryMethod === 'delivery' && (
         <>
           <div className="form-group">
-            <label className="form-group__label">Ulica a číslo domu</label>
-            <input
-              type="text"
-              name="street"
-              className={`form-group__input ${
-                errors.street ? 'form-group__input--error' : ''
-              }`}
-              placeholder="Napr. Hlavná 123"
-              value={formData.street || ''}
-              onChange={onChange}
-            />
-            {errors.street && (
-              <span className="form-group__error">{errors.street}</span>
-            )}
-          </div>
-
-          <div className="form-group">
             <label className="form-group__label">Mesto</label>
             <select
               name="city"
@@ -132,6 +115,25 @@ const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
             </select>
             {errors.city && (
               <span className="form-group__error">{errors.city}</span>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label className="form-group__label">Číslo domu</label>
+            <input
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              name="street"
+              className={`form-group__input ${
+                errors.street ? 'form-group__input--error' : ''
+              }`}
+              placeholder="Zadajte len číslo domu (napr. 123)"
+              value={formData.street || ''}
+              onChange={onChange}
+            />
+            {errors.street && (
+              <span className="form-group__error">{errors.street}</span>
             )}
           </div>
         </>
