@@ -14,7 +14,6 @@ import {
   buildOrderPayload,
   getInitialFormState,
   addProductToOrder,
-  confirmExtras,
   type AdminOrderItem,
 } from './adminHelpers';
 import './AdminOrderCreationModal.less';
@@ -30,11 +29,10 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
 }) => {
   const [orderItems, setOrderItems] = useState<AdminOrderItem[]>([]);
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'card'>('cash');
-  const [orderType, setOrderType] = useState<'dine-in' | 'customer'>('dine-in');
+  const [orderType, setOrderType] = useState<'dine-in' | 'customer'>('customer');
   const [deliveryMethod, setDeliveryMethod] =
     useState<DeliveryMethod>('delivery');
   const [editingItemIndex, setEditingItemIndex] = useState<number | null>(null);
-  const [tempSelectedExtras, setTempSelectedExtras] = useState<string[]>([]);
   const [formData, setFormData] = useState(getInitialFormState());
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -58,11 +56,10 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
       setOrderItems([]);
       setFormData(getInitialFormState());
       setPaymentMethod('cash');
-      setOrderType('dine-in');
+      setOrderType('customer');
       setDeliveryMethod('delivery');
       setErrors({});
       setEditingItemIndex(null);
-      setTempSelectedExtras([]);
     }
   }, [isOpen]);
 
@@ -98,7 +95,6 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
       if (editingItemIndex !== null) {
         if (editingItemIndex === itemIndex) {
           setEditingItemIndex(null);
-          setTempSelectedExtras([]);
         } else if (editingItemIndex > itemIndex) {
           setEditingItemIndex(editingItemIndex - 1);
         }
@@ -116,41 +112,53 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
     // Toggle: if already editing this item, close it
     if (editingItemIndex === itemIndex) {
       setEditingItemIndex(null);
-      setTempSelectedExtras([]);
     } else {
       setEditingItemIndex(itemIndex);
-      setTempSelectedExtras(
-        orderItems[itemIndex].extras.map((extra) => extra.id),
-      );
     }
   };
 
   const handleToggleExtra = (extraId: string) => {
-    setTempSelectedExtras((prev) =>
-      prev.includes(extraId)
-        ? prev.filter((id) => id !== extraId)
-        : [...prev, extraId],
-    );
+    if (editingItemIndex === null) return;
+
+    setOrderItems((prev) => {
+      const item = prev[editingItemIndex];
+      if (!item) return prev;
+
+      const currentExtraIds = item.extras.map((e) => e.id);
+      const newExtraIds = currentExtraIds.includes(extraId)
+        ? currentExtraIds.filter((id) => id !== extraId)
+        : [...currentExtraIds, extraId];
+
+      const newExtras = newExtraIds
+        .map((id) => defaultExtras.find((e) => e.id === id))
+        .filter((e): e is typeof defaultExtras[0] => e !== undefined);
+
+      // If quantity > 1 and extras changed, split the row
+      const extrasChanged =
+        JSON.stringify(currentExtraIds.sort()) !==
+        JSON.stringify(newExtraIds.sort());
+
+      if (item.quantity > 1 && extrasChanged) {
+        const reducedItem = { ...item, quantity: item.quantity - 1 };
+        const newItem = { ...item, quantity: 1, extras: newExtras };
+        return [
+          ...prev.slice(0, editingItemIndex),
+          reducedItem,
+          newItem,
+          ...prev.slice(editingItemIndex + 1),
+        ];
+      } else {
+        return prev.map((orderItem, idx) =>
+          idx === editingItemIndex
+            ? { ...orderItem, extras: newExtras }
+            : orderItem,
+        );
+      }
+    });
   };
 
-  const handleConfirmExtras = () => {
-    if (editingItemIndex !== null) {
-      setOrderItems((prev) =>
-        confirmExtras(
-          prev,
-          editingItemIndex,
-          tempSelectedExtras,
-          defaultExtras,
-        ),
-      );
-      setEditingItemIndex(null);
-      setTempSelectedExtras([]);
-    }
-  };
-
-  const handleCancelExtras = () => {
+  const handleCloseExtras = () => {
     setEditingItemIndex(null);
-    setTempSelectedExtras([]);
   };
 
   const handleFormChange = (
@@ -223,11 +231,10 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
       setOrderItems([]);
       setFormData(getInitialFormState());
       setPaymentMethod('cash');
-      setOrderType('dine-in');
+      setOrderType('customer');
       setDeliveryMethod('delivery');
       setErrors({});
       setEditingItemIndex(null);
-      setTempSelectedExtras([]);
       onClose();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Unknown error';
@@ -281,7 +288,6 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
             <OrderSidebar
               orderItems={orderItems}
               editingItemIndex={editingItemIndex}
-              tempSelectedExtras={tempSelectedExtras}
               defaultExtras={defaultExtras}
               subtotal={subtotal}
               deliveryFee={orderType === 'dine-in' ? 0 : deliveryFee}
@@ -291,8 +297,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
               onQuantityChange={handleQuantityChange}
               onEditExtras={handleEditExtras}
               onToggleExtra={handleToggleExtra}
-              onConfirmExtras={handleConfirmExtras}
-              onCancelExtras={handleCancelExtras}
+              onCloseExtras={handleCloseExtras}
               onSubmit={handleSubmit}
             />
           </div>

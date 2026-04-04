@@ -6,16 +6,12 @@ interface AdminExtrasSelectorProps {
   extras: Extra[];
   selectedExtras: string[];
   onToggleExtra: (extraId: string) => void;
-  onConfirm: () => void;
-  onCancel: () => void;
 }
 
 const AdminExtrasSelector: React.FC<AdminExtrasSelectorProps> = ({
   extras,
   selectedExtras,
   onToggleExtra,
-  onConfirm,
-  onCancel,
 }) => {
   const extrasPrice = selectedExtras.reduce((sum, extraId) => {
     const extra = extras.find((e) => e.id === extraId);
@@ -86,23 +82,6 @@ const AdminExtrasSelector: React.FC<AdminExtrasSelectorProps> = ({
           </p>
         </div>
       )}
-
-      <div className="admin-extras-selector__actions">
-        <button
-          type="button"
-          className="admin-extras-selector__confirm-btn"
-          onClick={onConfirm}
-        >
-          Potvrdiť
-        </button>
-        <button
-          type="button"
-          className="admin-extras-selector__cancel-btn"
-          onClick={onCancel}
-        >
-          Zrušiť
-        </button>
-      </div>
     </div>
   );
 };

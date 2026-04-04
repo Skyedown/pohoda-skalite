@@ -8,7 +8,6 @@ import './OrderItemsList.less';
 interface OrderItemsListProps {
   orderItems: AdminOrderItem[];
   editingItemIndex: number | null;
-  tempSelectedExtras: string[];
   defaultExtras: Extra[];
   subtotal: number;
   deliveryFee: number;
@@ -16,14 +15,12 @@ interface OrderItemsListProps {
   onQuantityChange: (itemIndex: number, quantity: number) => void;
   onEditExtras: (itemIndex: number) => void;
   onToggleExtra: (extraId: string) => void;
-  onConfirmExtras: () => void;
-  onCancelExtras: () => void;
+  onCloseExtras: () => void;
 }
 
 const OrderItemsList: React.FC<OrderItemsListProps> = ({
   orderItems,
   editingItemIndex,
-  tempSelectedExtras,
   defaultExtras,
   subtotal,
   deliveryFee,
@@ -31,8 +28,7 @@ const OrderItemsList: React.FC<OrderItemsListProps> = ({
   onQuantityChange,
   onEditExtras,
   onToggleExtra,
-  onConfirmExtras,
-  onCancelExtras,
+  onCloseExtras,
 }) => {
   return (
     <div className="order-items-list">
@@ -42,13 +38,11 @@ const OrderItemsList: React.FC<OrderItemsListProps> = ({
           item={item}
           itemIndex={itemIndex}
           isEditing={editingItemIndex === itemIndex}
-          tempSelectedExtras={tempSelectedExtras}
           defaultExtras={defaultExtras}
           onQuantityChange={onQuantityChange}
           onEditExtras={onEditExtras}
           onToggleExtra={onToggleExtra}
-          onConfirmExtras={onConfirmExtras}
-          onCancelExtras={onCancelExtras}
+          onCloseExtras={onCloseExtras}
         />
       ))}
 

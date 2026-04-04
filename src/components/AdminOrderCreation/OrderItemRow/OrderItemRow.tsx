@@ -8,26 +8,22 @@ interface OrderItemRowProps {
   item: AdminOrderItem;
   itemIndex: number;
   isEditing: boolean;
-  tempSelectedExtras: string[];
   defaultExtras: Extra[];
   onQuantityChange: (itemIndex: number, quantity: number) => void;
   onEditExtras: (itemIndex: number) => void;
   onToggleExtra: (extraId: string) => void;
-  onConfirmExtras: () => void;
-  onCancelExtras: () => void;
+  onCloseExtras: () => void;
 }
 
 const OrderItemRow: React.FC<OrderItemRowProps> = ({
   item,
   itemIndex,
   isEditing,
-  tempSelectedExtras,
   defaultExtras,
   onQuantityChange,
   onEditExtras,
   onToggleExtra,
-  onConfirmExtras,
-  onCancelExtras,
+  onCloseExtras,
 }) => {
   const extrasPrice = item.extras.reduce((sum, extra) => sum + extra.price, 0);
   const itemTotal = (item.product.price + extrasPrice) * item.quantity;
@@ -45,7 +41,7 @@ const OrderItemRow: React.FC<OrderItemRowProps> = ({
         extrasBtnRef.current &&
         !extrasBtnRef.current.contains(event.target as Node)
       ) {
-        onCancelExtras();
+        onCloseExtras();
       }
     };
 
@@ -58,7 +54,7 @@ const OrderItemRow: React.FC<OrderItemRowProps> = ({
       clearTimeout(timer);
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isEditing, onCancelExtras]);
+  }, [isEditing, onCloseExtras]);
 
   return (
     <div
@@ -158,10 +154,8 @@ const OrderItemRow: React.FC<OrderItemRowProps> = ({
         <div className="order-item-row__extras-panel" ref={extrasPanelRef}>
           <AdminExtrasSelector
             extras={defaultExtras}
-            selectedExtras={tempSelectedExtras}
+            selectedExtras={item.extras.map((e) => e.id)}
             onToggleExtra={onToggleExtra}
-            onConfirm={onConfirmExtras}
-            onCancel={onCancelExtras}
           />
         </div>
       )}

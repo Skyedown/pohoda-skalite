@@ -8,7 +8,6 @@ import './OrderSidebar.less';
 interface OrderSidebarProps {
   orderItems: AdminOrderItem[];
   editingItemIndex: number | null;
-  tempSelectedExtras: string[];
   defaultExtras: Extra[];
   subtotal: number;
   deliveryFee: number;
@@ -18,15 +17,13 @@ interface OrderSidebarProps {
   onQuantityChange: (itemIndex: number, quantity: number) => void;
   onEditExtras: (itemIndex: number) => void;
   onToggleExtra: (extraId: string) => void;
-  onConfirmExtras: () => void;
-  onCancelExtras: () => void;
+  onCloseExtras: () => void;
   onSubmit: (e: React.FormEvent) => void;
 }
 
 const OrderSidebar: React.FC<OrderSidebarProps> = ({
   orderItems,
   editingItemIndex,
-  tempSelectedExtras,
   defaultExtras,
   subtotal,
   deliveryFee,
@@ -36,8 +33,7 @@ const OrderSidebar: React.FC<OrderSidebarProps> = ({
   onQuantityChange,
   onEditExtras,
   onToggleExtra,
-  onConfirmExtras,
-  onCancelExtras,
+  onCloseExtras,
   onSubmit,
 }) => {
   return (
@@ -51,7 +47,6 @@ const OrderSidebar: React.FC<OrderSidebarProps> = ({
           <OrderItemsList
             orderItems={orderItems}
             editingItemIndex={editingItemIndex}
-            tempSelectedExtras={tempSelectedExtras}
             defaultExtras={defaultExtras}
             subtotal={subtotal}
             deliveryFee={deliveryFee}
@@ -59,8 +54,7 @@ const OrderSidebar: React.FC<OrderSidebarProps> = ({
             onQuantityChange={onQuantityChange}
             onEditExtras={onEditExtras}
             onToggleExtra={onToggleExtra}
-            onConfirmExtras={onConfirmExtras}
-            onCancelExtras={onCancelExtras}
+            onCloseExtras={onCloseExtras}
           />
 
           {/* Submit Button */}

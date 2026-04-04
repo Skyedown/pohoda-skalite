@@ -113,23 +113,12 @@ const AdminOrders: React.FC = () => {
 
       <div className="admin-orders__container">
         <div className="admin-orders__header">
-          <Link to="/admin" className="admin-orders__back">
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="19" y1="12" x2="5" y2="12" />
-              <polyline points="12 19 5 12 12 5" />
-            </svg>
-            Späť na panel
-          </Link>
           <h1 className="admin-orders__title">Predošlé objednávky</h1>
+          <div className="admin-orders__header-actions">
+            <Link to="/admin" className="admin-orders__nav-link">
+              ← Hlavná stránka
+            </Link>
+          </div>
         </div>
 
         {loading ? (

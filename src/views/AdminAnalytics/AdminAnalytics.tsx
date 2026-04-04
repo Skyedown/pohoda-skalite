@@ -5,11 +5,6 @@ import OrderStats from '../../components/OrderStats/OrderStats';
 import './AdminAnalytics.less';
 
 const AdminAnalytics: React.FC = () => {
-  const handleLogout = () => {
-    sessionStorage.removeItem('admin_authenticated');
-    window.location.href = '/admin';
-  };
-
   return (
     <div className="admin-analytics">
       <Helmet>
@@ -22,11 +17,8 @@ const AdminAnalytics: React.FC = () => {
           <h1 className="admin-analytics__title">Štatistiky objednávok</h1>
           <div className="admin-analytics__header-actions">
             <Link to="/admin" className="admin-analytics__nav-link">
-              ← Správa
+              ← Hlavná stránka
             </Link>
-            <button onClick={handleLogout} className="admin-analytics__logout">
-              Odhlásiť sa
-            </button>
           </div>
         </div>
 
