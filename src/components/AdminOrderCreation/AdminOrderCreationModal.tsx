@@ -29,7 +29,9 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
 }) => {
   const [orderItems, setOrderItems] = useState<AdminOrderItem[]>([]);
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'card'>('cash');
-  const [orderType, setOrderType] = useState<'dine-in' | 'customer'>('customer');
+  const [orderType, setOrderType] = useState<'dine-in' | 'customer'>(
+    'customer',
+  );
   const [deliveryMethod, setDeliveryMethod] =
     useState<DeliveryMethod>('delivery');
   const [editingItemIndex, setEditingItemIndex] = useState<number | null>(null);
@@ -131,7 +133,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
 
       const newExtras = newExtraIds
         .map((id) => defaultExtras.find((e) => e.id === id))
-        .filter((e): e is typeof defaultExtras[0] => e !== undefined);
+        .filter((e): e is (typeof defaultExtras)[0] => e !== undefined);
 
       // If quantity > 1 and extras changed, split the row
       const extrasChanged =
