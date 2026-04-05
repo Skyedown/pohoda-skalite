@@ -57,27 +57,55 @@ if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
 
+// Default settings object
+const createDefaultSettings = () => ({
+  mode: 'off',
+  waitTimeMinutes: 60,
+  customNote: '',
+  disabledReason:
+    'Z dôvodu veľkého počtu objednávok sme momentálne nútení pozastaviť prijímanie nových online objednávok. Ďakujeme za pochopenie a ospravedlňujeme sa za nepríjemnosti. Skúste to prosím neskôr alebo nás kontaktujte telefonicky.',
+  disabledProductTypes: [],
+  cardPaymentDeliveryEnabled: false,
+  cardPaymentPickupEnabled: false,
+});
+
 // Initialize admin settings file if it doesn't exist
 if (!fs.existsSync(ADMIN_SETTINGS_FILE)) {
-  const defaultSettings = {
-    mode: 'off',
-    waitTimeMinutes: 60,
-    customNote: '',
-    disabledProductTypes: [],
-    cardPaymentDeliveryEnabled: false,
-    cardPaymentPickupEnabled: false,
-  };
   fs.writeFileSync(
     ADMIN_SETTINGS_FILE,
-    JSON.stringify(defaultSettings, null, 2),
+    JSON.stringify(createDefaultSettings(), null, 2),
   );
 }
 
 // Get admin settings
 app.get('/api/admin-settings', (req, res) => {
   try {
+    // Prevent caching
+    res.setHeader(
+      'Cache-Control',
+      'no-store, no-cache, must-revalidate, private',
+    );
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+
+    // Create file if it doesn't exist
+    if (!fs.existsSync(ADMIN_SETTINGS_FILE)) {
+      fs.writeFileSync(
+        ADMIN_SETTINGS_FILE,
+        JSON.stringify(createDefaultSettings(), null, 2),
+      );
+    }
+
     const data = fs.readFileSync(ADMIN_SETTINGS_FILE, 'utf8');
     const settings = JSON.parse(data);
+
+    // Migration: ensure disabledReason exists (only if undefined, allow empty string)
+    if (settings.disabledReason === undefined) {
+      settings.disabledReason =
+        'Z dôvodu veľkého počtu objednávok sme momentálne nútení pozastaviť prijímanie nových online objednávok. Ďakujeme za pochopenie a ospravedlňujeme sa za nepríjemnosti. Skúste to prosím neskôr alebo nás kontaktujte telefonicky.';
+      fs.writeFileSync(ADMIN_SETTINGS_FILE, JSON.stringify(settings, null, 2));
+    }
+
     res.json(settings);
   } catch (error) {
     console.error('Error reading admin settings:', error);
@@ -88,14 +116,22 @@ app.get('/api/admin-settings', (req, res) => {
 // Update admin settings
 app.post('/api/admin-settings', (req, res) => {
   try {
+    console.log(
+      '📨 SERVER: Received req.body:',
+      JSON.stringify(req.body, null, 2),
+    );
+
     const {
       mode,
       waitTimeMinutes,
       customNote,
+      disabledReason,
       disabledProductTypes,
       cardPaymentDeliveryEnabled,
       cardPaymentPickupEnabled,
     } = req.body;
+
+    console.log('📨 SERVER: Destructured disabledReason:', disabledReason);
 
     // Validate input
     const validModes = ['off', 'disabled', 'waitTime', 'customNote'];
@@ -115,6 +151,16 @@ app.post('/api/admin-settings', (req, res) => {
       return res
         .status(400)
         .json({ error: 'Custom note too long (max 500 characters)' });
+    }
+
+    if (typeof disabledReason !== 'string') {
+      return res.status(400).json({ error: 'Invalid disabledReason' });
+    }
+
+    if (disabledReason.length > 500) {
+      return res
+        .status(400)
+        .json({ error: 'Disabled reason too long (max 500 characters)' });
     }
 
     // Validate disabledProductTypes
@@ -149,13 +195,26 @@ app.post('/api/admin-settings', (req, res) => {
       mode,
       waitTimeMinutes,
       customNote,
+      disabledReason,
       disabledProductTypes: disabledProductTypes || [],
       cardPaymentDeliveryEnabled: !!cardPaymentDeliveryEnabled,
       cardPaymentPickupEnabled: !!cardPaymentPickupEnabled,
     };
-    fs.writeFileSync(ADMIN_SETTINGS_FILE, JSON.stringify(settings, null, 2));
 
-    console.log('✅ Admin settings updated:', settings);
+    console.log(
+      '💾 SERVER: Saving settings:',
+      JSON.stringify(settings, null, 2),
+    );
+    console.log('💾 SERVER: disabledReason value:', disabledReason);
+
+    // Ensure data directory exists before writing
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+
+    fs.writeFileSync(ADMIN_SETTINGS_FILE, JSON.stringify(settings, null, 2));
+    console.log('✅ SERVER: Saved to file successfully');
+
     res.json({ success: true, settings });
   } catch (error) {
     console.error('Error saving admin settings:', error);

@@ -4,6 +4,7 @@ export interface AdminSettings {
   mode: AnnouncementMode;
   waitTimeMinutes: number;
   customNote: string;
+  disabledReason: string;
   disabledProductTypes?: ('pizza' | 'burger' | 'langos' | 'sides')[];
   cardPaymentDeliveryEnabled?: boolean;
   cardPaymentPickupEnabled?: boolean;
@@ -23,6 +24,8 @@ const DEFAULT_SETTINGS: AdminSettings = {
   waitTimeMinutes: 60,
   customNote:
     'Z dôvodu nepriaznivého počasia je donáška možná len k hlavnej ceste',
+  disabledReason:
+    'Z dôvodu veľkého počtu objednávok sme momentálne nútení pozastaviť prijímanie nových online objednávok. Ďakujeme za pochopenie a ospravedlňujeme sa za nepríjemnosti. Skúste to prosím neskôr alebo nás kontaktujte telefonicky.',
   disabledProductTypes: [],
   cardPaymentDeliveryEnabled: false,
   cardPaymentPickupEnabled: false,
@@ -31,9 +34,19 @@ const DEFAULT_SETTINGS: AdminSettings = {
 // Fetch admin settings from server
 export async function getAdminSettings(): Promise<AdminSettings> {
   try {
-    const response = await fetch(`${API_URL}/api/admin-settings`);
+    const response = await fetch(`${API_URL}/api/admin-settings`, {
+      cache: 'no-cache',
+      headers: {
+        'Cache-Control': 'no-cache',
+      },
+    });
     if (response.ok) {
       const settings = await response.json();
+      // Ensure disabledReason exists (migration for old data, only if undefined)
+      if (settings.disabledReason === undefined) {
+        settings.disabledReason =
+          'Z dôvodu veľkého počtu objednávok sme momentálne nútení pozastaviť prijímanie nových online objednávok. Ďakujeme za pochopenie a ospravedlňujeme sa za nepríjemnosti. Skúste to prosím neskôr alebo nás kontaktujte telefonicky.';
+      }
       return settings;
     }
   } catch (error) {
@@ -46,8 +59,10 @@ export async function getAdminSettings(): Promise<AdminSettings> {
 // Save admin settings to server
 export async function saveAdminSettings(
   settings: AdminSettings,
-): Promise<boolean> {
+): Promise<AdminSettings | null> {
   try {
+    console.log('📤 Sending to server:', JSON.stringify(settings, null, 2));
+
     const response = await fetch(`${API_URL}/api/admin-settings`, {
       method: 'POST',
       headers: {
@@ -57,13 +72,15 @@ export async function saveAdminSettings(
     });
 
     if (response.ok) {
-      return true;
+      const result = await response.json();
+      console.log('📥 Received from server:', JSON.stringify(result, null, 2));
+      return result.settings;
     }
   } catch (error) {
     console.error('Failed to save admin settings to server:', error);
   }
 
-  return false;
+  return null;
 }
 
 export function formatWaitTime(minutes: number): string {

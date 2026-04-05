@@ -42,6 +42,8 @@ const PizzaMain: React.FC = () => {
     waitTimeMinutes: 60,
     customNote:
       'Z dôvodu nepriaznivého počasia je donáška možná len k hlavnej ceste',
+    disabledReason:
+      'Z dôvodu veľkého počtu objednávok sme momentálne nútení pozastaviť prijímanie nových online objednávok. Ďakujeme za pochopenie a ospravedlňujeme sa za nepríjemnosti. Skúste to prosím neskôr alebo nás kontaktujte telefonicky.',
   });
 
   // Initialize GSAP animations
@@ -62,6 +64,34 @@ const PizzaMain: React.FC = () => {
       }
     };
     loadSettings();
+
+    // Check for settings updates when window gains focus (e.g., returning from admin panel)
+    const handleFocus = async () => {
+      const lastUpdate = localStorage.getItem('adminSettingsLastUpdate');
+      if (lastUpdate) {
+        // Clear the flag
+        localStorage.removeItem('adminSettingsLastUpdate');
+        // Refetch settings
+        const settings = await getAdminSettings();
+        setAdminSettings(settings);
+        if (
+          settings.mode === 'disabled' ||
+          settings.mode === 'waitTime' ||
+          settings.mode === 'customNote'
+        ) {
+          setShowOverloadModal(true);
+        }
+      }
+    };
+
+    window.addEventListener('focus', handleFocus);
+    // Also listen for visibility change
+    window.addEventListener('visibilitychange', handleFocus);
+
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+      window.removeEventListener('visibilitychange', handleFocus);
+    };
   }, []);
 
   // Listen for admin settings changes
@@ -301,6 +331,7 @@ const PizzaMain: React.FC = () => {
         mode={adminSettings.mode}
         waitTimeMinutes={adminSettings.waitTimeMinutes}
         customNote={adminSettings.customNote}
+        disabledReason={adminSettings.disabledReason}
       />
     </div>
   );

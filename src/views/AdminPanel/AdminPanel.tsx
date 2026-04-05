@@ -20,6 +20,8 @@ const AdminPanel: React.FC = () => {
     waitTimeMinutes: 60,
     customNote:
       'Z dôvodu nepriaznivého počasia je donáška možná len k hlavnej ceste',
+    disabledReason:
+      'Z dôvodu veľkého počtu objednávok sme momentálne nútení pozastaviť prijímanie nových online objednávok. Ďakujeme za pochopenie a ospravedlňujeme sa za nepríjemnosti. Skúste to prosím neskôr alebo nás kontaktujte telefonicky.',
     disabledProductTypes: [],
     cardPaymentDeliveryEnabled: false,
     cardPaymentPickupEnabled: false,
@@ -31,9 +33,13 @@ const AdminPanel: React.FC = () => {
   useEffect(() => {
     const loadSettings = async () => {
       const loadedSettings = await getAdminSettings();
-      if (!loadedSettings.customNote) {
+      if (loadedSettings.customNote === undefined) {
         loadedSettings.customNote =
           'Z dôvodu nepriaznivého počasia je donáška možná len k hlavnej ceste';
+      }
+      if (loadedSettings.disabledReason === undefined) {
+        loadedSettings.disabledReason =
+          'Z dôvodu veľkého počtu objednávok sme momentálne nútení pozastaviť prijímanie nových online objednávok. Ďakujeme za pochopenie a ospravedlňujeme sa za nepríjemnosti. Skúste to prosím neskôr alebo nás kontaktujte telefonicky.';
       }
       if (loadedSettings.cardPaymentDeliveryEnabled === undefined) {
         loadedSettings.cardPaymentDeliveryEnabled = false;
@@ -63,6 +69,12 @@ const AdminPanel: React.FC = () => {
 
   const handleCustomNoteChange = (note: string) => {
     setSettings({ ...settings, customNote: note });
+    setSaveSuccess(false);
+  };
+
+  const handleDisabledReasonChange = (reason: string) => {
+    console.log('🔵 handleDisabledReasonChange called with:', reason);
+    setSettings({ ...settings, disabledReason: reason });
     setSaveSuccess(false);
   };
 
@@ -100,15 +112,29 @@ const AdminPanel: React.FC = () => {
     setSaveSuccess(false);
     setSaveError('');
 
-    const success = await saveAdminSettings(settings);
+    console.log('🟡 Saving settings:', settings);
+    console.log('🟡 disabledReason being sent:', settings.disabledReason);
 
-    if (success) {
+    const savedSettings = await saveAdminSettings(settings);
+
+    console.log('🟢 Received saved settings:', savedSettings);
+    console.log(
+      '🟢 disabledReason in response:',
+      savedSettings?.disabledReason,
+    );
+
+    if (savedSettings) {
+      // Update local state with what was actually saved to server
+      setSettings(savedSettings);
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
 
-      // Dispatch custom event to notify other components
+      // Set timestamp in localStorage to signal settings change
+      localStorage.setItem('adminSettingsLastUpdate', Date.now().toString());
+
+      // Dispatch custom event with the actual saved settings from server
       window.dispatchEvent(
-        new CustomEvent('adminSettingsChanged', { detail: settings }),
+        new CustomEvent('adminSettingsChanged', { detail: savedSettings }),
       );
     } else {
       setSaveError('Nepodarilo sa uložiť nastavenia. Skúste to znova.');
@@ -300,6 +326,34 @@ const AdminPanel: React.FC = () => {
                   <strong>{formatWaitTime(settings.waitTimeMinutes)}</strong>.
                   Ďakujeme za pochopenie."
                 </p>
+              </div>
+            </div>
+          )}
+
+          {/* Disabled Mode - Custom Reason */}
+          {settings.mode === 'disabled' && (
+            <div className="admin-panel__section">
+              <h2 className="admin-panel__section-title">Dôvod pozastavenia</h2>
+
+              <div className="admin-panel__textarea-group">
+                <label htmlFor="disabledReason">Text oznámenia:</label>
+                <textarea
+                  id="disabledReason"
+                  value={settings.disabledReason || ''}
+                  onChange={(e) => handleDisabledReasonChange(e.target.value)}
+                  className="admin-panel__textarea"
+                  rows={4}
+                  maxLength={500}
+                  placeholder="Zadajte dôvod pozastavenia objednávok..."
+                />
+                <div className="admin-panel__char-counter">
+                  {(settings.disabledReason || '').length} / 500 znakov
+                </div>
+              </div>
+
+              <div className="admin-panel__preview">
+                <h3>Náhľad oznámenia:</h3>
+                <p>"{settings.disabledReason || ''}"</p>
               </div>
             </div>
           )}

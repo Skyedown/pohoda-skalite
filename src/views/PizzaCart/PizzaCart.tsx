@@ -48,6 +48,8 @@ const PizzaCart: React.FC = () => {
     waitTimeMinutes: 60,
     customNote:
       'Z dôvodu nepriaznivého počasia je donáška možná len k hlavnej ceste',
+    disabledReason:
+      'Z dôvodu veľkého počtu objednávok sme momentálne nútení pozastaviť prijímanie nových online objednávok. Ďakujeme za pochopenie a ospravedlňujeme sa za nepríjemnosti. Skúste to prosím neskôr alebo nás kontaktujte telefonicky.',
   });
 
   // Check if orders are disabled via admin panel
@@ -77,6 +79,33 @@ const PizzaCart: React.FC = () => {
       }
     };
     loadSettings();
+
+    // Check for settings updates when window gains focus (e.g., returning from admin panel)
+    const handleFocus = async () => {
+      const lastUpdate = localStorage.getItem('adminSettingsLastUpdate');
+      if (lastUpdate) {
+        // Clear the flag
+        localStorage.removeItem('adminSettingsLastUpdate');
+        // Refetch settings
+        const settings = await getAdminSettings();
+        const safeSettings: AdminSettings = {
+          ...settings,
+          cardPaymentDeliveryEnabled:
+            settings.cardPaymentDeliveryEnabled ?? false,
+          cardPaymentPickupEnabled: settings.cardPaymentPickupEnabled ?? false,
+        };
+        setAdminSettings(safeSettings);
+      }
+    };
+
+    window.addEventListener('focus', handleFocus);
+    // Also listen for visibility change
+    window.addEventListener('visibilitychange', handleFocus);
+
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+      window.removeEventListener('visibilitychange', handleFocus);
+    };
   }, []);
 
   // Listen for admin settings changes
