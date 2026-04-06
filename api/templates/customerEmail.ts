@@ -15,14 +15,13 @@ import type { SanitizedOrder } from '../types.js';
 export function generateCustomerEmail(
   order: SanitizedOrder,
   restaurantEmail: string,
-  restaurantPhone: string
+  restaurantPhone: string,
 ): string {
   const itemsList = order.items
     .map((item) => {
-      const requiredOptionText =
-        item.requiredOption
-          ? `<br><small style="color: #634832; margin-top: 4px; display: block;">${escapeHTML(item.requiredOption.name)}: <strong>${escapeHTML(item.requiredOption.selectedValue)}</strong></small>`
-          : '';
+      const requiredOptionText = item.requiredOption
+        ? `<br><small style="color: #634832; margin-top: 4px; display: block;">${escapeHTML(item.requiredOption.name)}: <strong>${escapeHTML(item.requiredOption.selectedValue)}</strong></small>`
+        : '';
 
       const extrasText =
         item.extras && item.extras.length > 0
@@ -42,14 +41,14 @@ export function generateCustomerEmail(
       <tr>
         <td style="padding: 12px; border-bottom: 1px solid #f0ebe4;">
           <strong style="color: #1f2123; font-size: 15px;">${escapeHTML(
-            item.name
+            item.name,
           )}</strong>${requiredOptionText}${extrasText}${removedIngredientsText}
         </td>
         <td style="padding: 12px; border-bottom: 1px solid #f0ebe4; text-align: center; color: #634832;">${
           item.quantity
         }×</td>
         <td style="padding: 12px; border-bottom: 1px solid #f0ebe4; text-align: right; font-weight: 600; color: #1f2123;">${item.totalPrice.toFixed(
-          2
+          2,
         )} €</td>
       </tr>
     `;
@@ -221,13 +220,13 @@ export function generateCustomerEmail(
 
           <div class="summary">
             <p><strong>Medzisúčet:</strong> <span style="float: right;">${order.pricing.subtotal.toFixed(
-              2
+              2,
             )} €</span></p>
             <p><strong>Doprava:</strong> <span style="float: right;">${order.pricing.delivery.toFixed(
-              2
+              2,
             )} €</span></p>
             <p class="total-price"><strong>Celkom:</strong> <span style="float: right;">${order.pricing.total.toFixed(
-              2
+              2,
             )} €</span></p>
           </div>
 
@@ -238,22 +237,22 @@ export function generateCustomerEmail(
           }:</h3>
           <div class="delivery-info">
             <p style="margin: 5px 0;"><strong>Meno:</strong> ${escapeHTML(
-              order.delivery.fullName
+              order.delivery.fullName,
             )}</p>
             ${
               order.deliveryMethod === 'delivery'
                 ? `<p style="margin: 5px 0;"><strong>Adresa:</strong> ${escapeHTML(
-                    order.delivery.street
+                    order.delivery.street,
                   )}, ${escapeHTML(order.delivery.city)}</p>`
                 : ''
             }
             <p style="margin: 5px 0;"><img src="https://pizzapohoda.sk/icons/phone.png" alt="" class="icon-inline">${escapeHTML(
-              order.delivery.phone
+              order.delivery.phone,
             )}</p>
             ${
               order.delivery.notes
                 ? `<p style="margin: 15px 0 5px 0; padding-top: 15px; border-top: 1px solid #f0ebe4;"><em style="color: #634832;">Poznámka: ${escapeHTML(
-                    order.delivery.notes
+                    order.delivery.notes,
                   )}</em></p>`
                 : ''
             }

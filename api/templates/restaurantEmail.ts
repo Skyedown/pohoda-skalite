@@ -13,23 +13,24 @@ import type { SanitizedOrder } from '../types.js';
 export function generateRestaurantEmail(order: SanitizedOrder): string {
   // Generate unique order ID from timestamp in Europe/Bratislava timezone
   const orderDate = new Date(order.timestamp);
-  const orderId = orderDate.toLocaleString('sk-SK', {
-    timeZone: 'Europe/Bratislava',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false
-  }).replace(/[^\d]/g, ''); // Format: YYYYMMDDHHMMSS
+  const orderId = orderDate
+    .toLocaleString('sk-SK', {
+      timeZone: 'Europe/Bratislava',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    })
+    .replace(/[^\d]/g, ''); // Format: YYYYMMDDHHMMSS
 
   const itemsList = order.items
     .map((item) => {
-      const requiredOptionText =
-        item.requiredOption
-          ? `<br><small style="color: #666;">${escapeHTML(item.requiredOption.name)}: <strong>${escapeHTML(item.requiredOption.selectedValue)}</strong></small>`
-          : '';
+      const requiredOptionText = item.requiredOption
+        ? `<br><small style="color: #666;">${escapeHTML(item.requiredOption.name)}: <strong>${escapeHTML(item.requiredOption.selectedValue)}</strong></small>`
+        : '';
 
       const extrasText =
         item.extras && item.extras.length > 0
@@ -54,10 +55,10 @@ export function generateRestaurantEmail(order: SanitizedOrder): string {
           item.quantity
         }x</td>
         <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">${item.basePrice.toFixed(
-          2
+          2,
         )} €</td>
         <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">${item.totalPrice.toFixed(
-          2
+          2,
         )} €</td>
       </tr>
     `;
@@ -84,14 +85,14 @@ export function generateRestaurantEmail(order: SanitizedOrder): string {
           <h1>NOVÁ OBJEDNÁVKA</h1>
           <p>Čas objednávky: ${new Date(order.timestamp).toLocaleString(
             'sk-SK',
-            { timeZone: 'Europe/Bratislava' }
+            { timeZone: 'Europe/Bratislava' },
           )}</p>
         </div>
 
         <div class="urgent">
           CELKOVÁ SUMA: ${order.pricing.total.toFixed(2)} € | PLATBA: ${
-    order.paymentMethod === 'cash' ? 'HOTOVOSŤ' : 'KARTA'
-  }
+            order.paymentMethod === 'cash' ? 'HOTOVOSŤ' : 'KARTA'
+          }
         </div>
 
         <h2>Objednané položky:</h2>
@@ -111,19 +112,19 @@ export function generateRestaurantEmail(order: SanitizedOrder): string {
             <tr style="background-color: #f9f9f9;">
               <td colspan="3" style="padding: 10px; text-align: right;"><strong>Medzisúčet:</strong></td>
               <td style="padding: 10px; text-align: right;"><strong>${order.pricing.subtotal.toFixed(
-                2
+                2,
               )} €</strong></td>
             </tr>
             <tr>
               <td colspan="3" style="padding: 10px; text-align: right;">Doprava:</td>
               <td style="padding: 10px; text-align: right;">${order.pricing.delivery.toFixed(
-                2
+                2,
               )} €</td>
             </tr>
             <tr style="background-color: #d4351c; color: white; font-size: 16px;">
               <td colspan="3" style="padding: 15px; text-align: right;"><strong>CELKOM:</strong></td>
               <td style="padding: 15px; text-align: right;"><strong>${order.pricing.total.toFixed(
-                2
+                2,
               )} €</strong></td>
             </tr>
           </tfoot>
@@ -160,7 +161,7 @@ export function generateRestaurantEmail(order: SanitizedOrder): string {
             ${
               order.deliveryMethod === 'delivery'
                 ? `<br><strong>Adresa:</strong> ${escapeHTML(
-                    order.delivery.street
+                    order.delivery.street,
                   )}, ${escapeHTML(order.delivery.city)}`
                 : ''
             }

@@ -141,7 +141,13 @@ const ProductModal: React.FC<ProductModalProps> = ({
           }
         : undefined;
 
-    addToCart(product, quantity, selectedExtrasObjects, requiredOptionData, removedIngredients);
+    addToCart(
+      product,
+      quantity,
+      selectedExtrasObjects,
+      requiredOptionData,
+      removedIngredients,
+    );
     if (onAddToCart) {
       onAddToCart(product.name);
     }

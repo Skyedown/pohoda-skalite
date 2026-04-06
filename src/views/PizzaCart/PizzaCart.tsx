@@ -214,21 +214,35 @@ const PizzaCart: React.FC = () => {
     // Scroll to first error field
     if (Object.keys(newErrors).length > 0) {
       // Order of fields to check (top to bottom)
-      const fieldOrder = ['fullName', 'city', 'street', 'phone', 'email', 'gdprConsent'];
-      const firstErrorField = fieldOrder.find(field => newErrors[field]);
-      
+      const fieldOrder = [
+        'fullName',
+        'city',
+        'street',
+        'phone',
+        'email',
+        'gdprConsent',
+      ];
+      const firstErrorField = fieldOrder.find((field) => newErrors[field]);
+
       if (firstErrorField) {
         // Use setTimeout to ensure DOM is updated with error classes
         setTimeout(() => {
-          const element = document.querySelector(`[name="${firstErrorField}"]`) as HTMLElement;
+          const element = document.querySelector(
+            `[name="${firstErrorField}"]`,
+          ) as HTMLElement;
           if (element) {
             element.scrollIntoView({ behavior: 'smooth', block: 'center' });
             element.focus();
           } else if (firstErrorField === 'gdprConsent') {
             // For GDPR checkbox, scroll to the checkbox container
-            const gdprElement = document.querySelector('.gdpr-consent') as HTMLElement;
+            const gdprElement = document.querySelector(
+              '.gdpr-consent',
+            ) as HTMLElement;
             if (gdprElement) {
-              gdprElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              gdprElement.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+              });
             }
           }
         }, 100);
@@ -444,9 +458,11 @@ const PizzaCart: React.FC = () => {
 
           <OrderSummary subtotal={subtotal} delivery={delivery} total={total} />
 
-          <div className={`pizza-cart__gdpr-consent gdpr-consent ${
-            errors.gdprConsent ? 'pizza-cart__gdpr-consent--error' : ''
-          }`}>
+          <div
+            className={`pizza-cart__gdpr-consent gdpr-consent ${
+              errors.gdprConsent ? 'pizza-cart__gdpr-consent--error' : ''
+            }`}
+          >
             <label className="pizza-cart__gdpr-label">
               <input
                 type="checkbox"
