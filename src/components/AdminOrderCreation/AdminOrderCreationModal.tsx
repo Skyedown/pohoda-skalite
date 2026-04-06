@@ -5,6 +5,7 @@ import { langos } from '../../data/langos';
 import { prilohy } from '../../data/prilohy';
 import OrderFormSection from './OrderFormSection/OrderFormSection';
 import OrderSidebar from './OrderSidebar/OrderSidebar';
+import AdminIngredientsModal from './AdminIngredientsModal';
 import type { Product, DeliveryMethod } from '../../types';
 import {
   getExtrasForProductType,
@@ -35,6 +36,9 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
   const [deliveryMethod, setDeliveryMethod] =
     useState<DeliveryMethod>('delivery');
   const [editingItemIndex, setEditingItemIndex] = useState<number | null>(null);
+  const [editingIngredientsIndex, setEditingIngredientsIndex] = useState<
+    number | null
+  >(null);
   const [formData, setFormData] = useState(getInitialFormState());
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -62,6 +66,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
       setDeliveryMethod('delivery');
       setErrors({});
       setEditingItemIndex(null);
+      setEditingIngredientsIndex(null);
     }
   }, [isOpen]);
 
@@ -164,6 +169,34 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
 
   const handleCloseExtras = () => {
     setEditingItemIndex(null);
+  };
+
+  const handleEditIngredients = (itemIndex: number) => {
+    setEditingIngredientsIndex(itemIndex);
+  };
+
+  const handleToggleIngredient = (ingredient: string) => {
+    if (editingIngredientsIndex === null) return;
+
+    setOrderItems((prev) => {
+      const item = prev[editingIngredientsIndex];
+      if (!item) return prev;
+
+      const currentRemoved = item.removedIngredients || [];
+      const newRemoved = currentRemoved.includes(ingredient)
+        ? currentRemoved.filter((i) => i !== ingredient)
+        : [...currentRemoved, ingredient];
+
+      return prev.map((orderItem, idx) =>
+        idx === editingIngredientsIndex
+          ? { ...orderItem, removedIngredients: newRemoved }
+          : orderItem,
+      );
+    });
+  };
+
+  const handleCloseIngredients = () => {
+    setEditingIngredientsIndex(null);
   };
 
   const handleFormChange = (
@@ -302,10 +335,28 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
               onEditExtras={handleEditExtras}
               onToggleExtra={handleToggleExtra}
               onCloseExtras={handleCloseExtras}
+              onEditIngredients={handleEditIngredients}
               onSubmit={handleSubmit}
             />
           </div>
         </div>
+
+        {/* Ingredients Modal */}
+        {editingIngredientsIndex !== null &&
+          orderItems[editingIngredientsIndex] &&
+          orderItems[editingIngredientsIndex].product.ingredients && (
+            <AdminIngredientsModal
+              productName={orderItems[editingIngredientsIndex].product.name}
+              ingredients={
+                orderItems[editingIngredientsIndex].product.ingredients || []
+              }
+              removedIngredients={
+                orderItems[editingIngredientsIndex].removedIngredients || []
+              }
+              onToggleIngredient={handleToggleIngredient}
+              onClose={handleCloseIngredients}
+            />
+          )}
       </div>
     </div>
   );

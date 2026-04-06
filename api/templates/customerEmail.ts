@@ -31,12 +31,19 @@ export function generateCustomerEmail(
               .join(', ')}</small>`
           : '';
 
+      const removedIngredientsText =
+        item.removedIngredients && item.removedIngredients.length > 0
+          ? `<br><small style="color: #e74c3c; margin-top: 4px; display: block;">Bez: ${item.removedIngredients
+              .map((i: string) => escapeHTML(i))
+              .join(', ')}</small>`
+          : '';
+
       return `
       <tr>
         <td style="padding: 12px; border-bottom: 1px solid #f0ebe4;">
           <strong style="color: #1f2123; font-size: 15px;">${escapeHTML(
             item.name
-          )}</strong>${requiredOptionText}${extrasText}
+          )}</strong>${requiredOptionText}${extrasText}${removedIngredientsText}
         </td>
         <td style="padding: 12px; border-bottom: 1px solid #f0ebe4; text-align: center; color: #634832;">${
           item.quantity

@@ -16,6 +16,7 @@ interface OrderSidebarProps {
   onEditExtras: (itemIndex: number) => void;
   onToggleExtra: (extraId: string) => void;
   onCloseExtras: () => void;
+  onEditIngredients?: (itemIndex: number) => void;
   onSubmit: (e: React.FormEvent) => void;
 }
 
@@ -31,6 +32,7 @@ const OrderSidebar: React.FC<OrderSidebarProps> = ({
   onEditExtras,
   onToggleExtra,
   onCloseExtras,
+  onEditIngredients,
   onSubmit,
 }) => {
   return (
@@ -51,6 +53,7 @@ const OrderSidebar: React.FC<OrderSidebarProps> = ({
             onEditExtras={onEditExtras}
             onToggleExtra={onToggleExtra}
             onCloseExtras={onCloseExtras}
+            onEditIngredients={onEditIngredients}
           />
 
           {/* Submit Button */}

@@ -70,9 +70,9 @@ export const getExtrasForProductType = (productType: string): Extra[] => {
 };
 
 export const categoryLabels: Record<string, string> = {
-  pizza: 'Pizzy',
-  burger: 'Burgery',
-  langos: 'Langoš',
+  pizza: 'Pizze',
+  burger: 'Burgre',
+  langos: 'Langoše',
   sides: 'Prílohy',
 };
 
@@ -84,6 +84,7 @@ export interface AdminOrderItem {
   product: Product;
   quantity: number;
   extras: Extra[];
+  removedIngredients?: string[];
 }
 
 export interface FormData {
@@ -188,6 +189,7 @@ export const buildOrderPayload = (
       },
       quantity: item.quantity,
       extras: item.extras,
+      removedIngredients: item.removedIngredients || [],
       totalPrice:
         (item.product.price +
           item.extras.reduce((sum, e) => sum + e.price, 0)) *

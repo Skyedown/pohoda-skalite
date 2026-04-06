@@ -45,6 +45,7 @@ export interface CartItem {
   totalPrice: number;
   extras?: Extra[];
   extrasPrice?: number;
+  removedIngredients?: string[];
   requiredOption?: {
     name: string;
     selectedValue: string;

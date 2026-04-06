@@ -79,7 +79,21 @@
 
 .order-item-row__extras-label {
   font-weight: 600;
-  color: #ff6b35;
+  color: #3eb448;
+  font-style: normal;
+}
+
+.order-item-row__removed-ingredients {
+  margin: 0;
+  font-size: 12px;
+  color: #e74c3c;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.order-item-row__removed-label {
+  font-weight: 600;
+  color: #e74c3c;
   font-style: normal;
 }
 
@@ -118,6 +132,36 @@
     background: #ff6b35;
     color: white;
     border-color: #ff6b35;
+  }
+}
+
+.order-item-row__ingredients-btn {
+  padding: 8px 12px;
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 40px;
+  width: 112px;
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  &:hover {
+    background: #6c5ce7;
+    color: white;
+    border-color: #6c5ce7;
   }
 }
 

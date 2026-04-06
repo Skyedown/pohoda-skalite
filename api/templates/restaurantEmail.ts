@@ -38,10 +38,17 @@ export function generateRestaurantEmail(order: SanitizedOrder): string {
               .join(', ')}</small>`
           : '';
 
+      const removedIngredientsText =
+        item.removedIngredients && item.removedIngredients.length > 0
+          ? `<br><small style="color: #e74c3c;"><strong>BEZ:</strong> ${item.removedIngredients
+              .map((i: string) => escapeHTML(i))
+              .join(', ')}</small>`
+          : '';
+
       return `
       <tr>
         <td style="padding: 10px; border-bottom: 1px solid #eee;">
-          <strong>${escapeHTML(item.name)}</strong>${requiredOptionText}${extrasText}
+          <strong>${escapeHTML(item.name)}</strong>${requiredOptionText}${extrasText}${removedIngredientsText}
         </td>
         <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: center;">${
           item.quantity

@@ -401,9 +401,9 @@ const AdminPanel: React.FC = () => {
                     settings.disabledProductTypes || []
                   ).includes(productType);
                   const labels: Record<string, string> = {
-                    pizza: 'Pizzy',
-                    burger: 'Burgery',
-                    langos: 'Langoš',
+                    pizza: 'Pizze',
+                    burger: 'Burgre',
+                    langos: 'Langoše',
                     sides: 'Prílohy',
                   };
 

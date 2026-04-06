@@ -285,6 +285,24 @@
     opacity: 0.7;
   }
 
+  &__removed-ingredients {
+    font-size: 13px;
+    color: #dc2626;
+    margin: 4px 0 0;
+    line-height: 20px;
+    font-style: italic;
+
+    strong {
+      font-family: @font-family-heading;
+      font-weight: 400;
+    }
+  }
+
+  &__removed-ingredients-list {
+    font-family: @font-family-primary;
+    font-weight: 300;
+  }
+
   // Section Title
   &__section-title {
     font-family: @font-family-heading;
@@ -293,6 +311,15 @@
     color: @text-primary;
     margin: 0 0 16px;
     line-height: 24px;
+  }
+
+  // Section Header (title + button)
+  &__section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 12px;
   }
 
   // Extras Section
@@ -401,6 +428,36 @@
     font-weight: 500;
     color: #634832;
     line-height: 24px;
+  }
+
+  // Ingredients Button
+  &__ingredients-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    height: 36px;
+
+    svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      background: @primary-dark;
+      color: white;
+      border-color: @primary-dark;
+    }
   }
 
   // Quantity Section

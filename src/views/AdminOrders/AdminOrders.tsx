@@ -12,6 +12,7 @@ interface Order {
     };
     quantity: number;
     extras: { name: string; price: number }[];
+    removedIngredients?: string[];
     totalPrice: number;
   }[];
   delivery: {
@@ -264,6 +265,13 @@ const AdminOrders: React.FC = () => {
                             + {item.extras.map((e) => e.name).join(', ')}
                           </span>
                         )}
+                        {item.removedIngredients &&
+                          item.removedIngredients.length > 0 && (
+                            <span className="admin-orders__item-product-removed">
+                              {' '}
+                              Bez: {item.removedIngredients.join(', ')}
+                            </span>
+                          )}
                       </span>
                     </div>
                   ))}

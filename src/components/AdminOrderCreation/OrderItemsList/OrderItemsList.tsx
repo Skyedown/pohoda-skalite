@@ -15,6 +15,7 @@ interface OrderItemsListProps {
   onEditExtras: (itemIndex: number) => void;
   onToggleExtra: (extraId: string) => void;
   onCloseExtras: () => void;
+  onEditIngredients?: (itemIndex: number) => void;
 }
 
 const OrderItemsList: React.FC<OrderItemsListProps> = ({
@@ -27,6 +28,7 @@ const OrderItemsList: React.FC<OrderItemsListProps> = ({
   onEditExtras,
   onToggleExtra,
   onCloseExtras,
+  onEditIngredients,
 }) => {
   return (
     <div className="order-items-list">
@@ -41,6 +43,7 @@ const OrderItemsList: React.FC<OrderItemsListProps> = ({
           onEditExtras={onEditExtras}
           onToggleExtra={onToggleExtra}
           onCloseExtras={onCloseExtras}
+          onEditIngredients={onEditIngredients}
         />
       ))}
 

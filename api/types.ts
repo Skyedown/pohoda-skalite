@@ -14,6 +14,7 @@ export interface OrderItem {
   basePrice: number;
   totalPrice: number;
   extras?: Extra[];
+  removedIngredients?: string[];
   requiredOption?: {
     name: string;
     selectedValue: string;

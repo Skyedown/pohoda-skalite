@@ -14,6 +14,7 @@ interface CartContextType {
     quantity: number,
     extras?: Extra[],
     requiredOption?: { name: string; selectedValue: string },
+    removedIngredients?: string[],
   ) => void;
   removeFromCart: (index: number) => void;
   updateQuantity: (index: number, quantity: number) => void;
@@ -57,6 +58,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     quantity: number,
     extras?: Extra[],
     requiredOption?: { name: string; selectedValue: string },
+    removedIngredients?: string[],
   ) => {
     // Validate product
     if (!product || !product.id || !product.name) {
@@ -75,6 +77,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
       extras,
       extrasPrice,
       requiredOption,
+      removedIngredients,
     };
 
     setCart((prevCart) => [...prevCart, newItem]);

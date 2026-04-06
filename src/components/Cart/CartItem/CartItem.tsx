@@ -59,6 +59,12 @@ const CartItem: React.FC<CartItemProps> = ({
         </p>
       )}
 
+      {item.removedIngredients && item.removedIngredients.length > 0 && (
+        <p className="cart-item__removed">
+          Bez: {item.removedIngredients.join(', ')}
+        </p>
+      )}
+
       {item.product.weight && (
         <p className="cart-item__weight">{item.product.weight}</p>
       )}

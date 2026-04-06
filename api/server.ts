@@ -343,6 +343,8 @@ app.post('/api/send-order-emails', async (req, res) => {
             quantity: item.quantity,
             extras: item.extras || [],
             totalPrice: item.totalPrice,
+            requiredOption: item.requiredOption || undefined,
+            removedIngredients: item.removedIngredients || [],
           })),
           delivery: {
             method: order.deliveryMethod || order.delivery?.method,
