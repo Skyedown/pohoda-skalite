@@ -20,6 +20,7 @@ export interface IOrder extends Document {
     phone?: string;
     email?: string;
     notes?: string;
+    mapyCzUrl?: string;
   };
   payment: {
     method: 'cash' | 'card';
@@ -56,13 +57,18 @@ const orderSchema = new Schema<IOrder>(
       },
     ],
     delivery: {
-      method: { type: String, enum: ['delivery', 'pickup', 'dine-in'], required: true },
+      method: {
+        type: String,
+        enum: ['delivery', 'pickup', 'dine-in'],
+        required: true,
+      },
       fullName: { type: String },
       street: { type: String },
       city: { type: String },
       phone: { type: String },
       email: { type: String },
       notes: { type: String },
+      mapyCzUrl: { type: String },
     },
     payment: {
       method: { type: String, enum: ['cash', 'card'], required: true },

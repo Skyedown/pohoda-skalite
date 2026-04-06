@@ -61,8 +61,6 @@ export async function saveAdminSettings(
   settings: AdminSettings,
 ): Promise<AdminSettings | null> {
   try {
-    console.log('📤 Sending to server:', JSON.stringify(settings, null, 2));
-
     const response = await fetch(`${API_URL}/api/admin-settings`, {
       method: 'POST',
       headers: {
@@ -73,7 +71,6 @@ export async function saveAdminSettings(
 
     if (response.ok) {
       const result = await response.json();
-      console.log('📥 Received from server:', JSON.stringify(result, null, 2));
       return result.settings;
     }
   } catch (error) {

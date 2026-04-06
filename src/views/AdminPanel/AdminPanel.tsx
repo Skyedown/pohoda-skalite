@@ -73,7 +73,6 @@ const AdminPanel: React.FC = () => {
   };
 
   const handleDisabledReasonChange = (reason: string) => {
-    console.log('🔵 handleDisabledReasonChange called with:', reason);
     setSettings({ ...settings, disabledReason: reason });
     setSaveSuccess(false);
   };

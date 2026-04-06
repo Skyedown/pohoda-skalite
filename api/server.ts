@@ -9,6 +9,7 @@ import { sanitizeOrder } from './utils/sanitize.js';
 import { generateCustomerEmail } from './templates/customerEmail.js';
 import { generateRestaurantEmail } from './templates/restaurantEmail.js';
 import { connectToMongoDB, isMongoConnected } from './utils/db.js';
+import { getMapyCzUrlForAddress } from './utils/geocoding.js';
 import {
   connectToRabbitMQ,
   publishOrder,
@@ -116,11 +117,6 @@ app.get('/api/admin-settings', (req, res) => {
 // Update admin settings
 app.post('/api/admin-settings', (req, res) => {
   try {
-    console.log(
-      '📨 SERVER: Received req.body:',
-      JSON.stringify(req.body, null, 2),
-    );
-
     const {
       mode,
       waitTimeMinutes,
@@ -130,8 +126,6 @@ app.post('/api/admin-settings', (req, res) => {
       cardPaymentDeliveryEnabled,
       cardPaymentPickupEnabled,
     } = req.body;
-
-    console.log('📨 SERVER: Destructured disabledReason:', disabledReason);
 
     // Validate input
     const validModes = ['off', 'disabled', 'waitTime', 'customNote'];
@@ -201,20 +195,12 @@ app.post('/api/admin-settings', (req, res) => {
       cardPaymentPickupEnabled: !!cardPaymentPickupEnabled,
     };
 
-    console.log(
-      '💾 SERVER: Saving settings:',
-      JSON.stringify(settings, null, 2),
-    );
-    console.log('💾 SERVER: disabledReason value:', disabledReason);
-
     // Ensure data directory exists before writing
     if (!fs.existsSync(dataDir)) {
       fs.mkdirSync(dataDir, { recursive: true });
     }
 
     fs.writeFileSync(ADMIN_SETTINGS_FILE, JSON.stringify(settings, null, 2));
-    console.log('✅ SERVER: Saved to file successfully');
-
     res.json({ success: true, settings });
   } catch (error) {
     console.error('Error saving admin settings:', error);
@@ -307,6 +293,32 @@ app.post('/api/send-order-emails', async (req, res) => {
 
     console.log('✅ Emails sent successfully!');
 
+    // Resolve Mapy.cz URL for delivery orders
+    let mapyCzUrl: string | null = null;
+    if (
+      order.deliveryMethod === 'delivery' &&
+      order.delivery?.street &&
+      order.delivery?.city
+    ) {
+      try {
+        console.log('📍 Resolving GPS coordinates for delivery address...');
+        mapyCzUrl = await getMapyCzUrlForAddress({
+          country: 'Slovensko',
+          city: order.delivery.city,
+          street: order.delivery.street,
+          houseNumber: undefined, // Can be extracted from street if needed
+        });
+
+        if (mapyCzUrl) {
+          console.log('✅ Mapy.cz URL generated:', mapyCzUrl);
+        } else {
+          console.warn('⚠️ Could not resolve GPS coordinates for address');
+        }
+      } catch (geoError) {
+        console.error('❌ Error resolving Mapy.cz URL:', geoError);
+      }
+    }
+
     // Save order to MongoDB
     let savedOrderId = null;
     let published = false;
@@ -340,6 +352,7 @@ app.post('/api/send-order-emails', async (req, res) => {
             phone: order.delivery?.phone,
             email: order.delivery?.email,
             notes: order.delivery?.notes,
+            mapyCzUrl: mapyCzUrl || undefined,
           },
           payment: {
             method: order.paymentMethod || order.payment?.method,
@@ -428,6 +441,32 @@ app.post('/api/orders', async (req, res) => {
     if (!isMongoConnected()) {
       console.error('❌ Database not available');
       return res.status(503).json({ error: 'Database not available' });
+    }
+
+    // Resolve Mapy.cz URL for delivery orders
+    if (
+      order.delivery?.method === 'delivery' &&
+      order.delivery?.street &&
+      order.delivery?.city
+    ) {
+      try {
+        console.log('📍 Resolving GPS coordinates for delivery address...');
+        const mapyCzUrl = await getMapyCzUrlForAddress({
+          country: 'Slovensko',
+          city: order.delivery.city,
+          street: order.delivery.street,
+          houseNumber: undefined,
+        });
+
+        if (mapyCzUrl) {
+          console.log('✅ Mapy.cz URL generated:', mapyCzUrl);
+          order.delivery.mapyCzUrl = mapyCzUrl;
+        } else {
+          console.warn('⚠️ Could not resolve GPS coordinates for address');
+        }
+      } catch (geoError) {
+        console.error('❌ Error resolving Mapy.cz URL:', geoError);
+      }
     }
 
     // Save order to MongoDB
