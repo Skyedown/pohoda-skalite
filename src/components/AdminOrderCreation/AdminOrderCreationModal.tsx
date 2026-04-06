@@ -7,7 +7,7 @@ import OrderFormSection from './OrderFormSection/OrderFormSection';
 import OrderSidebar from './OrderSidebar/OrderSidebar';
 import type { Product, DeliveryMethod } from '../../types';
 import {
-  defaultExtras,
+  getExtrasForProductType,
   categoryLabels,
   calculateSubtotal,
   validateOrderForm,
@@ -126,14 +126,17 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
       const item = prev[editingItemIndex];
       if (!item) return prev;
 
+      // Get the correct extras for this product type
+      const availableExtras = getExtrasForProductType(item.product.type);
+
       const currentExtraIds = item.extras.map((e) => e.id);
       const newExtraIds = currentExtraIds.includes(extraId)
         ? currentExtraIds.filter((id) => id !== extraId)
         : [...currentExtraIds, extraId];
 
       const newExtras = newExtraIds
-        .map((id) => defaultExtras.find((e) => e.id === id))
-        .filter((e): e is (typeof defaultExtras)[0] => e !== undefined);
+        .map((id) => availableExtras.find((e) => e.id === id))
+        .filter((e): e is (typeof availableExtras)[0] => e !== undefined);
 
       // If quantity > 1 and extras changed, split the row
       const extrasChanged =
@@ -290,7 +293,6 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
             <OrderSidebar
               orderItems={orderItems}
               editingItemIndex={editingItemIndex}
-              defaultExtras={defaultExtras}
               subtotal={subtotal}
               deliveryFee={orderType === 'dine-in' ? 0 : deliveryFee}
               total={orderType === 'dine-in' ? subtotal : total}

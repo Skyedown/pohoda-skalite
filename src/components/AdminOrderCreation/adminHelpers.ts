@@ -4,7 +4,7 @@ import type { Extra, Product, DeliveryMethod } from '../../types';
 // CONSTANTS
 // ============================================
 
-export const defaultExtras: Extra[] = [
+export const pizzaExtras: Extra[] = [
   // Meat-based extras - 1.5 EUR
   { id: 'sunka', name: 'Šunka', price: 1.5 },
   { id: 'slanina', name: 'Slanina', price: 1.5 },
@@ -21,6 +21,53 @@ export const defaultExtras: Extra[] = [
   { id: 'ananas', name: 'Ananás', price: 0.8 },
   { id: 'cherry-paradajky', name: 'Cherry paradajky', price: 0.8 },
 ];
+
+export const burgerExtras: Extra[] = [
+  // Special extras
+  { id: 'extra-patty', name: 'Extra mäso', price: 4.5 },
+  { id: 'extra-cheddar', name: 'Extra cheddar', price: 1.2 },
+  { id: 'grilovan-encian', name: 'Grilovaný encián', price: 3.5 },
+  // Meat-based extras - 1.5 EUR
+  { id: 'slanina', name: 'Slanina', price: 1.5 },
+  // Non-meat extras - 0.80 EUR
+  { id: 'salat', name: 'Šalát', price: 0.8 },
+  { id: 'paradajka', name: 'Paradajka', price: 0.8 },
+  { id: 'karamelizona-cibuľka', name: 'Karamelizovaná cibuľka', price: 0.8 },
+  { id: 'kysla-uhorka', name: 'Kyslá uhorka', price: 0.8 },
+  { id: 'sampiony', name: 'Šampiňóny', price: 0.8 },
+  { id: 'cibuľka', name: 'Cibuľka', price: 0.8 },
+  { id: 'jalapeno', name: 'Jallapeño', price: 0.8 },
+  { id: 'baby-spenat', name: 'Baby špenát', price: 0.8 },
+  { id: 'volske-oko', name: 'Volské oko', price: 0.8 },
+];
+
+export const langosExtras: Extra[] = [
+  // All extras - 0.80 EUR
+  { id: 'extra-cheese', name: 'Extra syr', price: 0.8 },
+  { id: 'ketchup', name: 'Kečup', price: 0.8 },
+  { id: 'tartar-sauce', name: 'Tatárska omáčka', price: 0.8 },
+  { id: 'sour-cream', name: 'Kyslá smotana', price: 0.8 },
+  { id: 'nutella', name: 'Nutella', price: 0.8 },
+  { id: 'banana', name: 'Banán', price: 0.8 },
+];
+
+// Keep backward compatibility
+export const defaultExtras = pizzaExtras;
+
+/**
+ * Get extras for a specific product type
+ */
+export const getExtrasForProductType = (productType: string): Extra[] => {
+  switch (productType) {
+    case 'burger':
+      return burgerExtras;
+    case 'langos':
+      return langosExtras;
+    case 'pizza':
+    default:
+      return pizzaExtras;
+  }
+};
 
 export const categoryLabels: Record<string, string> = {
   pizza: 'Pizzy',

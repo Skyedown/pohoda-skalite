@@ -1,14 +1,13 @@
 import React from 'react';
 import OrderItemRow from '../OrderItemRow/OrderItemRow';
 import OrderSummary from '../../Cart/OrderSummary/OrderSummary';
-import type { Extra } from '../../../types';
 import type { AdminOrderItem } from '../adminHelpers';
+import { getExtrasForProductType } from '../adminHelpers';
 import './OrderItemsList.less';
 
 interface OrderItemsListProps {
   orderItems: AdminOrderItem[];
   editingItemIndex: number | null;
-  defaultExtras: Extra[];
   subtotal: number;
   deliveryFee: number;
   total: number;
@@ -21,7 +20,6 @@ interface OrderItemsListProps {
 const OrderItemsList: React.FC<OrderItemsListProps> = ({
   orderItems,
   editingItemIndex,
-  defaultExtras,
   subtotal,
   deliveryFee,
   total,
@@ -38,7 +36,7 @@ const OrderItemsList: React.FC<OrderItemsListProps> = ({
           item={item}
           itemIndex={itemIndex}
           isEditing={editingItemIndex === itemIndex}
-          defaultExtras={defaultExtras}
+          availableExtras={getExtrasForProductType(item.product.type)}
           onQuantityChange={onQuantityChange}
           onEditExtras={onEditExtras}
           onToggleExtra={onToggleExtra}

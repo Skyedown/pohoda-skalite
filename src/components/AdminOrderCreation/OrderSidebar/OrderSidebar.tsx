@@ -1,14 +1,12 @@
 import React from 'react';
 import EmptyCart from '../EmptyCart/EmptyCart';
 import OrderItemsList from '../OrderItemsList/OrderItemsList';
-import type { Extra } from '../../../types';
 import type { AdminOrderItem } from '../adminHelpers';
 import './OrderSidebar.less';
 
 interface OrderSidebarProps {
   orderItems: AdminOrderItem[];
   editingItemIndex: number | null;
-  defaultExtras: Extra[];
   subtotal: number;
   deliveryFee: number;
   total: number;
@@ -24,7 +22,6 @@ interface OrderSidebarProps {
 const OrderSidebar: React.FC<OrderSidebarProps> = ({
   orderItems,
   editingItemIndex,
-  defaultExtras,
   subtotal,
   deliveryFee,
   total,
@@ -47,7 +44,6 @@ const OrderSidebar: React.FC<OrderSidebarProps> = ({
           <OrderItemsList
             orderItems={orderItems}
             editingItemIndex={editingItemIndex}
-            defaultExtras={defaultExtras}
             subtotal={subtotal}
             deliveryFee={deliveryFee}
             total={total}

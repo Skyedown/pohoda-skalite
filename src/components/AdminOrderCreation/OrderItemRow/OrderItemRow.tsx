@@ -8,7 +8,7 @@ interface OrderItemRowProps {
   item: AdminOrderItem;
   itemIndex: number;
   isEditing: boolean;
-  defaultExtras: Extra[];
+  availableExtras: Extra[];
   onQuantityChange: (itemIndex: number, quantity: number) => void;
   onEditExtras: (itemIndex: number) => void;
   onToggleExtra: (extraId: string) => void;
@@ -19,7 +19,7 @@ const OrderItemRow: React.FC<OrderItemRowProps> = ({
   item,
   itemIndex,
   isEditing,
-  defaultExtras,
+  availableExtras,
   onQuantityChange,
   onEditExtras,
   onToggleExtra,
@@ -153,7 +153,7 @@ const OrderItemRow: React.FC<OrderItemRowProps> = ({
       {isEditing && (
         <div className="order-item-row__extras-panel" ref={extrasPanelRef}>
           <AdminExtrasSelector
-            extras={defaultExtras}
+            extras={availableExtras}
             selectedExtras={item.extras.map((e) => e.id)}
             onToggleExtra={onToggleExtra}
           />
