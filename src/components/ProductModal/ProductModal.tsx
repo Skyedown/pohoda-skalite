@@ -3,7 +3,6 @@ import type { Product, Extra, RequiredOption } from '../../types';
 import { useCart } from '../../context/CartContext';
 import RequiredOptionSelect from '../RequiredOptionSelect/RequiredOptionSelect';
 import { formatAllergens } from '../../constants/allergens';
-import AdminIngredientsModal from '../AdminOrderCreation/AdminIngredientsModal';
 import './ProductModal.less';
 
 interface ProductModalProps {
@@ -50,7 +49,6 @@ const ProductModal: React.FC<ProductModalProps> = ({
   const [selectedRequiredOption, setSelectedRequiredOption] =
     useState<string>('');
   const [isClosing, setIsClosing] = useState(false);
-  const [isIngredientsModalOpen, setIsIngredientsModalOpen] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -224,14 +222,6 @@ const ProductModal: React.FC<ProductModalProps> = ({
                     </span>
                   </p>
                 )}
-                {removedIngredients.length > 0 && (
-                  <p className="product-modal__removed-ingredients">
-                    <strong>Bez:</strong>{' '}
-                    <span className="product-modal__removed-ingredients-list">
-                      {removedIngredients.join(', ')}
-                    </span>
-                  </p>
-                )}
               </div>
 
               {/* Required Option Section */}
@@ -244,39 +234,79 @@ const ProductModal: React.FC<ProductModalProps> = ({
               )}
 
               {/* Extras Section */}
-              {extras.length > 0 && (
+              {(extras.length > 0 ||
+                (product.ingredients && product.ingredients.length > 0)) && (
                 <div className="product-modal__extras-section">
-                  <div className="product-modal__section-header">
-                    <h3 className="product-modal__section-title">
-                      Pridať extra prílohy
-                    </h3>
-                    {product.ingredients && product.ingredients.length > 0 && (
-                      <button
-                        type="button"
-                        className="product-modal__ingredients-btn"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setIsIngredientsModalOpen(true);
-                        }}
-                      >
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                        >
-                          <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
-                          <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
-                        </svg>
-                        Upraviť ingrediencie
-                      </button>
-                    )}
-                  </div>
+                  <h3 className="product-modal__section-title">
+                    Pridať ingrediencie
+                  </h3>
 
                   <div className="product-modal__extras-container">
                     <div className="product-modal__extras-list">
+                      {/* Base Ingredients */}
+                      {product.ingredients &&
+                        product.ingredients.length > 0 && (
+                          <>
+                            {product.ingredients.map((ingredient) => {
+                              const isRemoved =
+                                removedIngredients.includes(ingredient);
+                              const isIncluded = !isRemoved;
+                              return (
+                                <label
+                                  key={ingredient}
+                                  className={`product-modal__extra-item product-modal__extra-item--ingredient ${
+                                    isIncluded
+                                      ? 'product-modal__extra-item--selected'
+                                      : 'product-modal__extra-item--removed'
+                                  }`}
+                                >
+                                  <div className="product-modal__extra-checkbox-wrapper">
+                                    <input
+                                      type="checkbox"
+                                      checked={isIncluded}
+                                      onChange={() =>
+                                        toggleIngredient(ingredient)
+                                      }
+                                      className="product-modal__extra-checkbox"
+                                    />
+                                    <span className="product-modal__extra-checkbox-custom">
+                                      {isIncluded && (
+                                        <svg
+                                          width="10"
+                                          height="8"
+                                          viewBox="0 0 10 8"
+                                          fill="none"
+                                        >
+                                          <path
+                                            d="M1 4L3.5 6.5L9 1"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                          />
+                                        </svg>
+                                      )}
+                                    </span>
+                                    <span
+                                      className={`product-modal__extra-name ${isRemoved ? 'product-modal__extra-name--removed' : ''}`}
+                                    >
+                                      {ingredient}
+                                    </span>
+                                  </div>
+                                  <span className="product-modal__extra-price product-modal__extra-price--included">
+                                    v cene
+                                  </span>
+                                </label>
+                              );
+                            })}
+                            {extras.length > 0 && (
+                              <div className="product-modal__extras-divider">
+                                <span>Extra prílohy</span>
+                              </div>
+                            )}
+                          </>
+                        )}
+
                       {extras.map((extra) => {
                         const isSelected = selectedExtras.includes(extra.id);
                         return (
@@ -406,17 +436,6 @@ const ProductModal: React.FC<ProductModalProps> = ({
           </div>
         </div>
       </div>
-
-      {/* Ingredients Modal */}
-      {isIngredientsModalOpen && product.ingredients && (
-        <AdminIngredientsModal
-          productName={product.name}
-          ingredients={product.ingredients}
-          removedIngredients={removedIngredients}
-          onToggleIngredient={toggleIngredient}
-          onClose={() => setIsIngredientsModalOpen(false)}
-        />
-      )}
     </div>
   );
 };
