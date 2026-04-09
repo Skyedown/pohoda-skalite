@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import DateRangeFilter, {
-  formatDateParam,
   computePresetRange,
 } from '../DateRangeFilter/DateRangeFilter';
 import './OrderStats.less';
