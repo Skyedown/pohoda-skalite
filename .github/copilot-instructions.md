@@ -129,6 +129,8 @@ src/
   border-radius: @border-radius-md;
 }
 ```
+### Always take care of responsibility for tablets and mobile devices
+- Always use media queries to ensure components are responsive and look good on all screen sizes.
 
 ### Always use nesting
 - LESS supports nesting — use it. Flat selectors are forbidden unless targeting a global reset or third-party override.

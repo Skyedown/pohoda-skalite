@@ -42,7 +42,7 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="app">
-      <Header isStatic={isAdminPage} />
+      {!isAdminPage && <Header isStatic={isAdminPage} />}
       {!isAdminPage && (
         <OrderingStatusBanner onVisibilityChange={setIsBannerVisible} />
       )}

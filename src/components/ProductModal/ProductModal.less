@@ -63,6 +63,11 @@
     justify-content: center;
     overflow: hidden;
 
+    // Allow pill button to overflow on mobile
+    &--mobile {
+      overflow: visible;
+    }
+
     // Desktop version - side by side with content
     &--desktop {
       display: none;
@@ -82,10 +87,52 @@
       min-height: 250px;
       aspect-ratio: 16 / 9;
       flex-shrink: 0;
+      margin-bottom: 20px;
 
       @media (min-width: @breakpoint-md) {
         display: none;
+        margin-bottom: 0;
       }
+    }
+  }
+
+  // Scroll-to-ingredients pill button — mobile only
+  &__scroll-ingredients-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    bottom: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    padding: 9px 22px;
+    background: @action-color;
+    color: @text-white;
+    border: none;
+    border-radius: @border-radius-full;
+    font-family: @font-family-primary;
+    font-size: @font-size-sm;
+    font-weight: @font-weight-semibold;
+    white-space: nowrap;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.35);
+    transition:
+      background @transition-base,
+      transform @transition-base,
+      box-shadow @transition-base;
+
+    &:hover {
+      background: @action-dark;
+      box-shadow: 0 6px 16px rgba(255, 107, 53, 0.45);
+    }
+
+    &:active {
+      transform: translateX(-50%) scale(0.97);
+    }
+
+    @media (min-width: @breakpoint-md) {
+      display: none;
     }
   }
 

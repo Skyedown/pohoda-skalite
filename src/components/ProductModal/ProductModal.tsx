@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import type { Product, Extra, RequiredOption } from '../../types';
 import { useCart } from '../../context/CartContext';
 import RequiredOptionSelect from '../RequiredOptionSelect/RequiredOptionSelect';
@@ -49,6 +49,15 @@ const ProductModal: React.FC<ProductModalProps> = ({
   const [selectedRequiredOption, setSelectedRequiredOption] =
     useState<string>('');
   const [isClosing, setIsClosing] = useState(false);
+  const extrasSectionRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const scrollToExtras = useCallback(() => {
+    if (extrasSectionRef.current && contentRef.current) {
+      const offset = extrasSectionRef.current.offsetTop;
+      contentRef.current.scrollTo({ top: offset - 16, behavior: 'smooth' });
+    }
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -183,7 +192,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
         {/* Right Column */}
         <div className="product-modal__right">
           {/* Content */}
-          <div className="product-modal__content">
+          <div className="product-modal__content" ref={contentRef}>
             {/* Header with Product Image - Mobile/Tablet (inside scroll) */}
             <div className="product-modal__header product-modal__header--mobile">
               <div className="product-modal__image-container">
@@ -193,6 +202,15 @@ const ProductModal: React.FC<ProductModalProps> = ({
                   className="product-modal__image"
                 />
               </div>
+              {product.ingredients && product.ingredients.length > 0 && (
+                <button
+                  className="product-modal__scroll-ingredients-btn"
+                  onClick={scrollToExtras}
+                  type="button"
+                >
+                  Upraviť ingrediencie
+                </button>
+              )}
             </div>
 
             <div className="product-modal__content-inner">
@@ -236,7 +254,10 @@ const ProductModal: React.FC<ProductModalProps> = ({
               {/* Extras Section */}
               {(extras.length > 0 ||
                 (product.ingredients && product.ingredients.length > 0)) && (
-                <div className="product-modal__extras-section">
+                <div
+                  className="product-modal__extras-section"
+                  ref={extrasSectionRef}
+                >
                   <h3 className="product-modal__section-title">
                     Pridať ingrediencie
                   </h3>
