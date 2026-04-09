@@ -67,7 +67,11 @@ const OrderSidebar: React.FC<OrderSidebarProps> = ({
               className="order-sidebar__submit-btn"
               disabled={isSubmitting || orderItems.length === 0}
             >
-              {isSubmitting ? 'Ukladám…' : isEditing ? 'Upraviť objednávku' : 'Vytvoriť objednávku'}
+              {isSubmitting
+                ? 'Ukladám…'
+                : isEditing
+                  ? 'Upraviť objednávku'
+                  : 'Vytvoriť objednávku'}
             </button>
           </div>
         </>

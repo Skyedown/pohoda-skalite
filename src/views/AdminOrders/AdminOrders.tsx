@@ -174,7 +174,9 @@ const AdminOrders: React.FC = () => {
               >
                 <div className="admin-orders__item-header">
                   {order.printNumber && (
-                    <div className="admin-orders__item-number">#{order.printNumber}</div>
+                    <div className="admin-orders__item-number">
+                      #{order.printNumber}
+                    </div>
                   )}
                   <div className="admin-orders__item-status">
                     {order.printed ? (
@@ -292,7 +294,9 @@ const AdminOrders: React.FC = () => {
 
                 <div className="admin-orders__item-actions">
                   <button
-                    onClick={() => setEditingOrder(order as unknown as EditOrderData)}
+                    onClick={() =>
+                      setEditingOrder(order as unknown as EditOrderData)
+                    }
                     className="admin-orders__edit-btn"
                   >
                     <svg

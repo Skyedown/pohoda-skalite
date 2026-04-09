@@ -600,7 +600,7 @@ app.put('/api/orders/:id', async (req, res) => {
         payment: order.payment,
         pricing: order.pricing,
       },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     if (!updatedOrder) {
