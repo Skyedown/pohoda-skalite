@@ -11,6 +11,7 @@ interface OrderSidebarProps {
   deliveryFee: number;
   total: number;
   isSubmitting: boolean;
+  isEditing?: boolean;
   submitError?: string;
   onQuantityChange: (itemIndex: number, quantity: number) => void;
   onEditExtras: (itemIndex: number) => void;
@@ -27,6 +28,7 @@ const OrderSidebar: React.FC<OrderSidebarProps> = ({
   deliveryFee,
   total,
   isSubmitting,
+  isEditing,
   submitError,
   onQuantityChange,
   onEditExtras,
@@ -65,7 +67,7 @@ const OrderSidebar: React.FC<OrderSidebarProps> = ({
               className="order-sidebar__submit-btn"
               disabled={isSubmitting || orderItems.length === 0}
             >
-              {isSubmitting ? 'Ukladám…' : 'Vytvoriť objednávku'}
+              {isSubmitting ? 'Ukladám…' : isEditing ? 'Upraviť objednávku' : 'Vytvoriť objednávku'}
             </button>
           </div>
         </>

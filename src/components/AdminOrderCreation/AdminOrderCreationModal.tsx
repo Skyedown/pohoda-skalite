@@ -19,14 +19,40 @@ import {
 } from './adminHelpers';
 import './AdminOrderCreationModal.less';
 
+export interface EditOrderData {
+  _id: string;
+  items: {
+    product: { id?: string; name: string; price: number; type?: string };
+    quantity: number;
+    extras: { id?: string; name: string; price: number }[];
+    removedIngredients?: string[];
+    totalPrice: number;
+  }[];
+  delivery: {
+    method: 'delivery' | 'pickup' | 'dine-in';
+    fullName?: string;
+    street?: string;
+    city?: string;
+    phone?: string;
+    email?: string;
+    notes?: string;
+  };
+  payment: { method: 'cash' | 'card' };
+  pricing: { subtotal: number; delivery: number; total: number };
+}
+
 interface AdminOrderCreationModalProps {
   isOpen: boolean;
   onClose: () => void;
+  editOrder?: EditOrderData | null;
+  onSaved?: () => void;
 }
 
 const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
   isOpen,
   onClose,
+  editOrder = null,
+  onSaved,
 }) => {
   const [orderItems, setOrderItems] = useState<AdminOrderItem[]>([]);
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'card'>('cash');
@@ -56,7 +82,13 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
     [],
   );
 
-  // Reset form when modal is closed
+  // All products flat list for resolving order items
+  const allProducts = useMemo(
+    () => [...pizzas, ...burgers, ...langos, ...prilohy],
+    [],
+  );
+
+  // Reset form when modal is closed, or populate when editing
   useEffect(() => {
     if (!isOpen) {
       setOrderItems([]);
@@ -67,8 +99,46 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
       setErrors({});
       setEditingItemIndex(null);
       setEditingIngredientsIndex(null);
+    } else if (editOrder) {
+      // Populate form from existing order
+      const items: AdminOrderItem[] = editOrder.items.map((item) => {
+        const fullProduct = allProducts.find(
+          (p) => p.id === item.product.id || p.name === item.product.name,
+        );
+        return {
+          product: fullProduct || {
+            id: item.product.id || item.product.name,
+            name: item.product.name,
+            price: item.product.price,
+            image: '',
+            type: (item.product.type as Product['type']) || 'pizza',
+          },
+          quantity: item.quantity,
+          extras: (item.extras || []).map((e) => ({
+            id: e.id || e.name,
+            name: e.name,
+            price: e.price,
+          })),
+          removedIngredients: item.removedIngredients || [],
+        };
+      });
+      setOrderItems(items);
+
+      const isOrderDineIn = editOrder.delivery.method === 'dine-in';
+      setOrderType(isOrderDineIn ? 'dine-in' : 'customer');
+      setDeliveryMethod(editOrder.delivery.method);
+      setPaymentMethod(editOrder.payment.method);
+      setFormData({
+        fullName: editOrder.delivery.fullName || '',
+        street: editOrder.delivery.street || '',
+        city: editOrder.delivery.city || '',
+        phone: editOrder.delivery.phone || '',
+        email: editOrder.delivery.email || '',
+        notes: editOrder.delivery.notes || '',
+        deliveryMethod: editOrder.delivery.method,
+      });
     }
-  }, [isOpen]);
+  }, [isOpen, editOrder, allProducts]);
 
   // Disable body scrolling when modal is open
   useEffect(() => {
@@ -254,8 +324,13 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
 
     setIsSubmitting(true);
     try {
-      const res = await fetch(`${API_URL}/api/orders`, {
-        method: 'POST',
+      const url = editOrder
+        ? `${API_URL}/api/orders/${editOrder._id}`
+        : `${API_URL}/api/orders`;
+      const method = editOrder ? 'PUT' : 'POST';
+
+      const res = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ order }),
       });
@@ -273,6 +348,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
       setDeliveryMethod('delivery');
       setErrors({});
       setEditingItemIndex(null);
+      if (onSaved) onSaved();
       onClose();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Unknown error';
@@ -291,7 +367,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
     <div className="admin-order-modal-overlay" onClick={onClose}>
       <div className="admin-order-modal" onClick={(e) => e.stopPropagation()}>
         <div className="admin-order-modal__header">
-          <h2>Vytvorenie objednávky</h2>
+          <h2>{editOrder ? 'Úprava objednávky' : 'Vytvorenie objednávky'}</h2>
           <button
             className="admin-order-modal__close"
             onClick={onClose}
@@ -330,6 +406,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
               deliveryFee={orderType === 'dine-in' ? 0 : deliveryFee}
               total={orderType === 'dine-in' ? subtotal : total}
               isSubmitting={isSubmitting}
+              isEditing={!!editOrder}
               submitError={errors.submit}
               onQuantityChange={handleQuantityChange}
               onEditExtras={handleEditExtras}

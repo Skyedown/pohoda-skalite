@@ -574,6 +574,55 @@ app.post('/api/orders/:id/reprint', async (req, res) => {
   }
 });
 
+// Update order
+app.put('/api/orders/:id', async (req, res) => {
+  try {
+    if (!isMongoConnected()) {
+      return res.status(503).json({ error: 'Database not available' });
+    }
+
+    const { id } = req.params;
+
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ error: 'Invalid order ID format' });
+    }
+
+    const { order } = req.body;
+    if (!order) {
+      return res.status(400).json({ error: 'Order data is required' });
+    }
+
+    const updatedOrder = await Order.findByIdAndUpdate(
+      id,
+      {
+        items: order.items,
+        delivery: order.delivery,
+        payment: order.payment,
+        pricing: order.pricing,
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedOrder) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    res.json({
+      success: true,
+      message: 'Order updated successfully',
+      order: updatedOrder,
+    });
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error';
+    console.error('❌ Error updating order:', errorMessage);
+    res.status(500).json({
+      error: 'Failed to update order',
+      details: errorMessage,
+    });
+  }
+});
+
 // Delete order
 app.delete('/api/orders/:id', async (req, res) => {
   try {

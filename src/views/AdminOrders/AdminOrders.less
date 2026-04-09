@@ -107,6 +107,14 @@
   border-bottom: 1px solid #e0e0e0;
 }
 
+.admin-orders__item-number {
+  font-size: 28px;
+  font-weight: 800;
+  color: #ff6b35;
+  line-height: 1;
+  min-width: 48px;
+}
+
 .admin-orders__item-status {
   display: flex;
   align-items: center;
@@ -216,6 +224,39 @@
   gap: 12px;
   padding-top: 12px;
   border-top: 1px solid #e0e0e0;
+}
+
+.admin-orders__edit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background-color: #2980b9;
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
 }
 
 .admin-orders__reprint-btn {

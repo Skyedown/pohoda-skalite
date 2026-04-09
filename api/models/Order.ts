@@ -32,6 +32,7 @@ export interface IOrder extends Document {
     total: number;
   };
   printed: boolean;
+  printNumber?: number;
   createdBy: 'customer' | 'admin';
   createdAt: Date;
 }
@@ -81,6 +82,7 @@ const orderSchema = new Schema<IOrder>(
       total: { type: Number, required: true },
     },
     printed: { type: Boolean, default: false },
+    printNumber: { type: Number },
     createdBy: {
       type: String,
       enum: ['customer', 'admin'],
