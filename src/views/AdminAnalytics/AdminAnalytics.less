@@ -13,12 +13,12 @@
   }
 
   &__login-box {
-    background: white;
-    border-radius: 16px;
+    background: @surface-color;
+    border-radius: @border-radius-lg;
     padding: 48px;
     max-width: 450px;
     width: 100%;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    box-shadow: @admin-panel-shadow;
 
     @media (max-width: @breakpoint-sm) {
       padding: 32px 24px;
@@ -34,13 +34,17 @@
   &__container {
     max-width: 1000px;
     margin: 0 auto;
-    background: white;
-    border-radius: 16px;
+    background: @surface-color;
+    border-radius: @border-radius-lg;
     padding: 40px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    box-shadow: @admin-panel-shadow;
+
+    @media (max-width: @breakpoint-lg) {
+      padding: 32px;
+    }
 
     @media (max-width: @breakpoint-sm) {
-      padding: 24px;
+      padding: 20px 16px;
     }
   }
 
@@ -50,7 +54,7 @@
     align-items: center;
     margin-bottom: 32px;
     padding-bottom: 24px;
-    border-bottom: 2px solid #f0f0f0;
+    border-bottom: 2px solid @admin-divider;
     flex-wrap: wrap;
     gap: 16px;
   }
@@ -67,8 +71,12 @@
     color: @text-primary;
     margin: 0;
 
+    @media (max-width: @breakpoint-lg) {
+      font-size: 24px;
+    }
+
     @media (max-width: @breakpoint-sm) {
-      font-size: 22px;
+      font-size: 20px;
     }
   }
 
@@ -80,34 +88,34 @@
 
   &__nav-link {
     padding: 10px 20px;
-    background: #fff5f0;
-    border: 1px solid #ff6b35;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    color: #ff6b35;
+    background: @action-light;
+    border: 1px solid @action-color;
+    border-radius: @border-radius-md;
+    font-size: @font-size-sm;
+    font-weight: @font-weight-medium;
+    color: @action-color;
     text-decoration: none;
-    transition: all 0.2s ease;
+    transition: all @transition-base;
 
     &:hover {
-      background: #ff6b35;
-      color: white;
+      background: @action-color;
+      color: @text-white;
     }
   }
 
   &__logout {
     padding: 10px 20px;
-    background: #f0f0f0;
+    background: @gray-200;
     border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
+    border-radius: @border-radius-md;
+    font-size: @font-size-sm;
+    font-weight: @font-weight-medium;
     color: @text-primary;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all @transition-base;
 
     &:hover {
-      background: #e0e0e0;
+      background: @gray-300;
     }
   }
 
@@ -120,7 +128,7 @@
   &__footer {
     margin-top: 32px;
     padding-top: 24px;
-    border-top: 1px solid #f0f0f0;
+    border-top: 1px solid @admin-divider;
   }
 
   &__input-group {
@@ -129,17 +137,17 @@
     gap: 8px;
 
     label {
-      font-size: 14px;
-      font-weight: 600;
+      font-size: @font-size-sm;
+      font-weight: @font-weight-semibold;
       color: @text-primary;
     }
 
     input {
       padding: 12px 16px;
-      border: 2px solid #e0e0e0;
-      border-radius: 8px;
-      font-size: 16px;
-      transition: all 0.2s ease;
+      border: 2px solid @border-gray;
+      border-radius: @border-radius-md;
+      font-size: @font-size-base;
+      transition: all @transition-base;
 
       &:focus {
         outline: none;
@@ -149,7 +157,7 @@
   }
 
   &__error {
-    color: #e74c3c;
+    color: @error-color;
     font-size: 13px;
     margin-top: 4px;
   }

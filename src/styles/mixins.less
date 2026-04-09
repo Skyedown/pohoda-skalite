@@ -84,7 +84,9 @@
 
 // Hover lift effect
 .hover-lift() {
-  transition: transform @transition-base, box-shadow @transition-base;
+  transition:
+    transform @transition-base,
+    box-shadow @transition-base;
 
   &:hover {
     transform: translateY(-4px);
@@ -115,5 +117,39 @@
 .respond-to-lg(@rules) {
   @media (min-width: @breakpoint-lg) {
     @rules();
+  }
+}
+
+// Admin action button – takes bg, hover-bg, and shadow rgba color
+.admin-btn(@bg, @bg-hover, @shadow-color) {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background-color: @bg;
+  color: @text-white;
+  border: none;
+  border-radius: @border-radius-md;
+  font-size: @font-size-sm;
+  font-weight: @font-weight-semibold;
+  cursor: pointer;
+  transition: all @transition-base;
+
+  &:hover:not(:disabled) {
+    background-color: @bg-hover;
+    box-shadow: 0 4px 12px @shadow-color;
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  svg {
+    flex-shrink: 0;
   }
 }

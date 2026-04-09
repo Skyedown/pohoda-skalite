@@ -1,0 +1,83 @@
+@import '../../styles/variables.less';
+
+.date-range-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  &__presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    button {
+      padding: 8px 14px;
+      border: 2px solid @border-gray;
+      border-radius: @border-radius-md;
+      background: @surface-color;
+      font-size: 13px;
+      font-weight: @font-weight-medium;
+      color: @gray-600;
+      cursor: pointer;
+      transition: all @transition-base;
+      font-family: inherit;
+
+      &:hover {
+        border-color: @action-color;
+        color: @action-color;
+        background: @action-light;
+      }
+
+      &:active,
+      &.active {
+        background: @action-color;
+        color: @text-white;
+        border-color: @action-color;
+      }
+    }
+  }
+
+  &__inputs {
+    display: flex;
+    gap: 16px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+
+    @media (max-width: @breakpoint-lg) {
+      gap: 12px;
+    }
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    label {
+      font-size: 13px;
+      font-weight: @font-weight-semibold;
+      color: @text-primary;
+    }
+
+    input[type='date'] {
+      padding: 10px 12px;
+      border: 2px solid @border-gray;
+      border-radius: @border-radius-md;
+      font-size: @font-size-sm;
+      font-family: inherit;
+      color: @text-primary;
+      transition: border-color @transition-base;
+      min-width: 160px;
+
+      &:focus {
+        outline: none;
+        border-color: @action-color;
+      }
+
+      @media (max-width: @breakpoint-md) {
+        width: 100%;
+        min-width: unset;
+      }
+    }
+  }
+}

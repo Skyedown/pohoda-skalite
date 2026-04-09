@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import AdminOrderCreationModal from '../../components/AdminOrderCreation/AdminOrderCreationModal';
 import type { EditOrderData } from '../../components/AdminOrderCreation/AdminOrderCreationModal';
+import DateRangeFilter, {
+  formatDateParam,
+  type DatePreset,
+} from '../../components/DateRangeFilter/DateRangeFilter';
 import './AdminOrders.less';
 
 interface Order {
@@ -37,7 +41,13 @@ interface Order {
   createdAt: string;
 }
 
+const ordersPresets: DatePreset[] = ['today', 'yesterday', '7d', '30d'];
+
 const AdminOrders: React.FC = () => {
+  const today = formatDateParam(new Date());
+  const [fromDate, setFromDate] = useState(today);
+  const [toDate, setToDate] = useState(today);
+  const [activePreset, setActivePreset] = useState<string | null>('today');
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -47,14 +57,12 @@ const AdminOrders: React.FC = () => {
 
   const API_URL = import.meta.env.VITE_API_URL || '';
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_URL}/api/orders/recent`);
+      const response = await fetch(
+        `${API_URL}/api/orders/recent?from=${fromDate}&to=${toDate}`,
+      );
 
       if (!response.ok) {
         throw new Error('Failed to fetch orders');
@@ -68,7 +76,11 @@ const AdminOrders: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [API_URL, fromDate, toDate]);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
 
   const handleReprint = async (orderId: string) => {
     try {
@@ -154,6 +166,27 @@ const AdminOrders: React.FC = () => {
             </Link>
           </div>
         </div>
+
+        <DateRangeFilter
+          fromDate={fromDate}
+          toDate={toDate}
+          activePreset={activePreset}
+          presets={ordersPresets}
+          onFromChange={(v) => {
+            setActivePreset(null);
+            setFromDate(v);
+          }}
+          onToChange={(v) => {
+            setActivePreset(null);
+            setToDate(v);
+          }}
+          onPresetChange={(preset, from, to) => {
+            setActivePreset(preset);
+            setFromDate(from);
+            setToDate(to);
+          }}
+          idPrefix="orders"
+        />
 
         {loading ? (
           <div className="admin-orders__loading">Načítavam objednávky...</div>

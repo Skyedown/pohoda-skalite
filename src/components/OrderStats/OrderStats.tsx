@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
+import DateRangeFilter, {
+  formatDateParam,
+  computePresetRange,
+} from '../DateRangeFilter/DateRangeFilter';
 import './OrderStats.less';
 
 interface DayStat {
@@ -13,12 +17,10 @@ const API_URL = import.meta.env.VITE_API_URL || '';
 
 const OrderStats: React.FC = () => {
   // Default: last 7 days
-  const today = new Date();
-  const weekAgo = new Date(today);
-  weekAgo.setDate(weekAgo.getDate() - 6);
+  const { from: defaultFrom, to: defaultTo } = computePresetRange('7d');
 
-  const [fromDate, setFromDate] = useState(formatDate(weekAgo));
-  const [toDate, setToDate] = useState(formatDate(today));
+  const [fromDate, setFromDate] = useState(defaultFrom);
+  const [toDate, setToDate] = useState(defaultTo);
   const [stats, setStats] = useState<DayStat[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -26,10 +28,6 @@ const OrderStats: React.FC = () => {
 
   const revenueChartRef = useRef<HighchartsReact.RefObject>(null);
   const ordersChartRef = useRef<HighchartsReact.RefObject>(null);
-
-  function formatDate(d: Date): string {
-    return d.toISOString().split('T')[0];
-  }
 
   const fetchStats = useCallback(async () => {
     setLoading(true);
@@ -114,136 +112,27 @@ const OrderStats: React.FC = () => {
   const totalRevenue = stats.reduce((sum, s) => sum + s.totalValue, 0);
   const totalOrders = stats.reduce((sum, s) => sum + s.totalOrders, 0);
 
-  function setPresetRange(preset: string) {
-    const now = new Date();
-    let from: Date;
-    let to: Date = now;
-
-    switch (preset) {
-      case 'today':
-        from = new Date(now);
-        break;
-      case 'yesterday': {
-        const y = new Date(now);
-        y.setDate(y.getDate() - 1);
-        from = y;
-        to = y;
-        break;
-      }
-      case '7d':
-        from = new Date(now);
-        from.setDate(from.getDate() - 6);
-        break;
-      case '14d':
-        from = new Date(now);
-        from.setDate(from.getDate() - 13);
-        break;
-      case '30d':
-        from = new Date(now);
-        from.setDate(from.getDate() - 29);
-        break;
-      case '90d':
-        from = new Date(now);
-        from.setDate(from.getDate() - 89);
-        break;
-      case 'this-month':
-        from = new Date(now.getFullYear(), now.getMonth(), 1);
-        break;
-      case 'last-month':
-        from = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-        to = new Date(now.getFullYear(), now.getMonth(), 0);
-        break;
-      default:
-        return;
-    }
-
-    setActivePreset(preset);
-    setFromDate(formatDate(from));
-    setToDate(formatDate(to));
-  }
-
   return (
     <div className="order-stats">
-      <div className="order-stats__presets">
-        <button
-          className={activePreset === 'today' ? 'active' : ''}
-          onClick={() => setPresetRange('today')}
-        >
-          Dnes
-        </button>
-        <button
-          className={activePreset === 'yesterday' ? 'active' : ''}
-          onClick={() => setPresetRange('yesterday')}
-        >
-          Včera
-        </button>
-        <button
-          className={activePreset === '7d' ? 'active' : ''}
-          onClick={() => setPresetRange('7d')}
-        >
-          7 dní
-        </button>
-        <button
-          className={activePreset === '14d' ? 'active' : ''}
-          onClick={() => setPresetRange('14d')}
-        >
-          14 dní
-        </button>
-        <button
-          className={activePreset === '30d' ? 'active' : ''}
-          onClick={() => setPresetRange('30d')}
-        >
-          30 dní
-        </button>
-        <button
-          className={activePreset === '90d' ? 'active' : ''}
-          onClick={() => setPresetRange('90d')}
-        >
-          90 dní
-        </button>
-        <button
-          className={activePreset === 'this-month' ? 'active' : ''}
-          onClick={() => setPresetRange('this-month')}
-        >
-          Tento mesiac
-        </button>
-        <button
-          className={activePreset === 'last-month' ? 'active' : ''}
-          onClick={() => setPresetRange('last-month')}
-        >
-          Minulý mesiac
-        </button>
-      </div>
-
-      <div className="order-stats__date-picker">
-        <div className="order-stats__date-field">
-          <label htmlFor="stats-from">Od:</label>
-          <input
-            type="date"
-            id="stats-from"
-            value={fromDate}
-            onChange={(e) => {
-              setActivePreset(null);
-              setFromDate(e.target.value);
-            }}
-            max={toDate}
-          />
-        </div>
-        <div className="order-stats__date-field">
-          <label htmlFor="stats-to">Do:</label>
-          <input
-            type="date"
-            id="stats-to"
-            value={toDate}
-            onChange={(e) => {
-              setActivePreset(null);
-              setToDate(e.target.value);
-            }}
-            min={fromDate}
-            max={formatDate(today)}
-          />
-        </div>
-      </div>
+      <DateRangeFilter
+        fromDate={fromDate}
+        toDate={toDate}
+        activePreset={activePreset}
+        onFromChange={(v) => {
+          setActivePreset(null);
+          setFromDate(v);
+        }}
+        onToChange={(v) => {
+          setActivePreset(null);
+          setToDate(v);
+        }}
+        onPresetChange={(preset, from, to) => {
+          setActivePreset(preset);
+          setFromDate(from);
+          setToDate(to);
+        }}
+        idPrefix="stats"
+      />
 
       {error && <p className="order-stats__error">{error}</p>}
 

@@ -516,7 +516,25 @@ app.get('/api/orders/recent', async (req, res) => {
       return res.status(503).json({ error: 'Database not available' });
     }
 
-    const orders = await Order.find().sort({ createdAt: -1 }).limit(50).lean();
+    const { from, to } = req.query;
+
+    const filter: Record<string, unknown> = {};
+    if (from && to) {
+      const [fromYear, fromMonth, fromDay] = (from as string)
+        .split('-')
+        .map(Number);
+      const [toYear, toMonth, toDay] = (to as string).split('-').map(Number);
+      const fromDate = new Date(fromYear, fromMonth - 1, fromDay, 0, 0, 0, 0);
+      const toDate = new Date(toYear, toMonth - 1, toDay, 23, 59, 59, 999);
+      if (!isNaN(fromDate.getTime()) && !isNaN(toDate.getTime())) {
+        filter.createdAt = { $gte: fromDate, $lte: toDate };
+      }
+    }
+
+    const orders = await Order.find(filter)
+      .sort({ createdAt: -1 })
+      .limit(200)
+      .lean();
 
     res.json({ orders });
   } catch (error: unknown) {
