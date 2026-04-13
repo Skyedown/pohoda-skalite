@@ -246,9 +246,11 @@ export const addProductToOrder = (
   orderItems: AdminOrderItem[],
   product: Product,
 ): AdminOrderItem[] => {
-  // Only merge with an existing row that has no extras
   const existingIndex = orderItems.findIndex(
-    (item) => item.product.id === product.id && item.extras.length === 0,
+    (item) =>
+      item.product.id === product.id &&
+      item.extras.length === 0 &&
+      (!item.removedIngredients || item.removedIngredients.length === 0),
   );
 
   if (existingIndex !== -1) {
