@@ -1,0 +1,42 @@
+.product-performance {
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 16px;
+
+    // section title sits inside the header — override its bottom margin
+    .order-stats__section-title {
+      margin-bottom: 0;
+    }
+  }
+
+  &__filter {
+    padding: 8px 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    color: #333;
+    font-family: inherit;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23555' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px;
+
+    &:focus {
+      outline: none;
+      border-color: #ff6b35;
+    }
+
+    &:hover {
+      border-color: #ff6b35;
+    }
+  }
+}
