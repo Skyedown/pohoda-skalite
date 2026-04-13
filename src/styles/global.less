@@ -1,9 +1,6 @@
 @import './variables.less';
 @import './mixins.less';
 
-// Google Fonts - Figma Design
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Text&family=Roboto:wght@300;400;500;700&display=swap');
-
 // CSS Reset & Base Styles
 *,
 *::before,
@@ -38,7 +35,12 @@ body {
 }
 
 // Typography
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin: 0;
   font-family: @font-family-heading;
   font-weight: @font-weight-bold;
@@ -83,20 +85,48 @@ img {
   color: @text-secondary;
 }
 
-.mt-sm { margin-top: @spacing-sm; }
-.mt-md { margin-top: @spacing-md; }
-.mt-lg { margin-top: @spacing-lg; }
-.mt-xl { margin-top: @spacing-xl; }
+.mt-sm {
+  margin-top: @spacing-sm;
+}
+.mt-md {
+  margin-top: @spacing-md;
+}
+.mt-lg {
+  margin-top: @spacing-lg;
+}
+.mt-xl {
+  margin-top: @spacing-xl;
+}
 
-.mb-sm { margin-bottom: @spacing-sm; }
-.mb-md { margin-bottom: @spacing-md; }
-.mb-lg { margin-bottom: @spacing-lg; }
-.mb-xl { margin-bottom: @spacing-xl; }
+.mb-sm {
+  margin-bottom: @spacing-sm;
+}
+.mb-md {
+  margin-bottom: @spacing-md;
+}
+.mb-lg {
+  margin-bottom: @spacing-lg;
+}
+.mb-xl {
+  margin-bottom: @spacing-xl;
+}
 
-.py-sm { padding-top: @spacing-sm; padding-bottom: @spacing-sm; }
-.py-md { padding-top: @spacing-md; padding-bottom: @spacing-md; }
-.py-lg { padding-top: @spacing-lg; padding-bottom: @spacing-lg; }
-.py-xl { padding-top: @spacing-xl; padding-bottom: @spacing-xl; }
+.py-sm {
+  padding-top: @spacing-sm;
+  padding-bottom: @spacing-sm;
+}
+.py-md {
+  padding-top: @spacing-md;
+  padding-bottom: @spacing-md;
+}
+.py-lg {
+  padding-top: @spacing-lg;
+  padding-bottom: @spacing-lg;
+}
+.py-xl {
+  padding-top: @spacing-xl;
+  padding-bottom: @spacing-xl;
+}
 
 // Scrollbar styling
 ::-webkit-scrollbar {
