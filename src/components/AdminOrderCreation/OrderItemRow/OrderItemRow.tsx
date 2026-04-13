@@ -108,6 +108,7 @@ const OrderItemRow: React.FC<OrderItemRowProps> = ({
         </button>
         {item.product.ingredients &&
           item.product.ingredients.length > 0 &&
+          item.product.type !== 'sides' &&
           onEditIngredients && (
             <button
               type="button"

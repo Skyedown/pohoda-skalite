@@ -253,7 +253,9 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
               {/* Extras Section */}
               {(extras.length > 0 ||
-                (product.ingredients && product.ingredients.length > 0)) && (
+                (product.type !== 'sides' &&
+                  product.ingredients &&
+                  product.ingredients.length > 0)) && (
                 <div
                   className="product-modal__extras-section"
                   ref={extrasSectionRef}
@@ -265,7 +267,8 @@ const ProductModal: React.FC<ProductModalProps> = ({
                   <div className="product-modal__extras-container">
                     <div className="product-modal__extras-list">
                       {/* Base Ingredients */}
-                      {product.ingredients &&
+                      {product.type !== 'sides' &&
+                        product.ingredients &&
                         product.ingredients.length > 0 && (
                           <>
                             {product.ingredients.map((ingredient) => {
