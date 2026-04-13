@@ -14,7 +14,9 @@ export const OrderSummaryCards: React.FC<OrderSummaryCardsProps> = ({
     <div className="order-stats__summary">
       <div className="order-stats__summary-card order-stats__summary-card--revenue">
         <p className="order-stats__summary-label">Celkové tržby</p>
-        <p className="order-stats__summary-value">{totalRevenue.toFixed(2)} €</p>
+        <p className="order-stats__summary-value">
+          {totalRevenue.toFixed(2)} €
+        </p>
       </div>
       <div className="order-stats__summary-card order-stats__summary-card--orders">
         <p className="order-stats__summary-label">Celkom objednávok</p>

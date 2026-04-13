@@ -52,8 +52,14 @@ const OrderStats: React.FC = () => {
         fromDate={fromDate}
         toDate={toDate}
         activePreset={activePreset}
-        onFromChange={(v) => { setActivePreset(null); setFromDate(v); }}
-        onToChange={(v) => { setActivePreset(null); setToDate(v); }}
+        onFromChange={(v) => {
+          setActivePreset(null);
+          setFromDate(v);
+        }}
+        onToChange={(v) => {
+          setActivePreset(null);
+          setToDate(v);
+        }}
         onPresetChange={(preset, from, to) => {
           setActivePreset(preset);
           setFromDate(from);
