@@ -22,7 +22,7 @@ const CATEGORY_OPTIONS: {
   { value: 'pizze', label: 'Pizze', type: 'pizza' },
   { value: 'burgre', label: 'Burgre', type: 'burger' },
   { value: 'langose', label: 'Langoše', type: 'langos' },
-  { value: 'prilohy', label: 'Prílohy', type: 'priloha' },
+  { value: 'prilohy', label: 'Prílohy', type: 'sides' },
 ];
 
 interface ProductPerformanceProps {
