@@ -259,7 +259,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
                   ref={extrasSectionRef}
                 >
                   <h3 className="product-modal__section-title">
-                    Pridať ingrediencie
+                    Pridať alebo odobrať ingrediencie
                   </h3>
 
                   <div className="product-modal__extras-container">

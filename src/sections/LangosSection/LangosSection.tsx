@@ -2,12 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Toast from '../../components/Toast/Toast';
 import ProductModal from '../../components/ProductModal/ProductModal';
 import CartIcon from '../../components/CartIcon/CartIcon';
-import type {
-  Product,
-  Extra,
-  RequiredOption,
-  AdminSettings,
-} from '../../types';
+import type { Product, Extra, AdminSettings } from '../../types';
 import { langos } from '../../data/langos';
 import { getAdminSettings } from '../../utils/adminSettings';
 import './LangosSection.less';
@@ -19,16 +14,6 @@ const langosExtras: Extra[] = [
   { id: 'nutella', name: 'Nutella', price: 0.8 },
   { id: 'banana', name: 'Banán', price: 0.8 },
 ];
-
-const langosKlasikRequiredOption: RequiredOption = {
-  id: 'sauce-choice',
-  name: 'Výber omáčky',
-  label: 'Vyberte omáčku',
-  options: [
-    { id: 'ketchup', label: 'Kečup' },
-    { id: 'tartarska', label: 'Tatarská' },
-  ],
-};
 
 const LangosSection: React.FC = () => {
   const [selectedItem, setSelectedItem] = useState<Product | null>(null);
@@ -171,11 +156,6 @@ const LangosSection: React.FC = () => {
         onClose={handleCloseModal}
         onAddToCart={handleItemAddedToCart}
         extras={langosExtras}
-        requiredOption={
-          selectedItem?.id === 'langos-3'
-            ? langosKlasikRequiredOption
-            : undefined
-        }
         isDisabled={
           selectedItem
             ? (adminSettings.disabledProductTypes || []).includes('langos')

@@ -19,10 +19,6 @@ export function generateCustomerEmail(
 ): string {
   const itemsList = order.items
     .map((item) => {
-      const requiredOptionText = item.requiredOption
-        ? `<br><small style="color: #634832; margin-top: 4px; display: block;">${escapeHTML(item.requiredOption.name)}: <strong>${escapeHTML(item.requiredOption.selectedValue)}</strong></small>`
-        : '';
-
       const extrasText =
         item.extras && item.extras.length > 0
           ? `<br><small style="color: #634832; margin-top: 4px; display: block;">+ ${item.extras
@@ -42,7 +38,7 @@ export function generateCustomerEmail(
         <td style="padding: 12px; border-bottom: 1px solid #f0ebe4;">
           <strong style="color: #1f2123; font-size: 15px;">${escapeHTML(
             item.name,
-          )}</strong>${requiredOptionText}${extrasText}${removedIngredientsText}
+          )}</strong>${extrasText}${removedIngredientsText}
         </td>
         <td style="padding: 12px; border-bottom: 1px solid #f0ebe4; text-align: center; color: #634832;">${
           item.quantity

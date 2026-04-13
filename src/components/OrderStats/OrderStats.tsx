@@ -6,6 +6,8 @@ import type { DayStat } from './OrderStats.helpers';
 import { computeCategories, computeSummaryStats } from './OrderStats.helpers';
 import { OrderSummaryCards } from './OrderSummaryCards/OrderSummaryCards';
 import { OrderCharts } from './OrderCharts/OrderCharts';
+import type { ProductStat } from './ProductPerformance/ProductPerformance';
+import { ProductPerformance } from './ProductPerformance/ProductPerformance';
 import './OrderStats.less';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
@@ -16,6 +18,7 @@ const OrderStats: React.FC = () => {
   const [fromDate, setFromDate] = useState(defaultFrom);
   const [toDate, setToDate] = useState(defaultTo);
   const [stats, setStats] = useState<DayStat[]>([]);
+  const [productStats, setProductStats] = useState<ProductStat[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [activePreset, setActivePreset] = useState<string | null>('7d');
@@ -24,16 +27,26 @@ const OrderStats: React.FC = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch(
-        `${API_URL}/api/orders/stats?from=${fromDate}&to=${toDate}`,
-      );
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data: DayStat[] = await res.json();
+      const [statsRes, productStatsRes] = await Promise.all([
+        fetch(`${API_URL}/api/orders/stats?from=${fromDate}&to=${toDate}`),
+        fetch(
+          `${API_URL}/api/orders/product-stats?from=${fromDate}&to=${toDate}`,
+        ),
+      ]);
+      if (!statsRes.ok) throw new Error(`HTTP ${statsRes.status}`);
+      if (!productStatsRes.ok)
+        throw new Error(`HTTP ${productStatsRes.status}`);
+      const [data, productData] = await Promise.all([
+        statsRes.json() as Promise<DayStat[]>,
+        productStatsRes.json() as Promise<ProductStat[]>,
+      ]);
       setStats(data);
+      setProductStats(productData);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Unknown error';
       setError(`Nepodarilo sa načítať štatistiky: ${msg}`);
       setStats([]);
+      setProductStats([]);
     } finally {
       setLoading(false);
     }
@@ -76,6 +89,7 @@ const OrderStats: React.FC = () => {
         <>
           <OrderSummaryCards stats={summaryStats} />
           <OrderCharts stats={stats} categories={categories} />
+          <ProductPerformance stats={productStats} />
         </>
       )}
     </div>

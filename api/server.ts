@@ -759,6 +759,57 @@ app.get('/api/orders/stats', async (req, res) => {
   }
 });
 
+app.get('/api/orders/product-stats', async (req, res) => {
+  try {
+    if (!isMongoConnected()) {
+      return res.status(503).json({ error: 'Database not available' });
+    }
+
+    const { from, to } = req.query;
+
+    if (!from || !to) {
+      return res
+        .status(400)
+        .json({ error: 'from and to query params are required (YYYY-MM-DD)' });
+    }
+
+    const [fromYear, fromMonth, fromDay] = (from as string)
+      .split('-')
+      .map(Number);
+    const [toYear, toMonth, toDay] = (to as string).split('-').map(Number);
+    const fromDate = new Date(fromYear, fromMonth - 1, fromDay, 0, 0, 0, 0);
+    const toDate = new Date(toYear, toMonth - 1, toDay, 23, 59, 59, 999);
+
+    if (isNaN(fromDate.getTime()) || isNaN(toDate.getTime())) {
+      return res.status(400).json({ error: 'Invalid date format' });
+    }
+
+    const stats = await Order.aggregate([
+      { $match: { createdAt: { $gte: fromDate, $lte: toDate } } },
+      { $unwind: '$items' },
+      {
+        $group: {
+          _id: '$items.product.id',
+          name: { $first: '$items.product.name' },
+          type: { $first: '$items.product.type' },
+          totalQuantity: { $sum: '$items.quantity' },
+          totalRevenue: { $sum: '$items.totalPrice' },
+        },
+      },
+      { $sort: { totalRevenue: -1 } },
+    ]);
+
+    res.json(stats);
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error';
+    console.error('❌ Error fetching product stats:', errorMessage);
+    res
+      .status(500)
+      .json({ error: 'Failed to fetch product stats', details: errorMessage });
+  }
+});
+
 // Initialize services and start server
 async function startServer() {
   try {
