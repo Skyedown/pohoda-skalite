@@ -9,7 +9,10 @@ import { sanitizeOrder } from './utils/sanitize.js';
 import { generateCustomerEmail } from './templates/customerEmail.js';
 import { generateRestaurantEmail } from './templates/restaurantEmail.js';
 import { connectToMongoDB, isMongoConnected } from './utils/db.js';
-import { getMapyCzUrlForAddress } from './utils/geocoding.js';
+import {
+  getMapyCzUrlForAddress,
+  getPostalCodeForCity,
+} from './utils/geocoding.js';
 import {
   connectToRabbitMQ,
   publishOrder,
@@ -306,7 +309,7 @@ app.post('/api/send-order-emails', async (req, res) => {
           country: 'Slovensko',
           city: order.delivery.city,
           street: order.delivery.street,
-          houseNumber: undefined, // Can be extracted from street if needed
+          postalCode: getPostalCodeForCity(order.delivery.city),
         });
 
         if (mapyCzUrl) {
@@ -457,7 +460,7 @@ app.post('/api/orders', async (req, res) => {
           country: 'Slovensko',
           city: order.delivery.city,
           street: order.delivery.street,
-          houseNumber: undefined,
+          postalCode: getPostalCodeForCity(order.delivery.city),
         });
 
         if (mapyCzUrl) {

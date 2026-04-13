@@ -3,11 +3,36 @@
  * and generating Mapy.cz URLs
  */
 
+/** Mapping of normalized village names to their postal codes */
+const POSTAL_CODES: Record<string, string> = {
+  skalite: '02314',
+  cierne: '02313',
+  svrcinovec: '02312',
+  oscadnica: '02301',
+};
+
+/** Normalize text: remove diacritics and lowercase */
+function normalizeText(text: string): string {
+  return text
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+}
+
+/**
+ * Look up postal code for a city name (handles diacritics).
+ * Returns empty string if not found.
+ */
+export function getPostalCodeForCity(city: string): string {
+  return POSTAL_CODES[normalizeText(city)] ?? '';
+}
+
 interface Address {
   country: string;
   city: string;
   street?: string;
   houseNumber?: string;
+  postalCode?: string;
 }
 
 interface Coordinates {
@@ -19,6 +44,7 @@ interface PhotonFeature {
   properties: {
     country?: string;
     housenumber?: string;
+    postcode?: string;
     [key: string]: unknown;
   };
   geometry: {
@@ -32,20 +58,26 @@ interface PhotonResponse {
 
 /**
  * Build query string from address parts in the correct order
+ * Order mirrors the Python implementation: houseNumber, street, city, postalCode, country
  */
 function buildAddressQuery(address: Address): string {
   const parts: string[] = [];
 
-  parts.push(address.country);
-  parts.push(address.city);
+  if (address.houseNumber) {
+    parts.push(address.houseNumber);
+  }
 
   if (address.street) {
     parts.push(address.street);
   }
 
-  if (address.houseNumber) {
-    parts.push(address.houseNumber);
+  parts.push(address.city);
+
+  if (address.postalCode) {
+    parts.push(address.postalCode);
   }
+
+  parts.push(address.country);
 
   return parts.join(' ');
 }
@@ -56,16 +88,24 @@ function buildAddressQuery(address: Address): string {
 function checkAddressMatch(feature: PhotonFeature, address: Address): boolean {
   const props = feature.properties;
 
+  // Check postal code if provided — normalize by removing spaces
+  if (address.postalCode) {
+    const featurePostalCode = (props.postcode ?? '').replace(/\s/g, '');
+    if (featurePostalCode !== address.postalCode) {
+      return false;
+    }
+  }
+
   // Check house number if provided
   if (address.houseNumber) {
-    const featureHouseNumber = props.housenumber || '';
+    const featureHouseNumber = props.housenumber ?? '';
     if (featureHouseNumber !== address.houseNumber) {
       return false;
     }
   }
 
   // Check country
-  const featureCountry = props.country || '';
+  const featureCountry = props.country ?? '';
   if (featureCountry.toLowerCase() !== address.country.toLowerCase()) {
     return false;
   }
