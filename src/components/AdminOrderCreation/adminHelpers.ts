@@ -89,7 +89,7 @@ export interface AdminOrderItem {
 
 export interface FormData {
   fullName: string;
-  street: string;
+  houseNumber: string;
   city: string;
   phone: string;
   email: string;
@@ -143,14 +143,13 @@ export const validateOrderForm = (
     }
   } else {
     // For customer orders, validate all fields
-    if (!formData.fullName.trim()) errors.fullName = 'Meno je povinné';
     if (!formData.phone.trim()) errors.phone = 'Telefón je povinný';
 
     if (deliveryMethod === 'delivery') {
-      if (!formData.street.trim()) {
-        errors.street = 'Číslo domu je povinné';
-      } else if (!/^[0-9]+$/.test(formData.street.trim())) {
-        errors.street = 'Číslo domu musí obsahovať len čísla';
+      if (!formData.houseNumber.trim()) {
+        errors.houseNumber = 'Číslo domu je povinné';
+      } else if (!/^[0-9]+$/.test(formData.houseNumber.trim())) {
+        errors.houseNumber = 'Číslo domu musí obsahovať len čísla';
       }
       if (!formData.city.trim()) errors.city = 'Mesto je povinné';
     }
@@ -204,7 +203,8 @@ export const buildOrderPayload = (
         : {
             method: deliveryMethod,
             fullName: formData.fullName,
-            street: deliveryMethod === 'delivery' ? formData.street : undefined,
+            houseNumber:
+              deliveryMethod === 'delivery' ? formData.houseNumber : undefined,
             city: deliveryMethod === 'delivery' ? formData.city : undefined,
             phone: formData.phone,
             email: formData.email || undefined,
@@ -231,7 +231,7 @@ export const buildOrderPayload = (
  */
 export const getInitialFormState = (): FormData => ({
   fullName: '',
-  street: '',
+  houseNumber: '',
   city: '',
   phone: '',
   email: '',

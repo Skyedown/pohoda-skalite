@@ -32,6 +32,7 @@ export interface EditOrderData {
     method: 'delivery' | 'pickup' | 'dine-in';
     fullName?: string;
     street?: string;
+    houseNumber?: string;
     city?: string;
     phone?: string;
     email?: string;
@@ -130,7 +131,8 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
       setPaymentMethod(editOrder.payment.method);
       setFormData({
         fullName: editOrder.delivery.fullName || '',
-        street: editOrder.delivery.street || '',
+        houseNumber:
+          editOrder.delivery.houseNumber || editOrder.delivery.street || '',
         city: editOrder.delivery.city || '',
         phone: editOrder.delivery.phone || '',
         email: editOrder.delivery.email || '',
@@ -276,8 +278,8 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
   ) => {
     const { name, value } = e.target;
 
-    // For street (house number), only allow numeric values
-    if (name === 'street') {
+    // For houseNumber, only allow numeric values
+    if (name === 'houseNumber') {
       const numericValue = value.replace(/[^0-9]/g, '');
       setFormData((prev) => ({ ...prev, [name]: numericValue }));
     } else {
