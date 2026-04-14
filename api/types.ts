@@ -24,6 +24,7 @@ export interface OrderItem {
 export interface Delivery {
   fullName: string;
   street: string;
+  houseNumber?: string;
   city: string;
   phone: string;
   email: string;

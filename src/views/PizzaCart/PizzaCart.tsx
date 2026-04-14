@@ -33,7 +33,7 @@ const PizzaCart: React.FC = () => {
     useState<DeliveryMethod>('delivery');
   const [formData, setFormData] = useState({
     fullName: '',
-    street: '',
+    houseNumber: '',
     city: '',
     phone: '',
     email: '',
@@ -186,8 +186,8 @@ const PizzaCart: React.FC = () => {
 
     // Address fields only required for delivery
     if (deliveryMethod === 'delivery') {
-      if (!formData.street.trim()) {
-        newErrors.street = 'Ulica je povinná';
+      if (!formData.houseNumber.trim()) {
+        newErrors.houseNumber = 'Číslo domu je povinné';
       }
       if (!formData.city.trim()) {
         newErrors.city = 'Mesto je povinné';
@@ -217,7 +217,7 @@ const PizzaCart: React.FC = () => {
       const fieldOrder = [
         'fullName',
         'city',
-        'street',
+        'houseNumber',
         'phone',
         'email',
         'gdprConsent',
@@ -288,7 +288,8 @@ const PizzaCart: React.FC = () => {
         deliveryMethod: deliveryMethod,
         delivery: {
           fullName: sanitizedFormData.fullName,
-          street: sanitizedFormData.street || '',
+          street: '',
+          houseNumber: sanitizedFormData.houseNumber || '',
           city: sanitizedFormData.city || '',
           phone: sanitizedFormData.phone,
           email: sanitizedFormData.email,

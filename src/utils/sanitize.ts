@@ -1,4 +1,3 @@
-
 export const sanitizeHTML = (input: string): string => {
   if (!input) return '';
 
@@ -11,7 +10,10 @@ export const sanitizeHTML = (input: string): string => {
     .replace(/\//g, '&#x2F;');
 };
 
-export const sanitizeTextInput = (input: string, maxLength: number = 500): string => {
+export const sanitizeTextInput = (
+  input: string,
+  maxLength: number = 500,
+): string => {
   if (!input) return '';
 
   // Remove any script tags or dangerous patterns
@@ -85,7 +87,7 @@ export const sanitizeNotes = (text: string): string => {
  */
 export interface CartFormData {
   fullName: string;
-  street: string;
+  houseNumber: string;
   city: string;
   phone: string;
   email: string;
@@ -95,10 +97,10 @@ export interface CartFormData {
 export const sanitizeCartForm = (formData: CartFormData): CartFormData => {
   return {
     fullName: sanitizeTextInput(formData.fullName, 100),
-    street: sanitizeAddress(formData.street),
+    houseNumber: sanitizeAddress(formData.houseNumber),
     city: sanitizeTextInput(formData.city, 100),
     phone: sanitizePhone(formData.phone),
     email: sanitizeEmail(formData.email),
-    notes: sanitizeNotes(formData.notes)
+    notes: sanitizeNotes(formData.notes),
   };
 };

@@ -17,6 +17,7 @@ export interface IOrder extends Document {
     method: 'delivery' | 'pickup' | 'dine-in';
     fullName?: string;
     street?: string;
+    houseNumber?: string;
     city?: string;
     phone?: string;
     email?: string;
@@ -67,6 +68,7 @@ const orderSchema = new Schema<IOrder>(
       },
       fullName: { type: String },
       street: { type: String },
+      houseNumber: { type: String },
       city: { type: String },
       phone: { type: String },
       email: { type: String },

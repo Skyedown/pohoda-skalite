@@ -5,7 +5,7 @@ import './DeliveryAddressForm.less';
 interface FormData {
   fullName: string;
   deliveryMethod: DeliveryMethod;
-  street?: string;
+  houseNumber?: string;
   city?: string;
   phone: string;
   email: string;
@@ -142,16 +142,16 @@ const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
               type="text"
               inputMode="numeric"
               pattern="[0-9]*"
-              name="street"
+              name="houseNumber"
               className={`form-group__input ${
-                errors.street ? 'form-group__input--error' : ''
+                errors.houseNumber ? 'form-group__input--error' : ''
               }`}
               placeholder="Zadajte len číslo domu (napr. 123)"
-              value={formData.street || ''}
+              value={formData.houseNumber || ''}
               onChange={onChange}
             />
-            {errors.street && (
-              <span className="form-group__error">{errors.street}</span>
+            {errors.houseNumber && (
+              <span className="form-group__error">{errors.houseNumber}</span>
             )}
           </div>
         </>

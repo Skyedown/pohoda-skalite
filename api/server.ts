@@ -300,7 +300,7 @@ app.post('/api/send-order-emails', async (req, res) => {
     let mapyCzUrl: string | null = null;
     if (
       order.deliveryMethod === 'delivery' &&
-      order.delivery?.street &&
+      order.delivery?.houseNumber &&
       order.delivery?.city
     ) {
       try {
@@ -308,7 +308,7 @@ app.post('/api/send-order-emails', async (req, res) => {
         mapyCzUrl = await getMapyCzUrlForAddress({
           country: 'Slovensko',
           city: order.delivery.city,
-          street: order.delivery.street,
+          houseNumber: order.delivery.houseNumber,
           postalCode: getPostalCodeForCity(order.delivery.city),
         });
 
@@ -353,6 +353,7 @@ app.post('/api/send-order-emails', async (req, res) => {
             method: order.deliveryMethod || order.delivery?.method,
             fullName: order.delivery?.fullName,
             street: order.delivery?.street,
+            houseNumber: order.delivery?.houseNumber,
             city: order.delivery?.city,
             phone: order.delivery?.phone,
             email: order.delivery?.email,
@@ -451,7 +452,7 @@ app.post('/api/orders', async (req, res) => {
     // Resolve Mapy.cz URL for delivery orders
     if (
       order.delivery?.method === 'delivery' &&
-      order.delivery?.street &&
+      order.delivery?.houseNumber &&
       order.delivery?.city
     ) {
       try {
@@ -459,7 +460,7 @@ app.post('/api/orders', async (req, res) => {
         const mapyCzUrl = await getMapyCzUrlForAddress({
           country: 'Slovensko',
           city: order.delivery.city,
-          street: order.delivery.street,
+          houseNumber: order.delivery.houseNumber,
           postalCode: getPostalCodeForCity(order.delivery.city),
         });
 
