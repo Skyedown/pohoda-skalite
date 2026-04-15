@@ -237,9 +237,9 @@ export function generateCustomerEmail(
             )}</p>
             ${
               order.deliveryMethod === 'delivery'
-                ? `<p style="margin: 5px 0;"><strong>Adresa:</strong> ${escapeHTML(
-                    order.delivery.street,
-                  )}, ${escapeHTML(order.delivery.city)}</p>`
+                ? `<p style="margin: 5px 0;"><strong>Adresa</strong> ${escapeHTML(order.delivery.city)} ${escapeHTML(
+                    order.delivery.houseNumber ?? '',
+                  )}</p>`
                 : ''
             }
             <p style="margin: 5px 0;"><img src="https://pizzapohoda.sk/icons/phone.png" alt="" class="icon-inline">${escapeHTML(

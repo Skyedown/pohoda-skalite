@@ -15,15 +15,10 @@ export interface OrderItem {
   totalPrice: number;
   extras?: Extra[];
   removedIngredients?: string[];
-  requiredOption?: {
-    name: string;
-    selectedValue: string;
-  };
 }
 
 export interface Delivery {
   fullName: string;
-  street: string;
   houseNumber?: string;
   city: string;
   phone: string;

@@ -99,7 +99,7 @@ export function sanitizeDelivery(delivery: Partial<Delivery>): Delivery {
 
   return {
     fullName: sanitizeTextInput(delivery.fullName || '', 100),
-    street: sanitizeTextInput(delivery.street || '', 200),
+    houseNumber: sanitizeTextInput(delivery.houseNumber || '', 200),
     city: sanitizeTextInput(delivery.city || '', 100),
     phone: sanitizePhone(delivery.phone || ''),
     email: sanitizedEmail,
@@ -141,15 +141,6 @@ export function sanitizeOrder(order: any): SanitizedOrder {
           name: sanitizeTextInput(extra.name, 100),
         }))
       : [],
-    requiredOption: item.requiredOption
-      ? {
-          name: sanitizeTextInput(item.requiredOption.name, 100),
-          selectedValue: sanitizeTextInput(
-            item.requiredOption.selectedValue,
-            100,
-          ),
-        }
-      : undefined,
   }));
 
   // Validate payment method

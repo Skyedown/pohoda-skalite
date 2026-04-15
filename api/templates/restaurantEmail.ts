@@ -156,9 +156,9 @@ export function generateRestaurantEmail(order: SanitizedOrder): string {
             <strong>Meno:</strong> ${escapeHTML(order.delivery.fullName)}
             ${
               order.deliveryMethod === 'delivery'
-                ? `<br><strong>Adresa:</strong> ${escapeHTML(
-                    order.delivery.street,
-                  )}, ${escapeHTML(order.delivery.city)}`
+                ? `<br><strong>Adresa</strong> ${escapeHTML(order.delivery.city)} ${escapeHTML(
+                    order.delivery.houseNumber ?? '',
+                  )}`
                 : ''
             }
           </p>
