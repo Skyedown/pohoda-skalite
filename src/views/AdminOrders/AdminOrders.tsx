@@ -25,6 +25,7 @@ interface Order {
     method: 'delivery' | 'pickup' | 'dine-in';
     fullName?: string;
     street?: string;
+    houseNumber?: string;
     city?: string;
     phone?: string;
     notes?: string;
@@ -283,14 +284,19 @@ const AdminOrders: React.FC = () => {
                       </span>
                     </div>
                   )}
-                  {order.delivery.street && order.delivery.city && (
-                    <div className="admin-orders__item-row">
-                      <span className="admin-orders__item-label">Adresa:</span>
-                      <span className="admin-orders__item-value">
-                        {order.delivery.street}, {order.delivery.city}
-                      </span>
-                    </div>
-                  )}
+                  {(order.delivery.street || order.delivery.houseNumber) &&
+                    order.delivery.city && (
+                      <div className="admin-orders__item-row">
+                        <span className="admin-orders__item-label">
+                          Adresa:
+                        </span>
+                        <span className="admin-orders__item-value">
+                          {order.delivery.houseNumber
+                            ? `${order.delivery.city} ${order.delivery.houseNumber}`
+                            : `${order.delivery.city} ${order.delivery.street} ${order.delivery.houseNumber}`}
+                        </span>
+                      </div>
+                    )}
                 </div>
 
                 <div className="admin-orders__item-products">
