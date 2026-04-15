@@ -1,17 +1,7 @@
-/**
- * Customer confirmation email template
- */
-
 import { escapeHTML } from '../utils/sanitize.js';
 import type { SanitizedOrder } from '../types.js';
 
-/**
- * Generate customer confirmation email
- * @param order - Sanitized order object
- * @param restaurantEmail - Restaurant email address
- * @param restaurantPhone - Restaurant phone number
- * @returns HTML email content
- */
+
 export function generateCustomerEmail(
   order: SanitizedOrder,
   restaurantEmail: string,
@@ -244,6 +234,9 @@ export function generateCustomerEmail(
             }
             <p style="margin: 5px 0;"><img src="https://pizzapohoda.sk/icons/phone.png" alt="" class="icon-inline">${escapeHTML(
               order.delivery.phone,
+            )}</p>
+            <p style="margin: 5px 0;"><img src="https://pizzapohoda.sk/icons/phone.png" alt="" class="icon-inline">${escapeHTML(
+              order.delivery.email,
             )}</p>
             ${
               order.delivery.notes
