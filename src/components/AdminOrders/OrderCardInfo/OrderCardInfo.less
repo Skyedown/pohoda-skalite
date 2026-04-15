@@ -1,0 +1,33 @@
+@import '../../../styles/variables.less';
+@import '../../../styles/mixins.less';
+
+.admin-orders {
+  &__item {
+    &-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+
+      @media (max-width: @breakpoint-md) {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    &-row {
+      display: flex;
+      gap: 8px;
+      font-size: @font-size-sm;
+    }
+
+    &-label {
+      color: @gray-600;
+      font-weight: @font-weight-medium;
+    }
+
+    &-value {
+      color: @text-primary;
+      font-weight: @font-weight-semibold;
+    }
+  }
+}

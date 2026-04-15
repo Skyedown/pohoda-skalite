@@ -1,0 +1,59 @@
+@import '../../styles/variables.less';
+@import '../../styles/mixins.less';
+
+.admin-panel {
+  &__section--highlighted {
+    padding: 24px;
+    background: linear-gradient(
+      135deg,
+      @action-light 0%,
+      @primary-lightest 100%
+    );
+    border: 2px solid @action-color;
+    border-radius: @border-radius-md;
+  }
+
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  &__section-title {
+    font-family: @font-family-heading;
+    font-size: 22px;
+    color: @text-primary;
+    margin: 0;
+  }
+
+  &__section-description {
+    font-size: 14px;
+    color: @text-secondary;
+    margin: 0;
+  }
+
+  &__preview {
+    padding: 20px;
+    background: @surface-gray-light;
+    border-left: 4px solid @primary-color;
+    border-radius: @border-radius-md;
+
+    h3 {
+      font-size: @font-size-base;
+      font-weight: @font-weight-semibold;
+      color: @text-primary;
+      margin: 0 0 12px;
+    }
+
+    p {
+      font-size: 15px;
+      color: @text-secondary;
+      margin: 0;
+      line-height: 1.6;
+
+      strong {
+        color: @primary-color;
+      }
+    }
+  }
+}

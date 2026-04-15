@@ -1,0 +1,59 @@
+@import '../../../styles/variables.less';
+@import '../../../styles/mixins.less';
+
+.admin-panel {
+  &__quick-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+
+    @media (max-width: @breakpoint-md) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media (max-width: @breakpoint-sm) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px 24px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    color: white;
+
+    svg {
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    &--order {
+      background: linear-gradient(135deg, @action-color 0%, @action-dark 100%);
+    }
+
+    &--orders {
+      background: linear-gradient(135deg, @purple-light 0%, @purple-dark 100%);
+    }
+
+    &--analytics {
+      background: linear-gradient(135deg, @info-color 0%, @info-dark 100%);
+    }
+  }
+}

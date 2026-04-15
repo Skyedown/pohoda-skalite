@@ -1,0 +1,111 @@
+@import '../../styles/variables.less';
+@import '../../styles/mixins.less';
+
+// Shared checkbox / toggle-switch styles used by AdminProductAvailability and AdminCardPayment
+
+.admin-panel {
+  &__checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &__checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border: 2px solid @border-gray;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all @transition-base;
+    background: @surface-color;
+    position: relative;
+    padding-right: 80px;
+
+    &:hover {
+      border-color: @primary-color;
+      background: @admin-field-hover-bg;
+    }
+
+    input[type='checkbox'] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+      cursor: pointer;
+    }
+
+    // Toggle switch track
+    &::after {
+      content: '';
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 50px;
+      height: 28px;
+      background: @admin-toggle-off;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    // Toggle switch thumb
+    &::before {
+      content: '';
+      position: absolute;
+      right: 44px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 24px;
+      height: 24px;
+      background: white;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: right 0.3s ease;
+      z-index: 3;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    // Checked state
+    &:has(input[type='checkbox']:checked) {
+      &::after {
+        background: @primary-color;
+      }
+
+      &::before {
+        right: 22px;
+      }
+
+      .admin-panel__checkbox-label {
+        color: @primary-color;
+      }
+    }
+  }
+
+  &__checkbox-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+  }
+
+  &__checkbox-label {
+    font-size: 16px;
+    font-weight: 500;
+    color: @text-primary;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__checkbox-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    color: inherit;
+  }
+}

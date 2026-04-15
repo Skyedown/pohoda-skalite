@@ -1,6 +1,6 @@
 import React from 'react';
 import OrderItemRow from '../OrderItemRow/OrderItemRow';
-import OrderSummary from '../../Cart/OrderSummary/OrderSummary';
+import OrderSummary from '../../PizzaCart/OrderSummary/OrderSummary';
 import type { AdminOrderItem } from '../adminHelpers';
 import { getExtrasForProductType } from '../adminHelpers';
 import './OrderItemsList.less';

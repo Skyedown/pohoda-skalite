@@ -11,6 +11,7 @@ export type DatePreset =
   | 'this-month'
   | 'last-month';
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const formatDateParam = (d: Date): string =>
   d.toISOString().split('T')[0];
 
@@ -36,6 +37,7 @@ const presetLabels: Record<DatePreset, string> = {
   'last-month': 'Minulý mesiac',
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function computePresetRange(preset: string): {
   from: string;
   to: string;

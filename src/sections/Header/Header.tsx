@@ -29,6 +29,7 @@ const Header: React.FC<HeaderProps> = ({ isStatic = false }) => {
     if (isMobileMenuOpen) {
       handleMenuClose();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
   // Prevent body scroll when mobile menu is open

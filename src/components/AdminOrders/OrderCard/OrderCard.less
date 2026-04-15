@@ -1,0 +1,44 @@
+@import '../../../styles/variables.less';
+@import '../../../styles/mixins.less';
+
+.admin-orders {
+  &__item {
+    background: @admin-card-bg;
+    border-radius: @border-radius-md;
+    padding: 20px;
+    box-shadow: @admin-card-shadow;
+    border-left: 4px solid transparent;
+    transition: all @transition-base;
+
+    &:hover {
+      box-shadow: @admin-card-shadow-hover;
+      background: @surface-color;
+    }
+
+    @media (max-width: @breakpoint-md) {
+      padding: 16px;
+    }
+
+    &--printed {
+      border-left-color: @success-dark;
+    }
+
+    &--not-printed {
+      border-left-color: @error-color;
+    }
+
+    &-notes {
+      background: @admin-notes-bg;
+      border-left: 3px solid @action-color;
+      padding: 12px;
+      margin-bottom: 16px;
+      font-size: @font-size-sm;
+      color: @text-primary;
+      border-radius: @border-radius-sm;
+
+      strong {
+        color: @action-color;
+      }
+    }
+  }
+}

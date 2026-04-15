@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import Toast from '../../components/Toast/Toast';
-import ProductModal from '../../components/ProductModal/ProductModal';
-import CartIcon from '../../components/CartIcon/CartIcon';
+import Toast from '../../components/shared/Toast/Toast';
+import ProductModal from '../../components/PizzaMain/ProductModal/ProductModal';
+import CartIcon from '../../components/shared/CartIcon/CartIcon';
 import type { Product, Extra, AdminSettings } from '../../types';
 import { burgers } from '../../data/burgers';
 import { getAdminSettings } from '../../utils/adminSettings';

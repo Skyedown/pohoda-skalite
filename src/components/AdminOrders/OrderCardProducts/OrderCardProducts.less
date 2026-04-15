@@ -1,0 +1,47 @@
+@import '../../../styles/variables.less';
+@import '../../../styles/mixins.less';
+
+.admin-orders {
+  &__item {
+    &-products {
+      background: @gray-50;
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    &-product {
+      display: flex;
+      gap: 8px;
+      padding: 6px 0;
+      font-size: @font-size-sm;
+
+      &:not(:last-child) {
+        border-bottom: 1px solid @border-gray;
+      }
+
+      &-qty {
+        font-weight: @font-weight-bold;
+        color: @action-color;
+        min-width: 32px;
+      }
+
+      &-name {
+        color: @text-primary;
+      }
+
+      &-extras {
+        color: @gray-600;
+        font-size: 13px;
+        font-style: italic;
+      }
+
+      &-removed {
+        color: @error-color;
+        font-size: 13px;
+        font-style: italic;
+        font-weight: @font-weight-medium;
+      }
+    }
+  }
+}

@@ -1,4 +1,5 @@
 // Google Analytics 4 & Meta Pixel utility functions
+/* eslint-disable @typescript-eslint/no-explicit-any */
 declare global {
   interface Window {
     gtag: (...args: any[]) => void;
@@ -7,6 +8,7 @@ declare global {
     _fbq: any;
   }
 }
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
 export const GA_MEASUREMENT_ID = 'G-6Q287KJ5RR';
 export const META_PIXEL_ID = '695345926848903';
@@ -28,6 +30,7 @@ export const initGA = () => {
   // Initialize dataLayer
   window.dataLayer = window.dataLayer || [];
   window.gtag = function gtag() {
+    // eslint-disable-next-line prefer-rest-params
     window.dataLayer.push(arguments);
   };
   window.gtag('js', new Date());
@@ -108,8 +111,8 @@ export const trackMetaPixelPurchase = (orderData: {
     value: orderData.value,
     currency: orderData.currency,
     content_type: 'product',
-    content_ids: orderData.items.map(item => item.item_id),
-    contents: orderData.items.map(item => ({
+    content_ids: orderData.items.map((item) => item.item_id),
+    contents: orderData.items.map((item) => ({
       id: item.item_id,
       quantity: item.quantity,
       item_price: item.price,
@@ -118,7 +121,10 @@ export const trackMetaPixelPurchase = (orderData: {
 };
 
 // Track custom events
-export const trackEvent = (eventName: string, eventParams?: Record<string, any>) => {
+export const trackEvent = (
+  eventName: string,
+  eventParams?: Record<string, unknown>,
+) => {
   if (typeof window === 'undefined' || !window.gtag) return;
 
   const consent = localStorage.getItem('cookie-consent');
@@ -154,6 +160,7 @@ export const setDefaultConsent = () => {
 
   window.dataLayer = window.dataLayer || [];
   window.gtag = function gtag() {
+    // eslint-disable-next-line prefer-rest-params
     window.dataLayer.push(arguments);
   };
 

@@ -29,16 +29,6 @@ export interface Extra {
   price: number;
 }
 
-export interface RequiredOption {
-  id: string;
-  name: string;
-  label: string;
-  options: {
-    id: string;
-    label: string;
-  }[];
-}
-
 export interface CartItem {
   product: Product;
   quantity: number;
@@ -46,10 +36,6 @@ export interface CartItem {
   extras?: Extra[];
   extrasPrice?: number;
   removedIngredients?: string[];
-  requiredOption?: {
-    name: string;
-    selectedValue: string;
-  };
 }
 
 export type DeliveryMethod = 'delivery' | 'pickup' | 'dine-in';

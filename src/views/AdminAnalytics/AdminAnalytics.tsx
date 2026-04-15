@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import OrderStats from '../../components/OrderStats/OrderStats';
+import OrderStats from '../../components/AdminAnalytics/OrderStats';
 import './AdminAnalytics.less';
 
 const AdminAnalytics: React.FC = () => {

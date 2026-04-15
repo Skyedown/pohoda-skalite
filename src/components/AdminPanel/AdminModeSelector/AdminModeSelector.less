@@ -1,0 +1,59 @@
+@import '../../../styles/variables.less';
+@import '../../../styles/mixins.less';
+
+.admin-panel {
+  &__radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__radio {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 20px;
+    border: 2px solid @border-gray;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all @transition-base;
+
+    &:hover {
+      border-color: @primary-color;
+      background: @admin-field-hover-bg;
+    }
+
+    input[type='radio'] {
+      margin-top: 2px;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      accent-color: @primary-color;
+    }
+
+    input[type='radio']:checked ~ .admin-panel__radio-content {
+      .admin-panel__radio-label {
+        color: @primary-color;
+        font-weight: 600;
+      }
+    }
+  }
+
+  &__radio-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__radio-label {
+    font-size: 18px;
+    font-weight: 500;
+    color: @text-primary;
+    transition: all 0.2s ease;
+  }
+
+  &__radio-description {
+    font-size: 14px;
+    color: @text-secondary;
+  }
+}

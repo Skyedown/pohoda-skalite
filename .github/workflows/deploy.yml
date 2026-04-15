@@ -5,8 +5,27 @@ on:
     branches: [ "main" ]
 
 jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run cleanup (format, lint, typecheck)
+        run: npm run cleanup
+
   deploy:
     runs-on: ubuntu-latest
+    needs: cleanup
     steps:
       - name: Deploy to DigitalOcean via SSH
         uses: appleboy/ssh-action@v1.0.3

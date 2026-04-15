@@ -28,7 +28,7 @@
   // When scrolled - cream background, no blur
   &--scrolled {
     @media (max-width: @breakpoint-md) {
-      background: #FDF7EF;
+      background: #fdf7ef;
       backdrop-filter: none;
     }
   }
@@ -195,7 +195,9 @@
     z-index: 100;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.2s ease, visibility 0.2s ease;
+    transition:
+      opacity 0.2s ease,
+      visibility 0.2s ease;
     pointer-events: none;
 
     &::before {

@@ -1,6 +1,6 @@
 import React from 'react';
-import DeliveryAddressForm from '../../Cart/DeliveryAddressForm/DeliveryAddressForm';
-import PaymentMethodSelector from '../../Cart/PaymentMethodSelector/PaymentMethodSelector';
+import DeliveryAddressForm from '../../PizzaCart/DeliveryAddressForm/DeliveryAddressForm';
+import PaymentMethodSelector from '../../PizzaCart/PaymentMethodSelector/PaymentMethodSelector';
 import type { DeliveryMethod } from '../../../types';
 import type { FormData } from '../adminHelpers';
 import './CustomerDetailsSection.less';

@@ -1,366 +1,41 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useCart } from '../../context/CartContext';
-import CartItem from '../../components/Cart/CartItem/CartItem';
-import CartIcon from '../../components/CartIcon/CartIcon';
-import PaymentMethodSelector from '../../components/Cart/PaymentMethodSelector/PaymentMethodSelector';
-import DeliveryAddressForm from '../../components/Cart/DeliveryAddressForm/DeliveryAddressForm';
-import OrderSummary from '../../components/Cart/OrderSummary/OrderSummary';
-import MinimumOrderBanner from '../../components/Cart/MinimumOrderBanner/MinimumOrderBanner';
-import { sanitizeCartForm } from '../../utils/sanitize';
-import { getOrderingStatus } from '../../utils/orderingStatus';
-import { trackPurchase } from '../../utils/analytics';
-import {
-  getDeliveryRule,
-  getMinimumOrderMessage,
-  isMinimumOrderMet,
-} from '../../utils/deliveryRules';
-import {
-  getAdminSettings,
-  type AdminSettings,
-} from '../../utils/adminSettings';
-import type { DeliveryMethod } from '../../types';
+import CartItem from '../../components/PizzaCart/CartItem/CartItem';
+import CartIcon from '../../components/shared/CartIcon/CartIcon';
+import PaymentMethodSelector from '../../components/PizzaCart/PaymentMethodSelector/PaymentMethodSelector';
+import DeliveryAddressForm from '../../components/PizzaCart/DeliveryAddressForm/DeliveryAddressForm';
+import OrderSummary from '../../components/PizzaCart/OrderSummary/OrderSummary';
+import MinimumOrderBanner from '../../components/PizzaCart/MinimumOrderBanner/MinimumOrderBanner';
+import { isMinimumOrderMet } from '../../utils/deliveryRules';
+import { usePizzaCart } from './usePizzaCart';
 import './PizzaCart.less';
 
 const PizzaCart: React.FC = () => {
-  const navigate = useNavigate();
-  const { cart, removeFromCart, updateQuantity, getTotalPrice, clearCart } =
-    useCart();
+  const { cart, removeFromCart, updateQuantity } = useCart();
+  const {
+    formData,
+    errors,
+    setErrors,
+    paymentMethod,
+    setPaymentMethod,
+    deliveryMethod,
+    gdprConsent,
+    setGdprConsent,
+    isSubmitting,
+    adminSettings,
+    subtotal,
+    delivery,
+    total,
+    minimumOrderMessage,
+    canSubmitOrder,
+    handleInputChange,
+    handleDeliveryMethodChange,
+    handleSubmit,
+  } = usePizzaCart();
 
-  const [paymentMethod, setPaymentMethod] = useState<'cash' | 'card'>('cash');
-  const [deliveryMethod, setDeliveryMethod] =
-    useState<DeliveryMethod>('delivery');
-  const [formData, setFormData] = useState({
-    fullName: '',
-    houseNumber: '',
-    city: '',
-    phone: '',
-    email: '',
-    notes: '',
-  });
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [canOrder, setCanOrder] = useState(getOrderingStatus().canOrder);
-  const [gdprConsent, setGdprConsent] = useState(false);
-  const [adminSettings, setAdminSettings] = useState<AdminSettings>({
-    mode: 'off',
-    waitTimeMinutes: 60,
-    customNote:
-      'Z dôvodu nepriaznivého počasia je donáška možná len k hlavnej ceste',
-    disabledReason:
-      'Z dôvodu veľkého počtu objednávok sme momentálne nútení pozastaviť prijímanie nových online objednávok. Ďakujeme za pochopenie a ospravedlňujeme sa za nepríjemnosti. Skúste to prosím neskôr alebo nás kontaktujte telefonicky.',
-  });
-
-  // Check if orders are disabled via admin panel
   const isOrdersDisabled = adminSettings.mode === 'disabled';
-
-  // Scroll to top when cart view opens
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' });
-  }, []);
-
-  // Load admin settings from server on mount
-  useEffect(() => {
-    const loadSettings = async () => {
-      try {
-        const settings = await getAdminSettings();
-        // Ensure card payment flags exist with defaults
-        const safeSettings: AdminSettings = {
-          ...settings,
-          cardPaymentDeliveryEnabled:
-            settings.cardPaymentDeliveryEnabled ?? false,
-          cardPaymentPickupEnabled: settings.cardPaymentPickupEnabled ?? false,
-        };
-        setAdminSettings(safeSettings);
-      } catch (error) {
-        console.error('Failed to load admin settings:', error);
-        // Keep default settings on error
-      }
-    };
-    loadSettings();
-
-    // Check for settings updates when window gains focus (e.g., returning from admin panel)
-    const handleFocus = async () => {
-      const lastUpdate = localStorage.getItem('adminSettingsLastUpdate');
-      if (lastUpdate) {
-        // Clear the flag
-        localStorage.removeItem('adminSettingsLastUpdate');
-        // Refetch settings
-        const settings = await getAdminSettings();
-        const safeSettings: AdminSettings = {
-          ...settings,
-          cardPaymentDeliveryEnabled:
-            settings.cardPaymentDeliveryEnabled ?? false,
-          cardPaymentPickupEnabled: settings.cardPaymentPickupEnabled ?? false,
-        };
-        setAdminSettings(safeSettings);
-      }
-    };
-
-    window.addEventListener('focus', handleFocus);
-    // Also listen for visibility change
-    window.addEventListener('visibilitychange', handleFocus);
-
-    return () => {
-      window.removeEventListener('focus', handleFocus);
-      window.removeEventListener('visibilitychange', handleFocus);
-    };
-  }, []);
-
-  // Listen for admin settings changes
-  useEffect(() => {
-    const handleSettingsChange = (event: CustomEvent<AdminSettings>) => {
-      try {
-        const settings = event.detail;
-        // Ensure card payment flags exist with defaults
-        const safeSettings: AdminSettings = {
-          ...settings,
-          cardPaymentDeliveryEnabled:
-            settings.cardPaymentDeliveryEnabled ?? false,
-          cardPaymentPickupEnabled: settings.cardPaymentPickupEnabled ?? false,
-        };
-        setAdminSettings(safeSettings);
-      } catch (error) {
-        console.error('Failed to handle admin settings change:', error);
-      }
-    };
-
-    window.addEventListener(
-      'adminSettingsChanged',
-      handleSettingsChange as EventListener,
-    );
-    return () => {
-      window.removeEventListener(
-        'adminSettingsChanged',
-        handleSettingsChange as EventListener,
-      );
-    };
-  }, []);
-
-  // Update ordering status every minute
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCanOrder(getOrderingStatus().canOrder);
-    }, 60000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const handleInputChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
-  ) => {
-    const { name, value } = e.target;
-
-    // For street (house number), only allow numeric values
-    if (name === 'street') {
-      const numericValue = value.replace(/[^0-9]/g, '');
-      setFormData((prev) => ({ ...prev, [name]: numericValue }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
-
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: '' }));
-    }
-  };
-
-  const handleDeliveryMethodChange = (method: DeliveryMethod) => {
-    setDeliveryMethod(method);
-    // Clear address errors when switching to pickup
-    if (method === 'pickup') {
-      setErrors((prev) => {
-        const { street, city, ...rest } = prev;
-        return rest;
-      });
-    }
-  };
-
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = 'Celé meno je povinné';
-    }
-
-    // Address fields only required for delivery
-    if (deliveryMethod === 'delivery') {
-      if (!formData.houseNumber.trim()) {
-        newErrors.houseNumber = 'Číslo domu je povinné';
-      }
-      if (!formData.city.trim()) {
-        newErrors.city = 'Mesto je povinné';
-      }
-    }
-
-    if (!formData.phone.trim()) {
-      newErrors.phone = 'Telefónne číslo je povinné';
-    } else if (!/^[+]?[\d\s()-]{9,}$/.test(formData.phone)) {
-      newErrors.phone = 'Zadajte platné telefónne číslo';
-    }
-    // Email is required
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email je povinný';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Zadajte platnú emailovú adresu';
-    }
-    if (!gdprConsent) {
-      newErrors.gdprConsent = 'Musíte súhlasiť so spracovaním osobných údajov';
-    }
-
-    setErrors(newErrors);
-
-    // Scroll to first error field
-    if (Object.keys(newErrors).length > 0) {
-      // Order of fields to check (top to bottom)
-      const fieldOrder = [
-        'fullName',
-        'city',
-        'houseNumber',
-        'phone',
-        'email',
-        'gdprConsent',
-      ];
-      const firstErrorField = fieldOrder.find((field) => newErrors[field]);
-
-      if (firstErrorField) {
-        // Use setTimeout to ensure DOM is updated with error classes
-        setTimeout(() => {
-          const element = document.querySelector(
-            `[name="${firstErrorField}"]`,
-          ) as HTMLElement;
-          if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            element.focus();
-          } else if (firstErrorField === 'gdprConsent') {
-            // For GDPR checkbox, scroll to the checkbox container
-            const gdprElement = document.querySelector(
-              '.gdpr-consent',
-            ) as HTMLElement;
-            if (gdprElement) {
-              gdprElement.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center',
-              });
-            }
-          }
-        }, 100);
-      }
-    }
-
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async () => {
-    if (!validateForm()) return;
-
-    setIsSubmitting(true);
-
-    try {
-      // Sanitize form data to prevent XSS and injection attacks
-      const sanitizedFormData = sanitizeCartForm(formData);
-
-      // Create comprehensive order object
-      const order = {
-        items: cart.map((item) => ({
-          id: item.product.id,
-          name: item.product.name,
-          type: item.product.type,
-          quantity: item.quantity,
-          basePrice: item.product.price,
-          extras:
-            item.extras?.map((extra) => ({
-              id: extra.id,
-              name: extra.name,
-              price: extra.price,
-            })) || [],
-          extrasPrice: item.extrasPrice || 0,
-          totalPrice: item.totalPrice,
-          requiredOption: item.requiredOption,
-          removedIngredients: item.removedIngredients || [],
-        })),
-        pricing: {
-          subtotal: subtotal,
-          delivery: delivery,
-          total: total,
-        },
-        deliveryMethod: deliveryMethod,
-        delivery: {
-          fullName: sanitizedFormData.fullName,
-          street: '',
-          houseNumber: sanitizedFormData.houseNumber || '',
-          city: sanitizedFormData.city || '',
-          phone: sanitizedFormData.phone,
-          email: sanitizedFormData.email,
-          notes: sanitizedFormData.notes,
-        },
-        paymentMethod: paymentMethod,
-        timestamp: new Date().toISOString(),
-      };
-
-      // Track purchase conversion in GA4 & Meta Pixel
-      trackPurchase({
-        transactionId: `order-${Date.now()}`,
-        value: total,
-        currency: 'EUR',
-        items: cart.map((item) => ({
-          item_id: item.product.id,
-          item_name: item.product.name,
-          item_category: item.product.type,
-          price: item.totalPrice,
-          quantity: item.quantity,
-        })),
-      });
-
-      // Try to send order emails via API (non-blocking)
-      try {
-        const apiUrl = import.meta.env.VITE_API_URL || 'https://pizzapohoda.sk';
-        await fetch(`${apiUrl}/api/send-order-emails`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ order }),
-        });
-      } catch (emailError) {
-        // Email service unavailable but order was processed
-      }
-
-      // Always clear cart and redirect
-      clearCart();
-      navigate('/thank-you');
-    } catch (error) {
-      alert(
-        'Vyskytla sa chyba pri spracovaní objednávky. Skúste to prosím znova.',
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const subtotal = useMemo(() => getTotalPrice(), [getTotalPrice]);
-  const deliveryRule = useMemo(
-    () => getDeliveryRule(formData.city),
-    [formData.city],
-  );
-  const delivery = deliveryMethod === 'pickup' ? 0 : deliveryRule.fee;
-  const total = subtotal + delivery;
-  const minimumOrderMessage = useMemo(
-    () =>
-      deliveryMethod === 'delivery'
-        ? getMinimumOrderMessage(formData.city, subtotal)
-        : null,
-    [deliveryMethod, formData.city, subtotal],
-  );
-  const canSubmitOrder = useMemo(
-    () =>
-      (deliveryMethod === 'pickup' ||
-        isMinimumOrderMet(formData.city, subtotal)) &&
-      canOrder &&
-      !isOrdersDisabled,
-    [deliveryMethod, formData.city, subtotal, canOrder, isOrdersDisabled],
-  );
 
   if (cart.length === 0) {
     return (
@@ -394,7 +69,6 @@ const PizzaCart: React.FC = () => {
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
-      {/* Close button */}
       <Link to="/" className="pizza-cart__close" aria-label="Zavrieť košík">
         <svg
           width="24"
@@ -413,7 +87,6 @@ const PizzaCart: React.FC = () => {
       </Link>
 
       <div className="pizza-cart__layout">
-        {/* Left Column - Cart Items */}
         <div className="pizza-cart__main">
           <div className="pizza-cart__items">
             {cart.map((item, index) => (
@@ -435,7 +108,6 @@ const PizzaCart: React.FC = () => {
           )}
         </div>
 
-        {/* Right Column - Forms & Summary */}
         <div className="pizza-cart__sidebar">
           <DeliveryAddressForm
             formData={{ ...formData, deliveryMethod }}
@@ -494,7 +166,11 @@ const PizzaCart: React.FC = () => {
           </div>
 
           <div
-            className={`pizza-cart__button-wrapper ${!isMinimumOrderMet(formData.city, subtotal) && formData.city ? 'has-tooltip' : ''}`}
+            className={`pizza-cart__button-wrapper ${
+              !isMinimumOrderMet(formData.city, subtotal) && formData.city
+                ? 'has-tooltip'
+                : ''
+            }`}
           >
             {!isMinimumOrderMet(formData.city, subtotal) && formData.city ? (
               <div className="pizza-cart__tooltip">{minimumOrderMessage}</div>

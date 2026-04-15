@@ -16,10 +16,10 @@ import AdminPanel from './views/AdminPanel/AdminPanel';
 import AdminAnalytics from './views/AdminAnalytics/AdminAnalytics';
 import AdminOrders from './views/AdminOrders/AdminOrders';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
-import FloatingCart from './components/FloatingCart/FloatingCart';
-import FloatingCall from './components/FloatingCall/FloatingCall';
-import OrderingStatusBanner from './components/OrderingStatusBanner/OrderingStatusBanner';
-import CookieConsent from './components/CookieConsent/CookieConsent';
+import FloatingCart from './components/shared/FloatingCart/FloatingCart';
+import FloatingCall from './components/shared/FloatingCall/FloatingCall';
+import OrderingStatusBanner from './components/shared/OrderingStatusBanner/OrderingStatusBanner';
+import CookieConsent from './components/shared/CookieConsent/CookieConsent';
 import { setDefaultConsent, initGA, trackPageView } from './utils/analytics';
 import './styles/global.less';
 

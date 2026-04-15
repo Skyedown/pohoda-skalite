@@ -21,7 +21,7 @@ export function getAllergenNames(allergenNumbers: string[]): string[] {
 
 export function formatAllergens(
   allergenNumbers: string[],
-  useNames: boolean = false
+  useNames: boolean = false,
 ): string {
   if (!allergenNumbers || allergenNumbers.length === 0) {
     return '';

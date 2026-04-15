@@ -2,23 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import type { Product, ProductType } from '../../types';
 import { pizzas } from '../../data/pizzas';
-import ProductCard from '../../components/ProductCard/ProductCard';
-import ProductModal from '../../components/ProductModal/ProductModal';
-import Toast from '../../components/Toast/Toast';
-import OrderOverloadModal from '../../components/OrderOverloadModal/OrderOverloadModal';
+import ProductCard from '../../components/PizzaMain/ProductCard/ProductCard';
+import ProductModal from '../../components/PizzaMain/ProductModal/ProductModal';
+import Toast from '../../components/shared/Toast/Toast';
+import OrderOverloadModal from '../../components/PizzaMain/OrderOverloadModal/OrderOverloadModal';
 import {
   getAdminSettings,
   type AdminSettings,
 } from '../../utils/adminSettings';
-import BurgerSection from '../../sections/BurgerSection/BurgerSection';
-import LangosSection from '../../sections/LangosSection/LangosSection';
-import PrilohySection from '../../sections/PrilohySection/PrilohySection';
-import DeliveryInfoSection from '../../sections/DeliveryInfoSection/DeliveryInfoSection';
-import LocationSection from '../../sections/LocationSection/LocationSection';
-import QualitySection from '../../sections/QualitySection/QualitySection';
-import TestimonialsSection from '../../sections/TestimonialsSection/TestimonialsSection';
-import ContactSection from '../../sections/ContactSection/ContactSection';
-import Footer from '../../sections/Footer/Footer';
+import BurgerSection from '../../components/PizzaMain/BurgerSection/BurgerSection';
+import LangosSection from '../../components/PizzaMain/LangosSection/LangosSection';
+import PrilohySection from '../../components/PizzaMain/PrilohySection/PrilohySection';
+import DeliveryInfoSection from '../../components/PizzaMain/DeliveryInfoSection/DeliveryInfoSection';
+import LocationSection from '../../components/PizzaMain/LocationSection/LocationSection';
+import QualitySection from '../../components/PizzaMain/QualitySection/QualitySection';
+import TestimonialsSection from '../../components/PizzaMain/TestimonialsSection/TestimonialsSection';
+import ContactSection from '../../components/PizzaMain/ContactSection/ContactSection';
+import Footer from '../../components/PizzaMain/Footer/Footer';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { scrollTo } from '../../utils/scroll';

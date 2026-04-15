@@ -13,7 +13,6 @@ interface CartContextType {
     pizza: Product,
     quantity: number,
     extras?: Extra[],
-    requiredOption?: { name: string; selectedValue: string },
     removedIngredients?: string[],
   ) => void;
   removeFromCart: (index: number) => void;
@@ -25,6 +24,7 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useCart = (): CartContextType => {
   const context = useContext(CartContext);
   if (!context) {
@@ -57,7 +57,6 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     product: Product,
     quantity: number,
     extras?: Extra[],
-    requiredOption?: { name: string; selectedValue: string },
     removedIngredients?: string[],
   ) => {
     // Validate product
@@ -76,7 +75,6 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
       totalPrice,
       extras,
       extrasPrice,
-      requiredOption,
       removedIngredients,
     };
 
