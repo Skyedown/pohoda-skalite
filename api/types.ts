@@ -46,6 +46,4 @@ export interface Order {
   deliveryMethod?: 'delivery' | 'pickup';
 }
 
-export interface SanitizedOrder extends Order {
-  // Same structure as Order but with sanitized values
-}
+export type SanitizedOrder = Order;

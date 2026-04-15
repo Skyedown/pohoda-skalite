@@ -5,7 +5,8 @@ on:
     branches: [ "main" ]
 
 jobs:
-  cleanup:
+  ci-frontend:
+    name: Frontend — Lint, Format & Typecheck
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -20,14 +21,51 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run cleanup (format, lint, typecheck)
-        run: npm run cleanup
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+  ci-api:
+    name: API — Lint, Format & Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: api/package-lock.json
+
+      - name: Install API dependencies
+        run: npm ci
+        working-directory: api
+
+      - name: Check formatting
+        run: npm run format:check
+        working-directory: api
+
+      - name: Lint
+        run: npm run lint
+        working-directory: api
+
+      - name: Typecheck
+        run: npm run typecheck
+        working-directory: api
 
   deploy:
+    name: Deploy to DigitalOcean
     runs-on: ubuntu-latest
-    needs: cleanup
+    needs: [ci-frontend, ci-api]
     steps:
-      - name: Deploy to DigitalOcean via SSH
+      - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.DO_HOST }}

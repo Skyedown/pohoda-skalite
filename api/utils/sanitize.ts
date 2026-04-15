@@ -18,7 +18,7 @@ export function escapeHTML(text: string): string {
   return sanitizeHtml(text, {
     allowedTags: [],
     allowedAttributes: {},
-    disallowedTagsMode: 'escape'
+    disallowedTagsMode: 'escape',
   });
 }
 
@@ -28,7 +28,10 @@ export function escapeHTML(text: string): string {
  * @param maxLength - Maximum allowed length
  * @returns Sanitized input
  */
-export function sanitizeTextInput(input: string, maxLength: number = 500): string {
+export function sanitizeTextInput(
+  input: string,
+  maxLength: number = 500,
+): string {
   if (!input || typeof input !== 'string') return '';
 
   // Use validator to trim and escape
@@ -53,7 +56,7 @@ export function sanitizeEmail(email: string): string {
   // Normalize and validate email
   const normalized = validator.normalizeEmail(email, {
     all_lowercase: true,
-    gmail_remove_dots: false
+    gmail_remove_dots: false,
   });
 
   if (!normalized || !validator.isEmail(normalized)) {
@@ -100,7 +103,7 @@ export function sanitizeDelivery(delivery: Partial<Delivery>): Delivery {
     city: sanitizeTextInput(delivery.city || '', 100),
     phone: sanitizePhone(delivery.phone || ''),
     email: sanitizedEmail,
-    notes: sanitizeTextInput(delivery.notes || '', 1000)
+    notes: sanitizeTextInput(delivery.notes || '', 1000),
   };
 }
 
@@ -132,19 +135,28 @@ export function sanitizeOrder(order: any): SanitizedOrder {
     ...item,
     name: sanitizeTextInput(item.name, 100),
     size: sanitizeTextInput(item.size, 20),
-    extras: item.extras ? item.extras.map((extra: any) => ({
-      ...extra,
-      name: sanitizeTextInput(extra.name, 100)
-    })) : [],
-    requiredOption: item.requiredOption ? {
-      name: sanitizeTextInput(item.requiredOption.name, 100),
-      selectedValue: sanitizeTextInput(item.requiredOption.selectedValue, 100)
-    } : undefined
+    extras: item.extras
+      ? item.extras.map((extra: any) => ({
+          ...extra,
+          name: sanitizeTextInput(extra.name, 100),
+        }))
+      : [],
+    requiredOption: item.requiredOption
+      ? {
+          name: sanitizeTextInput(item.requiredOption.name, 100),
+          selectedValue: sanitizeTextInput(
+            item.requiredOption.selectedValue,
+            100,
+          ),
+        }
+      : undefined,
   }));
 
   // Validate payment method
   const validPaymentMethods = ['cash', 'card'];
-  const sanitizedPaymentMethod = validPaymentMethods.includes(order.paymentMethod)
+  const sanitizedPaymentMethod = validPaymentMethods.includes(
+    order.paymentMethod,
+  )
     ? order.paymentMethod
     : 'cash';
 
@@ -152,6 +164,6 @@ export function sanitizeOrder(order: any): SanitizedOrder {
     ...order,
     delivery: sanitizedDelivery,
     items: sanitizedItems,
-    paymentMethod: sanitizedPaymentMethod as 'cash' | 'card'
+    paymentMethod: sanitizedPaymentMethod as 'cash' | 'card',
   };
 }

@@ -5,12 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "ci": "npm run format:check && npm run lint && npm run typecheck",
     "cleanup": "npm run format && npm run lint:fix && npm run typecheck",
     "format": "prettier --write \"src/**/*.{ts,tsx,less}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,less}\"",
+    "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc -b --dry",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
