@@ -1,7 +1,6 @@
 import { escapeHTML } from '../utils/sanitize.js';
 import type { SanitizedOrder } from '../types.js';
 
-
 export function generateCustomerEmail(
   order: SanitizedOrder,
   restaurantEmail: string,
@@ -235,7 +234,7 @@ export function generateCustomerEmail(
             <p style="margin: 5px 0;"><img src="https://pizzapohoda.sk/icons/phone.png" alt="" class="icon-inline">${escapeHTML(
               order.delivery.phone,
             )}</p>
-            <p style="margin: 5px 0;"><img src="https://pizzapohoda.sk/icons/phone.png" alt="" class="icon-inline">${escapeHTML(
+            <p style="margin: 5px 0;"><img src="https://pizzapohoda.sk/icons/mail.png" alt="" class="icon-inline">${escapeHTML(
               order.delivery.email,
             )}</p>
             ${
