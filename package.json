@@ -8,7 +8,7 @@
     "cleanup": "npm run format && npm run lint:fix && npm run typecheck",
     "format": "prettier --write \"src/**/*.{ts,tsx,less}\"",
     "lint:fix": "eslint . --fix",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc -b --dry",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"

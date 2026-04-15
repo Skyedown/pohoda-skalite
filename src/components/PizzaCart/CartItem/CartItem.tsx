@@ -42,13 +42,6 @@ const CartItem: React.FC<CartItemProps> = ({
         </p>
       )}
 
-      {item.requiredOption && (
-        <p className="cart-item__required">
-          {item.requiredOption.name}:{' '}
-          <strong>{item.requiredOption.selectedValue}</strong>
-        </p>
-      )}
-
       {item.extras && item.extras.length > 0 && (
         <p className="cart-item__extras">
           +{' '}
