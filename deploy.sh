@@ -31,19 +31,11 @@ git reset --hard origin/main
 echo "🏗️ Building new images..."
 docker compose build api frontend
 
-# 5. Start new containers before stopping old ones (zero-downtime swap)
-echo "🔄 Performing zero-downtime swap..."
-# Scale up: start a second instance of each service alongside the running one
-docker compose up -d --no-deps --scale api=2 --no-recreate api
-docker compose up -d --no-deps --scale frontend=2 --no-recreate frontend
-
-# Wait for new containers to be healthy before cutting over
-echo "⏳ Waiting for new containers to become healthy..."
-sleep 15
-
-# Remove old containers (keep only the freshly built ones)
-docker compose up -d --no-deps --scale api=1 api
-docker compose up -d --no-deps --scale frontend=1 frontend
+# 5. Fast swap — recreate containers from new images
+# Old container stops and new one starts in ~2-3 seconds.
+# RabbitMQ keeps running so no messages are lost.
+echo "🔄 Swapping containers..."
+docker compose up -d --no-deps --force-recreate api frontend
 
 # 6. Health Check Phase
 echo "🏥 Checking Health..."
