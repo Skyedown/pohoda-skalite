@@ -80,6 +80,17 @@
     border-top: 1px solid rgba(0, 0, 0, 0.08);
   }
 
+  &__pie {
+    margin-top: 8px;
+
+    // Remove Highcharts default container padding
+    .highcharts-container,
+    .highcharts-root {
+      overflow: visible !important;
+      font-family: inherit !important;
+    }
+  }
+
   &__method {
     font-size: @font-size-xs;
     font-weight: @font-weight-medium;

@@ -1,6 +1,58 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
 import type { ProductTypeSummary } from '../OrderStats.helpers';
 import './ProductSummaryCards.less';
+
+const PIE_COLORS = {
+  delivery: '#ff6b35',
+  pickup: '#2196f3',
+  dineIn: '#27ae60',
+};
+
+interface SummaryCardPieProps {
+  delivery: number;
+  pickup: number;
+  dineIn: number;
+}
+
+const SummaryCardPie: React.FC<SummaryCardPieProps> = ({ delivery, pickup, dineIn }) => {
+  const options = useMemo<Highcharts.Options>(() => ({
+    chart: { type: 'pie', height: 120, margin: [0, 0, 0, 0], spacing: [0, 0, 0, 0], backgroundColor: 'transparent' },
+    title: { text: undefined },
+    tooltip: {
+      pointFormat: '<b>{point.name}</b>: {point.y} ks ({point.percentage:.0f}%)',
+    },
+    plotOptions: {
+      pie: {
+        size: '100%',
+        dataLabels: { enabled: false },
+        borderWidth: 1,
+        borderColor: 'rgba(255,255,255,0.4)',
+      },
+    },
+    series: [{
+      type: 'pie',
+      data: [
+        { name: 'Dovoz', y: delivery, color: PIE_COLORS.delivery },
+        { name: 'Odber', y: pickup, color: PIE_COLORS.pickup },
+        { name: 'Prevádzka', y: dineIn, color: PIE_COLORS.dineIn },
+      ].filter((d) => d.y > 0),
+    }],
+    credits: { enabled: false },
+    legend: { enabled: false },
+    accessibility: { enabled: false },
+  }), [delivery, pickup, dineIn]);
+
+  const hasData = delivery > 0 || pickup > 0 || dineIn > 0;
+  if (!hasData) return null;
+
+  return (
+    <div className="product-summary-cards__pie">
+      <HighchartsReact highcharts={Highcharts} options={options} />
+    </div>
+  );
+};
 
 interface ProductSummaryCardsProps {
   summaries: ProductTypeSummary[];
@@ -29,6 +81,11 @@ export const ProductSummaryCards: React.FC<ProductSummaryCardsProps> = ({
               Prevádzka: {summary.dineIn}
             </span>
           </div>
+          <SummaryCardPie
+            delivery={summary.delivery}
+            pickup={summary.pickup}
+            dineIn={summary.dineIn}
+          />
         </div>
       ))}
     </div>
