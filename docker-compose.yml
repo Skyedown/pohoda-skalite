@@ -57,31 +57,15 @@ services:
       retries: 5
       start_period: 30s
 
-  # One-shot build container: copies dist/ into the frontend-static volume, then exits.
-  # gateway reads from that same volume and is never recreated during deploys.
   frontend:
     build:
       context: .
       dockerfile: Dockerfile
     image: pohoda-frontend:latest
     container_name: pizza-pohoda-frontend
-    restart: 'no'
-    volumes:
-      - frontend-static:/vol
-    networks:
-      - pizza-network
-
-  gateway:
-    build:
-      context: .
-      dockerfile: Dockerfile.gateway
-    image: pohoda-gateway:latest
-    container_name: pizza-pohoda-gateway
     restart: unless-stopped
     ports:
       - '8080:80'
-    volumes:
-      - frontend-static:/usr/share/nginx/html:ro
     depends_on:
       - api
     networks:
@@ -93,8 +77,6 @@ networks:
 
 volumes:
   api-data:
-    driver: local
-  frontend-static:
     driver: local
   rabbitmq-data:
     driver: local

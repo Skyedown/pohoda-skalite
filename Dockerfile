@@ -16,9 +16,17 @@ COPY . .
 # Build the application
 RUN npm run build
 
-# Deployment stage — copies built files into the shared volume and exits.
-# This is a one-shot container: runs, copies dist/ to /vol, then exits.
-# The always-running gateway container reads from the same named volume.
-FROM alpine:3
-COPY --from=builder /app/dist /dist
-CMD ["sh", "-c", "cp -r /dist/. /vol/ && echo 'Frontend files deployed to volume'"]
+# Production stage with nginx
+FROM nginx:alpine
+
+# Copy built files from builder stage
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Copy nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port 80
+EXPOSE 80
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]
