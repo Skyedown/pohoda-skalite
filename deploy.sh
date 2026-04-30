@@ -31,11 +31,54 @@ git reset --hard origin/main
 echo "🏗️ Building new images..."
 docker compose build api frontend
 
-# 5. Fast swap — recreate containers from new images
-# Old container stops and new one starts in ~2-3 seconds.
-# RabbitMQ keeps running so no messages are lost.
-echo "🔄 Swapping containers..."
-docker compose up -d --no-deps --force-recreate api frontend
+# 5. Sequential swap — API first, then frontend
+# Recreating both at once means nginx has no backend during the API start_period.
+# By waiting for API health before touching frontend, we keep the old frontend
+# serving requests right up until the new API is ready.
+echo "🔄 Swapping API container..."
+docker compose up -d --no-deps --force-recreate api
+
+echo "🏥 Waiting for API to become healthy before swapping frontend..."
+MAX_RETRIES=30
+SLEEP=5
+API_READY=false
+
+for ((i=1; i<=MAX_RETRIES; i++)); do
+    API_HEALTH=$(docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}starting{{end}}' $API_CONTAINER)
+    echo "   - Attempt $i: API [$API_HEALTH]"
+
+    if [ "$API_HEALTH" == "healthy" ]; then
+        API_READY=true
+        break
+    fi
+
+    if [ "$API_HEALTH" == "unhealthy" ]; then
+        echo "❌ FAILURE: API reported UNHEALTHY status."
+        break
+    fi
+
+    sleep $SLEEP
+done
+
+if [ "$API_READY" = false ]; then
+    echo "⚠️ CRITICAL: API failed to become healthy. Rolling back..."
+    docker compose down
+    for pair in "${SERVICES[@]}"; do
+        IMG="${pair##*:}"
+        if [[ "$(docker images -q $IMG:rollback 2> /dev/null)" != "" ]]; then
+            docker tag $IMG:rollback $IMG:latest
+            echo "   - Restored $IMG from rollback tag"
+        fi
+    done
+    docker compose up -d
+    echo "🔄 Rollback complete."
+    echo "📝 Logs from failed API attempt:"
+    docker logs $API_CONTAINER --tail 50
+    exit 1
+fi
+
+echo "✅ API is healthy. Swapping frontend container..."
+docker compose up -d --no-deps --force-recreate frontend
 
 # 6. Health Check Phase
 echo "🏥 Checking Health..."
