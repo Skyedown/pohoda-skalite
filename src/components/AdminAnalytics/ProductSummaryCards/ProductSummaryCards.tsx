@@ -89,12 +89,30 @@ export const ProductSummaryCards: React.FC<ProductSummaryCardsProps> = ({
           <div className="product-summary-cards__breakdown">
             <span className="product-summary-cards__method product-summary-cards__method--delivery">
               Dovoz: {summary.delivery}
+              {summary.total > 0 && (
+                <span className="product-summary-cards__pct">
+                  {' '}
+                  ({Math.round((summary.delivery / summary.total) * 100)}%)
+                </span>
+              )}
             </span>
             <span className="product-summary-cards__method product-summary-cards__method--pickup">
               Odber: {summary.pickup}
+              {summary.total > 0 && (
+                <span className="product-summary-cards__pct">
+                  {' '}
+                  ({Math.round((summary.pickup / summary.total) * 100)}%)
+                </span>
+              )}
             </span>
             <span className="product-summary-cards__method product-summary-cards__method--dine-in">
               Prevádzka: {summary.dineIn}
+              {summary.total > 0 && (
+                <span className="product-summary-cards__pct">
+                  {' '}
+                  ({Math.round((summary.dineIn / summary.total) * 100)}%)
+                </span>
+              )}
             </span>
           </div>
           <SummaryCardPie
