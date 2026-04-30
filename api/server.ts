@@ -694,7 +694,7 @@ app.get('/api/orders/stats', async (req, res) => {
       return res.status(503).json({ error: 'Database not available' });
     }
 
-    const { from, to } = req.query;
+    const { from, to, deliveryMethod, productType } = req.query;
 
     if (!from || !to) {
       return res
@@ -714,11 +714,22 @@ app.get('/api/orders/stats', async (req, res) => {
       return res.status(400).json({ error: 'Invalid date format' });
     }
 
+    const matchConditions: Record<string, unknown> = {
+      createdAt: { $gte: fromDate, $lte: toDate },
+    };
+
+    if (deliveryMethod && typeof deliveryMethod === 'string') {
+      const methods = deliveryMethod.split(',');
+      matchConditions['delivery.method'] = { $in: methods };
+    }
+
+    if (productType && typeof productType === 'string') {
+      matchConditions['items.product.type'] = productType;
+    }
+
     const stats = await Order.aggregate([
       {
-        $match: {
-          createdAt: { $gte: fromDate, $lte: toDate },
-        },
+        $match: matchConditions,
       },
       {
         $group: {
@@ -769,7 +780,7 @@ app.get('/api/orders/product-stats', async (req, res) => {
       return res.status(503).json({ error: 'Database not available' });
     }
 
-    const { from, to } = req.query;
+    const { from, to, deliveryMethod, productType } = req.query;
 
     if (!from || !to) {
       return res
@@ -788,20 +799,50 @@ app.get('/api/orders/product-stats', async (req, res) => {
       return res.status(400).json({ error: 'Invalid date format' });
     }
 
-    const stats = await Order.aggregate([
-      { $match: { createdAt: { $gte: fromDate, $lte: toDate } } },
+    const matchConditions: Record<string, unknown> = {
+      createdAt: { $gte: fromDate, $lte: toDate },
+    };
+
+    if (deliveryMethod && typeof deliveryMethod === 'string') {
+      const methods = deliveryMethod.split(',');
+      matchConditions['delivery.method'] = { $in: methods };
+    }
+
+    const pipeline: object[] = [
+      { $match: matchConditions },
       { $unwind: '$items' },
+    ];
+
+    if (productType && typeof productType === 'string') {
+      pipeline.push({ $match: { 'items.product.type': productType } });
+    }
+
+    pipeline.push(
       {
         $group: {
-          _id: '$items.product.id',
+          _id: { productId: '$items.product.id', deliveryMethod: '$delivery.method' },
           name: { $first: '$items.product.name' },
           type: { $first: '$items.product.type' },
-          totalQuantity: { $sum: '$items.quantity' },
-          totalRevenue: { $sum: '$items.totalPrice' },
+          quantity: { $sum: '$items.quantity' },
+          revenue: { $sum: '$items.totalPrice' },
+        },
+      },
+      {
+        $group: {
+          _id: '$_id.productId',
+          name: { $first: '$name' },
+          type: { $first: '$type' },
+          totalQuantity: { $sum: '$quantity' },
+          totalRevenue: { $sum: '$revenue' },
+          byDeliveryMethod: {
+            $push: { method: '$_id.deliveryMethod', quantity: '$quantity' },
+          },
         },
       },
       { $sort: { totalRevenue: -1 } },
-    ]);
+    );
+
+    const stats = await Order.aggregate(pipeline);
 
     res.json(stats);
   } catch (error: unknown) {
