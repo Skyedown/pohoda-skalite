@@ -16,33 +16,49 @@ interface SummaryCardPieProps {
   dineIn: number;
 }
 
-const SummaryCardPie: React.FC<SummaryCardPieProps> = ({ delivery, pickup, dineIn }) => {
-  const options = useMemo<Highcharts.Options>(() => ({
-    chart: { type: 'pie', height: 120, margin: [0, 0, 0, 0], spacing: [0, 0, 0, 0], backgroundColor: 'transparent' },
-    title: { text: undefined },
-    tooltip: {
-      pointFormat: '<b>{point.name}</b>: {point.y} ks ({point.percentage:.0f}%)',
-    },
-    plotOptions: {
-      pie: {
-        size: '100%',
-        dataLabels: { enabled: false },
-        borderWidth: 1,
-        borderColor: 'rgba(255,255,255,0.4)',
+const SummaryCardPie: React.FC<SummaryCardPieProps> = ({
+  delivery,
+  pickup,
+  dineIn,
+}) => {
+  const options = useMemo<Highcharts.Options>(
+    () => ({
+      chart: {
+        type: 'pie',
+        height: 120,
+        margin: [0, 0, 0, 0],
+        spacing: [0, 0, 0, 0],
+        backgroundColor: 'transparent',
       },
-    },
-    series: [{
-      type: 'pie',
-      data: [
-        { name: 'Dovoz', y: delivery, color: PIE_COLORS.delivery },
-        { name: 'Odber', y: pickup, color: PIE_COLORS.pickup },
-        { name: 'Prevádzka', y: dineIn, color: PIE_COLORS.dineIn },
-      ].filter((d) => d.y > 0),
-    }],
-    credits: { enabled: false },
-    legend: { enabled: false },
-    accessibility: { enabled: false },
-  }), [delivery, pickup, dineIn]);
+      title: { text: undefined },
+      tooltip: {
+        pointFormat:
+          '<b>{point.name}</b>: {point.y} ks ({point.percentage:.0f}%)',
+      },
+      plotOptions: {
+        pie: {
+          size: '100%',
+          dataLabels: { enabled: false },
+          borderWidth: 1,
+          borderColor: 'rgba(255,255,255,0.4)',
+        },
+      },
+      series: [
+        {
+          type: 'pie',
+          data: [
+            { name: 'Dovoz', y: delivery, color: PIE_COLORS.delivery },
+            { name: 'Odber', y: pickup, color: PIE_COLORS.pickup },
+            { name: 'Prevádzka', y: dineIn, color: PIE_COLORS.dineIn },
+          ].filter((d) => d.y > 0),
+        },
+      ],
+      credits: { enabled: false },
+      legend: { enabled: false },
+      accessibility: { enabled: false },
+    }),
+    [delivery, pickup, dineIn],
+  );
 
   const hasData = delivery > 0 || pickup > 0 || dineIn > 0;
   if (!hasData) return null;
