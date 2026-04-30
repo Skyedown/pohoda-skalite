@@ -83,7 +83,7 @@ docker compose up -d --no-deps --force-recreate frontend
 # 6. Health Check Phase
 echo "🏥 Checking Health..."
 MAX_RETRIES=20
-SLEEP=5
+SLEEP=10
 ALL_HEALTHY=false
 
 for ((i=1; i<=MAX_RETRIES; i++)); do
