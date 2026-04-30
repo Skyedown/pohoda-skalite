@@ -820,7 +820,10 @@ app.get('/api/orders/product-stats', async (req, res) => {
     pipeline.push(
       {
         $group: {
-          _id: { productId: '$items.product.id', deliveryMethod: '$delivery.method' },
+          _id: {
+            productId: '$items.product.id',
+            deliveryMethod: '$delivery.method',
+          },
           name: { $first: '$items.product.name' },
           type: { $first: '$items.product.type' },
           quantity: { $sum: '$items.quantity' },

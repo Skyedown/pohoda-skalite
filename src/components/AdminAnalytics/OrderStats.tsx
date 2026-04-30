@@ -2,12 +2,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import DateRangeFilter, {
   computePresetRange,
 } from '../DateRangeFilter/DateRangeFilter';
-import type { DayStat } from './OrderStats.helpers';
-import { computeCategories, computeSummaryStats } from './OrderStats.helpers';
-import { OrderSummaryCards } from './OrderSummaryCards/OrderSummaryCards';
-import { OrderCharts } from './OrderCharts/OrderCharts';
+import type { DayStat, DeliveryMethodFilter } from './OrderStats.helpers';
 import type { ProductStat } from './ProductPerformance/ProductPerformance';
-import { ProductPerformance } from './ProductPerformance/ProductPerformance';
+import type { AnalyticsTab } from './AnalyticsTabs/AnalyticsTabs';
+import { AnalyticsTabs } from './AnalyticsTabs/AnalyticsTabs';
+import { OrdersTab } from './OrdersTab/OrdersTab';
+import { ProductsTab } from './ProductsTab/ProductsTab';
 import './OrderStats.less';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
@@ -15,20 +15,33 @@ const API_URL = import.meta.env.VITE_API_URL || '';
 const OrderStats: React.FC = () => {
   const { from: defaultFrom, to: defaultTo } = computePresetRange('7d');
 
+  const [activeTab, setActiveTab] = useState<AnalyticsTab>('orders');
   const [fromDate, setFromDate] = useState(defaultFrom);
   const [toDate, setToDate] = useState(defaultTo);
+  const [activePreset, setActivePreset] = useState<string | null>('7d');
+  const [deliveryMethod, setDeliveryMethod] =
+    useState<DeliveryMethodFilter>('all');
+
   const [stats, setStats] = useState<DayStat[]>([]);
   const [productStats, setProductStats] = useState<ProductStat[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [activePreset, setActivePreset] = useState<string | null>('7d');
 
   const fetchStats = useCallback(async () => {
     setLoading(true);
     setError('');
+
+    const deliveryParam =
+      deliveryMethod !== 'all'
+        ? `&deliveryMethod=${encodeURIComponent(deliveryMethod)}`
+        : '';
+
     try {
       const [statsRes, productStatsRes] = await Promise.all([
-        fetch(`${API_URL}/api/orders/stats?from=${fromDate}&to=${toDate}`),
+        fetch(
+          `${API_URL}/api/orders/stats?from=${fromDate}&to=${toDate}${deliveryParam}`,
+        ),
+        // product-stats intentionally fetches all delivery methods for packaging breakdown
         fetch(
           `${API_URL}/api/orders/product-stats?from=${fromDate}&to=${toDate}`,
         ),
@@ -50,14 +63,11 @@ const OrderStats: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [fromDate, toDate]);
+  }, [fromDate, toDate, deliveryMethod]);
 
   useEffect(() => {
     fetchStats();
   }, [fetchStats]);
-
-  const categories = computeCategories(stats);
-  const summaryStats = computeSummaryStats(stats);
 
   return (
     <div className="order-stats">
@@ -81,15 +91,24 @@ const OrderStats: React.FC = () => {
         idPrefix="stats"
       />
 
+      <AnalyticsTabs activeTab={activeTab} onTabChange={setActiveTab} />
+
       {error && <p className="order-stats__error">{error}</p>}
 
       {loading ? (
         <p className="order-stats__loading">Načítavam štatistiky…</p>
       ) : (
         <>
-          <OrderSummaryCards stats={summaryStats} />
-          <OrderCharts stats={stats} categories={categories} />
-          <ProductPerformance stats={productStats} />
+          {activeTab === 'orders' && (
+            <OrdersTab
+              stats={stats}
+              deliveryMethod={deliveryMethod}
+              onDeliveryMethodChange={setDeliveryMethod}
+            />
+          )}
+          {activeTab === 'products' && (
+            <ProductsTab productStats={productStats} />
+          )}
         </>
       )}
     </div>

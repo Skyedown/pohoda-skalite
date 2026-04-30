@@ -1,0 +1,106 @@
+@import '../../../styles/variables.less';
+
+.product-summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+
+  &__card {
+    padding: 16px;
+    border-radius: @border-radius-md;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    &--pizza {
+      background: linear-gradient(135deg, @action-light 0%, #ffe8dd 100%);
+      border: 1px solid #ffccb3;
+    }
+
+    &--burger {
+      background: linear-gradient(135deg, #e8f4fd 0%, #d0e8f9 100%);
+      border: 1px solid #a3d4f7;
+    }
+
+    &--langos {
+      background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+      border: 1px solid #a5d6a7;
+    }
+
+    &--fries {
+      background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+      border: 1px solid #ffe082;
+    }
+
+    &--sauces {
+      background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+      border: 1px solid #80deea;
+    }
+  }
+
+  &__label {
+    margin: 0;
+    font-size: @font-size-xs;
+    font-weight: @font-weight-semibold;
+    color: @gray-600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  &__total {
+    margin: 0;
+    font-size: @font-size-2xl;
+    font-weight: @font-weight-bold;
+    color: @text-primary;
+    line-height: 1;
+
+    .product-summary-cards__card--pizza & {
+      color: @action-color;
+    }
+    .product-summary-cards__card--burger & {
+      color: @info-color;
+    }
+    .product-summary-cards__card--langos & {
+      color: @success-dark;
+    }
+    .product-summary-cards__card--fries & {
+      color: #f9a825;
+    }
+    .product-summary-cards__card--sauces & {
+      color: #00838f;
+    }
+  }
+
+  &__breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-top: 4px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  &__method {
+    font-size: @font-size-xs;
+    font-weight: @font-weight-medium;
+    color: @gray-600;
+
+    &--delivery {
+      color: @action-color;
+    }
+    &--pickup {
+      color: @info-color;
+    }
+    &--dine-in {
+      color: @success-dark;
+    }
+  }
+
+  @media (max-width: @breakpoint-md) {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+
+    &__total {
+      font-size: @font-size-xl;
+    }
+  }
+}

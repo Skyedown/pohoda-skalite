@@ -1,0 +1,64 @@
+@import '../../../styles/variables.less';
+
+.orders-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  &__filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__filter-label {
+    font-size: @font-size-xs;
+    font-weight: @font-weight-semibold;
+    color: @gray-600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  &__filter-tiles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    button {
+      padding: 8px 14px;
+      border: 2px solid @border-gray;
+      border-radius: @border-radius-md;
+      background: @surface-color;
+      font-size: 13px;
+      font-weight: @font-weight-medium;
+      color: @gray-600;
+      cursor: pointer;
+      transition: all @transition-base;
+      font-family: inherit;
+
+      &:hover {
+        border-color: @action-color;
+        color: @action-color;
+        background: @action-light;
+      }
+
+      &:active,
+      &.active {
+        background: @action-color;
+        color: @text-white;
+        border-color: @action-color;
+      }
+    }
+  }
+
+  @media (max-width: @breakpoint-sm) {
+    &__filter-tiles {
+      gap: 6px;
+
+      button {
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+    }
+  }
+}

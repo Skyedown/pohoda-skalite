@@ -1,7 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
-import './ProductPerformance.less';
 
 export interface ProductStat {
   _id: string;
@@ -9,21 +8,8 @@ export interface ProductStat {
   type: string;
   totalQuantity: number;
   totalRevenue: number;
+  byDeliveryMethod: { method: string; quantity: number }[];
 }
-
-type CategoryFilter = 'vsetky' | 'pizze' | 'burgre' | 'langose' | 'prilohy';
-
-const CATEGORY_OPTIONS: {
-  value: CategoryFilter;
-  label: string;
-  type?: string;
-}[] = [
-  { value: 'vsetky', label: 'Všetky' },
-  { value: 'pizze', label: 'Pizze', type: 'pizza' },
-  { value: 'burgre', label: 'Burgre', type: 'burger' },
-  { value: 'langose', label: 'Langoše', type: 'langos' },
-  { value: 'prilohy', label: 'Prílohy', type: 'sides' },
-];
 
 interface ProductPerformanceProps {
   stats: ProductStat[];
@@ -34,22 +20,15 @@ export const ProductPerformance: React.FC<ProductPerformanceProps> = ({
 }) => {
   const revenueChartRef = useRef<HighchartsReact.RefObject>(null);
   const quantityChartRef = useRef<HighchartsReact.RefObject>(null);
-  const [category, setCategory] = useState<CategoryFilter>('vsetky');
 
   if (stats.length === 0) {
     return null;
   }
 
-  const selectedOption = CATEGORY_OPTIONS.find((o) => o.value === category);
-  const filteredStats =
-    category === 'vsetky'
-      ? stats
-      : stats.filter((s) => s.type === selectedOption?.type);
-
-  const names = filteredStats.map((s) => s.name);
+  const names = stats.map((s) => s.name);
 
   const revenueOptions: Highcharts.Options = {
-    chart: { type: 'bar', height: Math.max(300, filteredStats.length * 36) },
+    chart: { type: 'bar', height: Math.max(300, stats.length * 36) },
     title: { text: 'Tržby podľa produktu (€)' },
     xAxis: { categories: names, title: { text: null } },
     yAxis: { min: 0, title: { text: 'Tržby (€)' } },
@@ -64,7 +43,7 @@ export const ProductPerformance: React.FC<ProductPerformanceProps> = ({
       {
         name: 'Tržby',
         type: 'bar',
-        data: filteredStats.map((s) => Math.round(s.totalRevenue * 100) / 100),
+        data: stats.map((s) => Math.round(s.totalRevenue * 100) / 100),
         color: '#ff6b35',
       },
     ],
@@ -73,7 +52,7 @@ export const ProductPerformance: React.FC<ProductPerformanceProps> = ({
   };
 
   const quantityOptions: Highcharts.Options = {
-    chart: { type: 'bar', height: Math.max(300, filteredStats.length * 36) },
+    chart: { type: 'bar', height: Math.max(300, stats.length * 36) },
     title: { text: 'Počet predaných kusov podľa produktu' },
     xAxis: { categories: names, title: { text: null } },
     yAxis: {
@@ -92,7 +71,7 @@ export const ProductPerformance: React.FC<ProductPerformanceProps> = ({
       {
         name: 'Počet kusov',
         type: 'bar',
-        data: filteredStats.map((s) => s.totalQuantity),
+        data: stats.map((s) => s.totalQuantity),
         color: '#2196f3',
       },
     ],
@@ -102,20 +81,7 @@ export const ProductPerformance: React.FC<ProductPerformanceProps> = ({
 
   return (
     <div className="order-stats__product-performance">
-      <div className="product-performance__header">
-        <h3 className="order-stats__section-title">Výkon produktov</h3>
-        <select
-          className="product-performance__filter"
-          value={category}
-          onChange={(e) => setCategory(e.target.value as CategoryFilter)}
-        >
-          {CATEGORY_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      </div>
+      <h3 className="order-stats__section-title">Výkon produktov</h3>
       <div className="order-stats__charts">
         <div className="order-stats__chart">
           <HighchartsReact
