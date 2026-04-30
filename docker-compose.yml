@@ -56,6 +56,13 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
+    deploy:
+      replicas: 1
+      update_config:
+        order: start-first
+        failure_action: rollback
+      restart_policy:
+        condition: on-failure
 
   frontend:
     build:
@@ -70,6 +77,13 @@ services:
       - api
     networks:
       - pizza-network
+    deploy:
+      replicas: 1
+      update_config:
+        order: start-first
+        failure_action: rollback
+      restart_policy:
+        condition: on-failure
 
 networks:
   pizza-network:

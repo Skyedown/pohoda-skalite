@@ -27,15 +27,25 @@ echo "📥 Pulling latest code from GitHub..."
 git fetch origin main
 git reset --hard origin/main
 
-# 4. Build and Start
-echo "🏗️ Rebuilding containers..."
-# Use 'docker compose' (with space). If your server requires hyphen, change to 'docker-compose'
-# Stop only app containers, keep RabbitMQ running to avoid losing queued messages
-docker compose stop api frontend
-docker compose rm -f api frontend
-docker compose up -d --build
+# 4. Build new images without touching running containers
+echo "🏗️ Building new images..."
+docker compose build api frontend
 
-# 5. Health Check Phase
+# 5. Start new containers before stopping old ones (zero-downtime swap)
+echo "🔄 Performing zero-downtime swap..."
+# Scale up: start a second instance of each service alongside the running one
+docker compose up -d --no-deps --scale api=2 --no-recreate api
+docker compose up -d --no-deps --scale frontend=2 --no-recreate frontend
+
+# Wait for new containers to be healthy before cutting over
+echo "⏳ Waiting for new containers to become healthy..."
+sleep 15
+
+# Remove old containers (keep only the freshly built ones)
+docker compose up -d --no-deps --scale api=1 api
+docker compose up -d --no-deps --scale frontend=1 frontend
+
+# 6. Health Check Phase
 echo "🏥 Checking Health..."
 MAX_RETRIES=20
 SLEEP=5
@@ -68,7 +78,7 @@ for ((i=1; i<=MAX_RETRIES; i++)); do
     sleep $SLEEP
 done
 
-# 6. Final Decision: Cleanup or Rollback
+# 7. Final Decision: Cleanup or Rollback
 if [ "$ALL_HEALTHY" = true ]; then
     echo "✨ Deployment Successful! Cleaning up..."
     # Keep only the last 5 images logic (Prunes unused/dangling images)
