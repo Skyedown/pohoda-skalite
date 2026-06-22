@@ -5,7 +5,16 @@ export interface AdminSettings {
   waitTimeMinutes: number;
   customNote: string;
   disabledReason: string;
-  disabledProductTypes?: ('pizza' | 'burger' | 'langos' | 'sides')[];
+  disabledProductTypes?: (
+    | 'pizza'
+    | 'burger'
+    | 'langos'
+    | 'sides'
+    | 'capovane'
+    | 'drinks'
+    | 'snacks'
+  )[];
+  disabledProductIds?: string[];
   cardPaymentDeliveryEnabled?: boolean;
   cardPaymentPickupEnabled?: boolean;
 }
@@ -27,6 +36,7 @@ const DEFAULT_SETTINGS: AdminSettings = {
   disabledReason:
     'Z dôvodu veľkého počtu objednávok sme momentálne nútení pozastaviť prijímanie nových online objednávok. Ďakujeme za pochopenie a ospravedlňujeme sa za nepríjemnosti. Skúste to prosím neskôr alebo nás kontaktujte telefonicky.',
   disabledProductTypes: [],
+  disabledProductIds: [],
   cardPaymentDeliveryEnabled: false,
   cardPaymentPickupEnabled: false,
 };

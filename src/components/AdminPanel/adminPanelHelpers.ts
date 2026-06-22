@@ -3,13 +3,23 @@ import type {
   AnnouncementMode,
 } from '../../utils/adminSettings';
 
-export type ProductType = 'pizza' | 'burger' | 'langos' | 'sides';
+export type ProductType =
+  | 'pizza'
+  | 'burger'
+  | 'langos'
+  | 'sides'
+  | 'capovane'
+  | 'drinks'
+  | 'snacks';
 
 export const PRODUCT_TYPES: ProductType[] = [
   'pizza',
   'burger',
   'langos',
   'sides',
+  'capovane',
+  'drinks',
+  'snacks',
 ];
 
 export const PRODUCT_LABELS: Record<ProductType, string> = {
@@ -17,6 +27,9 @@ export const PRODUCT_LABELS: Record<ProductType, string> = {
   burger: 'Burgre',
   langos: 'Langoše',
   sides: 'Prílohy',
+  capovane: 'Čapované',
+  drinks: 'Nápoje',
+  snacks: 'Snacky',
 };
 
 export const MODES: {
@@ -54,6 +67,7 @@ export const DEFAULT_SETTINGS: AdminSettings = {
   disabledReason:
     'Z dôvodu veľkého počtu objednávok sme momentálne nútení pozastaviť prijímanie nových online objednávok. Ďakujeme za pochopenie a ospravedlňujeme sa za nepríjemnosti. Skúste to prosím neskôr alebo nás kontaktujte telefonicky.',
   disabledProductTypes: [],
+  disabledProductIds: [],
   cardPaymentDeliveryEnabled: false,
   cardPaymentPickupEnabled: false,
 };

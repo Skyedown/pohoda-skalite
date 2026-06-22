@@ -8,7 +8,9 @@
       "Bash(ss:*)",
       "Bash(docker rm:*)",
       "Bash(docker compose:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(pip3 install *)",
+      "Bash(python3 /tmp/process_images.py)"
     ],
     "deny": [],
     "ask": []

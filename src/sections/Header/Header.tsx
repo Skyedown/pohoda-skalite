@@ -103,6 +103,9 @@ const Header: React.FC<HeaderProps> = ({ isStatic = false }) => {
     { label: 'Burger', id: 'burger-menu' },
     { label: 'Langoš', id: 'langos-menu' },
     { label: 'Prílohy', id: 'prilohy-menu' },
+    { label: 'Čapované', id: 'capovane-menu' },
+    { label: 'Nápoje', id: 'drinks-menu' },
+    { label: 'Snacky', id: 'snacks-menu' },
   ];
 
   return (

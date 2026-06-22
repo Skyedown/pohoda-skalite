@@ -3,6 +3,7 @@ import Toast from '../../shared/Toast/Toast';
 import ProductModal from '../ProductModal/ProductModal';
 import { burgers } from '../../../data/burgers';
 import { useAdminSettings } from '../../../hooks/useAdminSettings';
+import { isProductDisabled } from '../../../utils/productAvailability';
 import { burgerExtras } from './BurgerSection.helpers';
 import { BurgerCard } from './BurgerCard/BurgerCard';
 import type { Product } from '../../../types';
@@ -14,10 +15,6 @@ export const BurgerSection: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
-
-  const isBurgerDisabled = (adminSettings.disabledProductTypes || []).includes(
-    'burger',
-  );
 
   const handleOpenModal = useCallback((item: Product) => {
     setSelectedItem(item);
@@ -44,7 +41,7 @@ export const BurgerSection: React.FC = () => {
               <BurgerCard
                 key={item.id}
                 item={item}
-                isDisabled={isBurgerDisabled}
+                isDisabled={isProductDisabled(item, adminSettings)}
                 onClick={handleOpenModal}
               />
             ))}
@@ -58,7 +55,9 @@ export const BurgerSection: React.FC = () => {
         onClose={handleCloseModal}
         onAddToCart={handleItemAddedToCart}
         extras={burgerExtras}
-        isDisabled={selectedItem ? isBurgerDisabled : false}
+        isDisabled={
+          selectedItem ? isProductDisabled(selectedItem, adminSettings) : false
+        }
       />
 
       <Toast

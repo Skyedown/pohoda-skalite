@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import type { Product, ProductType } from '../../types';
 import { pizzas } from '../../data/pizzas';
+import { capovane } from '../../data/capovane';
+import { drinks } from '../../data/drinks';
+import { snacks } from '../../data/snacks';
+import { isProductDisabled } from '../../utils/productAvailability';
 import ProductCard from '../../components/PizzaMain/ProductCard/ProductCard';
 import ProductModal from '../../components/PizzaMain/ProductModal/ProductModal';
 import Toast from '../../components/shared/Toast/Toast';
@@ -13,6 +17,7 @@ import {
 import BurgerSection from '../../components/PizzaMain/BurgerSection/BurgerSection';
 import LangosSection from '../../components/PizzaMain/LangosSection/LangosSection';
 import PrilohySection from '../../components/PizzaMain/PrilohySection/PrilohySection';
+import SimpleProductSection from '../../components/PizzaMain/SimpleProductSection/SimpleProductSection';
 import DeliveryInfoSection from '../../components/PizzaMain/DeliveryInfoSection/DeliveryInfoSection';
 import LocationSection from '../../components/PizzaMain/LocationSection/LocationSection';
 import QualitySection from '../../components/PizzaMain/QualitySection/QualitySection';
@@ -265,9 +270,7 @@ const PizzaMain: React.FC = () => {
                 <ProductCard
                   product={item}
                   onAddToCart={handleAddToCart}
-                  isDisabled={(
-                    adminSettings.disabledProductTypes || []
-                  ).includes(item.type)}
+                  isDisabled={isProductDisabled(item, adminSettings)}
                 />
               </div>
             ))}
@@ -283,6 +286,20 @@ const PizzaMain: React.FC = () => {
 
       {/* Prílohy Section */}
       <PrilohySection />
+
+      {/* Čapované Section */}
+      <SimpleProductSection
+        id="capovane-menu"
+        title="Čapované"
+        subtitle="Čapované z pípy do plastovej fľaše."
+        items={capovane}
+      />
+
+      {/* Nápoje Section */}
+      <SimpleProductSection id="drinks-menu" title="Nápoje" items={drinks} />
+
+      {/* Snacky Section */}
+      <SimpleProductSection id="snacks-menu" title="Snacky" items={snacks} />
 
       {/* Delivery Info Section */}
       <DeliveryInfoSection />
@@ -310,9 +327,7 @@ const PizzaMain: React.FC = () => {
         onAddToCart={handlePizzaAddedToCart}
         isDisabled={
           selectedPizza
-            ? (adminSettings.disabledProductTypes || []).includes(
-                selectedPizza.type,
-              )
+            ? isProductDisabled(selectedPizza, adminSettings)
             : false
         }
       />

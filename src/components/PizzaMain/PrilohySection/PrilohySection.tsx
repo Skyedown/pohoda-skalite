@@ -3,6 +3,7 @@ import Toast from '../../shared/Toast/Toast';
 import ProductModal from '../ProductModal/ProductModal';
 import { prilohy } from '../../../data/prilohy';
 import { useAdminSettings } from '../../../hooks/useAdminSettings';
+import { isProductDisabled } from '../../../utils/productAvailability';
 import { PrilohyCard } from './PrilohyCard/PrilohyCard';
 import type { Product } from '../../../types';
 import './PrilohySection.less';
@@ -13,10 +14,6 @@ export const PrilohySection: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
-
-  const isSidesDisabled = (adminSettings.disabledProductTypes || []).includes(
-    'sides',
-  );
 
   const handleOpenModal = useCallback((item: Product) => {
     setSelectedItem(item);
@@ -43,7 +40,7 @@ export const PrilohySection: React.FC = () => {
               <PrilohyCard
                 key={item.id}
                 item={item}
-                isDisabled={isSidesDisabled}
+                isDisabled={isProductDisabled(item, adminSettings)}
                 onClick={handleOpenModal}
               />
             ))}
@@ -57,7 +54,9 @@ export const PrilohySection: React.FC = () => {
         onClose={handleCloseModal}
         onAddToCart={handleItemAddedToCart}
         extras={[]}
-        isDisabled={selectedItem ? isSidesDisabled : false}
+        isDisabled={
+          selectedItem ? isProductDisabled(selectedItem, adminSettings) : false
+        }
       />
 
       <Toast

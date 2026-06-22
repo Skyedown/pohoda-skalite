@@ -24,25 +24,26 @@ export const AdminProductAvailability: React.FC<
     <div className="admin-panel__section">
       <h2 className="admin-panel__section-title">Dostupnosť produktov</h2>
       <p className="admin-panel__section-description">
-        Vypnite jednotlivé kategórie ak hľadáte vydané. Zákazníci budú vidieť
-        oznámenie v baneri a nebudú môcť pridávať produkty do košíka.
+        Prepínač zapnutý = kategória je dostupná. Vypnite celú kategóriu ak je
+        vypredaná. Zákazníci uvidia oznámenie v baneri a nebudú môcť pridávať
+        produkty do košíka.
       </p>
       <div className="admin-panel__checkbox-group">
         {PRODUCT_TYPES.map((productType) => {
-          const isDisabled = disabledProductTypes.includes(productType);
+          const isAvailable = !disabledProductTypes.includes(productType);
           return (
             <label key={productType} className="admin-panel__checkbox">
               <input
                 type="checkbox"
-                checked={isDisabled}
+                checked={isAvailable}
                 onChange={handleToggle(productType)}
                 className="admin-panel__checkbox-input"
               />
               <div className="admin-panel__checkbox-content">
                 <span className="admin-panel__checkbox-label">
-                  <StatusToggleIcon enabled={isDisabled} />
+                  <StatusToggleIcon enabled={isAvailable} />
                   {PRODUCT_LABELS[productType]} -{' '}
-                  {isDisabled ? 'Vypnuté' : 'Dostupné'}
+                  {isAvailable ? 'Dostupné' : 'Vypnuté'}
                 </span>
               </div>
             </label>

@@ -3,6 +3,11 @@ import { pizzas } from '../../data/pizzas';
 import { burgers } from '../../data/burgers';
 import { langos } from '../../data/langos';
 import { prilohy } from '../../data/prilohy';
+import { capovane } from '../../data/capovane';
+import { drinks } from '../../data/drinks';
+import { snacks } from '../../data/snacks';
+import { useAdminSettings } from '../../hooks/useAdminSettings';
+import { isProductDisabled } from '../../utils/productAvailability';
 import OrderFormSection from './OrderFormSection/OrderFormSection';
 import OrderSidebar from './OrderSidebar/OrderSidebar';
 import AdminIngredientsModal from './AdminIngredientsModal';
@@ -71,21 +76,33 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const API_URL = import.meta.env.VITE_API_URL || '';
+  const adminSettings = useAdminSettings();
 
-  // Organize products by category
+  // Organize products by category, hiding items that are disabled (out of stock)
   const productsByCategory = useMemo(
     () => ({
-      pizza: pizzas,
-      burger: burgers,
-      langos: langos,
-      sides: prilohy,
+      pizza: pizzas.filter((p) => !isProductDisabled(p, adminSettings)),
+      burger: burgers.filter((p) => !isProductDisabled(p, adminSettings)),
+      langos: langos.filter((p) => !isProductDisabled(p, adminSettings)),
+      sides: prilohy.filter((p) => !isProductDisabled(p, adminSettings)),
+      capovane: capovane.filter((p) => !isProductDisabled(p, adminSettings)),
+      drinks: drinks.filter((p) => !isProductDisabled(p, adminSettings)),
+      snacks: snacks.filter((p) => !isProductDisabled(p, adminSettings)),
     }),
-    [],
+    [adminSettings],
   );
 
-  // All products flat list for resolving order items
+  // All products flat list for resolving order items (unfiltered, for editing existing orders)
   const allProducts = useMemo(
-    () => [...pizzas, ...burgers, ...langos, ...prilohy],
+    () => [
+      ...pizzas,
+      ...burgers,
+      ...langos,
+      ...prilohy,
+      ...capovane,
+      ...drinks,
+      ...snacks,
+    ],
     [],
   );
 

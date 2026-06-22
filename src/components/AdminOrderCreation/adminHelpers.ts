@@ -74,6 +74,9 @@ export const categoryLabels: Record<string, string> = {
   burger: 'Burgre',
   langos: 'Langoše',
   sides: 'Prílohy',
+  capovane: 'Čapované',
+  drinks: 'Nápoje',
+  snacks: 'Snacky',
 };
 
 // ============================================

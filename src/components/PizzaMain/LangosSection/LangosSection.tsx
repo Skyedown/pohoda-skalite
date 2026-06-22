@@ -3,6 +3,7 @@ import Toast from '../../shared/Toast/Toast';
 import ProductModal from '../ProductModal/ProductModal';
 import { langos } from '../../../data/langos';
 import { useAdminSettings } from '../../../hooks/useAdminSettings';
+import { isProductDisabled } from '../../../utils/productAvailability';
 import { langosExtras } from './LangosSection.helpers';
 import { LangosCard } from './LangosCard/LangosCard';
 import type { Product } from '../../../types';
@@ -14,10 +15,6 @@ export const LangosSection: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
-
-  const isLangosDisabled = (adminSettings.disabledProductTypes || []).includes(
-    'langos',
-  );
 
   const handleOpenModal = useCallback((item: Product) => {
     setSelectedItem(item);
@@ -45,7 +42,7 @@ export const LangosSection: React.FC = () => {
               <LangosCard
                 key={item.id}
                 item={item}
-                isDisabled={isLangosDisabled}
+                isDisabled={isProductDisabled(item, adminSettings)}
                 onClick={handleOpenModal}
               />
             ))}
@@ -59,7 +56,9 @@ export const LangosSection: React.FC = () => {
         onClose={handleCloseModal}
         onAddToCart={handleItemAddedToCart}
         extras={langosExtras}
-        isDisabled={selectedItem ? isLangosDisabled : false}
+        isDisabled={
+          selectedItem ? isProductDisabled(selectedItem, adminSettings) : false
+        }
       />
 
       <Toast

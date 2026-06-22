@@ -27,6 +27,7 @@ const createDefaultSettings = () => ({
   disabledReason:
     'Z dôvodu veľkého počtu objednávok sme momentálne nútení pozastaviť prijímanie nových online objednávok. Ďakujeme za pochopenie a ospravedlňujeme sa za nepríjemnosti. Skúste to prosím neskôr alebo nás kontaktujte telefonicky.',
   disabledProductTypes: [],
+  disabledProductIds: [],
   cardPaymentDeliveryEnabled: false,
   cardPaymentPickupEnabled: false,
 });
@@ -78,6 +79,7 @@ router.post('/api/admin-settings', (req, res) => {
       customNote,
       disabledReason,
       disabledProductTypes,
+      disabledProductIds,
       cardPaymentDeliveryEnabled,
       cardPaymentPickupEnabled,
     } = req.body;
@@ -111,12 +113,29 @@ router.post('/api/admin-settings', (req, res) => {
         .json({ error: 'Disabled reason too long (max 500 characters)' });
     }
 
-    const validProductTypes = ['pizza', 'burger', 'langos', 'sides'];
+    const validProductTypes = [
+      'pizza',
+      'burger',
+      'langos',
+      'sides',
+      'capovane',
+      'drinks',
+      'snacks',
+    ];
     if (disabledProductTypes && Array.isArray(disabledProductTypes)) {
       if (
         !disabledProductTypes.every((type) => validProductTypes.includes(type))
       ) {
         return res.status(400).json({ error: 'Invalid product type' });
+      }
+    }
+
+    if (disabledProductIds !== undefined) {
+      if (
+        !Array.isArray(disabledProductIds) ||
+        !disabledProductIds.every((id) => typeof id === 'string')
+      ) {
+        return res.status(400).json({ error: 'Invalid disabledProductIds' });
       }
     }
 
@@ -144,6 +163,7 @@ router.post('/api/admin-settings', (req, res) => {
       customNote,
       disabledReason,
       disabledProductTypes: disabledProductTypes || [],
+      disabledProductIds: disabledProductIds || [],
       cardPaymentDeliveryEnabled: !!cardPaymentDeliveryEnabled,
       cardPaymentPickupEnabled: !!cardPaymentPickupEnabled,
     };

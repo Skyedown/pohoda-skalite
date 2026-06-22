@@ -1,4 +1,5 @@
 import { getAdminSettings, formatWaitTime } from './adminSettings';
+import type { ProductType } from '../types';
 
 export type OrderingStatus =
   | 'before_preorder' // Before preorder time - ordering disabled
@@ -13,7 +14,7 @@ export interface OrderingStatusInfo {
   status: OrderingStatus;
   canOrder: boolean;
   message: string;
-  disabledProductTypes?: ('pizza' | 'burger' | 'langos' | 'sides')[];
+  disabledProductTypes?: ProductType[];
 }
 
 function parseTime(timeStr: string): { hours: number; minutes: number } {
@@ -103,14 +104,15 @@ export async function getOrderingStatusAsync(): Promise<OrderingStatusInfo> {
   };
 }
 
-function getDisabledProductLabels(
-  disabledProductTypes: ('pizza' | 'burger' | 'langos' | 'sides')[],
-): string {
-  const labels: Record<string, string> = {
+function getDisabledProductLabels(disabledProductTypes: ProductType[]): string {
+  const labels: Record<ProductType, string> = {
     pizza: 'Pizze',
     burger: 'Burgre',
     langos: 'Langoše',
     sides: 'Prílohy',
+    capovane: 'Čapované',
+    drinks: 'Nápoje',
+    snacks: 'Snacky',
   };
 
   const names = disabledProductTypes.map((type) => labels[type]);

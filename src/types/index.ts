@@ -1,10 +1,18 @@
-export type ProductType = 'pizza' | 'burger' | 'langos' | 'sides';
+export type ProductType =
+  | 'pizza'
+  | 'burger'
+  | 'langos'
+  | 'sides'
+  | 'capovane'
+  | 'drinks'
+  | 'snacks';
 
 export interface AdminSettings {
   mode: 'off' | 'disabled' | 'waitTime' | 'customNote';
   waitTimeMinutes: number;
   customNote: string;
   disabledProductTypes?: ProductType[];
+  disabledProductIds?: string[];
   cardPaymentDeliveryEnabled?: boolean;
   cardPaymentPickupEnabled?: boolean;
 }
