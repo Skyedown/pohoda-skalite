@@ -10,14 +10,9 @@ import {
 import { AdminModeSelector } from '../../components/AdminPanel/AdminModeSelector/AdminModeSelector';
 import { AdminWaitTimeSection } from '../../components/AdminPanel/AdminWaitTimeSection/AdminWaitTimeSection';
 import { AdminTextareaSection } from '../../components/AdminPanel/AdminTextareaSection/AdminTextareaSection';
-import { AdminProductAvailability } from '../../components/AdminPanel/AdminProductAvailability/AdminProductAvailability';
-import { AdminProductItemAvailability } from '../../components/AdminPanel/AdminProductItemAvailability/AdminProductItemAvailability';
 import { AdminCardPayment } from '../../components/AdminPanel/AdminCardPayment/AdminCardPayment';
 import { AdminSaveActions } from '../../components/AdminPanel/AdminSaveActions/AdminSaveActions';
-import {
-  DEFAULT_SETTINGS,
-  type ProductType,
-} from '../../components/AdminPanel/adminPanelHelpers';
+import { DEFAULT_SETTINGS } from '../../components/AdminPanel/adminPanelHelpers';
 import '../AdminPanel/AdminPanel.less';
 
 const AdminOrderSettings: React.FC = () => {
@@ -53,34 +48,6 @@ const AdminOrderSettings: React.FC = () => {
 
   const handleDisabledReasonChange = useCallback((disabledReason: string) => {
     setSettings((prev) => ({ ...prev, disabledReason }));
-    setSaveSuccess(false);
-  }, []);
-
-  const handleProductTypeToggle = useCallback((productType: ProductType) => {
-    setSettings((prev) => {
-      const current = prev.disabledProductTypes || [];
-      const isDisabled = current.includes(productType);
-      return {
-        ...prev,
-        disabledProductTypes: isDisabled
-          ? current.filter((t) => t !== productType)
-          : [...current, productType],
-      };
-    });
-    setSaveSuccess(false);
-  }, []);
-
-  const handleProductIdToggle = useCallback((productId: string) => {
-    setSettings((prev) => {
-      const current = prev.disabledProductIds || [];
-      const isDisabled = current.includes(productId);
-      return {
-        ...prev,
-        disabledProductIds: isDisabled
-          ? current.filter((id) => id !== productId)
-          : [...current, productId],
-      };
-    });
     setSaveSuccess(false);
   }, []);
 
@@ -165,16 +132,6 @@ const AdminOrderSettings: React.FC = () => {
               onChange={handleCustomNoteChange}
             />
           )}
-
-          <AdminProductAvailability
-            disabledProductTypes={settings.disabledProductTypes || []}
-            onToggle={handleProductTypeToggle}
-          />
-
-          <AdminProductItemAvailability
-            disabledProductIds={settings.disabledProductIds || []}
-            onToggle={handleProductIdToggle}
-          />
 
           <AdminCardPayment
             deliveryEnabled={settings.cardPaymentDeliveryEnabled || false}

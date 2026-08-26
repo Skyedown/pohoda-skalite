@@ -15,6 +15,7 @@ import PrivacyPolicy from './views/PrivacyPolicy/PrivacyPolicy';
 import AdminPanel from './views/AdminPanel/AdminPanel';
 import AdminAnalytics from './views/AdminAnalytics/AdminAnalytics';
 import AdminOrderSettings from './views/AdminOrderSettings/AdminOrderSettings';
+import AdminProductRestrictions from './views/AdminProductRestrictions/AdminProductRestrictions';
 import AdminOrders from './views/AdminOrders/AdminOrders';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import FloatingCart from './components/shared/FloatingCart/FloatingCart';
@@ -74,6 +75,14 @@ const AppContent: React.FC = () => {
             element={
               <ProtectedRoute>
                 <AdminOrderSettings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/products"
+            element={
+              <ProtectedRoute>
+                <AdminProductRestrictions />
               </ProtectedRoute>
             }
           />
