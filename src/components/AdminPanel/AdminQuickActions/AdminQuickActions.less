@@ -4,7 +4,7 @@
 .admin-panel {
   &__quick-actions {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 16px;
 
     @media (max-width: @breakpoint-md) {
@@ -50,6 +50,14 @@
 
     &--orders {
       background: linear-gradient(135deg, @purple-light 0%, @purple-dark 100%);
+    }
+
+    &--settings {
+      background: linear-gradient(
+        135deg,
+        @success-color 0%,
+        @success-dark 100%
+      );
     }
 
     &--analytics {
