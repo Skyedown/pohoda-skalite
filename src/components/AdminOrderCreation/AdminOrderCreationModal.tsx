@@ -78,6 +78,9 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [customerMatches, setCustomerMatches] = useState<CustomerMatch[]>([]);
+  const [lookupField, setLookupField] = useState<'fullName' | 'phone' | null>(
+    null,
+  );
 
   const API_URL = import.meta.env.VITE_API_URL || '';
   const adminSettings = useAdminSettings();
@@ -122,6 +125,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
       setEditingItemIndex(null);
       setEditingIngredientsIndex(null);
       setCustomerMatches([]);
+      setLookupField(null);
     } else if (editOrder) {
       // Populate form from existing order
       const items: AdminOrderItem[] = editOrder.items.map((item) => {
@@ -228,6 +232,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
     setFormData((prev) => ({ ...prev, ...patch }));
     if (patch.deliveryMethod) setDeliveryMethod(patch.deliveryMethod);
     setCustomerMatches([]);
+    setLookupField(null);
   }, []);
 
   // Handle adding/removing products
@@ -346,6 +351,10 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
   ) => {
     const { name, value } = e.target;
 
+    if (name === 'fullName' || name === 'phone') {
+      setLookupField(name);
+    }
+
     // For houseNumber, only allow numeric values
     if (name === 'houseNumber') {
       const numericValue = value.replace(/[^0-9]/g, '');
@@ -459,6 +468,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
               deliveryMethod={deliveryMethod}
               paymentMethod={paymentMethod}
               customerMatches={customerMatches}
+              lookupField={lookupField}
               onOrderTypeChange={setOrderType}
               onProductClick={handleProductClick}
               onFormChange={handleFormChange}

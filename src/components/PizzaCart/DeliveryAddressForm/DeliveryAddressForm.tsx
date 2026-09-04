@@ -1,6 +1,8 @@
 import React from 'react';
 import type { DeliveryMethod } from '../../../types';
 import { DeliveryMethodSelector } from '../DeliveryMethodSelector/DeliveryMethodSelector';
+import CustomerSuggestions from '../../AdminOrderCreation/CustomerSuggestions/CustomerSuggestions';
+import type { CustomerMatch } from '../../AdminOrderCreation/adminHelpers';
 import './DeliveryAddressForm.less';
 
 interface FormData {
@@ -23,6 +25,9 @@ interface DeliveryAddressFormProps {
   ) => void;
   onDeliveryMethodChange: (method: DeliveryMethod) => void;
   hideEmail?: boolean;
+  customerMatches?: CustomerMatch[];
+  lookupField?: 'fullName' | 'phone' | null;
+  onApplyCustomerMatch?: (match: CustomerMatch) => void;
 }
 
 const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
@@ -31,7 +36,20 @@ const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
   onChange,
   onDeliveryMethodChange,
   hideEmail = false,
+  customerMatches = [],
+  lookupField = null,
+  onApplyCustomerMatch,
 }) => {
+  const renderSuggestions = (field: 'fullName' | 'phone') =>
+    onApplyCustomerMatch &&
+    lookupField === field &&
+    customerMatches.length > 0 ? (
+      <CustomerSuggestions
+        matches={customerMatches}
+        onApply={onApplyCustomerMatch}
+      />
+    ) : null;
+
   return (
     <div className="delivery-address">
       <h3 className="delivery-address__title">Kontaktné údaje</h3>
@@ -42,7 +60,7 @@ const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
       />
 
       {/* Full Name */}
-      <div className="form-group">
+      <div className="form-group form-group--anchor">
         <label className="form-group__label">Celé meno</label>
         <input
           type="text"
@@ -57,6 +75,7 @@ const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
         {errors.fullName && (
           <span className="form-group__error">{errors.fullName}</span>
         )}
+        {renderSuggestions('fullName')}
       </div>
 
       {/* Address fields - only show for delivery */}
@@ -105,7 +124,7 @@ const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
       )}
 
       {/* Contact fields - always show */}
-      <div className="form-group">
+      <div className="form-group form-group--anchor">
         <label className="form-group__label">Telefónne číslo</label>
         <input
           type="tel"
@@ -120,6 +139,7 @@ const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
         {errors.phone && (
           <span className="form-group__error">{errors.phone}</span>
         )}
+        {renderSuggestions('phone')}
       </div>
 
       {!hideEmail && (

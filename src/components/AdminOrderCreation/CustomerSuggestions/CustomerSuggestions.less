@@ -1,19 +1,36 @@
 @import '../../../styles/variables.less';
 
 .customer-suggestions {
+  position: absolute;
+  top: calc(100% + @spacing-xs);
+  left: 0;
+  right: 0;
+  z-index: 20;
   display: flex;
   flex-direction: column;
   gap: @spacing-sm;
-  margin-bottom: @spacing-md;
+  max-height: 16rem;
+  overflow-y: auto;
   padding: @spacing-md;
-  background: @surface-gray;
-  border: 1px solid @gray-300;
+  background: @surface-color;
+  border: 2px solid @action-color;
   border-radius: @border-radius-md;
+  box-shadow: @shadow-lg;
 
   &__title {
-    font-size: @font-size-sm;
-    font-weight: 600;
-    color: @text-secondary;
+    display: flex;
+    align-items: center;
+    gap: @spacing-xs;
+    font-size: @font-size-xs;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: @action-color;
+
+    &::before {
+      content: '↩';
+      font-size: @font-size-sm;
+    }
   }
 
   &__list {

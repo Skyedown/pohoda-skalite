@@ -16,6 +16,7 @@ interface OrderFormSectionProps {
   deliveryMethod: DeliveryMethod;
   paymentMethod: 'cash' | 'card';
   customerMatches: CustomerMatch[];
+  lookupField: 'fullName' | 'phone' | null;
   onOrderTypeChange: (type: 'dine-in' | 'customer') => void;
   onProductClick: (product: Product) => void;
   onFormChange: (
@@ -38,6 +39,7 @@ const OrderFormSection: React.FC<OrderFormSectionProps> = ({
   deliveryMethod,
   paymentMethod,
   customerMatches,
+  lookupField,
   onOrderTypeChange,
   onProductClick,
   onFormChange,
@@ -76,6 +78,7 @@ const OrderFormSection: React.FC<OrderFormSectionProps> = ({
             deliveryMethod={deliveryMethod}
             paymentMethod={paymentMethod}
             customerMatches={customerMatches}
+            lookupField={lookupField}
             onFormChange={onFormChange}
             onDeliveryMethodChange={onDeliveryMethodChange}
             onPaymentMethodChange={onPaymentMethodChange}

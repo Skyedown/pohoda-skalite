@@ -1,7 +1,6 @@
 import React from 'react';
 import DeliveryAddressForm from '../../PizzaCart/DeliveryAddressForm/DeliveryAddressForm';
 import PaymentMethodSelector from '../../PizzaCart/PaymentMethodSelector/PaymentMethodSelector';
-import CustomerSuggestions from '../CustomerSuggestions/CustomerSuggestions';
 import type { DeliveryMethod } from '../../../types';
 import type { FormData, CustomerMatch } from '../adminHelpers';
 import './CustomerDetailsSection.less';
@@ -12,6 +11,7 @@ interface CustomerDetailsSectionProps {
   deliveryMethod: DeliveryMethod;
   paymentMethod: 'cash' | 'card';
   customerMatches: CustomerMatch[];
+  lookupField: 'fullName' | 'phone' | null;
   onFormChange: (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -28,6 +28,7 @@ const CustomerDetailsSection: React.FC<CustomerDetailsSectionProps> = ({
   deliveryMethod,
   paymentMethod,
   customerMatches,
+  lookupField,
   onFormChange,
   onDeliveryMethodChange,
   onPaymentMethodChange,
@@ -37,11 +38,6 @@ const CustomerDetailsSection: React.FC<CustomerDetailsSectionProps> = ({
     <div className="customer-details-section">
       <h3 className="customer-details-section__title">Detaily objednávky</h3>
 
-      <CustomerSuggestions
-        matches={customerMatches}
-        onApply={onApplyCustomerMatch}
-      />
-
       {/* Delivery/Pickup Selection */}
       <DeliveryAddressForm
         formData={formData}
@@ -49,6 +45,9 @@ const CustomerDetailsSection: React.FC<CustomerDetailsSectionProps> = ({
         onChange={onFormChange}
         onDeliveryMethodChange={onDeliveryMethodChange}
         hideEmail={true}
+        customerMatches={customerMatches}
+        lookupField={lookupField}
+        onApplyCustomerMatch={onApplyCustomerMatch}
       />
 
       {/* Payment Method */}
