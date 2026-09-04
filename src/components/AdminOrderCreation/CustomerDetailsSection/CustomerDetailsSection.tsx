@@ -20,6 +20,7 @@ interface CustomerDetailsSectionProps {
   onDeliveryMethodChange: (method: DeliveryMethod) => void;
   onPaymentMethodChange: (method: 'cash' | 'card') => void;
   onApplyCustomerMatch: (match: CustomerMatch) => void;
+  onCloseSuggestions: () => void;
 }
 
 const CustomerDetailsSection: React.FC<CustomerDetailsSectionProps> = ({
@@ -33,6 +34,7 @@ const CustomerDetailsSection: React.FC<CustomerDetailsSectionProps> = ({
   onDeliveryMethodChange,
   onPaymentMethodChange,
   onApplyCustomerMatch,
+  onCloseSuggestions,
 }) => {
   return (
     <div className="customer-details-section">
@@ -48,6 +50,7 @@ const CustomerDetailsSection: React.FC<CustomerDetailsSectionProps> = ({
         customerMatches={customerMatches}
         lookupField={lookupField}
         onApplyCustomerMatch={onApplyCustomerMatch}
+        onCloseSuggestions={onCloseSuggestions}
       />
 
       {/* Payment Method */}

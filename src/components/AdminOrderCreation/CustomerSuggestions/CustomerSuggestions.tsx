@@ -5,6 +5,7 @@ import './CustomerSuggestions.less';
 interface CustomerSuggestionsProps {
   matches: CustomerMatch[];
   onApply: (match: CustomerMatch) => void;
+  onClose: () => void;
 }
 
 const methodLabels: Record<CustomerMatch['method'], string> = {
@@ -46,12 +47,23 @@ const SuggestionRow: React.FC<{
 const CustomerSuggestions: React.FC<CustomerSuggestionsProps> = ({
   matches,
   onApply,
+  onClose,
 }) => {
   if (matches.length === 0) return null;
 
   return (
     <div className="customer-suggestions">
-      <span className="customer-suggestions__title">Nájdení zákazníci</span>
+      <div className="customer-suggestions__header">
+        <span className="customer-suggestions__title">Nájdení zákazníci</span>
+        <button
+          type="button"
+          className="customer-suggestions__close"
+          onClick={onClose}
+          aria-label="Zavrieť návrhy"
+        >
+          ✕
+        </button>
+      </div>
       <div className="customer-suggestions__list">
         {matches.map((match) => (
           <SuggestionRow

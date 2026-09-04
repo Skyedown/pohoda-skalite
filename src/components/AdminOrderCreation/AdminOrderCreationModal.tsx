@@ -235,6 +235,11 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
     setLookupField(null);
   }, []);
 
+  const handleCloseSuggestions = useCallback(() => {
+    setCustomerMatches([]);
+    setLookupField(null);
+  }, []);
+
   // Handle adding/removing products
   const handleProductClick = (product: Product) => {
     setOrderItems((prev) => addProductToOrder(prev, product));
@@ -475,6 +480,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
               onDeliveryMethodChange={handleDeliveryMethodChange}
               onPaymentMethodChange={setPaymentMethod}
               onApplyCustomerMatch={handleApplyCustomerMatch}
+              onCloseSuggestions={handleCloseSuggestions}
               onSubmit={handleSubmit}
             />
           </div>
