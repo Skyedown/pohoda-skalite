@@ -198,7 +198,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
     const phoneDigits = formData.phone.replace(/\D/g, '');
     const name = formData.fullName.trim();
     const query = {
-      phone: phoneDigits.length >= 5 ? formData.phone : '',
+      phone: phoneDigits.length >= 4 ? formData.phone : '',
       name: name.length >= 3 ? name : '',
     };
 

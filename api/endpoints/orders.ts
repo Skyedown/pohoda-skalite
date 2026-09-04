@@ -148,15 +148,16 @@ router.get('/api/orders/lookup', async (req, res) => {
     const name = String(req.query.name || '').trim();
 
     const conditions: Record<string, unknown>[] = [];
-    if (phone.replace(/\D/g, '').length >= 5) {
+    if (phone.replace(/\D/g, '').length >= 4) {
       conditions.push({
         'delivery.phone': { $regex: escapeRegex(phone) },
       });
     }
     if (name.length >= 3) {
+      // Match the query at the start of any word so a surname alone matches too
       conditions.push({
         'delivery.fullName': {
-          $regex: `^${escapeRegex(name)}`,
+          $regex: `(^|\\s)${escapeRegex(name)}`,
           $options: 'i',
         },
       });

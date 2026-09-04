@@ -63,6 +63,25 @@ const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
         onChange={onDeliveryMethodChange}
       />
 
+      {/* Phone - first so a returning caller is matched immediately */}
+      <div className="form-group form-group--anchor">
+        <label className="form-group__label">Telefónne číslo</label>
+        <input
+          type="tel"
+          name="phone"
+          className={`form-group__input ${
+            errors.phone ? 'form-group__input--error' : ''
+          }`}
+          placeholder="+421 XXX XXX XXX"
+          value={formData.phone}
+          onChange={onChange}
+        />
+        {errors.phone && (
+          <span className="form-group__error">{errors.phone}</span>
+        )}
+        {renderSuggestions('phone')}
+      </div>
+
       {/* Full Name */}
       <div className="form-group form-group--anchor">
         <label className="form-group__label">Celé meno</label>
@@ -126,25 +145,6 @@ const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
           </div>
         </>
       )}
-
-      {/* Contact fields - always show */}
-      <div className="form-group form-group--anchor">
-        <label className="form-group__label">Telefónne číslo</label>
-        <input
-          type="tel"
-          name="phone"
-          className={`form-group__input ${
-            errors.phone ? 'form-group__input--error' : ''
-          }`}
-          placeholder="+421 XXX XXX XXX"
-          value={formData.phone}
-          onChange={onChange}
-        />
-        {errors.phone && (
-          <span className="form-group__error">{errors.phone}</span>
-        )}
-        {renderSuggestions('phone')}
-      </div>
 
       {!hideEmail && (
         <div className="form-group">
