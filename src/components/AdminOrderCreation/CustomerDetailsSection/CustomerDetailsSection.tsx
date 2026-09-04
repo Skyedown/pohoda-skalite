@@ -1,8 +1,9 @@
 import React from 'react';
 import DeliveryAddressForm from '../../PizzaCart/DeliveryAddressForm/DeliveryAddressForm';
 import PaymentMethodSelector from '../../PizzaCart/PaymentMethodSelector/PaymentMethodSelector';
+import CustomerSuggestions from '../CustomerSuggestions/CustomerSuggestions';
 import type { DeliveryMethod } from '../../../types';
-import type { FormData } from '../adminHelpers';
+import type { FormData, CustomerMatch } from '../adminHelpers';
 import './CustomerDetailsSection.less';
 
 interface CustomerDetailsSectionProps {
@@ -10,6 +11,7 @@ interface CustomerDetailsSectionProps {
   errors: Record<string, string>;
   deliveryMethod: DeliveryMethod;
   paymentMethod: 'cash' | 'card';
+  customerMatches: CustomerMatch[];
   onFormChange: (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -17,6 +19,7 @@ interface CustomerDetailsSectionProps {
   ) => void;
   onDeliveryMethodChange: (method: DeliveryMethod) => void;
   onPaymentMethodChange: (method: 'cash' | 'card') => void;
+  onApplyCustomerMatch: (match: CustomerMatch) => void;
 }
 
 const CustomerDetailsSection: React.FC<CustomerDetailsSectionProps> = ({
@@ -24,13 +27,20 @@ const CustomerDetailsSection: React.FC<CustomerDetailsSectionProps> = ({
   errors,
   deliveryMethod,
   paymentMethod,
+  customerMatches,
   onFormChange,
   onDeliveryMethodChange,
   onPaymentMethodChange,
+  onApplyCustomerMatch,
 }) => {
   return (
     <div className="customer-details-section">
       <h3 className="customer-details-section__title">Detaily objednávky</h3>
+
+      <CustomerSuggestions
+        matches={customerMatches}
+        onApply={onApplyCustomerMatch}
+      />
 
       {/* Delivery/Pickup Selection */}
       <DeliveryAddressForm

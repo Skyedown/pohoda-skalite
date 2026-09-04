@@ -100,6 +100,19 @@ export interface FormData {
   deliveryMethod: DeliveryMethod;
 }
 
+export interface CustomerMatch {
+  customer: {
+    fullName: string;
+    phone: string;
+    email: string;
+    city: string;
+    houseNumber: string;
+  };
+  method: DeliveryMethod;
+  lastOrderAt: string;
+  orderCount: number;
+}
+
 // ============================================
 // CALCULATION FUNCTIONS
 // ============================================
@@ -224,6 +237,45 @@ export const buildOrderPayload = (
     createdBy: 'admin',
   };
 };
+
+// ============================================
+// CUSTOMER LOOKUP
+// ============================================
+
+/**
+ * Fetch returning-customer matches by partial phone or name.
+ */
+export async function lookupCustomers(
+  apiUrl: string,
+  query: { phone: string; name: string },
+  signal: AbortSignal,
+): Promise<CustomerMatch[]> {
+  const params = new URLSearchParams();
+  if (query.phone) params.set('phone', query.phone);
+  if (query.name) params.set('name', query.name);
+
+  const res = await fetch(`${apiUrl}/api/orders/lookup?${params.toString()}`, {
+    signal,
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+  const data: { matches?: CustomerMatch[] } = await res.json();
+  return data.matches || [];
+}
+
+/**
+ * Build a FormData patch from a selected customer match.
+ */
+export function applyCustomerMatch(match: CustomerMatch): Partial<FormData> {
+  return {
+    fullName: match.customer.fullName,
+    phone: match.customer.phone,
+    email: match.customer.email,
+    city: match.customer.city,
+    houseNumber: match.customer.houseNumber,
+    deliveryMethod: match.method,
+  };
+}
 
 // ============================================
 // STATE MANAGEMENT HELPERS

@@ -9,6 +9,12 @@ import { Order } from '../models/Order.js';
 
 const router = Router();
 
+const MAX_LOOKUP_MATCHES = 6;
+
+function escapeRegex(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 // Submit a new order
 router.post('/api/orders', async (req, res) => {
   console.log(
@@ -128,6 +134,74 @@ router.get('/api/orders/recent', async (req, res) => {
     res
       .status(500)
       .json({ error: 'Failed to fetch orders', details: errorMessage });
+  }
+});
+
+// Look up returning customers from past orders by phone or name
+router.get('/api/orders/lookup', async (req, res) => {
+  try {
+    if (!isMongoConnected()) {
+      return res.status(503).json({ error: 'Database not available' });
+    }
+
+    const phone = String(req.query.phone || '').trim();
+    const name = String(req.query.name || '').trim();
+
+    const conditions: Record<string, unknown>[] = [];
+    if (phone.replace(/\D/g, '').length >= 5) {
+      conditions.push({
+        'delivery.phone': { $regex: escapeRegex(phone) },
+      });
+    }
+    if (name.length >= 3) {
+      conditions.push({
+        'delivery.fullName': {
+          $regex: `^${escapeRegex(name)}`,
+          $options: 'i',
+        },
+      });
+    }
+
+    if (conditions.length === 0) {
+      return res.json({ matches: [] });
+    }
+
+    const matches = await Order.aggregate([
+      { $match: { 'delivery.phone': { $nin: [null, ''] }, $or: conditions } },
+      { $sort: { createdAt: -1 } },
+      {
+        $group: {
+          _id: '$delivery.phone',
+          delivery: { $first: '$delivery' },
+          lastOrderAt: { $first: '$createdAt' },
+          orderCount: { $sum: 1 },
+        },
+      },
+      { $sort: { lastOrderAt: -1 } },
+      { $limit: MAX_LOOKUP_MATCHES },
+    ]);
+
+    res.json({
+      matches: matches.map((match) => ({
+        customer: {
+          fullName: match.delivery.fullName || '',
+          phone: match.delivery.phone || '',
+          email: match.delivery.email || '',
+          city: match.delivery.city || '',
+          houseNumber: match.delivery.houseNumber || '',
+        },
+        method: match.delivery.method,
+        lastOrderAt: match.lastOrderAt,
+        orderCount: match.orderCount,
+      })),
+    });
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error';
+    console.error('❌ Error looking up customers:', errorMessage);
+    res
+      .status(500)
+      .json({ error: 'Failed to look up customers', details: errorMessage });
   }
 });
 

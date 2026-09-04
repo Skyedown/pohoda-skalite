@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { pizzas } from '../../data/pizzas';
 import { burgers } from '../../data/burgers';
 import { langos } from '../../data/langos';
@@ -20,7 +20,10 @@ import {
   buildOrderPayload,
   getInitialFormState,
   addProductToOrder,
+  lookupCustomers,
+  applyCustomerMatch,
   type AdminOrderItem,
+  type CustomerMatch,
 } from './adminHelpers';
 import './AdminOrderCreationModal.less';
 
@@ -74,6 +77,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
   const [formData, setFormData] = useState(getInitialFormState());
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [customerMatches, setCustomerMatches] = useState<CustomerMatch[]>([]);
 
   const API_URL = import.meta.env.VITE_API_URL || '';
   const adminSettings = useAdminSettings();
@@ -117,6 +121,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
       setErrors({});
       setEditingItemIndex(null);
       setEditingIngredientsIndex(null);
+      setCustomerMatches([]);
     } else if (editOrder) {
       // Populate form from existing order
       const items: AdminOrderItem[] = editOrder.items.map((item) => {
@@ -178,6 +183,52 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
 
   const deliveryFee = 0; // Delivery is always free
   const total = subtotal + deliveryFee;
+
+  // Suggest returning customers from past orders as the admin types contact details
+  useEffect(() => {
+    if (!isOpen || orderType !== 'customer' || editOrder) {
+      setCustomerMatches([]);
+      return;
+    }
+
+    const phoneDigits = formData.phone.replace(/\D/g, '');
+    const name = formData.fullName.trim();
+    const query = {
+      phone: phoneDigits.length >= 5 ? formData.phone : '',
+      name: name.length >= 3 ? name : '',
+    };
+
+    if (!query.phone && !query.name) {
+      setCustomerMatches([]);
+      return;
+    }
+
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => {
+      lookupCustomers(API_URL, query, controller.signal)
+        .then(setCustomerMatches)
+        .catch(() => setCustomerMatches([]));
+    }, 400);
+
+    return () => {
+      window.clearTimeout(timer);
+      controller.abort();
+    };
+  }, [
+    isOpen,
+    orderType,
+    editOrder,
+    formData.phone,
+    formData.fullName,
+    API_URL,
+  ]);
+
+  const handleApplyCustomerMatch = useCallback((match: CustomerMatch) => {
+    const patch = applyCustomerMatch(match);
+    setFormData((prev) => ({ ...prev, ...patch }));
+    if (patch.deliveryMethod) setDeliveryMethod(patch.deliveryMethod);
+    setCustomerMatches([]);
+  }, []);
 
   // Handle adding/removing products
   const handleProductClick = (product: Product) => {
@@ -407,11 +458,13 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
               errors={errors}
               deliveryMethod={deliveryMethod}
               paymentMethod={paymentMethod}
+              customerMatches={customerMatches}
               onOrderTypeChange={setOrderType}
               onProductClick={handleProductClick}
               onFormChange={handleFormChange}
               onDeliveryMethodChange={handleDeliveryMethodChange}
               onPaymentMethodChange={setPaymentMethod}
+              onApplyCustomerMatch={handleApplyCustomerMatch}
               onSubmit={handleSubmit}
             />
           </div>

@@ -4,7 +4,7 @@ import ProductGrid from '../ProductGrid/ProductGrid';
 import CustomerDetailsSection from '../CustomerDetailsSection/CustomerDetailsSection';
 import DineInNotesSection from '../DineInNotesSection/DineInNotesSection';
 import type { Product, DeliveryMethod } from '../../../types';
-import type { FormData } from '../adminHelpers';
+import type { FormData, CustomerMatch } from '../adminHelpers';
 import './OrderFormSection.less';
 
 interface OrderFormSectionProps {
@@ -15,6 +15,7 @@ interface OrderFormSectionProps {
   errors: Record<string, string>;
   deliveryMethod: DeliveryMethod;
   paymentMethod: 'cash' | 'card';
+  customerMatches: CustomerMatch[];
   onOrderTypeChange: (type: 'dine-in' | 'customer') => void;
   onProductClick: (product: Product) => void;
   onFormChange: (
@@ -24,6 +25,7 @@ interface OrderFormSectionProps {
   ) => void;
   onDeliveryMethodChange: (method: DeliveryMethod) => void;
   onPaymentMethodChange: (method: 'cash' | 'card') => void;
+  onApplyCustomerMatch: (match: CustomerMatch) => void;
   onSubmit: (e: React.FormEvent) => void;
 }
 
@@ -35,11 +37,13 @@ const OrderFormSection: React.FC<OrderFormSectionProps> = ({
   errors,
   deliveryMethod,
   paymentMethod,
+  customerMatches,
   onOrderTypeChange,
   onProductClick,
   onFormChange,
   onDeliveryMethodChange,
   onPaymentMethodChange,
+  onApplyCustomerMatch,
   onSubmit,
 }) => {
   return (
@@ -71,9 +75,11 @@ const OrderFormSection: React.FC<OrderFormSectionProps> = ({
             errors={errors}
             deliveryMethod={deliveryMethod}
             paymentMethod={paymentMethod}
+            customerMatches={customerMatches}
             onFormChange={onFormChange}
             onDeliveryMethodChange={onDeliveryMethodChange}
             onPaymentMethodChange={onPaymentMethodChange}
+            onApplyCustomerMatch={onApplyCustomerMatch}
           />
         </div>
       )}

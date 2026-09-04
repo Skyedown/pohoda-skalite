@@ -1,0 +1,66 @@
+@import '../../../styles/variables.less';
+
+.customer-suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: @spacing-sm;
+  margin-bottom: @spacing-md;
+  padding: @spacing-md;
+  background: @surface-gray;
+  border: 1px solid @gray-300;
+  border-radius: @border-radius-md;
+
+  &__title {
+    font-size: @font-size-sm;
+    font-weight: 600;
+    color: @text-secondary;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: @spacing-xs;
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: @spacing-xs @spacing-sm;
+    padding: @spacing-sm @spacing-md;
+    background: @surface-color;
+    border: 1px solid @gray-300;
+    border-radius: @border-radius-sm;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s ease;
+
+    &:hover {
+      border-color: @action-color;
+      background: @gray-50;
+    }
+  }
+
+  &__name {
+    grid-column: 1;
+    font-size: @font-size-base;
+    font-weight: 600;
+    color: @text-primary;
+  }
+
+  &__detail {
+    grid-column: 1;
+    font-size: @font-size-sm;
+    color: @text-secondary;
+  }
+
+  &__count {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    font-size: @font-size-sm;
+    font-weight: 600;
+    color: @action-color;
+    white-space: nowrap;
+  }
+}
