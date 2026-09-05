@@ -146,7 +146,12 @@ router.get('/api/orders/lookup', async (req, res) => {
 
     const phone = String(req.query.phone || '').trim();
     const name = String(req.query.name || '').trim();
+    const city = String(req.query.city || '').trim();
+    const houseNumber = String(req.query.houseNumber || '').trim();
+    const email = String(req.query.email || '').trim();
 
+    // Every field the admin has already filled narrows the list (logical AND),
+    // so suggestions only include customers matching all known details.
     const conditions: Record<string, unknown>[] = [];
     if (phone.replace(/\D/g, '').length >= 4) {
       conditions.push({
@@ -162,13 +167,24 @@ router.get('/api/orders/lookup', async (req, res) => {
         },
       });
     }
+    if (city.length >= 1) {
+      conditions.push({ 'delivery.city': city });
+    }
+    if (houseNumber.length >= 1) {
+      conditions.push({ 'delivery.houseNumber': houseNumber });
+    }
+    if (email.length >= 3) {
+      conditions.push({
+        'delivery.email': { $regex: escapeRegex(email), $options: 'i' },
+      });
+    }
 
     if (conditions.length === 0) {
       return res.json({ matches: [] });
     }
 
     const matches = await Order.aggregate([
-      { $match: { 'delivery.phone': { $nin: [null, ''] }, $or: conditions } },
+      { $match: { 'delivery.phone': { $nin: [null, ''] }, $and: conditions } },
       { $sort: { createdAt: -1 } },
       {
         $group: {

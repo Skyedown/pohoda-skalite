@@ -1,10 +1,9 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import type { CustomerMatch } from '../adminHelpers';
 import './CustomerSuggestions.less';
 
 interface CustomerSuggestionsProps {
   matches: CustomerMatch[];
-  onApply: (match: CustomerMatch) => void;
   onClose: () => void;
 }
 
@@ -14,23 +13,14 @@ const methodLabels: Record<CustomerMatch['method'], string> = {
   'dine-in': 'na mieste',
 };
 
-const SuggestionRow: React.FC<{
-  match: CustomerMatch;
-  onApply: (match: CustomerMatch) => void;
-}> = ({ match, onApply }) => {
-  const handleClick = useCallback(() => onApply(match), [match, onApply]);
-
+const SuggestionRow: React.FC<{ match: CustomerMatch }> = ({ match }) => {
   const address =
     [match.customer.city, match.customer.houseNumber]
       .filter(Boolean)
       .join(' ') || methodLabels[match.method];
 
   return (
-    <button
-      type="button"
-      className="customer-suggestions__row"
-      onClick={handleClick}
-    >
+    <div className="customer-suggestions__row">
       <span className="customer-suggestions__name">
         {match.customer.fullName || 'Bez mena'}
       </span>
@@ -40,13 +30,12 @@ const SuggestionRow: React.FC<{
         {address}
       </span>
       <span className="customer-suggestions__count">{match.orderCount}×</span>
-    </button>
+    </div>
   );
 };
 
 const CustomerSuggestions: React.FC<CustomerSuggestionsProps> = ({
   matches,
-  onApply,
   onClose,
 }) => {
   if (matches.length === 0) return null;
@@ -66,11 +55,7 @@ const CustomerSuggestions: React.FC<CustomerSuggestionsProps> = ({
       </div>
       <div className="customer-suggestions__list">
         {matches.map((match) => (
-          <SuggestionRow
-            key={match.customer.phone}
-            match={match}
-            onApply={onApply}
-          />
+          <SuggestionRow key={match.customer.phone} match={match} />
         ))}
       </div>
     </div>

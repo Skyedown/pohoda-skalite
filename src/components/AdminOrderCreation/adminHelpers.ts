@@ -242,17 +242,29 @@ export const buildOrderPayload = (
 // CUSTOMER LOOKUP
 // ============================================
 
+export interface CustomerLookupQuery {
+  phone: string;
+  name: string;
+  city: string;
+  houseNumber: string;
+  email: string;
+}
+
 /**
- * Fetch returning-customer matches by partial phone or name.
+ * Fetch returning-customer matches. Every provided field narrows the result
+ * (logical AND), so matches include all details already filled in.
  */
 export async function lookupCustomers(
   apiUrl: string,
-  query: { phone: string; name: string },
+  query: CustomerLookupQuery,
   signal: AbortSignal,
 ): Promise<CustomerMatch[]> {
   const params = new URLSearchParams();
   if (query.phone) params.set('phone', query.phone);
   if (query.name) params.set('name', query.name);
+  if (query.city) params.set('city', query.city);
+  if (query.houseNumber) params.set('houseNumber', query.houseNumber);
+  if (query.email) params.set('email', query.email);
 
   const res = await fetch(`${apiUrl}/api/orders/lookup?${params.toString()}`, {
     signal,
@@ -261,20 +273,6 @@ export async function lookupCustomers(
 
   const data: { matches?: CustomerMatch[] } = await res.json();
   return data.matches || [];
-}
-
-/**
- * Build a FormData patch from a selected customer match.
- */
-export function applyCustomerMatch(match: CustomerMatch): Partial<FormData> {
-  return {
-    fullName: match.customer.fullName,
-    phone: match.customer.phone,
-    email: match.customer.email,
-    city: match.customer.city,
-    houseNumber: match.customer.houseNumber,
-    deliveryMethod: match.method,
-  };
 }
 
 // ============================================

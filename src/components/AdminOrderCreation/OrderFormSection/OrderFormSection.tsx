@@ -26,7 +26,6 @@ interface OrderFormSectionProps {
   ) => void;
   onDeliveryMethodChange: (method: DeliveryMethod) => void;
   onPaymentMethodChange: (method: 'cash' | 'card') => void;
-  onApplyCustomerMatch: (match: CustomerMatch) => void;
   onCloseSuggestions: () => void;
   onSubmit: (e: React.FormEvent) => void;
 }
@@ -46,7 +45,6 @@ const OrderFormSection: React.FC<OrderFormSectionProps> = ({
   onFormChange,
   onDeliveryMethodChange,
   onPaymentMethodChange,
-  onApplyCustomerMatch,
   onCloseSuggestions,
   onSubmit,
 }) => {
@@ -84,7 +82,6 @@ const OrderFormSection: React.FC<OrderFormSectionProps> = ({
             onFormChange={onFormChange}
             onDeliveryMethodChange={onDeliveryMethodChange}
             onPaymentMethodChange={onPaymentMethodChange}
-            onApplyCustomerMatch={onApplyCustomerMatch}
             onCloseSuggestions={onCloseSuggestions}
           />
         </div>

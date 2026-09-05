@@ -27,7 +27,6 @@ interface DeliveryAddressFormProps {
   hideEmail?: boolean;
   customerMatches?: CustomerMatch[];
   lookupField?: 'fullName' | 'phone' | null;
-  onApplyCustomerMatch?: (match: CustomerMatch) => void;
   onCloseSuggestions?: () => void;
 }
 
@@ -39,17 +38,14 @@ const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
   hideEmail = false,
   customerMatches = [],
   lookupField = null,
-  onApplyCustomerMatch,
   onCloseSuggestions,
 }) => {
   const renderSuggestions = (field: 'fullName' | 'phone') =>
-    onApplyCustomerMatch &&
     onCloseSuggestions &&
     lookupField === field &&
     customerMatches.length > 0 ? (
       <CustomerSuggestions
         matches={customerMatches}
-        onApply={onApplyCustomerMatch}
         onClose={onCloseSuggestions}
       />
     ) : null;

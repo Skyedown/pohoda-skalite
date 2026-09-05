@@ -21,7 +21,6 @@ import {
   getInitialFormState,
   addProductToOrder,
   lookupCustomers,
-  applyCustomerMatch,
   type AdminOrderItem,
   type CustomerMatch,
 } from './adminHelpers';
@@ -197,12 +196,22 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
 
     const phoneDigits = formData.phone.replace(/\D/g, '');
     const name = formData.fullName.trim();
+    const email = formData.email.trim();
     const query = {
       phone: phoneDigits.length >= 4 ? formData.phone : '',
       name: name.length >= 3 ? name : '',
+      city: formData.city.trim(),
+      houseNumber: formData.houseNumber.trim(),
+      email: email.length >= 3 ? email : '',
     };
 
-    if (!query.phone && !query.name) {
+    const hasQuery =
+      query.phone ||
+      query.name ||
+      query.city ||
+      query.houseNumber ||
+      query.email;
+    if (!hasQuery) {
       setCustomerMatches([]);
       return;
     }
@@ -224,16 +233,11 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
     editOrder,
     formData.phone,
     formData.fullName,
+    formData.city,
+    formData.houseNumber,
+    formData.email,
     API_URL,
   ]);
-
-  const handleApplyCustomerMatch = useCallback((match: CustomerMatch) => {
-    const patch = applyCustomerMatch(match);
-    setFormData((prev) => ({ ...prev, ...patch }));
-    if (patch.deliveryMethod) setDeliveryMethod(patch.deliveryMethod);
-    setCustomerMatches([]);
-    setLookupField(null);
-  }, []);
 
   const handleCloseSuggestions = useCallback(() => {
     setCustomerMatches([]);
@@ -479,7 +483,6 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
               onFormChange={handleFormChange}
               onDeliveryMethodChange={handleDeliveryMethodChange}
               onPaymentMethodChange={setPaymentMethod}
-              onApplyCustomerMatch={handleApplyCustomerMatch}
               onCloseSuggestions={handleCloseSuggestions}
               onSubmit={handleSubmit}
             />
