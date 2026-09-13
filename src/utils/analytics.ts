@@ -12,16 +12,10 @@ declare global {
 }
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
-const SK_MEASUREMENT_ID = import.meta.env.VITE_GA_ID_SK || 'G-6Q287KJ5RR';
-
-/**
- * Each storefront reports into its own GA property. If the Polish property is
- * not configured yet, traffic still lands in the Slovak one — the `tenant`
- * parameter keeps the two separable either way.
- */
+/** Each storefront reports into its own GA property. */
 const GA_MEASUREMENT_IDS: Record<Locale, string> = {
-  sk: SK_MEASUREMENT_ID,
-  pl: import.meta.env.VITE_GA_ID_PL || SK_MEASUREMENT_ID,
+  sk: import.meta.env.VITE_GA_ID_SK || 'G-6Q287KJ5RR',
+  pl: import.meta.env.VITE_GA_ID_PL || 'G-9LEFZGNPWY',
 };
 
 export const META_PIXEL_ID =
