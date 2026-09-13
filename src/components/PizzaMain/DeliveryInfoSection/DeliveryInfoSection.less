@@ -46,7 +46,11 @@
 
   &__grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    // Villages are grouped by minimum order, so the card count is whatever the
+    // admin configures — auto-fit keeps a lone card centred instead of
+    // stranding it in the left column.
+    grid-template-columns: repeat(auto-fit, minmax(260px, 434px));
+    justify-content: center;
     gap: 32px;
     margin-bottom: 48px;
 
