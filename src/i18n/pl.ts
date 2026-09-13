@@ -50,7 +50,8 @@ export const pl: Dictionary = {
   modal_unavailable_alert: 'Ta pozycja jest obecnie niedostępna',
 
   // Hero + menu headings
-  hero_title: 'Pizza? Na luzie!',
+  // Keeps the play on the restaurant's name, like the Slovak "V Pohode"
+  hero_title: 'Pizza? W Pohodzie!',
   hero_subtitle:
     'Spróbuj prawdziwego chrupiącego i puszystego ciasta neapolitańskiego u nas albo dowieziemy Ci pizzę prosto do domu!',
   hero_cta: 'Zamów pizzę',
