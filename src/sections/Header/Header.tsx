@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocale } from '../../i18n/LocaleContext';
+import { COMPANY } from '../../constants/company';
 import './Header.less';
 
 interface HeaderProps {
@@ -9,13 +11,12 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ isStatic = false }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const phoneNumber = import.meta.env.VITE_RESTAURANT_PHONE || '+421918175571';
+  const { t } = useLocale();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMenuDropdownOpen, setIsMenuDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuClosing, setIsMenuClosing] = useState(false);
 
-  // Track scroll position
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
@@ -24,7 +25,6 @@ const Header: React.FC<HeaderProps> = ({ isStatic = false }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu when route changes
   useEffect(() => {
     if (isMobileMenuOpen) {
       handleMenuClose();
@@ -32,7 +32,6 @@ const Header: React.FC<HeaderProps> = ({ isStatic = false }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
-  // Prevent body scroll when mobile menu is open
   useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -49,7 +48,7 @@ const Header: React.FC<HeaderProps> = ({ isStatic = false }) => {
     setTimeout(() => {
       setIsMobileMenuOpen(false);
       setIsMenuClosing(false);
-    }, 500); // Wait for animations to complete
+    }, 500);
   };
 
   const handleMenuToggle = () => {
@@ -64,48 +63,41 @@ const Header: React.FC<HeaderProps> = ({ isStatic = false }) => {
     if (isMobileMenuOpen) {
       handleMenuClose();
     }
-    // If we're already on the main page, scroll to top
     if (location.pathname === '/') {
       e.preventDefault();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    // Otherwise, Link will navigate to "/" naturally
   };
 
   const scrollToSection =
     (sectionId: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
       e.preventDefault();
       if (isMobileMenuOpen) {
-        handleMenuClose(); // Close mobile menu with animation
+        handleMenuClose();
       }
 
       if (location.pathname === '/') {
-        // We're on the main page, just scroll to the section
-        const element = document.getElementById(sectionId);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
+        document.getElementById(sectionId)?.scrollIntoView({
+          behavior: 'smooth',
+        });
       } else {
-        // Navigate to main page first, then scroll after navigation
         navigate('/');
-        // Wait for navigation to complete, then scroll
         setTimeout(() => {
-          const element = document.getElementById(sectionId);
-          if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
-          }
+          document.getElementById(sectionId)?.scrollIntoView({
+            behavior: 'smooth',
+          });
         }, 100);
       }
     };
 
   const menuItems = [
-    { label: 'Pizza', id: 'pizza-menu' },
-    { label: 'Burger', id: 'burger-menu' },
-    { label: 'Langoš', id: 'langos-menu' },
-    { label: 'Prílohy', id: 'prilohy-menu' },
-    { label: 'Čapované', id: 'capovane-menu' },
-    { label: 'Nápoje', id: 'drinks-menu' },
-    { label: 'Snacky', id: 'snacks-menu' },
+    { label: t('nav_item_pizza'), id: 'pizza-menu' },
+    { label: t('nav_item_burger'), id: 'burger-menu' },
+    { label: t('nav_item_langos'), id: 'langos-menu' },
+    { label: t('nav_item_sides'), id: 'prilohy-menu' },
+    { label: t('nav_item_tap'), id: 'capovane-menu' },
+    { label: t('nav_item_drinks'), id: 'drinks-menu' },
+    { label: t('nav_item_snacks'), id: 'snacks-menu' },
   ];
 
   return (
@@ -121,12 +113,11 @@ const Header: React.FC<HeaderProps> = ({ isStatic = false }) => {
               </span>
             </Link>
 
-            {/* Desktop Navigation */}
             <div className="header__nav-pill">
               <nav
                 className="header__nav"
                 role="navigation"
-                aria-label="Hlavná navigácia"
+                aria-label={t('nav_aria_main')}
               >
                 <div
                   className="header__nav-dropdown"
@@ -142,7 +133,7 @@ const Header: React.FC<HeaderProps> = ({ isStatic = false }) => {
                         : ''
                     }`}
                   >
-                    Menu
+                    {t('nav_menu')}
                     <svg
                       width="12"
                       height="8"
@@ -179,14 +170,14 @@ const Header: React.FC<HeaderProps> = ({ isStatic = false }) => {
                   onClick={scrollToSection('about')}
                   className="header__nav-link"
                 >
-                  O nás
+                  {t('nav_about')}
                 </a>
                 <a
                   href="#contact"
                   onClick={scrollToSection('contact')}
                   className="header__nav-link"
                 >
-                  Kontakt
+                  {t('nav_contact')}
                 </a>
                 <Link
                   to="/cart"
@@ -196,15 +187,15 @@ const Header: React.FC<HeaderProps> = ({ isStatic = false }) => {
                       : ''
                   }`}
                 >
-                  Online Objednávka
+                  {t('nav_online_order')}
                 </Link>
               </nav>
             </div>
 
             <a
-              href={`tel:${phoneNumber}`}
+              href={`tel:${COMPANY.phone}`}
               className="header__call-button"
-              aria-label="Zavolať"
+              aria-label={t('nav_aria_call')}
             >
               <svg
                 width="24"
@@ -223,19 +214,17 @@ const Header: React.FC<HeaderProps> = ({ isStatic = false }) => {
         </div>
       </header>
 
-      {/* Mobile Hamburger Button - Rendered outside header - Hidden on cart page */}
       {location.pathname !== '/cart' && (
         <button
           className={`header__hamburger ${isMobileMenuOpen ? 'header__hamburger--open' : ''}`}
           onClick={handleMenuToggle}
-          aria-label="Menu"
+          aria-label={t('nav_aria_menu')}
         >
           <span className="header__hamburger-line"></span>
           <span className="header__hamburger-line"></span>
         </button>
       )}
 
-      {/* Mobile Menu - Rendered outside header */}
       {isMobileMenuOpen && (
         <>
           <div
@@ -257,7 +246,9 @@ const Header: React.FC<HeaderProps> = ({ isStatic = false }) => {
               </Link>
 
               <div className="header__mobile-menu-section">
-                <span className="header__mobile-menu-label">Menu</span>
+                <span className="header__mobile-menu-label">
+                  {t('nav_menu')}
+                </span>
                 {menuItems.map((item) => (
                   <a
                     key={item.id}
@@ -275,7 +266,7 @@ const Header: React.FC<HeaderProps> = ({ isStatic = false }) => {
                 onClick={scrollToSection('about')}
                 className="header__mobile-menu-link"
               >
-                O nás
+                {t('nav_about')}
               </a>
 
               <a
@@ -283,11 +274,11 @@ const Header: React.FC<HeaderProps> = ({ isStatic = false }) => {
                 onClick={scrollToSection('contact')}
                 className="header__mobile-menu-link"
               >
-                Kontakt
+                {t('nav_contact')}
               </a>
 
               <Link to="/cart" className="header__mobile-menu-link">
-                Online Objednávka
+                {t('nav_online_order')}
               </Link>
             </div>
           </nav>

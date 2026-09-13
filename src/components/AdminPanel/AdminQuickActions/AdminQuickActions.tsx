@@ -91,6 +91,27 @@ export const AdminQuickActions: React.FC<AdminQuickActionsProps> = ({
         Dostupnosť produktov
       </Link>
       <Link
+        to="/admin/delivery"
+        className="admin-panel__action-btn admin-panel__action-btn--delivery"
+      >
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <rect x="1" y="3" width="15" height="13" />
+          <path d="M16 8h5l3 3v5h-2m-4 0H2" />
+          <circle cx="5.5" cy="18.5" r="2.5" />
+          <circle cx="18.5" cy="18.5" r="2.5" />
+        </svg>
+        Rozvozové oblasti
+      </Link>
+      <Link
         to="/admin/analytics"
         className="admin-panel__action-btn admin-panel__action-btn--analytics"
       >

@@ -1,19 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
-import type { Product, ProductType } from '../../types';
-import { pizzas } from '../../data/pizzas';
-import { capovane } from '../../data/capovane';
-import { drinks } from '../../data/drinks';
-import { snacks } from '../../data/snacks';
+import type { LocalizedProduct } from '../../types';
+import {
+  usePizzas,
+  useCapovane,
+  useDrinks,
+  useSnacks,
+} from '../../hooks/useMenu';
+import { useAdminSettings } from '../../hooks/useAdminSettings';
+import { useLocale } from '../../i18n/LocaleContext';
 import { isProductDisabled } from '../../utils/productAvailability';
+import {
+  buildAlternates,
+  buildDeliverySchema,
+  buildRestaurantSchema,
+  canonicalUrl,
+} from '../../utils/seo';
 import ProductCard from '../../components/PizzaMain/ProductCard/ProductCard';
 import ProductModal from '../../components/PizzaMain/ProductModal/ProductModal';
 import Toast from '../../components/shared/Toast/Toast';
 import OrderOverloadModal from '../../components/PizzaMain/OrderOverloadModal/OrderOverloadModal';
-import {
-  getAdminSettings,
-  type AdminSettings,
-} from '../../utils/adminSettings';
 import BurgerSection from '../../components/PizzaMain/BurgerSection/BurgerSection';
 import LangosSection from '../../components/PizzaMain/LangosSection/LangosSection';
 import PrilohySection from '../../components/PizzaMain/PrilohySection/PrilohySection';
@@ -36,187 +42,88 @@ import './PizzaMain.less';
 gsap.registerPlugin(ScrollTrigger);
 
 const PizzaMain: React.FC = () => {
-  const [selectedPizza, setSelectedPizza] = useState<Product | null>(null);
+  const { t, locale } = useLocale();
+  const adminSettings = useAdminSettings();
+  const pizzas = usePizzas();
+  const capovane = useCapovane();
+  const drinks = useDrinks();
+  const snacks = useSnacks();
+
+  const [selectedPizza, setSelectedPizza] = useState<LocalizedProduct | null>(
+    null,
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedFilter] = useState<ProductType | 'all'>('all');
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [showOverloadModal, setShowOverloadModal] = useState(false);
-  const [adminSettings, setAdminSettings] = useState<AdminSettings>({
-    mode: 'off',
-    waitTimeMinutes: 60,
-    customNote:
-      'Z dôvodu nepriaznivého počasia je donáška možná len k hlavnej ceste',
-    disabledReason:
-      'Z dôvodu veľkého počtu objednávok sme momentálne nútení pozastaviť prijímanie nových online objednávok. Ďakujeme za pochopenie a ospravedlňujeme sa za nepríjemnosti. Skúste to prosím neskôr alebo nás kontaktujte telefonicky.',
-  });
 
-  // Initialize GSAP animations
   const heroPizzaRef = useHeroPizzaAnimation();
   useAllMenuAnimations();
 
-  // Load admin settings from server on mount
   useEffect(() => {
-    const loadSettings = async () => {
-      const settings = await getAdminSettings();
-      setAdminSettings(settings);
-      if (
-        settings.mode === 'disabled' ||
-        settings.mode === 'waitTime' ||
-        settings.mode === 'customNote'
-      ) {
-        setShowOverloadModal(true);
-      }
-    };
-    loadSettings();
+    if (adminSettings.mode !== 'off') {
+      setShowOverloadModal(true);
+    }
+  }, [adminSettings.mode]);
 
-    // Check for settings updates when window gains focus (e.g., returning from admin panel)
-    const handleFocus = async () => {
-      const lastUpdate = localStorage.getItem('adminSettingsLastUpdate');
-      if (lastUpdate) {
-        // Clear the flag
-        localStorage.removeItem('adminSettingsLastUpdate');
-        // Refetch settings
-        const settings = await getAdminSettings();
-        setAdminSettings(settings);
-        if (
-          settings.mode === 'disabled' ||
-          settings.mode === 'waitTime' ||
-          settings.mode === 'customNote'
-        ) {
-          setShowOverloadModal(true);
-        }
-      }
-    };
-
-    window.addEventListener('focus', handleFocus);
-    // Also listen for visibility change
-    window.addEventListener('visibilitychange', handleFocus);
-
-    return () => {
-      window.removeEventListener('focus', handleFocus);
-      window.removeEventListener('visibilitychange', handleFocus);
-    };
-  }, []);
-
-  // Listen for admin settings changes
-  useEffect(() => {
-    const handleSettingsChange = (event: CustomEvent<AdminSettings>) => {
-      setAdminSettings(event.detail);
-      if (
-        event.detail.mode === 'disabled' ||
-        event.detail.mode === 'waitTime'
-      ) {
-        setShowOverloadModal(true);
-      }
-    };
-
-    window.addEventListener(
-      'adminSettingsChanged',
-      handleSettingsChange as EventListener,
-    );
-    return () => {
-      window.removeEventListener(
-        'adminSettingsChanged',
-        handleSettingsChange as EventListener,
-      );
-    };
-  }, []);
-
-  // Only show pizzas in the top menu section
-  const filteredItems =
-    selectedFilter === 'all'
-      ? pizzas
-      : pizzas.filter((item) => item.type === selectedFilter);
-
-  const handleAddToCart = (pizza: Product) => {
+  const handleAddToCart = useCallback((pizza: LocalizedProduct) => {
     setSelectedPizza(pizza);
     setIsModalOpen(true);
-  };
+  }, []);
 
-  const handleCloseModal = () => {
+  const handleCloseModal = useCallback(() => {
     setIsModalOpen(false);
     setTimeout(() => setSelectedPizza(null), 300);
-  };
+  }, []);
 
-  const handlePizzaAddedToCart = (pizzaName: string) => {
-    setToastMessage(`${pizzaName} pridaný do košíka!`);
-    setShowToast(true);
-  };
+  const handlePizzaAddedToCart = useCallback(
+    (pizzaName: string) => {
+      setToastMessage(t('product_added_toast', { name: pizzaName }));
+      setShowToast(true);
+    },
+    [t],
+  );
 
-  const structuredData = {
-    '@context': 'https://schema.org',
-    '@type': 'Restaurant',
-    name: 'Pizza Pohoda',
-    description:
-      'Pizzeria a reštaurácia s donáškou v Skalitom. Špecializujeme sa na napoletánsku pizzu, burgre a langoše.',
-    image: 'https://pizzapohoda.sk/images/logo-social.png',
-    url: 'https://pizzapohoda.sk',
-    telephone: '+421-XXX-XXX-XXX',
-    priceRange: '€€',
-    servesCuisine: ['Pizza', 'Italian', 'European'],
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: 'Skalité',
-      addressLocality: 'Skalité',
-      addressRegion: 'Žilina',
-      postalCode: '02314',
-      addressCountry: 'SK',
-    },
-    geo: {
-      '@type': 'GeoCoordinates',
-      latitude: 49.4167,
-      longitude: 19.0167,
-    },
-    openingHoursSpecification: [
-      {
-        '@type': 'OpeningHoursSpecification',
-        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-        opens: '11:00',
-        closes: '22:00',
-      },
-      {
-        '@type': 'OpeningHoursSpecification',
-        dayOfWeek: ['Saturday', 'Sunday'],
-        opens: '12:00',
-        closes: '22:00',
-      },
-    ],
-    sameAs: ['https://www.facebook.com/profile.php?id=61585409280116'],
-    hasMenu: {
-      '@type': 'Menu',
-      hasMenuSection: [
-        {
-          '@type': 'MenuSection',
-          name: 'Pizza',
-          description: 'Naše výborné pizze pripravené z čerstvých surovín',
-        },
-        {
-          '@type': 'MenuSection',
-          name: 'Burgre & Langoše',
-          description: 'Šťavnaté burgre a chrumkavé langoše',
-        },
-      ],
-    },
-    acceptsReservations: false,
-    paymentAccepted: 'Cash, Card',
-  };
+  const restaurantSchema = useMemo(
+    () => buildRestaurantSchema(locale, t),
+    [locale, t],
+  );
+
+  const deliverySchema = useMemo(
+    () =>
+      buildDeliverySchema(
+        adminSettings.deliveryCities[locale].map((city) => city.name),
+        locale,
+      ),
+    [adminSettings.deliveryCities, locale],
+  );
+
+  const alternates = useMemo(() => buildAlternates({ sk: '/', pl: '/' }), []);
 
   return (
     <div className="pizza-main">
       <Helmet>
-        <title>Pizza Pohoda - Pizza, Burger & Langos | Skalité</title>
-        <meta
-          name="description"
-          content="Najlepšia pizza v Skalitom s donáškou zdarma od 8€! Čerstvé suroviny, burgre, langoše a prílohy. Doručíme do Skalitého, Čierneho, Oščadnice a Svrčinovca. Objednajte online - Pizza Pohoda."
-        />
-        <meta
-          name="keywords"
-          content="pizza pohoda, pizza Skalité, burger Skalité, lángoš Skalité, pizzeria Skalité, rozvoz jedla Skalité, napoletánska pizza, donáška pizze zadarmo, pizza Čierne, pizza Oščadnica"
-        />
-        <link rel="canonical" href="https://pizzapohoda.sk/" />
+        <title>{t('seo_home_title')}</title>
+        <meta name="description" content={t('seo_home_description')} />
+        <meta name="keywords" content={t('seo_home_keywords')} />
+        <meta property="og:title" content={t('seo_home_title')} />
+        <meta property="og:description" content={t('seo_home_description')} />
+        <meta property="og:url" content={canonicalUrl(locale, '/')} />
+        <meta property="og:type" content="website" />
+        <link rel="canonical" href={canonicalUrl(locale, '/')} />
+        {alternates.map((alternate) => (
+          <link
+            key={alternate.hrefLang}
+            rel="alternate"
+            hrefLang={alternate.hrefLang}
+            href={alternate.href}
+          />
+        ))}
         <script type="application/ld+json">
-          {JSON.stringify(structuredData)}
+          {JSON.stringify(restaurantSchema)}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify(deliverySchema)}
         </script>
       </Helmet>
 
@@ -224,44 +131,39 @@ const PizzaMain: React.FC = () => {
       <section className="pizza-main__hero">
         <div className="container">
           <div className="pizza-main__hero-content">
-            <h1 className="pizza-main__title">Pizza? V Pohode!</h1>
-            <p className="pizza-main__subtitle">
-              Vyskúšaj pravé chrumkavé a nadýchané neapolské cesto u nás alebo
-              ti pizzu dovezieme až domov!
-            </p>
+            <h1 className="pizza-main__title">{t('hero_title')}</h1>
+            <p className="pizza-main__subtitle">{t('hero_subtitle')}</p>
             <button
               className="pizza-main__cta-button"
               onClick={() => scrollTo('#pizza-menu')}
             >
-              Objednaj si pizzu
+              {t('hero_cta')}
             </button>
           </div>
         </div>
-        {/* Hero Pizza with rotation animation */}
         <div className="pizza-main__hero-pizza" ref={heroPizzaRef}>
           <img
             src="/images/large-hero-pizza.png"
-            alt="Otáčajúca sa pizza"
+            alt="Pizza Pohoda"
             className="pizza-main__hero-pizza-image"
           />
         </div>
       </section>
 
-      {/* Pizza Menu Section with Crumbs */}
+      {/* Pizza Menu Section */}
       <section id="pizza-menu" className="pizza-main__menu-section">
         <div className="container">
           <div className="pizza-main__menu-header">
-            <p className="pizza-main__menu-subtitle">Nájdi tú pravú pre seba</p>
-            <h2 className="pizza-main__menu-title">Pizza Menu</h2>
+            <p className="pizza-main__menu-subtitle">{t('menu_subtitle')}</p>
+            <h2 className="pizza-main__menu-title">{t('menu_title')}</h2>
           </div>
 
           <div
             className="pizza-main__grid"
-            id="pizza-menu"
             role="list"
-            aria-label="Položky menu"
+            aria-label={t('menu_aria_items')}
           >
-            {filteredItems.map((item) => (
+            {pizzas.map((item) => (
               <div
                 key={item.id}
                 className="pizza-main__grid-item"
@@ -278,48 +180,36 @@ const PizzaMain: React.FC = () => {
         </div>
       </section>
 
-      {/* Burger Section */}
       <BurgerSection />
-
-      {/* Langoš Section */}
       <LangosSection />
-
-      {/* Prílohy Section */}
       <PrilohySection />
 
-      {/* Čapované Section */}
       <SimpleProductSection
         id="capovane-menu"
-        title="Čapované"
-        subtitle="Čapované z pípy do plastovej fľaše."
+        title={t('section_tap_title')}
+        subtitle={t('section_tap_subtitle')}
         items={capovane}
       />
 
-      {/* Nápoje Section */}
-      <SimpleProductSection id="drinks-menu" title="Nápoje" items={drinks} />
+      <SimpleProductSection
+        id="drinks-menu"
+        title={t('section_drinks_title')}
+        items={drinks}
+      />
 
-      {/* Snacky Section */}
-      <SimpleProductSection id="snacks-menu" title="Snacky" items={snacks} />
+      <SimpleProductSection
+        id="snacks-menu"
+        title={t('section_snacks_title')}
+        items={snacks}
+      />
 
-      {/* Delivery Info Section */}
       <DeliveryInfoSection />
-
-      {/* Location & Hours Section */}
       <LocationSection />
-
-      {/* Quality Section - "Záleží nám na kvalite" */}
       <QualitySection />
-
-      {/* Testimonials Section */}
       <TestimonialsSection />
-
-      {/* Contact Section */}
       <ContactSection />
-
-      {/* Footer with Credits */}
       <Footer />
 
-      {/* Product Modal */}
       <ProductModal
         product={selectedPizza}
         isOpen={isModalOpen}
@@ -332,21 +222,19 @@ const PizzaMain: React.FC = () => {
         }
       />
 
-      {/* Toast Notification */}
       <Toast
         message={toastMessage}
         isVisible={showToast}
         onClose={() => setShowToast(false)}
       />
 
-      {/* Order Overload Modal */}
       <OrderOverloadModal
         isOpen={showOverloadModal}
         onClose={() => setShowOverloadModal(false)}
         mode={adminSettings.mode}
         waitTimeMinutes={adminSettings.waitTimeMinutes}
-        customNote={adminSettings.customNote}
-        disabledReason={adminSettings.disabledReason}
+        customNote={adminSettings.customNote[locale]}
+        disabledReason={adminSettings.disabledReason[locale]}
       />
     </div>
   );

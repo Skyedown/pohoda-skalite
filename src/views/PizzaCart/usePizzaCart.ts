@@ -1,13 +1,14 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useAdminSettings } from '../../hooks/useAdminSettings';
+import { useOrderingStatus } from '../../hooks/useOrderingStatus';
+import { useLocale } from '../../i18n/LocaleContext';
 import { sanitizeCartForm, type CartFormData } from '../../utils/sanitize';
-import { getOrderingStatus } from '../../utils/orderingStatus';
 import { trackPurchase } from '../../utils/analytics';
 import {
   getDeliveryRule,
-  getMinimumOrderMessage,
+  getMinimumOrderShortfall,
   isMinimumOrderMet,
 } from '../../utils/deliveryRules';
 import type { DeliveryMethod } from '../../types';
@@ -30,6 +31,8 @@ export function usePizzaCart() {
   const navigate = useNavigate();
   const { cart, getTotalPrice, clearCart } = useCart();
   const adminSettings = useAdminSettings();
+  const orderingStatus = useOrderingStatus();
+  const { locale, currency, t, price } = useLocale();
 
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'card'>('cash');
   const [deliveryMethod, setDeliveryMethod] =
@@ -37,19 +40,9 @@ export function usePizzaCart() {
   const [formData, setFormData] = useState<CartFormData>(INITIAL_FORM_DATA);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [canOrder, setCanOrder] = useState(getOrderingStatus().canOrder);
   const [gdprConsent, setGdprConsent] = useState(false);
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' });
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCanOrder(getOrderingStatus().canOrder);
-    }, 60000);
-    return () => clearInterval(interval);
-  }, []);
+  const cities = adminSettings.deliveryCities[locale];
 
   const handleInputChange = useCallback(
     (
@@ -82,31 +75,48 @@ export function usePizzaCart() {
 
   const subtotal = useMemo(() => getTotalPrice(), [getTotalPrice]);
   const deliveryRule = useMemo(
-    () => getDeliveryRule(formData.city),
-    [formData.city],
+    () => getDeliveryRule(cities, formData.city),
+    [cities, formData.city],
   );
   const delivery = deliveryMethod === 'pickup' ? 0 : deliveryRule.fee;
   const total = subtotal + delivery;
 
-  const minimumOrderMessage = useMemo(
-    () =>
-      deliveryMethod === 'delivery'
-        ? getMinimumOrderMessage(formData.city, subtotal)
-        : null,
-    [deliveryMethod, formData.city, subtotal],
-  );
+  const minimumOrderMessage = useMemo(() => {
+    if (deliveryMethod !== 'delivery') return null;
+    const shortfall = getMinimumOrderShortfall(cities, formData.city, subtotal);
+    if (!shortfall) return null;
+
+    return t('min_order_message', {
+      city: shortfall.rule.displayName,
+      minOrder: price(shortfall.rule.minOrder),
+      remaining: price(shortfall.remaining),
+    });
+  }, [deliveryMethod, cities, formData.city, subtotal, t, price]);
 
   const canSubmitOrder = useMemo(
     () =>
       (deliveryMethod === 'pickup' ||
-        isMinimumOrderMet(formData.city, subtotal)) &&
-      canOrder &&
+        isMinimumOrderMet(cities, formData.city, subtotal)) &&
+      orderingStatus.canOrder &&
       adminSettings.mode !== 'disabled',
-    [deliveryMethod, formData.city, subtotal, canOrder, adminSettings.mode],
+    [
+      deliveryMethod,
+      cities,
+      formData.city,
+      subtotal,
+      orderingStatus.canOrder,
+      adminSettings.mode,
+    ],
   );
 
   const handleSubmit = useCallback(async () => {
-    const formErrors = validateCartForm(formData, deliveryMethod, gdprConsent);
+    const formErrors = validateCartForm(
+      formData,
+      deliveryMethod,
+      gdprConsent,
+      locale,
+      t,
+    );
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
       scrollToFirstError(formErrors);
@@ -115,24 +125,26 @@ export function usePizzaCart() {
 
     setIsSubmitting(true);
     try {
-      const sanitizedFormData = sanitizeCartForm(formData);
-      const order = buildOrderPayload(
+      const order = buildOrderPayload({
         cart,
-        sanitizedFormData,
+        formData: sanitizeCartForm(formData),
         deliveryMethod,
         paymentMethod,
         subtotal,
         delivery,
         total,
-      );
+        locale,
+        currency,
+      });
 
       trackPurchase({
         transactionId: `order-${Date.now()}`,
         value: total,
-        currency: 'EUR',
+        currency,
+        locale,
         items: cart.map((item) => ({
           item_id: item.product.id,
-          item_name: item.product.name,
+          item_name: item.product.nameSk,
           item_category: item.product.type,
           price: item.totalPrice,
           quantity: item.quantity,
@@ -140,7 +152,7 @@ export function usePizzaCart() {
       });
 
       try {
-        const apiUrl = import.meta.env.VITE_API_URL || 'https://pizzapohoda.sk';
+        const apiUrl = import.meta.env.VITE_API_URL || '';
         await fetch(`${apiUrl}/api/send-order-emails`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -153,9 +165,7 @@ export function usePizzaCart() {
       clearCart();
       navigate('/thank-you');
     } catch {
-      alert(
-        'Vyskytla sa chyba pri spracovaní objednávky. Skúste to prosím znova.',
-      );
+      alert(t('cart_submit_error'));
     } finally {
       setIsSubmitting(false);
     }
@@ -163,6 +173,9 @@ export function usePizzaCart() {
     formData,
     deliveryMethod,
     gdprConsent,
+    locale,
+    currency,
+    t,
     cart,
     paymentMethod,
     subtotal,
@@ -183,6 +196,7 @@ export function usePizzaCart() {
     setGdprConsent,
     isSubmitting,
     adminSettings,
+    cities,
     subtotal,
     delivery,
     total,

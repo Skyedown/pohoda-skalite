@@ -1,9 +1,14 @@
 import { Router } from 'express';
 import { isMongoConnected } from '../utils/db.js';
+import { getMapyCzUrlForAddress } from '../utils/geocoding.js';
 import {
-  getMapyCzUrlForAddress,
-  getPostalCodeForCity,
-} from '../utils/geocoding.js';
+  countryFor,
+  currencyFor,
+  isTenant,
+  postalCodeFor,
+  tenantFilter,
+  toTenant,
+} from '../utils/tenant.js';
 import { publishOrder } from '../utils/messageQueue.js';
 import { Order } from '../models/Order.js';
 
@@ -41,6 +46,8 @@ router.post('/api/orders', async (req, res) => {
       return res.status(503).json({ error: 'Database not available' });
     }
 
+    const tenant = toTenant(order.tenant);
+
     if (
       order.delivery?.method === 'delivery' &&
       order.delivery?.houseNumber &&
@@ -49,10 +56,10 @@ router.post('/api/orders', async (req, res) => {
       try {
         console.log('📍 Resolving GPS coordinates for delivery address...');
         const mapyCzUrl = await getMapyCzUrlForAddress({
-          country: 'Slovensko',
+          country: countryFor(tenant),
           city: order.delivery.city,
           houseNumber: order.delivery.houseNumber,
-          postalCode: getPostalCodeForCity(order.delivery.city),
+          postalCode: postalCodeFor(tenant, order.delivery.city),
         });
 
         if (mapyCzUrl) {
@@ -67,6 +74,8 @@ router.post('/api/orders', async (req, res) => {
     }
 
     const savedOrder = await Order.create({
+      tenant,
+      currency: order.currency || currencyFor(tenant),
       items: order.items,
       delivery: order.delivery,
       payment: order.payment,
@@ -107,9 +116,11 @@ router.get('/api/orders/recent', async (req, res) => {
       return res.status(503).json({ error: 'Database not available' });
     }
 
-    const { from, to } = req.query;
+    const { from, to, tenant } = req.query;
 
-    const filter: Record<string, unknown> = {};
+    const filter: Record<string, unknown> = isTenant(tenant)
+      ? tenantFilter(tenant)
+      : {};
     if (from && to) {
       const [fromYear, fromMonth, fromDay] = (from as string)
         .split('-')

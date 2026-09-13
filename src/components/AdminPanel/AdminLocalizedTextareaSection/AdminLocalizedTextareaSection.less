@@ -1,0 +1,26 @@
+@import '../../../styles/variables.less';
+
+.admin-localized-textarea {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: @spacing-lg;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+    gap: @spacing-md;
+  }
+
+  &__field {
+    min-width: 0;
+  }
+
+  &__flag {
+    font-size: @font-size-lg;
+  }
+
+  &__warning {
+    margin-top: @spacing-sm;
+    font-size: @font-size-sm;
+    color: @error-dark;
+  }
+}

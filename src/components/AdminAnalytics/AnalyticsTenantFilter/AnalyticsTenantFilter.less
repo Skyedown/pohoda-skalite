@@ -1,0 +1,48 @@
+@import '../../../styles/variables.less';
+
+.analytics-tenant-filter {
+  margin-bottom: @spacing-lg;
+
+  &__label {
+    display: block;
+    margin-bottom: @spacing-sm;
+    font-size: @font-size-sm;
+    font-weight: @font-weight-semibold;
+    color: @text-secondary;
+  }
+
+  &__tiles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: @spacing-sm;
+
+    button {
+      padding: @spacing-sm @spacing-md;
+      border: 1px solid @border-gray-light;
+      border-radius: @border-radius-md;
+      background: @surface-color;
+      font-family: @font-family-primary;
+      font-size: @font-size-sm;
+      font-weight: @font-weight-medium;
+      color: @text-primary;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        border-color: @action-color;
+      }
+
+      &.active {
+        background: @action-color;
+        border-color: @action-color;
+        color: @text-white;
+      }
+    }
+  }
+
+  &__hint {
+    margin: @spacing-sm 0 0;
+    font-size: @font-size-xs;
+    color: @text-secondary;
+  }
+}

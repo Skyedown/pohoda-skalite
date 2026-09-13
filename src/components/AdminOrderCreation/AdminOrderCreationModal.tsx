@@ -1,17 +1,14 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { pizzas } from '../../data/pizzas';
-import { burgers } from '../../data/burgers';
-import { langos } from '../../data/langos';
-import { prilohy } from '../../data/prilohy';
-import { capovane } from '../../data/capovane';
-import { drinks } from '../../data/drinks';
-import { snacks } from '../../data/snacks';
+import {
+  ADMIN_PRODUCTS,
+  ADMIN_PRODUCTS_BY_CATEGORY,
+} from '../../data/adminMenu';
 import { useAdminSettings } from '../../hooks/useAdminSettings';
 import { isProductDisabled } from '../../utils/productAvailability';
 import OrderFormSection from './OrderFormSection/OrderFormSection';
 import OrderSidebar from './OrderSidebar/OrderSidebar';
 import AdminIngredientsModal from './AdminIngredientsModal';
-import type { Product, DeliveryMethod } from '../../types';
+import type { LocalizedProduct, DeliveryMethod } from '../../types';
 import {
   getExtrasForProductType,
   categoryLabels,
@@ -86,31 +83,18 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
 
   // Organize products by category, hiding items that are disabled (out of stock)
   const productsByCategory = useMemo(
-    () => ({
-      pizza: pizzas.filter((p) => !isProductDisabled(p, adminSettings)),
-      burger: burgers.filter((p) => !isProductDisabled(p, adminSettings)),
-      langos: langos.filter((p) => !isProductDisabled(p, adminSettings)),
-      sides: prilohy.filter((p) => !isProductDisabled(p, adminSettings)),
-      capovane: capovane.filter((p) => !isProductDisabled(p, adminSettings)),
-      drinks: drinks.filter((p) => !isProductDisabled(p, adminSettings)),
-      snacks: snacks.filter((p) => !isProductDisabled(p, adminSettings)),
-    }),
+    () =>
+      Object.fromEntries(
+        Object.entries(ADMIN_PRODUCTS_BY_CATEGORY).map(([key, products]) => [
+          key,
+          products.filter((p) => !isProductDisabled(p, adminSettings)),
+        ]),
+      ),
     [adminSettings],
   );
 
-  // All products flat list for resolving order items (unfiltered, for editing existing orders)
-  const allProducts = useMemo(
-    () => [
-      ...pizzas,
-      ...burgers,
-      ...langos,
-      ...prilohy,
-      ...capovane,
-      ...drinks,
-      ...snacks,
-    ],
-    [],
-  );
+  // Unfiltered flat list so an existing order can still resolve a disabled item
+  const allProducts = ADMIN_PRODUCTS;
 
   // Reset form when modal is closed, or populate when editing
   useEffect(() => {
@@ -135,14 +119,16 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
           product: fullProduct || {
             id: item.product.id || item.product.name,
             name: item.product.name,
+            nameSk: item.product.name,
             price: item.product.price,
             image: '',
-            type: (item.product.type as Product['type']) || 'pizza',
+            type: (item.product.type as LocalizedProduct['type']) || 'pizza',
           },
           quantity: item.quantity,
           extras: (item.extras || []).map((e) => ({
             id: e.id || e.name,
             name: e.name,
+            nameSk: e.name,
             price: e.price,
           })),
           removedIngredients: item.removedIngredients || [],
@@ -245,7 +231,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
   }, []);
 
   // Handle adding/removing products
-  const handleProductClick = (product: Product) => {
+  const handleProductClick = (product: LocalizedProduct) => {
     setOrderItems((prev) => addProductToOrder(prev, product));
   };
 

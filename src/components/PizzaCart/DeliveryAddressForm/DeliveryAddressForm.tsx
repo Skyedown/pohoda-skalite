@@ -1,5 +1,7 @@
 import React from 'react';
 import type { DeliveryMethod } from '../../../types';
+import type { DeliveryCity } from '../../../utils/adminSettings';
+import { useLocale } from '../../../i18n/LocaleContext';
 import { DeliveryMethodSelector } from '../DeliveryMethodSelector/DeliveryMethodSelector';
 import CustomerSuggestions from '../../AdminOrderCreation/CustomerSuggestions/CustomerSuggestions';
 import type { CustomerMatch } from '../../AdminOrderCreation/adminHelpers';
@@ -18,6 +20,7 @@ interface FormData {
 interface DeliveryAddressFormProps {
   formData: FormData;
   errors: Record<string, string>;
+  cities: DeliveryCity[];
   onChange: (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -33,6 +36,7 @@ interface DeliveryAddressFormProps {
 const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
   formData,
   errors,
+  cities,
   onChange,
   onDeliveryMethodChange,
   hideEmail = false,
@@ -40,6 +44,8 @@ const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
   lookupField = null,
   onCloseSuggestions,
 }) => {
+  const { t } = useLocale();
+
   const renderSuggestions = (field: 'fullName' | 'phone') =>
     onCloseSuggestions &&
     lookupField === field &&
@@ -52,7 +58,7 @@ const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
 
   return (
     <div className="delivery-address">
-      <h3 className="delivery-address__title">Kontaktné údaje</h3>
+      <h3 className="delivery-address__title">{t('form_title')}</h3>
 
       <DeliveryMethodSelector
         value={formData.deliveryMethod}
@@ -61,14 +67,14 @@ const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
 
       {/* Phone - first so a returning caller is matched immediately */}
       <div className="form-group form-group--anchor">
-        <label className="form-group__label">Telefónne číslo</label>
+        <label className="form-group__label">{t('form_phone')}</label>
         <input
           type="tel"
           name="phone"
           className={`form-group__input ${
             errors.phone ? 'form-group__input--error' : ''
           }`}
-          placeholder="+421 XXX XXX XXX"
+          placeholder={t('form_phone_placeholder')}
           value={formData.phone}
           onChange={onChange}
         />
@@ -78,16 +84,15 @@ const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
         {renderSuggestions('phone')}
       </div>
 
-      {/* Full Name */}
       <div className="form-group form-group--anchor">
-        <label className="form-group__label">Celé meno</label>
+        <label className="form-group__label">{t('form_fullname')}</label>
         <input
           type="text"
           name="fullName"
           className={`form-group__input ${
             errors.fullName ? 'form-group__input--error' : ''
           }`}
-          placeholder="Napr. Ján Novák"
+          placeholder={t('form_fullname_placeholder')}
           value={formData.fullName}
           onChange={onChange}
         />
@@ -97,11 +102,10 @@ const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
         {renderSuggestions('fullName')}
       </div>
 
-      {/* Address fields - only show for delivery */}
       {formData.deliveryMethod === 'delivery' && (
         <>
           <div className="form-group">
-            <label className="form-group__label">Mesto</label>
+            <label className="form-group__label">{t('form_city')}</label>
             <select
               name="city"
               className={`form-group__select ${
@@ -110,11 +114,12 @@ const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
               value={formData.city || ''}
               onChange={onChange}
             >
-              <option value="">Vyberte mesto</option>
-              <option value="Skalité">Skalité</option>
-              <option value="Čierne">Čierne</option>
-              <option value="Svrčinovec">Svrčinovec</option>
-              <option value="Oščadnica">Oščadnica</option>
+              <option value="">{t('form_city_placeholder')}</option>
+              {cities.map((city) => (
+                <option key={city.name} value={city.name}>
+                  {city.name}
+                </option>
+              ))}
             </select>
             {errors.city && (
               <span className="form-group__error">{errors.city}</span>
@@ -122,7 +127,9 @@ const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
           </div>
 
           <div className="form-group">
-            <label className="form-group__label">Číslo domu</label>
+            <label className="form-group__label">
+              {t('form_house_number')}
+            </label>
             <input
               type="text"
               inputMode="numeric"
@@ -131,7 +138,7 @@ const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
               className={`form-group__input ${
                 errors.houseNumber ? 'form-group__input--error' : ''
               }`}
-              placeholder="Zadajte len číslo domu (napr. 123)"
+              placeholder={t('form_house_number_placeholder')}
               value={formData.houseNumber || ''}
               onChange={onChange}
             />
@@ -144,14 +151,14 @@ const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
 
       {!hideEmail && (
         <div className="form-group">
-          <label className="form-group__label">Email</label>
+          <label className="form-group__label">{t('form_email')}</label>
           <input
             type="email"
             name="email"
             className={`form-group__input ${
               errors.email ? 'form-group__input--error' : ''
             }`}
-            placeholder="vas@email.sk"
+            placeholder={t('form_email_placeholder')}
             value={formData.email}
             onChange={onChange}
           />
@@ -162,14 +169,14 @@ const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
       )}
 
       <div className="form-group">
-        <label className="form-group__label">Poznámka (voliteľné)</label>
+        <label className="form-group__label">{t('form_notes')}</label>
         <textarea
           name="notes"
           className="form-group__textarea"
           placeholder={
             formData.deliveryMethod === 'delivery'
-              ? 'Napr. poschodie, zvonček...'
-              : 'Napr. čas vyzdvihnutia...'
+              ? t('form_notes_placeholder_delivery')
+              : t('form_notes_placeholder_pickup')
           }
           value={formData.notes}
           onChange={onChange}

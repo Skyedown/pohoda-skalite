@@ -9,15 +9,25 @@ import DateRangeFilter, {
 } from '../../components/DateRangeFilter/DateRangeFilter';
 import { OrderCard } from '../../components/AdminOrders/OrderCard/OrderCard';
 import type { Order } from '../../components/AdminOrders/types';
+import type { Locale } from '../../i18n/types';
 import './AdminOrders.less';
 
 const ordersPresets: DatePreset[] = ['today', 'yesterday', '7d', '30d'];
+
+type TenantFilter = 'all' | Locale;
+
+const TENANT_OPTIONS: { value: TenantFilter; label: string }[] = [
+  { value: 'all', label: 'Oba weby' },
+  { value: 'sk', label: '🇸🇰 Slovensko' },
+  { value: 'pl', label: '🇵🇱 Poľsko' },
+];
 
 const AdminOrders: React.FC = () => {
   const today = formatDateParam(new Date());
   const [fromDate, setFromDate] = useState(today);
   const [toDate, setToDate] = useState(today);
   const [activePreset, setActivePreset] = useState<string | null>('today');
+  const [tenant, setTenant] = useState<TenantFilter>('all');
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -30,8 +40,11 @@ const AdminOrders: React.FC = () => {
   const fetchOrders = useCallback(async () => {
     try {
       setLoading(true);
+      const params = new URLSearchParams({ from: fromDate, to: toDate });
+      if (tenant !== 'all') params.set('tenant', tenant);
+
       const response = await fetch(
-        `${API_URL}/api/orders/recent?from=${fromDate}&to=${toDate}`,
+        `${API_URL}/api/orders/recent?${params.toString()}`,
       );
 
       if (!response.ok) {
@@ -46,7 +59,7 @@ const AdminOrders: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [API_URL, fromDate, toDate]);
+  }, [API_URL, fromDate, toDate, tenant]);
 
   useEffect(() => {
     fetchOrders();
@@ -141,6 +154,22 @@ const AdminOrders: React.FC = () => {
           }}
           idPrefix="orders"
         />
+
+        <div className="admin-orders__tenant-filter">
+          <span className="admin-orders__tenant-label">Web</span>
+          <div className="admin-orders__tenant-tiles">
+            {TENANT_OPTIONS.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                className={tenant === opt.value ? 'active' : ''}
+                onClick={() => setTenant(opt.value)}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {loading ? (
           <div className="admin-orders__loading">Načítavam objednávky...</div>

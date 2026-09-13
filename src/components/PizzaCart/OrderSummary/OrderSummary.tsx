@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLocale } from '../../../i18n/LocaleContext';
 import './OrderSummary.less';
 
 interface OrderSummaryProps {
@@ -12,23 +13,25 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   delivery,
   total,
 }) => {
+  const { t, price } = useLocale();
+
   return (
     <div className="order-summary">
-      <h3 className="order-summary__title">Súhrn objednávky</h3>
+      <h3 className="order-summary__title">{t('summary_title')}</h3>
 
       <div className="order-summary__row">
-        <span>Medzisúčet</span>
-        <span>{subtotal.toFixed(2)} €</span>
+        <span>{t('summary_subtotal')}</span>
+        <span>{price(subtotal)}</span>
       </div>
 
       <div className="order-summary__row">
-        <span>Doprava</span>
-        <span>{delivery.toFixed(2)} €</span>
+        <span>{t('summary_delivery')}</span>
+        <span>{price(delivery)}</span>
       </div>
 
       <div className="order-summary__row order-summary__row--total">
-        <span>Celkom</span>
-        <span className="order-summary__total-price">{total.toFixed(2)} €</span>
+        <span>{t('summary_total')}</span>
+        <span className="order-summary__total-price">{price(total)}</span>
       </div>
     </div>
   );

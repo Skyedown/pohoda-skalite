@@ -1,31 +1,39 @@
 import React from 'react';
-import {
-  formatWaitTime,
-  type AnnouncementMode,
-} from '../../../utils/adminSettings';
+import { useLocale } from '../../../i18n/LocaleContext';
+import { formatWaitTime } from '../../../utils/waitTime';
+import { COMPANY, formatPhone } from '../../../constants/company';
+import type { AnnouncementMode } from '../../../utils/adminSettings';
 import './OrderOverloadModal.less';
 
 interface OrderOverloadModalProps {
   isOpen: boolean;
   onClose: () => void;
-  mode?: AnnouncementMode;
-  waitTimeMinutes?: number;
-  customNote?: string;
-  disabledReason?: string;
+  mode: AnnouncementMode;
+  waitTimeMinutes: number;
+  customNote: string;
+  disabledReason: string;
 }
 
 const OrderOverloadModal: React.FC<OrderOverloadModalProps> = ({
   isOpen,
   onClose,
-  mode = 'disabled',
-  waitTimeMinutes = 60,
-  customNote = '',
-  disabledReason = 'Z dôvodu veľkého počtu objednávok sme momentálne nútení pozastaviť prijímanie nových online objednávok. Ďakujeme za pochopenie a ospravedlňujeme sa za nepríjemnosti. Skúste to prosím neskôr alebo nás kontaktujte telefonicky.',
+  mode,
+  waitTimeMinutes,
+  customNote,
+  disabledReason,
 }) => {
+  const { t, locale } = useLocale();
+
   if (!isOpen) return null;
 
   const isWaitTimeMode = mode === 'waitTime';
   const isCustomNoteMode = mode === 'customNote';
+
+  const title = isCustomNoteMode
+    ? t('overload_title_note')
+    : isWaitTimeMode
+      ? t('overload_title_wait')
+      : t('overload_title_disabled');
 
   return (
     <div className="order-overload-modal-overlay" onClick={onClose}>
@@ -36,7 +44,7 @@ const OrderOverloadModal: React.FC<OrderOverloadModalProps> = ({
         <button
           className="order-overload-modal__close"
           onClick={onClose}
-          aria-label="Zavrieť"
+          aria-label={t('common_close')}
         >
           <svg
             width="24"
@@ -105,58 +113,46 @@ const OrderOverloadModal: React.FC<OrderOverloadModalProps> = ({
           )}
         </div>
 
-        <h2 className="order-overload-modal__title">
-          {isCustomNoteMode
-            ? 'Oznámenie'
-            : isWaitTimeMode
-              ? 'Informácia o čakacej dobe'
-              : 'Online objednávky dočasne pozastavené'}
-        </h2>
+        <h2 className="order-overload-modal__title">{title}</h2>
 
         {isCustomNoteMode ? (
-          <>
-            <p className="order-overload-modal__message">{customNote}</p>
-          </>
+          <p className="order-overload-modal__message">{customNote}</p>
         ) : isWaitTimeMode ? (
           <>
             <p className="order-overload-modal__message">
-              Z dôvodu veľkého počtu objednávok je čakacia doba momentálne{' '}
+              {t('overload_wait_message')}{' '}
               <strong className="order-overload-modal__highlight">
-                {formatWaitTime(waitTimeMinutes)}
+                {formatWaitTime(waitTimeMinutes, locale, t)}
               </strong>
               .
             </p>
-
             <p className="order-overload-modal__message">
-              Vaša objednávka bude pripravená v predpokladanom čase. Ďakujeme za
-              pochopenie a trpezlivosť!
+              {t('overload_wait_message_2')}
             </p>
           </>
         ) : (
-          <>
-            <p className="order-overload-modal__message">{disabledReason}</p>
-          </>
+          <p className="order-overload-modal__message">{disabledReason}</p>
         )}
 
         <div className="order-overload-modal__contact">
           <p>
             {isWaitTimeMode || isCustomNoteMode
-              ? 'Máte otázky?'
-              : 'Pre viac informácií'}{' '}
-            Kontaktujte nás telefonicky:
+              ? t('overload_contact_questions')
+              : t('overload_contact_more_info')}{' '}
+            {t('overload_contact_call')}
           </p>
           <a
-            href={`tel:${import.meta.env.VITE_RESTAURANT_PHONE || '+421918175571'}`}
+            href={`tel:${COMPANY.phone}`}
             className="order-overload-modal__phone"
           >
-            {import.meta.env.VITE_RESTAURANT_PHONE || '+421 918 175 571'}
+            {formatPhone(COMPANY.phone)}
           </a>
         </div>
 
         <button className="order-overload-modal__button" onClick={onClose}>
           {isWaitTimeMode || isCustomNoteMode
-            ? 'Pokračovať v objednávke'
-            : 'Rozumiem'}
+            ? t('overload_continue')
+            : t('overload_understood')}
         </button>
       </div>
     </div>

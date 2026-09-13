@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import type { Product, Extra } from '../../../types';
+import type { LocalizedExtra, LocalizedProduct } from '../../../types';
 import { useCart } from '../../../context/CartContext';
+import { useLocale } from '../../../i18n/LocaleContext';
+import { useLocalizedExtras } from '../../../hooks/useMenu';
 import { formatAllergens } from '../../../constants/allergens';
+import { toSlovakIngredients } from '../../../data/localize';
 import { ProductModalExtras } from './ProductModalExtras/ProductModalExtras';
 import { ProductModalQuantity } from './ProductModalQuantity/ProductModalQuantity';
 import { ProductModalSummary } from './ProductModalSummary/ProductModalSummary';
@@ -13,11 +16,11 @@ import {
 import './ProductModal.less';
 
 interface ProductModalProps {
-  product: Product | null;
+  product: LocalizedProduct | null;
   isOpen: boolean;
   onClose: () => void;
   onAddToCart?: (productName: string) => void;
-  extras?: Extra[];
+  extras?: LocalizedExtra[];
   isDisabled?: boolean;
 }
 
@@ -26,10 +29,13 @@ const ProductModal: React.FC<ProductModalProps> = ({
   isOpen,
   onClose,
   onAddToCart,
-  extras = defaultPizzaExtras,
+  extras,
   isDisabled = false,
 }) => {
   const { addToCart } = useCart();
+  const { t } = useLocale();
+  const pizzaExtras = useLocalizedExtras(defaultPizzaExtras);
+  const activeExtras = extras ?? pizzaExtras;
   const [quantity, setQuantity] = useState(1);
   const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
   const [removedIngredients, setRemovedIngredients] = useState<string[]>([]);
@@ -97,21 +103,26 @@ const ProductModal: React.FC<ProductModalProps> = ({
     );
   };
 
-  const extrasPrice = calculateExtrasPrice(selectedExtras, extras);
+  const extrasPrice = calculateExtrasPrice(selectedExtras, activeExtras);
   const totalPrice = calculateTotalPrice(product.price, extrasPrice, quantity);
 
   const handleAddToCartClick = () => {
-    // Prevent adding to cart if product is disabled
     if (isDisabled) {
-      alert('Táto položka nie je momentálne dostupná');
+      alert(t('modal_unavailable_alert'));
       return;
     }
 
     const selectedExtrasObjects = selectedExtras.map(
-      (extraId) => extras.find((e) => e.id === extraId)!,
+      (extraId) => activeExtras.find((e) => e.id === extraId)!,
     );
 
-    addToCart(product, quantity, selectedExtrasObjects, removedIngredients);
+    addToCart(
+      product,
+      quantity,
+      selectedExtrasObjects,
+      removedIngredients,
+      toSlovakIngredients(removedIngredients, product),
+    );
     if (onAddToCart) {
       onAddToCart(product.name);
     }
@@ -130,7 +141,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
         <button
           className="product-modal__close"
           onClick={handleClose}
-          aria-label="Zavrieť"
+          aria-label={t('common_close')}
         >
           ✕
         </button>
@@ -165,7 +176,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
                   onClick={scrollToExtras}
                   type="button"
                 >
-                  Upraviť ingrediencie
+                  {t('modal_edit_ingredients')}
                 </button>
               )}
             </div>
@@ -191,22 +202,22 @@ const ProductModal: React.FC<ProductModalProps> = ({
                 )}
                 {product.allergens && product.allergens.length > 0 && (
                   <p className="product-modal__allergens">
-                    <strong>Alergény:</strong>{' '}
+                    <strong>{t('common_allergens')}:</strong>{' '}
                     <span className="product-modal__allergens-list">
-                      {formatAllergens(product.allergens, true)}
+                      {formatAllergens(product.allergens, true, t)}
                     </span>
                   </p>
                 )}
               </div>
 
               {/* Extras Section */}
-              {(extras.length > 0 ||
+              {(activeExtras.length > 0 ||
                 (product.type !== 'sides' &&
                   product.ingredients &&
                   product.ingredients.length > 0)) && (
                 <div ref={extrasSectionRef}>
                   <ProductModalExtras
-                    extras={extras}
+                    extras={activeExtras}
                     selectedExtras={selectedExtras}
                     ingredients={product.ingredients || []}
                     removedIngredients={removedIngredients}

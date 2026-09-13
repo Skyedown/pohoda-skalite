@@ -1,22 +1,24 @@
+import type { Locale, LocalizedText } from '../i18n/types';
+import type { ProductType } from '../types';
+
 export type AnnouncementMode = 'off' | 'disabled' | 'waitTime' | 'customNote';
+
+export interface DeliveryCity {
+  name: string;
+  minOrder: number;
+  fee: number;
+}
 
 export interface AdminSettings {
   mode: AnnouncementMode;
   waitTimeMinutes: number;
-  customNote: string;
-  disabledReason: string;
-  disabledProductTypes?: (
-    | 'pizza'
-    | 'burger'
-    | 'langos'
-    | 'sides'
-    | 'capovane'
-    | 'drinks'
-    | 'snacks'
-  )[];
-  disabledProductIds?: string[];
-  cardPaymentDeliveryEnabled?: boolean;
-  cardPaymentPickupEnabled?: boolean;
+  customNote: LocalizedText;
+  disabledReason: LocalizedText;
+  disabledProductTypes: ProductType[];
+  disabledProductIds: string[];
+  cardPaymentDeliveryEnabled: boolean;
+  cardPaymentPickupEnabled: boolean;
+  deliveryCities: Record<Locale, DeliveryCity[]>;
 }
 
 const API_URL = import.meta.env.VITE_API_URL ?? '';
@@ -27,37 +29,88 @@ export const WAIT_TIME_OPTIONS = [
   { value: 120, label: '2 hodiny' },
 ];
 
-// Default settings
-const DEFAULT_SETTINGS: AdminSettings = {
+export const DEFAULT_SETTINGS: AdminSettings = {
   mode: 'off',
   waitTimeMinutes: 60,
-  customNote:
-    'Z dôvodu nepriaznivého počasia je donáška možná len k hlavnej ceste',
-  disabledReason:
-    'Z dôvodu veľkého počtu objednávok sme momentálne nútení pozastaviť prijímanie nových online objednávok. Ďakujeme za pochopenie a ospravedlňujeme sa za nepríjemnosti. Skúste to prosím neskôr alebo nás kontaktujte telefonicky.',
+  customNote: { sk: '', pl: '' },
+  disabledReason: {
+    sk: 'Z dôvodu veľkého počtu objednávok sme momentálne nútení pozastaviť prijímanie nových online objednávok. Ďakujeme za pochopenie a ospravedlňujeme sa za nepríjemnosti. Skúste to prosím neskôr alebo nás kontaktujte telefonicky.',
+    pl: 'Z powodu dużej liczby zamówień jesteśmy zmuszeni tymczasowo wstrzymać przyjmowanie nowych zamówień online. Dziękujemy za wyrozumiałość i przepraszamy za niedogodności. Spróbuj później lub skontaktuj się z nami telefonicznie.',
+  },
   disabledProductTypes: [],
   disabledProductIds: [],
   cardPaymentDeliveryEnabled: false,
   cardPaymentPickupEnabled: false,
+  deliveryCities: {
+    sk: [
+      { name: 'Skalité', minOrder: 8, fee: 0 },
+      { name: 'Čierne', minOrder: 8, fee: 0 },
+      { name: 'Oščadnica', minOrder: 30, fee: 0 },
+      { name: 'Svrčinovec', minOrder: 30, fee: 0 },
+    ],
+    pl: [
+      { name: 'Zwardoń', minOrder: 170, fee: 0 },
+      { name: 'Myto', minOrder: 170, fee: 0 },
+      { name: 'Laliki', minOrder: 170, fee: 0 },
+      { name: 'Rycerka Górna', minOrder: 170, fee: 0 },
+      { name: 'Rycerka Dolna', minOrder: 170, fee: 0 },
+      { name: 'Rycerka-Kolonia', minOrder: 170, fee: 0 },
+      { name: 'Sól', minOrder: 170, fee: 0 },
+      { name: 'Rajcza', minOrder: 170, fee: 0 },
+      { name: 'Milówka', minOrder: 170, fee: 0 },
+    ],
+  },
 };
 
-// Fetch admin settings from server
+function toLocalizedText(
+  value: unknown,
+  fallback: LocalizedText,
+): LocalizedText {
+  if (typeof value === 'string') return { sk: value, pl: fallback.pl };
+  if (value && typeof value === 'object') {
+    const record = value as Partial<LocalizedText>;
+    return {
+      sk: typeof record.sk === 'string' ? record.sk : fallback.sk,
+      pl: typeof record.pl === 'string' ? record.pl : fallback.pl,
+    };
+  }
+  return fallback;
+}
+
+function normalizeSettings(raw: Record<string, unknown>): AdminSettings {
+  const cities = (raw.deliveryCities ?? {}) as Record<string, DeliveryCity[]>;
+
+  return {
+    ...DEFAULT_SETTINGS,
+    ...raw,
+    customNote: toLocalizedText(raw.customNote, DEFAULT_SETTINGS.customNote),
+    disabledReason: toLocalizedText(
+      raw.disabledReason,
+      DEFAULT_SETTINGS.disabledReason,
+    ),
+    disabledProductTypes: (raw.disabledProductTypes as ProductType[]) ?? [],
+    disabledProductIds: (raw.disabledProductIds as string[]) ?? [],
+    deliveryCities: {
+      sk:
+        Array.isArray(cities.sk) && cities.sk.length
+          ? cities.sk
+          : DEFAULT_SETTINGS.deliveryCities.sk,
+      pl:
+        Array.isArray(cities.pl) && cities.pl.length
+          ? cities.pl
+          : DEFAULT_SETTINGS.deliveryCities.pl,
+    },
+  };
+}
+
 export async function getAdminSettings(): Promise<AdminSettings> {
   try {
     const response = await fetch(`${API_URL}/api/admin-settings`, {
       cache: 'no-cache',
-      headers: {
-        'Cache-Control': 'no-cache',
-      },
+      headers: { 'Cache-Control': 'no-cache' },
     });
     if (response.ok) {
-      const settings = await response.json();
-      // Ensure disabledReason exists (migration for old data, only if undefined)
-      if (settings.disabledReason === undefined) {
-        settings.disabledReason =
-          'Z dôvodu veľkého počtu objednávok sme momentálne nútení pozastaviť prijímanie nových online objednávok. Ďakujeme za pochopenie a ospravedlňujeme sa za nepríjemnosti. Skúste to prosím neskôr alebo nás kontaktujte telefonicky.';
-      }
-      return settings;
+      return normalizeSettings(await response.json());
     }
   } catch (error) {
     console.error('Failed to load admin settings from server:', error);
@@ -66,41 +119,23 @@ export async function getAdminSettings(): Promise<AdminSettings> {
   return DEFAULT_SETTINGS;
 }
 
-// Save admin settings to server
 export async function saveAdminSettings(
   settings: AdminSettings,
 ): Promise<AdminSettings | null> {
   try {
     const response = await fetch(`${API_URL}/api/admin-settings`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(settings),
     });
 
     if (response.ok) {
       const result = await response.json();
-      return result.settings;
+      return normalizeSettings(result.settings);
     }
   } catch (error) {
     console.error('Failed to save admin settings to server:', error);
   }
 
   return null;
-}
-
-export function formatWaitTime(minutes: number): string {
-  if (minutes >= 181) {
-    return '3+ hodiny';
-  } else if (minutes >= 60) {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    if (mins === 0) {
-      return `${hours} ${hours === 1 ? 'hodina' : hours < 5 ? 'hodiny' : 'hodín'}`;
-    }
-    return `${hours} ${hours === 1 ? 'hodina' : hours < 5 ? 'hodiny' : 'hodín'} ${mins} minút`;
-  } else {
-    return `${minutes} minút`;
-  }
 }

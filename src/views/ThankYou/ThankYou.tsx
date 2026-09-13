@@ -1,17 +1,40 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { useLocale } from '../../i18n/LocaleContext';
 import './ThankYou.less';
 
 const ThankYou: React.FC = () => {
+  const { t } = useLocale();
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, []);
 
+  const details = [
+    {
+      icon: '/icons/pizza.svg',
+      title: t('thankyou_prep_title'),
+      text: t('thankyou_prep_text'),
+    },
+    {
+      icon: '/icons/car.svg',
+      title: t('thankyou_delivery_title'),
+      text: t('thankyou_delivery_text'),
+    },
+    {
+      icon: '/icons/phone-orange.svg',
+      title: t('thankyou_contact_title'),
+      text: t('thankyou_contact_text'),
+    },
+  ];
+
   return (
     <div className="thank-you">
       <Helmet>
-        <title>Ďakujeme za objednávku | Pohoda Skalité</title>
+        <title>
+          {t('thankyou_head_title')} | {t('seo_site_name')}
+        </title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
@@ -19,48 +42,28 @@ const ThankYou: React.FC = () => {
         <div className="thank-you__content">
           <div className="thank-you__icon">✓</div>
 
-          <h1 className="thank-you__title">Ďakujeme za Vašu objednávku!</h1>
+          <h1 className="thank-you__title">{t('thankyou_title')}</h1>
 
-          <p className="thank-you__message">
-            Vaša objednávka bola úspešne prijatá a spracováva sa.
-          </p>
+          <p className="thank-you__message">{t('thankyou_message')}</p>
 
           <p className="thank-you__info">
-            Potvrdenie objednávky sme Vám poslali na email.
+            {t('thankyou_info_1')}
             <br />
-            Budeme Vás kontaktovať v prípade akýchkoľvek otázok.
+            {t('thankyou_info_2')}
           </p>
 
           <div className="thank-you__details">
-            <div className="thank-you__detail-item">
-              <div className="thank-you__detail-icon">
-                <img src="/icons/pizza.svg" alt="Pizza" />
+            {details.map((detail) => (
+              <div className="thank-you__detail-item" key={detail.title}>
+                <div className="thank-you__detail-icon">
+                  <img src={detail.icon} alt="" aria-hidden="true" />
+                </div>
+                <div className="thank-you__detail-text">
+                  <strong>{detail.title}</strong>
+                  <span>{detail.text}</span>
+                </div>
               </div>
-              <div className="thank-you__detail-text">
-                <strong>Príprava</strong>
-                <span>Vaša objednávka sa práve pripravuje</span>
-              </div>
-            </div>
-
-            <div className="thank-you__detail-item">
-              <div className="thank-you__detail-icon">
-                <img src="/icons/car.svg" alt="Delivery" />
-              </div>
-              <div className="thank-you__detail-text">
-                <strong>Donáška</strong>
-                <span>Čoskoro bude na ceste k Vám</span>
-              </div>
-            </div>
-
-            <div className="thank-you__detail-item">
-              <div className="thank-you__detail-icon">
-                <img src="/icons/phone-orange.svg" alt="Phone" />
-              </div>
-              <div className="thank-you__detail-text">
-                <strong>Kontakt</strong>
-                <span>Voláme Vám pred doručením</span>
-              </div>
-            </div>
+            ))}
           </div>
 
           <div className="thank-you__review-section">
@@ -75,12 +78,12 @@ const ThankYou: React.FC = () => {
                 alt="Google"
                 className="thank-you__review-icon"
               />
-              Chutilo Vám? Recenzia nás veľmi poteší!
+              {t('thankyou_review')}
             </a>
           </div>
 
           <Link to="/" className="thank-you__button">
-            Späť na hlavnú stránku
+            {t('common_back_home')}
           </Link>
         </div>
       </div>

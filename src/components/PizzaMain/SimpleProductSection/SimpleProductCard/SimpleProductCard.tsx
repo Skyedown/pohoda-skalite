@@ -1,14 +1,15 @@
 import React from 'react';
-import type { Product } from '../../../../types';
+import type { LocalizedProduct } from '../../../../types';
 import CartIcon from '../../../shared/CartIcon/CartIcon';
+import { useLocale } from '../../../../i18n/LocaleContext';
 import './SimpleProductCard.less';
 
 interface SimpleProductCardProps {
-  item: Product;
+  item: LocalizedProduct;
   isDisabled: boolean;
   quantity: number;
-  onIncrement: (item: Product) => void;
-  onDecrement: (item: Product) => void;
+  onIncrement: (item: LocalizedProduct) => void;
+  onDecrement: (item: LocalizedProduct) => void;
 }
 
 export const SimpleProductCard: React.FC<SimpleProductCardProps> = ({
@@ -18,6 +19,8 @@ export const SimpleProductCard: React.FC<SimpleProductCardProps> = ({
   onIncrement,
   onDecrement,
 }) => {
+  const { t, price } = useLocale();
+
   const handleCardClick = () => {
     if (isDisabled || quantity > 0) return;
     onIncrement(item);
@@ -52,21 +55,19 @@ export const SimpleProductCard: React.FC<SimpleProductCardProps> = ({
           {item.allergens && item.allergens.length > 0 && (
             <span className="simple-product-card__allergens">
               {' '}
-              (Alergény: {item.allergens.join(', ')})
+              ({t('common_allergens')}: {item.allergens.join(', ')})
             </span>
           )}
         </p>
       )}
       <div className="simple-product-card__footer">
-        <div className="simple-product-card__price">
-          {item.price.toFixed(2)}€
-        </div>
+        <div className="simple-product-card__price">{price(item.price)}</div>
         {quantity > 0 ? (
           <div className="simple-product-card__counter">
             <button
               className="simple-product-card__counter-btn"
               onClick={handleDecrement}
-              aria-label={`Odobrať ${item.name} z košíka`}
+              aria-label={t('product_remove_aria', { name: item.name })}
             >
               −
             </button>
@@ -75,7 +76,7 @@ export const SimpleProductCard: React.FC<SimpleProductCardProps> = ({
               className="simple-product-card__counter-btn simple-product-card__counter-btn--plus"
               onClick={handleIncrement}
               disabled={isDisabled}
-              aria-label={`Pridať ďalší ${item.name}`}
+              aria-label={t('product_add_more_aria', { name: item.name })}
             >
               +
             </button>
@@ -85,10 +86,10 @@ export const SimpleProductCard: React.FC<SimpleProductCardProps> = ({
             className={`simple-product-card__button ${isDisabled ? 'simple-product-card__button--disabled' : ''}`}
             onClick={handleIncrement}
             disabled={isDisabled}
-            aria-label={`Pridať ${item.name} do košíka`}
+            aria-label={t('product_add_aria', { name: item.name })}
           >
             <CartIcon />
-            {isDisabled ? 'NEDOSTUPNÉ' : 'PRIDAŤ'}
+            {isDisabled ? t('common_unavailable_upper') : t('common_add_upper')}
           </button>
         )}
       </div>

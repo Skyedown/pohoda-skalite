@@ -2,19 +2,33 @@ import React from 'react';
 import { formatOrderDate } from '../adminOrdersHelpers';
 import './OrderCardHeader.less';
 
+const TENANT_BADGE: Record<'sk' | 'pl', { flag: string; label: string }> = {
+  sk: { flag: '🇸🇰', label: 'SK' },
+  pl: { flag: '🇵🇱', label: 'PL' },
+};
+
 interface OrderCardHeaderProps {
   printNumber?: number;
   printed: boolean;
   createdAt: string;
+  tenant?: 'sk' | 'pl';
 }
 
 export const OrderCardHeader: React.FC<OrderCardHeaderProps> = ({
   printNumber,
   printed,
   createdAt,
+  tenant = 'sk',
 }) => {
+  const badge = TENANT_BADGE[tenant];
+
   return (
     <div className="admin-orders__item-header">
+      <div
+        className={`admin-orders__item-tenant admin-orders__item-tenant--${tenant}`}
+      >
+        <span aria-hidden="true">{badge.flag}</span> {badge.label}
+      </div>
       {printNumber && (
         <div className="admin-orders__item-number">#{printNumber}</div>
       )}

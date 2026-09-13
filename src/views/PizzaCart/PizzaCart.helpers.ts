@@ -1,40 +1,50 @@
 import type { CartFormData } from '../../utils/sanitize';
 import type { CartItem, DeliveryMethod } from '../../types';
+import type { Currency, Locale } from '../../i18n/types';
+import type { TranslationKey } from '../../i18n/sk';
+import { validateEmail, validatePhone } from '../../utils/validation';
+
+type Translate = (
+  key: TranslationKey,
+  vars?: Record<string, string | number>,
+) => string;
 
 export function validateCartForm(
   formData: CartFormData,
   deliveryMethod: DeliveryMethod,
   gdprConsent: boolean,
+  locale: Locale,
+  t: Translate,
 ): Record<string, string> {
   const errors: Record<string, string> = {};
 
   if (!formData.fullName.trim()) {
-    errors.fullName = 'Celé meno je povinné';
+    errors.fullName = t('validation_fullname_required');
   }
 
   if (deliveryMethod === 'delivery') {
     if (!formData.houseNumber.trim()) {
-      errors.houseNumber = 'Číslo domu je povinné';
+      errors.houseNumber = t('validation_house_required');
     }
     if (!formData.city.trim()) {
-      errors.city = 'Mesto je povinné';
+      errors.city = t('validation_city_required');
     }
   }
 
   if (!formData.phone.trim()) {
-    errors.phone = 'Telefónne číslo je povinné';
-  } else if (!/^[+]?[\d\s()-]{9,}$/.test(formData.phone)) {
-    errors.phone = 'Zadajte platné telefónne číslo';
+    errors.phone = t('validation_phone_required');
+  } else if (!validatePhone(formData.phone, locale)) {
+    errors.phone = t('validation_phone_invalid');
   }
 
   if (!formData.email.trim()) {
-    errors.email = 'Email je povinný';
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-    errors.email = 'Zadajte platnú emailovú adresu';
+    errors.email = t('validation_email_required');
+  } else if (!validateEmail(formData.email)) {
+    errors.email = t('validation_email_invalid');
   }
 
   if (!gdprConsent) {
-    errors.gdprConsent = 'Musíte súhlasiť so spracovaním osobných údajov';
+    errors.gdprConsent = t('validation_gdpr_required');
   }
 
   return errors;
@@ -68,28 +78,53 @@ export function scrollToFirstError(errors: Record<string, string>): void {
   }, 100);
 }
 
-export function buildOrderPayload(
-  cart: CartItem[],
-  formData: CartFormData,
-  deliveryMethod: DeliveryMethod,
-  paymentMethod: 'cash' | 'card',
-  subtotal: number,
-  delivery: number,
-  total: number,
-) {
+interface OrderPayloadInput {
+  cart: CartItem[];
+  formData: CartFormData;
+  deliveryMethod: DeliveryMethod;
+  paymentMethod: 'cash' | 'card';
+  subtotal: number;
+  delivery: number;
+  total: number;
+  locale: Locale;
+  currency: Currency;
+}
+
+/**
+ * `name` stays Slovak on purpose: the kitchen ticket, the admin and the product
+ * analytics all read it, and they must be identical across both storefronts.
+ * The customer-facing wording travels alongside in `nameLocalized`.
+ */
+export function buildOrderPayload({
+  cart,
+  formData,
+  deliveryMethod,
+  paymentMethod,
+  subtotal,
+  delivery,
+  total,
+  locale,
+  currency,
+}: OrderPayloadInput) {
   return {
     items: cart.map((item) => ({
       id: item.product.id,
-      name: item.product.name,
+      name: item.product.nameSk,
+      nameLocalized: item.product.name,
       type: item.product.type,
       quantity: item.quantity,
       basePrice: item.product.price,
       extras:
-        item.extras?.map((e) => ({ id: e.id, name: e.name, price: e.price })) ||
-        [],
+        item.extras?.map((e) => ({
+          id: e.id,
+          name: e.nameSk,
+          nameLocalized: e.name,
+          price: e.price,
+        })) || [],
       extrasPrice: item.extrasPrice || 0,
       totalPrice: item.totalPrice,
-      removedIngredients: item.removedIngredients || [],
+      removedIngredients: item.removedIngredientsSk || [],
+      removedIngredientsLocalized: item.removedIngredients || [],
     })),
     pricing: { subtotal, delivery, total },
     deliveryMethod,
@@ -103,6 +138,9 @@ export function buildOrderPayload(
       notes: formData.notes,
     },
     paymentMethod,
+    tenant: locale,
+    locale,
+    currency,
     timestamp: new Date().toISOString(),
   };
 }

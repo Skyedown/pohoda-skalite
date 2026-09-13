@@ -6,6 +6,21 @@
   background: white;
   border-top: 1px solid @border-color;
 
+  &__legal {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: @spacing-sm;
+    margin-bottom: @spacing-md;
+    font-family: @font-family-primary;
+    font-size: @font-size-sm;
+  }
+
+  &__separator {
+    color: @text-secondary;
+  }
+
   &__credits {
     font-family: @font-family-primary;
     font-size: 16px;

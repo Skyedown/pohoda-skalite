@@ -1,11 +1,17 @@
 import Highcharts from 'highcharts';
 import { prilohy } from '../../data/prilohy';
+import { formatPrice } from '../../i18n/format';
+import type { Currency, Locale } from '../../i18n/types';
 import type { ProductStat } from './ProductPerformance/ProductPerformance';
 
 export interface DayStat {
   date: string;
   totalOrders: number;
   totalValue: number;
+  cashOrders: number;
+  cashValue: number;
+  cardOrders: number;
+  cardValue: number;
 }
 
 export interface SummaryStats {
@@ -14,12 +20,31 @@ export interface SummaryStats {
   avgOrderValue: number;
 }
 
+export interface PaymentSplit {
+  cashOrders: number;
+  cashValue: number;
+  cardOrders: number;
+  cardValue: number;
+}
+
 export type DeliveryMethodFilter =
   | 'all'
   | 'pickup'
   | 'dine-in'
   | 'delivery'
   | 'pickup,delivery';
+
+export type PaymentMethodFilter = 'all' | 'cash' | 'card';
+
+export const CURRENCY_BY_TENANT: Record<Locale, Currency> = {
+  sk: 'EUR',
+  pl: 'PLN',
+};
+
+export const CURRENCY_SYMBOL: Record<Currency, string> = {
+  EUR: '€',
+  PLN: 'zł',
+};
 
 export interface ProductTypeSummary {
   key: string;
@@ -117,18 +142,32 @@ export function computeSummaryStats(stats: DayStat[]): SummaryStats {
   return { totalRevenue, totalOrders, avgOrderValue };
 }
 
+export function computePaymentSplit(stats: DayStat[]): PaymentSplit {
+  return stats.reduce<PaymentSplit>(
+    (acc, s) => ({
+      cashOrders: acc.cashOrders + s.cashOrders,
+      cashValue: acc.cashValue + s.cashValue,
+      cardOrders: acc.cardOrders + s.cardOrders,
+      cardValue: acc.cardValue + s.cardValue,
+    }),
+    { cashOrders: 0, cashValue: 0, cardOrders: 0, cardValue: 0 },
+  );
+}
+
 export function buildRevenueOptions(
   categories: string[],
   stats: DayStat[],
+  currency: Currency,
 ): Highcharts.Options {
+  const symbol = CURRENCY_SYMBOL[currency];
   return {
     chart: { type: 'column', height: 300 },
-    title: { text: 'Denné tržby (€)' },
+    title: { text: `Denné tržby (${symbol})` },
     xAxis: { categories, crosshair: true },
-    yAxis: { min: 0, title: { text: 'Tržby (€)' } },
+    yAxis: { min: 0, title: { text: `Tržby (${symbol})` } },
     tooltip: {
       headerFormat: '<b>{point.key}</b><br/>',
-      pointFormat: 'Tržby: <b>{point.y:.2f} €</b>',
+      pointFormat: `Tržby: <b>{point.y:.2f} ${symbol}</b>`,
     },
     series: [
       {
@@ -176,15 +215,17 @@ export function buildOrdersOptions(
 export function buildAvgOrderOptions(
   categories: string[],
   stats: DayStat[],
+  currency: Currency,
 ): Highcharts.Options {
+  const symbol = CURRENCY_SYMBOL[currency];
   return {
     chart: { type: 'line', height: 300 },
-    title: { text: 'Priemerná hodnota objednávky (€)' },
+    title: { text: `Priemerná hodnota objednávky (${symbol})` },
     xAxis: { categories, crosshair: true },
-    yAxis: { min: 0, title: { text: 'Priemerná hodnota (€)' } },
+    yAxis: { min: 0, title: { text: `Priemerná hodnota (${symbol})` } },
     tooltip: {
       headerFormat: '<b>{point.key}</b><br/>',
-      pointFormat: 'Priemer: <b>{point.y:.2f} €</b>',
+      pointFormat: `Priemer: <b>{point.y:.2f} ${symbol}</b>`,
     },
     series: [
       {
@@ -202,4 +243,47 @@ export function buildAvgOrderOptions(
     credits: { enabled: false },
     legend: { enabled: false },
   };
+}
+
+export function buildPaymentSplitOptions(
+  categories: string[],
+  stats: DayStat[],
+): Highcharts.Options {
+  return {
+    chart: { type: 'column', height: 300 },
+    title: { text: 'Objednávky podľa spôsobu platby' },
+    xAxis: { categories, crosshair: true },
+    yAxis: {
+      min: 0,
+      title: { text: 'Počet objednávok' },
+      allowDecimals: false,
+      stackLabels: { enabled: true },
+    },
+    plotOptions: { column: { stacking: 'normal' } },
+    tooltip: {
+      headerFormat: '<b>{point.key}</b><br/>',
+      pointFormat: '{series.name}: <b>{point.y}</b><br/>',
+      shared: true,
+    },
+    series: [
+      {
+        name: 'Hotovosť',
+        type: 'column',
+        data: stats.map((s) => s.cashOrders),
+        color: '#27ae60',
+      },
+      {
+        name: 'Karta',
+        type: 'column',
+        data: stats.map((s) => s.cardOrders),
+        color: '#8e44ad',
+      },
+    ],
+    credits: { enabled: false },
+    legend: { enabled: true },
+  };
+}
+
+export function formatMoney(value: number, currency: Currency): string {
+  return formatPrice(value, currency);
 }

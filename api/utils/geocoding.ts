@@ -3,30 +3,6 @@
  * and generating Mapy.cz URLs
  */
 
-/** Mapping of normalized village names to their postal codes */
-const POSTAL_CODES: Record<string, string> = {
-  skalite: '02314',
-  cierne: '02313',
-  svrcinovec: '02312',
-  oscadnica: '02301',
-};
-
-/** Normalize text: remove diacritics and lowercase */
-function normalizeText(text: string): string {
-  return text
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase();
-}
-
-/**
- * Look up postal code for a city name (handles diacritics).
- * Returns empty string if not found.
- */
-export function getPostalCodeForCity(city: string): string {
-  return POSTAL_CODES[normalizeText(city)] ?? '';
-}
-
 interface Address {
   country: string;
   city: string;

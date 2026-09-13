@@ -1,7 +1,10 @@
 import React from 'react';
+import { useLocale } from '../../../i18n/LocaleContext';
 import './LocationSection.less';
 
 const LocationSection: React.FC = () => {
+  const { t } = useLocale();
+
   return (
     <section className="location-section">
       <div className="container">
@@ -11,22 +14,16 @@ const LocationSection: React.FC = () => {
           </div>
           <div className="location-section__info">
             <h2 className="location-section__title">Pizza Pohoda</h2>
-            <p className="location-section__address">Skalité 1386, 023 14</p>
+            <p className="location-section__address">{t('location_address')}</p>
 
-            <h3 className="location-section__hours-title">Otváracie hodiny</h3>
+            <h3 className="location-section__hours-title">
+              {t('location_hours_title')}
+            </h3>
             <div className="location-section__hours">
               <div className="location-section__hours-row">
-                <span>Po - Ne</span>
-                <span>11:00 - 22:00</span>
+                <span>{t('location_days')}</span>
+                <span>{t('location_hours')}</span>
               </div>
-              {/* <div className="location-section__hours-row">
-                <span>So</span>
-                <span>10:00 - 18:00</span>
-              </div>
-              <div className="location-section__hours-row">
-                <span>Ne</span>
-                <span>12:00 - 18:00</span>
-              </div> */}
             </div>
 
             <a
@@ -40,7 +37,7 @@ const LocationSection: React.FC = () => {
                   fill="white"
                 />
               </svg>
-              Zobraziť na mape
+              {t('location_map_button')}
             </a>
           </div>
         </div>

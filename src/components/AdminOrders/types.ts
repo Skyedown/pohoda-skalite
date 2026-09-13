@@ -21,6 +21,8 @@ export interface OrderItem {
 
 export interface Order {
   _id: string;
+  tenant: 'sk' | 'pl';
+  currency: 'EUR' | 'PLN';
   items: OrderItem[];
   delivery: OrderDelivery;
   payment: {

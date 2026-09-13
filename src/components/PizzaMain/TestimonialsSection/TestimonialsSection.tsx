@@ -1,33 +1,21 @@
 import React from 'react';
+import { useLocale } from '../../../i18n/LocaleContext';
 import './TestimonialsSection.less';
 
-const testimonials = [
-  {
-    id: 1,
-    name: 'Martin A.',
-    rating: 5,
-    text: 'Najlepšia pizza na Kysuciach! Vždy čerstvá, chrumkavá a chutná. Odporúčam každému!',
-  },
-  {
-    id: 2,
-    name: 'Lucia K.',
-    rating: 5,
-    text: 'Úžasná a rýchla obsluha. Pizza bola perfektná, určite prídeme znova.',
-  },
-  {
-    id: 3,
-    name: 'Samuel L.',
-    rating: 5,
-    text: 'Skvelé ceny a výborná kvalita. Burgre sú tiež fantastické. Naša nová obľúbená pizzeria!',
-  },
-];
-
 const TestimonialsSection: React.FC = () => {
+  const { t } = useLocale();
+
+  const testimonials = [
+    { id: 1, name: t('testimonial_1_name'), text: t('testimonial_1_text') },
+    { id: 2, name: t('testimonial_2_name'), text: t('testimonial_2_text') },
+    { id: 3, name: t('testimonial_3_name'), text: t('testimonial_3_text') },
+  ];
+
   return (
     <section className="testimonials-section">
       <div className="container">
         <h2 className="testimonials-section__title">
-          ...a vedia to aj naší zákazníci
+          {t('testimonials_title')}
         </h2>
 
         <div className="testimonials-section__grid">

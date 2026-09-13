@@ -1,0 +1,44 @@
+@import '../../../styles/variables.less';
+
+.payment-summary-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: @spacing-md;
+  margin-bottom: @spacing-lg;
+
+  @media (max-width: @breakpoint-sm) {
+    grid-template-columns: 1fr;
+  }
+
+  &__card {
+    padding: @spacing-md @spacing-lg;
+    border-radius: @border-radius-md;
+    color: @text-white;
+
+    &--cash {
+      background: linear-gradient(135deg, #27ae60 0%, #1e8449 100%);
+    }
+
+    &--card {
+      background: linear-gradient(135deg, #8e44ad 0%, #6c3483 100%);
+    }
+  }
+
+  &__label {
+    margin: 0;
+    font-size: @font-size-sm;
+    opacity: 0.85;
+  }
+
+  &__value {
+    margin: @spacing-xs 0;
+    font-size: @font-size-2xl;
+    font-weight: @font-weight-bold;
+  }
+
+  &__meta {
+    margin: 0;
+    font-size: @font-size-xs;
+    opacity: 0.85;
+  }
+}
