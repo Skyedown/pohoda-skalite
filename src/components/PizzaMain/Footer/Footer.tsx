@@ -23,12 +23,12 @@ const Footer: React.FC = () => {
         <p className="footer__credits">
           {t('footer_created_by')}{' '}
           <a
-            href="https://peterlehocky.com"
+            href="https://bemarvelousdigital.sk"
             target="_blank"
             rel="noopener noreferrer"
             className="footer__link"
           >
-            Peter Lehocký
+            Be Marvelous Digital
           </a>
         </p>
       </div>
