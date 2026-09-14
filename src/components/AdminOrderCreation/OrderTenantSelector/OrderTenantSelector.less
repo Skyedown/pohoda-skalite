@@ -1,0 +1,42 @@
+@import '../../../styles/variables.less';
+
+.order-tenant-selector {
+  display: flex;
+  gap: @spacing-sm;
+
+  &__option {
+    flex: 1;
+    cursor: pointer;
+
+    input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
+
+  &__content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: @spacing-sm;
+    padding: @spacing-sm @spacing-md;
+    border: 2px solid @border-gray-light;
+    border-radius: @border-radius-md;
+    background: @surface-color;
+    font-size: @font-size-sm;
+    font-weight: @font-weight-medium;
+    color: @text-primary;
+    transition: all 0.2s ease;
+  }
+
+  &__option input:checked + &__content {
+    border-color: @action-color;
+    background: @action-light;
+    color: @action-dark;
+  }
+
+  &__option:hover &__content {
+    border-color: @action-color;
+  }
+}

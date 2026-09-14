@@ -11,6 +11,8 @@ import OrderFormSection from './OrderFormSection/OrderFormSection';
 import OrderSidebar from './OrderSidebar/OrderSidebar';
 import AdminIngredientsModal from './AdminIngredientsModal';
 import type { LocalizedProduct, DeliveryMethod } from '../../types';
+import type { Locale } from '../../i18n/types';
+import { getDeliveryRule } from '../../utils/deliveryRules';
 import {
   getExtrasForProductType,
   categoryLabels,
@@ -34,6 +36,7 @@ export interface EditOrderData {
     removedIngredients?: string[];
     totalPrice: number;
   }[];
+  tenant?: Locale;
   delivery: {
     method: 'delivery' | 'pickup' | 'dine-in';
     fullName?: string;
@@ -68,6 +71,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
   );
   const [deliveryMethod, setDeliveryMethod] =
     useState<DeliveryMethod>('delivery');
+  const [tenant, setTenant] = useState<Locale>('sk');
   const [editingItemIndex, setEditingItemIndex] = useState<number | null>(null);
   const [editingIngredientsIndex, setEditingIngredientsIndex] = useState<
     number | null
@@ -106,6 +110,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
       setPaymentMethod('cash');
       setOrderType('customer');
       setDeliveryMethod('delivery');
+      setTenant('sk');
       setErrors({});
       setEditingItemIndex(null);
       setEditingIngredientsIndex(null);
@@ -142,6 +147,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
 
       const isOrderDineIn = editOrder.delivery.method === 'dine-in';
       setOrderType(isOrderDineIn ? 'dine-in' : 'customer');
+      setTenant(editOrder.tenant ?? 'sk');
       setDeliveryMethod(editOrder.delivery.method);
       setPaymentMethod(editOrder.payment.method);
       // Polish orders fill both fields. Older Slovak orders stored the whole
@@ -180,7 +186,13 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
   // Calculate totals
   const subtotal = useMemo(() => calculateSubtotal(orderItems), [orderItems]);
 
-  const deliveryFee = 0; // Delivery is always free
+  // Taken from the delivery area configured in the admin, not hardcoded.
+  const deliveryFee = useMemo(() => {
+    if (deliveryMethod !== 'delivery') return 0;
+    return getDeliveryRule(adminSettings.deliveryCities[tenant], formData.city)
+      .fee;
+  }, [adminSettings.deliveryCities, tenant, deliveryMethod, formData.city]);
+
   const total = subtotal + deliveryFee;
 
   // Suggest returning customers from past orders as the admin types contact details
@@ -360,8 +372,8 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
       setLookupField(name);
     }
 
-    // For houseNumber, only allow numeric values
-    if (name === 'houseNumber') {
+    // Slovak house numbers are plain digits; Polish ones can be 12A or 34/2.
+    if (name === 'houseNumber' && tenant === 'sk') {
       const numericValue = value.replace(/[^0-9]/g, '');
       setFormData((prev) => ({ ...prev, [name]: numericValue }));
     } else {
@@ -378,12 +390,20 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
     setFormData((prev) => ({ ...prev, deliveryMethod: method }));
   };
 
+  // The two areas have different village lists, so a carried-over city would
+  // no longer be one the restaurant delivers to.
+  const handleTenantChange = useCallback((next: Locale) => {
+    setTenant(next);
+    setFormData((prev) => ({ ...prev, city: '', street: '' }));
+  }, []);
+
   const validateForm = (): boolean => {
     const newErrors = validateOrderForm(
       orderType,
       formData,
       deliveryMethod,
       orderItems,
+      tenant,
     );
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -404,6 +424,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
       paymentMethod,
       subtotal,
       deliveryFee,
+      tenant,
     );
 
     setIsSubmitting(true);
@@ -478,7 +499,8 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
               onDeliveryMethodChange={handleDeliveryMethodChange}
               onPaymentMethodChange={setPaymentMethod}
               onCloseSuggestions={handleCloseSuggestions}
-              showStreet={!!formData.street}
+              tenant={tenant}
+              onTenantChange={handleTenantChange}
               onSubmit={handleSubmit}
             />
           </div>

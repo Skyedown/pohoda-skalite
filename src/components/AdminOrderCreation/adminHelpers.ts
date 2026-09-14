@@ -157,6 +157,7 @@ export const validateOrderForm = (
   formData: FormData,
   deliveryMethod: DeliveryMethod,
   orderItems: AdminOrderItem[],
+  tenant: 'sk' | 'pl' = 'sk',
 ): Record<string, string> => {
   const errors: Record<string, string> = {};
 
@@ -172,8 +173,14 @@ export const validateOrderForm = (
     if (deliveryMethod === 'delivery') {
       if (!formData.houseNumber.trim()) {
         errors.houseNumber = 'Číslo domu je povinné';
-      } else if (!/^[0-9]+$/.test(formData.houseNumber.trim())) {
+      } else if (
+        tenant === 'sk' &&
+        !/^[0-9]+$/.test(formData.houseNumber.trim())
+      ) {
         errors.houseNumber = 'Číslo domu musí obsahovať len čísla';
+      }
+      if (tenant === 'pl' && !formData.street.trim()) {
+        errors.street = 'Ulica je povinná';
       }
       if (!formData.city.trim()) errors.city = 'Mesto je povinné';
     }
@@ -201,6 +208,7 @@ export const buildOrderPayload = (
   paymentMethod: 'cash' | 'card',
   subtotal: number,
   deliveryFee: number,
+  tenant: 'sk' | 'pl' = 'sk',
 ) => {
   return {
     items: orderItems.map((item) => ({
@@ -265,7 +273,8 @@ export const buildOrderPayload = (
       total: orderType === 'dine-in' ? subtotal : subtotal + deliveryFee,
     },
     createdBy: 'admin',
-    tenant: 'sk' as const,
+    tenant,
+    // Admin orders are priced and charged in euros for both areas.
     currency: 'EUR' as const,
     displayCurrency: 'EUR' as const,
   };

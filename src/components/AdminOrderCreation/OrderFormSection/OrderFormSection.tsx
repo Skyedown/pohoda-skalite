@@ -5,6 +5,7 @@ import CustomerDetailsSection from '../CustomerDetailsSection/CustomerDetailsSec
 import DineInNotesSection from '../DineInNotesSection/DineInNotesSection';
 import type { LocalizedProduct, DeliveryMethod } from '../../../types';
 import type { FormData, CustomerMatch } from '../adminHelpers';
+import type { Locale } from '../../../i18n/types';
 import './OrderFormSection.less';
 
 interface OrderFormSectionProps {
@@ -27,7 +28,8 @@ interface OrderFormSectionProps {
   onDeliveryMethodChange: (method: DeliveryMethod) => void;
   onPaymentMethodChange: (method: 'cash' | 'card') => void;
   onCloseSuggestions: () => void;
-  showStreet?: boolean;
+  tenant: Locale;
+  onTenantChange: (tenant: Locale) => void;
   onSubmit: (e: React.FormEvent) => void;
 }
 
@@ -47,7 +49,8 @@ const OrderFormSection: React.FC<OrderFormSectionProps> = ({
   onDeliveryMethodChange,
   onPaymentMethodChange,
   onCloseSuggestions,
-  showStreet,
+  tenant,
+  onTenantChange,
   onSubmit,
 }) => {
   return (
@@ -85,7 +88,8 @@ const OrderFormSection: React.FC<OrderFormSectionProps> = ({
             onDeliveryMethodChange={onDeliveryMethodChange}
             onPaymentMethodChange={onPaymentMethodChange}
             onCloseSuggestions={onCloseSuggestions}
-            showStreet={showStreet}
+            tenant={tenant}
+            onTenantChange={onTenantChange}
           />
         </div>
       )}

@@ -2,6 +2,8 @@ import React from 'react';
 import DeliveryAddressForm from '../../PizzaCart/DeliveryAddressForm/DeliveryAddressForm';
 import PaymentMethodSelector from '../../PizzaCart/PaymentMethodSelector/PaymentMethodSelector';
 import type { DeliveryMethod } from '../../../types';
+import type { Locale } from '../../../i18n/types';
+import { OrderTenantSelector } from '../OrderTenantSelector/OrderTenantSelector';
 import type { FormData, CustomerMatch } from '../adminHelpers';
 import { useAdminSettings } from '../../../hooks/useAdminSettings';
 import './CustomerDetailsSection.less';
@@ -21,8 +23,8 @@ interface CustomerDetailsSectionProps {
   onDeliveryMethodChange: (method: DeliveryMethod) => void;
   onPaymentMethodChange: (method: 'cash' | 'card') => void;
   onCloseSuggestions: () => void;
-  /** Set when editing a Polish order, which carries a street name. */
-  showStreet?: boolean;
+  tenant: Locale;
+  onTenantChange: (tenant: Locale) => void;
 }
 
 const CustomerDetailsSection: React.FC<CustomerDetailsSectionProps> = ({
@@ -36,7 +38,8 @@ const CustomerDetailsSection: React.FC<CustomerDetailsSectionProps> = ({
   onDeliveryMethodChange,
   onPaymentMethodChange,
   onCloseSuggestions,
-  showStreet = false,
+  tenant,
+  onTenantChange,
 }) => {
   const adminSettings = useAdminSettings();
 
@@ -44,12 +47,21 @@ const CustomerDetailsSection: React.FC<CustomerDetailsSectionProps> = ({
     <div className="customer-details-section">
       <h3 className="customer-details-section__title">Detaily objednávky</h3>
 
+      {deliveryMethod === 'delivery' && (
+        <div className="customer-details-section__tenant">
+          <span className="customer-details-section__tenant-label">
+            Oblasť rozvozu
+          </span>
+          <OrderTenantSelector value={tenant} onChange={onTenantChange} />
+        </div>
+      )}
+
       {/* Delivery/Pickup Selection */}
       <DeliveryAddressForm
         formData={formData}
         errors={errors}
-        cities={adminSettings.deliveryCities.sk}
-        showStreet={showStreet}
+        cities={adminSettings.deliveryCities[tenant]}
+        showStreet={tenant === 'pl'}
         onChange={onFormChange}
         onDeliveryMethodChange={onDeliveryMethodChange}
         hideEmail={true}
