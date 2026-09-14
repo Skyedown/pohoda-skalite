@@ -27,9 +27,6 @@ window.__APP_CONFIG__ = {
   openingTime: "$(esc "${VITE_OPENING_TIME:-}")",
   lastOrderTime: "$(esc "${VITE_LAST_ORDER_TIME:-}")",
   closingTime: "$(esc "${VITE_CLOSING_TIME:-}")",
-  companyIco: "$(esc "${VITE_COMPANY_ICO:-}")",
-  companyDic: "$(esc "${VITE_COMPANY_DIC:-}")",
-  companyIcDph: "$(esc "${VITE_COMPANY_IC_DPH:-}")",
   gaIdSk: "$(esc "${VITE_GA_ID_SK:-}")",
   gaIdPl: "$(esc "${VITE_GA_ID_PL:-}")",
   metaPixelId: "$(esc "${VITE_META_PIXEL_ID:-}")"

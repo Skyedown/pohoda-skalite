@@ -19,11 +19,9 @@ const ContactSection: React.FC = () => {
             </p>
             <p>{t('contact_country')}</p>
             <p>{COMPANY.legalName}</p>
-            {COMPANY.registrationNumber && (
-              <p>
-                {t('contact_reg_number')} {COMPANY.registrationNumber}
-              </p>
-            )}
+            <p>
+              {t('contact_reg_number')} {COMPANY.registrationNumber}
+            </p>
           </div>
 
           <div className="contact-section__column">

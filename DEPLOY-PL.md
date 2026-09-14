@@ -36,9 +36,6 @@ Ak TLS rieši Cloudflare alebo iný proxy, pridaj doménu tam a nastav
 
 Do `.env` na serveri doplň (viď `.env.example`):
 
-- `VITE_COMPANY_ICO`, `VITE_COMPANY_DIC`, `VITE_COMPANY_IC_DPH` — **povinné**,
-  zobrazujú sa v Regulamine aj v Polityce prywatności. Bez nich je poľský
-  Regulamin neúplný.
 - `VITE_GA_ID_PL` — merací kód samostatnej GA property pre poľský web.
   Ak zostane prázdny, poľská návštevnosť ide do slovenskej property označená
   parametrom `tenant=pl`.
@@ -99,7 +96,6 @@ Voľba sa drží v `sessionStorage` počas relácie. Späť: `?lang=sk`.
 
 ## Čo zostáva na doplnenie
 
-- **IČO / DIČ / IČ DPH** v `.env` (viď bod 3).
 - **Kontrola poľských textov rodeným hovorcom** — preklady sú kompletné, ale
   marketingová formulácia sa oplatí prejsť.
 - **Právna kontrola Regulaminu** advokátom so špecializáciou na poľské

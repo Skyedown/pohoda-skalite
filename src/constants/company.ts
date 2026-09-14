@@ -1,9 +1,9 @@
 import { config } from '../config';
 
 /**
- * Registration identifiers come from the container's environment, so the owner
- * can fill them in without a rebuild. Both storefronts sell under the same
- * Slovak entity.
+ * Both storefronts sell under the same Slovak entity. The registration numbers
+ * are public register data that never changes, so they live here rather than
+ * in configuration.
  */
 export const COMPANY = {
   legalName: 'M&M MIKULA s.r.o.',
@@ -11,9 +11,9 @@ export const COMPANY = {
   postalCode: '023 14',
   city: 'Skalité',
   countryCode: 'SK',
-  registrationNumber: config.companyIco,
-  taxNumber: config.companyDic,
-  vatNumber: config.companyIcDph,
+  registrationNumber: '44612516',
+  taxNumber: '2022796424',
+  vatNumber: 'SK2022796424',
   email: config.restaurantEmail,
   phone: config.restaurantPhone,
 } as const;

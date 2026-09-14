@@ -17,9 +17,6 @@ export interface AppConfig {
   openingTime: string;
   lastOrderTime: string;
   closingTime: string;
-  companyIco: string;
-  companyDic: string;
-  companyIcDph: string;
   gaIdSk: string;
   gaIdPl: string;
   metaPixelId: string;
@@ -39,9 +36,6 @@ const DEFAULTS: AppConfig = {
   openingTime: '11:00',
   lastOrderTime: '21:30',
   closingTime: '22:00',
-  companyIco: '',
-  companyDic: '',
-  companyIcDph: '',
   gaIdSk: 'G-6Q287KJ5RR',
   gaIdPl: 'G-9LEFZGNPWY',
   metaPixelId: '695345926848903',
@@ -76,9 +70,6 @@ export const config: AppConfig = {
   openingTime: pick('openingTime', import.meta.env.VITE_OPENING_TIME),
   lastOrderTime: pick('lastOrderTime', import.meta.env.VITE_LAST_ORDER_TIME),
   closingTime: pick('closingTime', import.meta.env.VITE_CLOSING_TIME),
-  companyIco: pick('companyIco', import.meta.env.VITE_COMPANY_ICO),
-  companyDic: pick('companyDic', import.meta.env.VITE_COMPANY_DIC),
-  companyIcDph: pick('companyIcDph', import.meta.env.VITE_COMPANY_IC_DPH),
   gaIdSk: pick('gaIdSk', import.meta.env.VITE_GA_ID_SK),
   gaIdPl: pick('gaIdPl', import.meta.env.VITE_GA_ID_PL),
   metaPixelId: pick('metaPixelId', import.meta.env.VITE_META_PIXEL_ID),
