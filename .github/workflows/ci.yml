@@ -153,4 +153,7 @@ jobs:
           host: ${{ secrets.DO_HOST }}
           username: ${{ secrets.DO_USERNAME }}
           key: ${{ secrets.DO_SSH_KEY }}
-          script: /root/pohoda-skalite/deploy/deploy.sh ${{ github.sha }}
+          # Invoked through bash rather than relying on the executable bit:
+          # this repo has core.fileMode=false, so a lost +x would only ever
+          # show up here, as a permission-denied halfway through a release.
+          script: bash /root/pohoda-skalite/deploy/deploy.sh ${{ github.sha }}
