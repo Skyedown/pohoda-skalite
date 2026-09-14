@@ -41,9 +41,11 @@ Len tri secrets, žiadne vars:
 
 | Secret | Hodnota |
 |---|---|
-| `DEPLOY_HOST` | IP droplet-u |
-| `DEPLOY_USER` | `root` |
-| `DEPLOY_SSH_KEY` | privátny SSH kľúč |
+| `DO_HOST` | IP droplet-u |
+| `DO_USERNAME` | `root` |
+| `DO_SSH_KEY` | privátny SSH kľúč |
+
+Tie tri už v repozitári existujú z pôvodnej pipeline — nastavovať ich netreba.
 
 `GITHUB_TOKEN` sa nenastavuje — GitHub ho dodá automaticky a workflow ho
 používa na push do registry.
