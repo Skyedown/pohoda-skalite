@@ -120,9 +120,7 @@ router.post('/api/auth/users', requireAuth, async (req, res) => {
       passwordHash: await hashPassword(password),
     });
 
-    console.log(
-      `👤 Admin "${req.admin?.username}" created user "${username}"`,
-    );
+    console.log(`👤 Admin "${req.admin?.username}" created user "${username}"`);
     res.status(201).json({
       user: {
         id: user._id.toString(),
