@@ -43,16 +43,15 @@ Do `.env` na serveri doplň (viď `.env.example`):
   Ak zostane prázdny, poľská návštevnosť ide do slovenskej property označená
   parametrom `tenant=pl`.
 
-Po zmene `.env` treba prebuildovať frontend (`VITE_*` sa zapekajú do buildu):
-
-```bash
-cd /root/pohoda-skalite && ./deploy.sh
-```
+`VITE_*` sa zapekajú do buildu, ktorý beží v GitHub Actions — tieto hodnoty
+teda patria do **GitHub → Settings → Secrets and variables → Actions**, nie do
+`.env` na serveri. Po ich zmene spusti Re-run all jobs na poslednom behu
+workflowu. Detaily v [DEPLOY.md](DEPLOY.md).
 
 ## 4. Nasadenie
 
-Žiadny nový krok — `git push` do `main` spustí existujúcu pipeline.
-`nginx.conf` už obsahuje `server` blok pre `pizzapohoda.pl`.
+Žiadny nový krok — `git push` do `main` spustí pipeline (viď [DEPLOY.md](DEPLOY.md)).
+`nginx.conf` s blokom pre `pizzapohoda.pl` je súčasťou frontend image.
 
 ## 5. Overenie po nasadení
 

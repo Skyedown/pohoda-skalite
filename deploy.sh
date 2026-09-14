@@ -1,48 +1,62 @@
 #!/bin/bash
 set -e
 
-# 1. Configuration
+# Images are built and pushed by GitHub Actions. This script only pulls the tag
+# that CI just published, swaps the containers and rolls back if they fail.
+#
+# Usage: ./deploy.sh [git-sha]   — no argument falls back to :latest
+
 APP_DIR="/root/pohoda-skalite"
 API_CONTAINER="pizza-pohoda-api"
 FRONTEND_CONTAINER="pizza-pohoda-frontend"
 RABBITMQ_CONTAINER="pizza-pohoda-rabbitmq"
-SERVICES=("api:pohoda-api" "frontend:pohoda-frontend")
+
+REGISTRY="ghcr.io"
+FRONTEND_REPO="ghcr.io/skyedown/pohoda-skalite-frontend"
+API_REPO="ghcr.io/skyedown/pohoda-skalite-api"
+
+TAG="${1:-latest}"
+
+export FRONTEND_IMAGE="${FRONTEND_REPO}:${TAG}"
+export API_IMAGE="${API_REPO}:${TAG}"
 
 cd $APP_DIR
 
 echo "🚀 Starting Deployment for Pizza Pohoda..."
+echo "   Frontend: $FRONTEND_IMAGE"
+echo "   API:      $API_IMAGE"
 
-# 2. Snapshot current images for rollback
-echo "📸 Snapshotting current images..."
-for pair in "${SERVICES[@]}"; do
-    IMG="${pair##*:}"
-    if [[ "$(docker images -q $IMG:latest 2> /dev/null)" != "" ]]; then
-        docker tag $IMG:latest $IMG:rollback
-        echo "   - Created rollback point for $IMG"
-    fi
-done
+# 1. Remember what is running now so a failed deploy can be undone
+echo "📸 Recording current image digests for rollback..."
+ROLLBACK_FRONTEND=$(docker inspect --format='{{.Image}}' $FRONTEND_CONTAINER 2>/dev/null || echo "")
+ROLLBACK_API=$(docker inspect --format='{{.Image}}' $API_CONTAINER 2>/dev/null || echo "")
+[ -n "$ROLLBACK_FRONTEND" ] && echo "   - Frontend rollback point: ${ROLLBACK_FRONTEND:0:19}"
+[ -n "$ROLLBACK_API" ] && echo "   - API rollback point: ${ROLLBACK_API:0:19}"
 
-# 3. Update Code
+# 2. Update compose file and .env (the images themselves come from the registry)
 echo "📥 Pulling latest code from GitHub..."
 git fetch origin main
 git reset --hard origin/main
 
-# 4. Build new images without touching running containers
-echo "🏗️ Building new images..."
-docker compose build api frontend
+# 3. Pull the images CI just published
+echo "📦 Pulling images from $REGISTRY..."
+if ! docker compose pull api frontend; then
+    echo "❌ FAILURE: could not pull images. Is the droplet logged in to $REGISTRY?"
+    echo "   Run: docker login $REGISTRY -u <github-user> -p <PAT with read:packages>"
+    exit 1
+fi
 
-# 5. Recreate containers from new images
+# 4. Recreate containers from the pulled images
 echo "🔄 Recreating containers..."
 docker compose up -d --no-deps --force-recreate api frontend
 
-# 6. Health Check Phase
+# 5. Health Check Phase
 echo "🏥 Checking Health..."
 MAX_RETRIES=20
 SLEEP=5
 ALL_HEALTHY=false
 
 for ((i=1; i<=MAX_RETRIES; i++)); do
-    # Safe inspect: checks if Health object exists to avoid "map has no entry" error
     API_HEALTH=$(docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}starting{{end}}' $API_CONTAINER)
     FRONT_STATUS=$(docker inspect --format='{{.State.Status}}' $FRONTEND_CONTAINER)
     RABBIT_HEALTH=$(docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}starting{{end}}' $RABBITMQ_CONTAINER)
@@ -62,41 +76,33 @@ for ((i=1; i<=MAX_RETRIES; i++)); do
 
     if [ $i -eq $MAX_RETRIES ]; then
         echo "⏰ TIMEOUT: Services did not become healthy in time."
-        ALL_HEALTHY=false
     fi
 
     sleep $SLEEP
 done
 
-# 7. Final Decision: Cleanup or Rollback
+# 6. Final Decision: Cleanup or Rollback
 if [ "$ALL_HEALTHY" = true ]; then
     echo "✨ Deployment Successful! Cleaning up..."
-    # Keep only the last 5 images logic (Prunes unused/dangling images)
     docker image prune -f
-    # Delete images older than 48h to keep storage clean
     docker image prune -a --force --filter "until=48h"
     exit 0
-else
-    echo "⚠️ CRITICAL: Deployment failed. Rolling back to previous version..."
-
-    docker compose down
-
-    # Revert 'rollback' tags to 'latest'
-    for pair in "${SERVICES[@]}"; do
-        IMG="${pair##*:}"
-        if [[ "$(docker images -q $IMG:rollback 2> /dev/null)" != "" ]]; then
-            docker tag $IMG:rollback $IMG:latest
-            echo "   - Restored $IMG from rollback tag"
-        fi
-    done
-
-    # Restart the old version
-    docker compose up -d
-    echo "🔄 Rollback complete. Stable version is running."
-
-    # Check logs of the FAILED container to help you debug in GitHub Actions
-    echo "📝 Logs from failed API attempt:"
-    docker logs $API_CONTAINER --tail 50
-
-    exit 1 # Exit with error to notify GitHub Actions
 fi
+
+echo "⚠️ CRITICAL: Deployment failed. Rolling back to previous images..."
+
+if [ -z "$ROLLBACK_FRONTEND" ] || [ -z "$ROLLBACK_API" ]; then
+    echo "❌ No previous images recorded — cannot roll back automatically."
+    docker logs $API_CONTAINER --tail 50
+    exit 1
+fi
+
+export FRONTEND_IMAGE="$ROLLBACK_FRONTEND"
+export API_IMAGE="$ROLLBACK_API"
+docker compose up -d --no-deps --force-recreate api frontend
+
+echo "🔄 Rollback complete. Previous version is running."
+echo "📝 Logs from failed API attempt:"
+docker logs $API_CONTAINER --tail 50
+
+exit 1

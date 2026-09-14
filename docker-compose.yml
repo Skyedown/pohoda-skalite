@@ -22,10 +22,12 @@ services:
       retries: 5
 
   api:
+    # Built and pushed by GitHub Actions; the server only pulls. `build` stays so
+    # `docker compose build` still works for local development.
     build:
       context: ./api
       dockerfile: Dockerfile
-    image: pohoda-api:latest
+    image: ${API_IMAGE:-ghcr.io/skyedown/pohoda-skalite-api:latest}
     container_name: pizza-pohoda-api
     restart: unless-stopped
     ports:
@@ -61,7 +63,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: pohoda-frontend:latest
+    image: ${FRONTEND_IMAGE:-ghcr.io/skyedown/pohoda-skalite-frontend:latest}
     container_name: pizza-pohoda-frontend
     restart: unless-stopped
     ports:
