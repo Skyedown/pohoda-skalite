@@ -1,4 +1,4 @@
-version: '3.8'
+name: pizza-pohoda
 
 services:
   rabbitmq:
@@ -27,7 +27,7 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile
-    image: ${API_IMAGE:-ghcr.io/skyedown/pohoda-skalite-api:latest}
+    image: ghcr.io/skyedown/pohoda-skalite-api:${TAG:-latest}
     container_name: pizza-pohoda-api
     restart: unless-stopped
     ports:
@@ -63,11 +63,14 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: ${FRONTEND_IMAGE:-ghcr.io/skyedown/pohoda-skalite-frontend:latest}
+    image: ghcr.io/skyedown/pohoda-skalite-frontend:${TAG:-latest}
     container_name: pizza-pohoda-frontend
     restart: unless-stopped
     ports:
-      - '8080:80'
+      - '${WEB_PORT:-8080}:80'
+    # Read at container start by docker/40-app-config.sh, not at build time.
+    env_file:
+      - .env
     depends_on:
       - api
     networks:

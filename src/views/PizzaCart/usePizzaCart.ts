@@ -4,6 +4,7 @@ import { useCart } from '../../context/CartContext';
 import { useAdminSettings } from '../../hooks/useAdminSettings';
 import { useOrderingStatus } from '../../hooks/useOrderingStatus';
 import { useLocale } from '../../i18n/LocaleContext';
+import { config } from '../../config';
 import { sanitizeCartForm, type CartFormData } from '../../utils/sanitize';
 import { trackPurchase } from '../../utils/analytics';
 import {
@@ -152,8 +153,7 @@ export function usePizzaCart() {
       });
 
       try {
-        const apiUrl = import.meta.env.VITE_API_URL || '';
-        await fetch(`${apiUrl}/api/send-order-emails`, {
+        await fetch(`${config.apiUrl}/api/send-order-emails`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ order }),

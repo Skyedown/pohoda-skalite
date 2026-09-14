@@ -1,6 +1,7 @@
 // Google Analytics 4 & Meta Pixel utility functions
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Currency, Locale } from '../i18n/types';
+import { config } from '../config';
 
 declare global {
   interface Window {
@@ -14,12 +15,11 @@ declare global {
 
 /** Each storefront reports into its own GA property. */
 const GA_MEASUREMENT_IDS: Record<Locale, string> = {
-  sk: import.meta.env.VITE_GA_ID_SK || 'G-6Q287KJ5RR',
-  pl: import.meta.env.VITE_GA_ID_PL || 'G-9LEFZGNPWY',
+  sk: config.gaIdSk,
+  pl: config.gaIdPl,
 };
 
-export const META_PIXEL_ID =
-  import.meta.env.VITE_META_PIXEL_ID || '695345926848903';
+export const META_PIXEL_ID = config.metaPixelId;
 
 export function getMeasurementId(locale: Locale): string {
   return GA_MEASUREMENT_IDS[locale];

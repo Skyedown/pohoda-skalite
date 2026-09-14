@@ -2,6 +2,7 @@ import type { Locale } from '../i18n/types';
 import type { TranslationKey } from '../i18n/sk';
 import type { ProductType } from '../types';
 import type { AdminSettings } from './adminSettings';
+import { config } from '../config';
 import { formatWaitTime } from './waitTime';
 
 export type OrderingStatus =
@@ -54,10 +55,7 @@ function joinDisabledLabels(types: ProductType[], t: Translate): string {
 }
 
 export function getTimeBasedStatus(t: Translate): OrderingStatusInfo {
-  const preorderStartTime = import.meta.env.VITE_PREORDER_START_TIME || '10:00';
-  const openingTime = import.meta.env.VITE_OPENING_TIME || '11:00';
-  const lastOrderTime = import.meta.env.VITE_LAST_ORDER_TIME || '21:30';
-  const closingTime = import.meta.env.VITE_CLOSING_TIME || '22:00';
+  const { preorderStartTime, openingTime, lastOrderTime, closingTime } = config;
 
   const now = currentMinutes();
 

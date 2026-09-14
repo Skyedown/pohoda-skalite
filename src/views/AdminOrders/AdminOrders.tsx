@@ -10,6 +10,7 @@ import DateRangeFilter, {
 import { OrderCard } from '../../components/AdminOrders/OrderCard/OrderCard';
 import type { Order } from '../../components/AdminOrders/types';
 import type { Locale } from '../../i18n/types';
+import { config } from '../../config';
 import './AdminOrders.less';
 
 const ordersPresets: DatePreset[] = ['today', 'yesterday', '7d', '30d'];
@@ -35,7 +36,7 @@ const AdminOrders: React.FC = () => {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [editingOrder, setEditingOrder] = useState<EditOrderData | null>(null);
 
-  const API_URL = import.meta.env.VITE_API_URL || '';
+  const API_URL = config.apiUrl;
 
   const fetchOrders = useCallback(async () => {
     try {

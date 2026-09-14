@@ -3,6 +3,7 @@ import DateRangeFilter, {
   computePresetRange,
 } from '../DateRangeFilter/DateRangeFilter';
 import type { Locale } from '../../i18n/types';
+import { config } from '../../config';
 import type {
   DayStat,
   DeliveryMethodFilter,
@@ -17,7 +18,7 @@ import { OrdersTab } from './OrdersTab/OrdersTab';
 import { ProductsTab } from './ProductsTab/ProductsTab';
 import './OrderStats.less';
 
-const API_URL = import.meta.env.VITE_API_URL || '';
+const API_URL = config.apiUrl;
 
 const OrderStats: React.FC = () => {
   const { from: defaultFrom, to: defaultTo } = computePresetRange('7d');

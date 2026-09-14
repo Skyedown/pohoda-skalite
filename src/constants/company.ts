@@ -1,7 +1,9 @@
+import { config } from '../config';
+
 /**
- * Registration identifiers are supplied through the build environment so the
- * owner can fill them in without a code change. Both storefronts sell under the
- * same Slovak entity.
+ * Registration identifiers come from the container's environment, so the owner
+ * can fill them in without a rebuild. Both storefronts sell under the same
+ * Slovak entity.
  */
 export const COMPANY = {
   legalName: 'M&M MIKULA s.r.o.',
@@ -9,11 +11,11 @@ export const COMPANY = {
   postalCode: '023 14',
   city: 'Skalité',
   countryCode: 'SK',
-  registrationNumber: import.meta.env.VITE_COMPANY_ICO ?? '',
-  taxNumber: import.meta.env.VITE_COMPANY_DIC ?? '',
-  vatNumber: import.meta.env.VITE_COMPANY_IC_DPH ?? '',
-  email: import.meta.env.VITE_RESTAURANT_EMAIL ?? 'objednavky@pizzapohoda.sk',
-  phone: import.meta.env.VITE_RESTAURANT_PHONE ?? '+421918175571',
+  registrationNumber: config.companyIco,
+  taxNumber: config.companyDic,
+  vatNumber: config.companyIcDph,
+  email: config.restaurantEmail,
+  phone: config.restaurantPhone,
 } as const;
 
 export function formatPhone(phone: string): string {

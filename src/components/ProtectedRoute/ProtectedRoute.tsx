@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { config } from '../../config';
 import './ProtectedRoute.less';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
@@ -20,8 +21,8 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    const validUsername = import.meta.env.VITE_ADMIN_NAME || 'admin';
-    const validPassword = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
+    const validUsername = config.adminName;
+    const validPassword = config.adminPassword;
 
     if (username === validUsername && password === validPassword) {
       setIsAuthenticated(true);

@@ -1,5 +1,6 @@
 import type { Locale, LocalizedText } from '../i18n/types';
 import type { ProductType } from '../types';
+import { config } from '../config';
 
 export type AnnouncementMode = 'off' | 'disabled' | 'waitTime' | 'customNote';
 
@@ -21,7 +22,7 @@ export interface AdminSettings {
   deliveryCities: Record<Locale, DeliveryCity[]>;
 }
 
-const API_URL = import.meta.env.VITE_API_URL ?? '';
+const API_URL = config.apiUrl;
 
 export const WAIT_TIME_OPTIONS = [
   { value: 60, label: '1 hodina' },
