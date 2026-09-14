@@ -3,18 +3,23 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
+  Navigate,
   useLocation,
 } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { CartProvider } from './context/CartContext';
+import { LocaleProvider, useLocale } from './i18n/LocaleContext';
+import { ALL_LEGAL_ROUTES } from './legal/paths';
 import Header from './sections/Header/Header';
 import PizzaMain from './views/PizzaMain/PizzaMain';
 import PizzaCart from './views/PizzaCart/PizzaCart';
 import ThankYou from './views/ThankYou/ThankYou';
 import PrivacyPolicy from './views/PrivacyPolicy/PrivacyPolicy';
+import Terms from './views/Terms/Terms';
 import AdminPanel from './views/AdminPanel/AdminPanel';
 import AdminAnalytics from './views/AdminAnalytics/AdminAnalytics';
 import AdminOrderSettings from './views/AdminOrderSettings/AdminOrderSettings';
+import AdminDeliveryAreas from './views/AdminDeliveryAreas/AdminDeliveryAreas';
 import AdminProductRestrictions from './views/AdminProductRestrictions/AdminProductRestrictions';
 import AdminOrders from './views/AdminOrders/AdminOrders';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
@@ -25,18 +30,34 @@ import CookieConsent from './components/shared/CookieConsent/CookieConsent';
 import { setDefaultConsent, initGA, trackPageView } from './utils/analytics';
 import './styles/global.less';
 
-// Component to handle page tracking
 const PageTracker: React.FC = () => {
   const location = useLocation();
+  const { locale } = useLocale();
 
   useEffect(() => {
-    trackPageView(location.pathname + location.search);
-  }, [location]);
+    if (localStorage.getItem('cookie-consent') === 'accepted') {
+      initGA(locale);
+    }
+  }, [locale]);
+
+  useEffect(() => {
+    trackPageView(location.pathname + location.search, locale);
+  }, [location, locale]);
 
   return null;
 };
 
-// App content with route-based logic
+/** The admin lives on the Slovak domain only; the Polish site redirects home. */
+const AdminArea: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { locale } = useLocale();
+
+  if (locale !== 'sk') {
+    return <Navigate to="/" replace />;
+  }
+
+  return <ProtectedRoute>{children}</ProtectedRoute>;
+};
+
 const AppContent: React.FC = () => {
   const location = useLocation();
   const [isBannerVisible, setIsBannerVisible] = useState(false);
@@ -53,45 +74,58 @@ const AppContent: React.FC = () => {
           <Route path="/" element={<PizzaMain />} />
           <Route path="/cart" element={<PizzaCart />} />
           <Route path="/thank-you" element={<ThankYou />} />
-          <Route path="/ochrana-osobnych-udajov" element={<PrivacyPolicy />} />
+          {ALL_LEGAL_ROUTES.privacy.map((path) => (
+            <Route key={path} path={path} element={<PrivacyPolicy />} />
+          ))}
+          {ALL_LEGAL_ROUTES.terms.map((path) => (
+            <Route key={path} path={path} element={<Terms />} />
+          ))}
           <Route
             path="/admin"
             element={
-              <ProtectedRoute>
+              <AdminArea>
                 <AdminPanel />
-              </ProtectedRoute>
+              </AdminArea>
             }
           />
           <Route
             path="/admin/analytics"
             element={
-              <ProtectedRoute>
+              <AdminArea>
                 <AdminAnalytics />
-              </ProtectedRoute>
+              </AdminArea>
             }
           />
           <Route
             path="/admin/settings"
             element={
-              <ProtectedRoute>
+              <AdminArea>
                 <AdminOrderSettings />
-              </ProtectedRoute>
+              </AdminArea>
+            }
+          />
+          <Route
+            path="/admin/delivery"
+            element={
+              <AdminArea>
+                <AdminDeliveryAreas />
+              </AdminArea>
             }
           />
           <Route
             path="/admin/products"
             element={
-              <ProtectedRoute>
+              <AdminArea>
                 <AdminProductRestrictions />
-              </ProtectedRoute>
+              </AdminArea>
             }
           />
           <Route
             path="/admin/orders"
             element={
-              <ProtectedRoute>
+              <AdminArea>
                 <AdminOrders />
-              </ProtectedRoute>
+              </AdminArea>
             }
           />
         </Routes>
@@ -109,24 +143,19 @@ const AppContent: React.FC = () => {
 
 const App: React.FC = () => {
   useEffect(() => {
-    // Set default consent before any tracking
     setDefaultConsent();
-
-    // Check if user has already consented, then initialize GA
-    const consent = localStorage.getItem('cookie-consent');
-    if (consent === 'accepted') {
-      initGA();
-    }
   }, []);
 
   return (
     <HelmetProvider>
-      <CartProvider>
-        <Router>
-          <PageTracker />
-          <AppContent />
-        </Router>
-      </CartProvider>
+      <LocaleProvider>
+        <CartProvider>
+          <Router>
+            <PageTracker />
+            <AppContent />
+          </Router>
+        </CartProvider>
+      </LocaleProvider>
     </HelmetProvider>
   );
 };

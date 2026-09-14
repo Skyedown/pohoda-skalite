@@ -1,11 +1,12 @@
 import React from 'react';
-import type { Product } from '../../../types';
+import type { LocalizedProduct } from '../../../types';
+import { formatPrice } from '../../../i18n/format';
 import './ProductGrid.less';
 
 interface ProductGridProps {
-  productsByCategory: Record<string, Product[]>;
+  productsByCategory: Record<string, LocalizedProduct[]>;
   categoryLabels: Record<string, string>;
-  onProductClick: (product: Product) => void;
+  onProductClick: (product: LocalizedProduct) => void;
 }
 
 const ProductGrid: React.FC<ProductGridProps> = ({
@@ -29,7 +30,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({
               >
                 <h5 className="product-grid__product-name">{product.name}</h5>
                 <p className="product-grid__product-price">
-                  {product.price.toFixed(2)} €
+                  {formatPrice(product.price, 'EUR')}
                 </p>
               </div>
             ))}

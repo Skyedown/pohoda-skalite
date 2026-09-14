@@ -2,8 +2,74 @@ import { Router } from 'express';
 import type { PipelineStage } from 'mongoose';
 import { isMongoConnected } from '../utils/db.js';
 import { Order } from '../models/Order.js';
+import { tenantFilter, toTenant } from '../utils/tenant.js';
 
 const router = Router();
+
+interface ParsedRange {
+  fromDate: Date;
+  toDate: Date;
+  fromParts: [number, number, number];
+  toParts: [number, number, number];
+}
+
+function parseRange(from: unknown, to: unknown): ParsedRange | null {
+  if (typeof from !== 'string' || typeof to !== 'string') return null;
+
+  const [fromYear, fromMonth, fromDay] = from.split('-').map(Number);
+  const [toYear, toMonth, toDay] = to.split('-').map(Number);
+
+  const fromDate = new Date(fromYear, fromMonth - 1, fromDay, 0, 0, 0, 0);
+  const toDate = new Date(toYear, toMonth - 1, toDay, 23, 59, 59, 999);
+
+  if (isNaN(fromDate.getTime()) || isNaN(toDate.getTime())) return null;
+
+  return {
+    fromDate,
+    toDate,
+    fromParts: [fromYear, fromMonth, fromDay],
+    toParts: [toYear, toMonth, toDay],
+  };
+}
+
+/**
+ * Every stats query is scoped to one storefront — EUR and PLN totals must never
+ * be added together.
+ */
+function buildMatch(
+  req: { query: Record<string, unknown> },
+  range: ParsedRange,
+  includeDeliveryMethod: boolean,
+): Record<string, unknown> {
+  const { deliveryMethod, productType, paymentMethod, tenant } = req.query;
+
+  const match: Record<string, unknown> = {
+    ...tenantFilter(toTenant(tenant)),
+    createdAt: { $gte: range.fromDate, $lte: range.toDate },
+  };
+
+  if (
+    includeDeliveryMethod &&
+    deliveryMethod &&
+    typeof deliveryMethod === 'string'
+  ) {
+    match['delivery.method'] = { $in: deliveryMethod.split(',') };
+  }
+
+  if (paymentMethod === 'cash' || paymentMethod === 'card') {
+    match['payment.method'] = paymentMethod;
+  }
+
+  if (productType && typeof productType === 'string') {
+    match['items.product.type'] = productType;
+  }
+
+  return match;
+}
+
+function sumIfPayment(method: 'cash' | 'card', value: unknown) {
+  return { $sum: { $cond: [{ $eq: ['$payment.method', method] }, value, 0] } };
+}
 
 router.get('/api/orders/stats', async (req, res) => {
   try {
@@ -11,39 +77,15 @@ router.get('/api/orders/stats', async (req, res) => {
       return res.status(503).json({ error: 'Database not available' });
     }
 
-    const { from, to, deliveryMethod, productType } = req.query;
-
-    if (!from || !to) {
+    const range = parseRange(req.query.from, req.query.to);
+    if (!range) {
       return res
         .status(400)
         .json({ error: 'from and to query params are required (YYYY-MM-DD)' });
     }
 
-    const [fromYear, fromMonth, fromDay] = (from as string)
-      .split('-')
-      .map(Number);
-    const [toYear, toMonth, toDay] = (to as string).split('-').map(Number);
-    const fromDate = new Date(fromYear, fromMonth - 1, fromDay, 0, 0, 0, 0);
-    const toDate = new Date(toYear, toMonth - 1, toDay, 23, 59, 59, 999);
-
-    if (isNaN(fromDate.getTime()) || isNaN(toDate.getTime())) {
-      return res.status(400).json({ error: 'Invalid date format' });
-    }
-
-    const matchConditions: Record<string, unknown> = {
-      createdAt: { $gte: fromDate, $lte: toDate },
-    };
-
-    if (deliveryMethod && typeof deliveryMethod === 'string') {
-      matchConditions['delivery.method'] = { $in: deliveryMethod.split(',') };
-    }
-
-    if (productType && typeof productType === 'string') {
-      matchConditions['items.product.type'] = productType;
-    }
-
     const stats = await Order.aggregate([
-      { $match: matchConditions },
+      { $match: buildMatch(req, range, true) },
       {
         $group: {
           _id: {
@@ -55,13 +97,18 @@ router.get('/api/orders/stats', async (req, res) => {
           },
           totalOrders: { $sum: 1 },
           totalValue: { $sum: '$pricing.total' },
+          cashOrders: sumIfPayment('cash', 1),
+          cashValue: sumIfPayment('cash', '$pricing.total'),
+          cardOrders: sumIfPayment('card', 1),
+          cardValue: sumIfPayment('card', '$pricing.total'),
         },
       },
       { $sort: { _id: 1 } },
     ]);
 
-    const result: { date: string; totalOrders: number; totalValue: number }[] =
-      [];
+    const result = [];
+    const [fromYear, fromMonth, fromDay] = range.fromParts;
+    const [toYear, toMonth, toDay] = range.toParts;
     const current = new Date(fromYear, fromMonth - 1, fromDay);
     const end = new Date(toYear, toMonth - 1, toDay);
 
@@ -70,8 +117,12 @@ router.get('/api/orders/stats', async (req, res) => {
       const found = stats.find((s: { _id: string }) => s._id === dateStr);
       result.push({
         date: dateStr,
-        totalOrders: found ? found.totalOrders : 0,
-        totalValue: found ? found.totalValue : 0,
+        totalOrders: found?.totalOrders ?? 0,
+        totalValue: found?.totalValue ?? 0,
+        cashOrders: found?.cashOrders ?? 0,
+        cashValue: found?.cashValue ?? 0,
+        cardOrders: found?.cardOrders ?? 0,
+        cardValue: found?.cardValue ?? 0,
       });
       current.setDate(current.getDate() + 1);
     }
@@ -93,35 +144,17 @@ router.get('/api/orders/product-stats', async (req, res) => {
       return res.status(503).json({ error: 'Database not available' });
     }
 
-    const { from, to, deliveryMethod, productType } = req.query;
-
-    if (!from || !to) {
+    const range = parseRange(req.query.from, req.query.to);
+    if (!range) {
       return res
         .status(400)
         .json({ error: 'from and to query params are required (YYYY-MM-DD)' });
     }
 
-    const [fromYear, fromMonth, fromDay] = (from as string)
-      .split('-')
-      .map(Number);
-    const [toYear, toMonth, toDay] = (to as string).split('-').map(Number);
-    const fromDate = new Date(fromYear, fromMonth - 1, fromDay, 0, 0, 0, 0);
-    const toDate = new Date(toYear, toMonth - 1, toDay, 23, 59, 59, 999);
-
-    if (isNaN(fromDate.getTime()) || isNaN(toDate.getTime())) {
-      return res.status(400).json({ error: 'Invalid date format' });
-    }
-
-    const matchConditions: Record<string, unknown> = {
-      createdAt: { $gte: fromDate, $lte: toDate },
-    };
-
-    if (deliveryMethod && typeof deliveryMethod === 'string') {
-      matchConditions['delivery.method'] = { $in: deliveryMethod.split(',') };
-    }
+    const { productType } = req.query;
 
     const pipeline: PipelineStage[] = [
-      { $match: matchConditions },
+      { $match: buildMatch(req, range, true) },
       { $unwind: '$items' },
     ];
 

@@ -1,5 +1,7 @@
 // Google Analytics 4 & Meta Pixel utility functions
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import type { Currency, Locale } from '../i18n/types';
+
 declare global {
   interface Window {
     gtag: (...args: any[]) => void;
@@ -10,53 +12,64 @@ declare global {
 }
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
-export const GA_MEASUREMENT_ID = 'G-6Q287KJ5RR';
-export const META_PIXEL_ID = '695345926848903';
+/** Each storefront reports into its own GA property. */
+const GA_MEASUREMENT_IDS: Record<Locale, string> = {
+  sk: import.meta.env.VITE_GA_ID_SK || 'G-6Q287KJ5RR',
+  pl: import.meta.env.VITE_GA_ID_PL || 'G-9LEFZGNPWY',
+};
 
-// Initialize Google Analytics
-export const initGA = () => {
-  if (typeof window === 'undefined') return;
+export const META_PIXEL_ID =
+  import.meta.env.VITE_META_PIXEL_ID || '695345926848903';
 
-  // Check if user has consented to analytics
-  const consent = localStorage.getItem('cookie-consent');
-  if (consent !== 'accepted') return;
+export function getMeasurementId(locale: Locale): string {
+  return GA_MEASUREMENT_IDS[locale];
+}
 
-  // Load gtag script
+function hasConsent(): boolean {
+  return localStorage.getItem('cookie-consent') === 'accepted';
+}
+
+let loadedMeasurementId: string | null = null;
+
+export const initGA = (locale: Locale) => {
+  if (typeof window === 'undefined' || !hasConsent()) return;
+
+  const measurementId = getMeasurementId(locale);
+  if (loadedMeasurementId === measurementId) return;
+  loadedMeasurementId = measurementId;
+
   const script = document.createElement('script');
-  script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+  script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
   script.async = true;
   document.head.appendChild(script);
 
-  // Initialize dataLayer
   window.dataLayer = window.dataLayer || [];
   window.gtag = function gtag() {
     // eslint-disable-next-line prefer-rest-params
     window.dataLayer.push(arguments);
   };
   window.gtag('js', new Date());
-  window.gtag('config', GA_MEASUREMENT_ID, {
+  window.gtag('config', measurementId, {
     anonymize_ip: true,
     cookie_flags: 'SameSite=None;Secure',
+    tenant: locale,
   });
 };
 
-// Track page views
-export const trackPageView = (url: string) => {
-  if (typeof window === 'undefined' || !window.gtag) return;
+export const trackPageView = (url: string, locale: Locale) => {
+  if (typeof window === 'undefined' || !window.gtag || !hasConsent()) return;
 
-  const consent = localStorage.getItem('cookie-consent');
-  if (consent !== 'accepted') return;
-
-  window.gtag('config', GA_MEASUREMENT_ID, {
+  window.gtag('config', getMeasurementId(locale), {
     page_path: url,
+    tenant: locale,
   });
 };
 
-// Track conversion - order submission with revenue
-export const trackPurchase = (orderData: {
+interface PurchasePayload {
   transactionId: string;
   value: number;
-  currency: string;
+  currency: Currency;
+  locale: Locale;
   items: Array<{
     item_id: string;
     item_name: string;
@@ -64,48 +77,31 @@ export const trackPurchase = (orderData: {
     price: number;
     quantity: number;
   }>;
-}) => {
-  if (typeof window === 'undefined' || !window.gtag) return;
+}
 
-  const consent = localStorage.getItem('cookie-consent');
-  if (consent !== 'accepted') return;
+export const trackPurchase = (orderData: PurchasePayload) => {
+  if (typeof window === 'undefined' || !window.gtag || !hasConsent()) return;
 
   window.gtag('event', 'purchase', {
     transaction_id: orderData.transactionId,
     value: orderData.value,
     currency: orderData.currency,
+    tenant: orderData.locale,
     items: orderData.items,
   });
 
-  // Also track as a conversion event
   window.gtag('event', 'conversion', {
-    send_to: `${GA_MEASUREMENT_ID}/conversion`,
+    send_to: `${getMeasurementId(orderData.locale)}/conversion`,
     value: orderData.value,
     currency: orderData.currency,
     transaction_id: orderData.transactionId,
   });
 
-  // Track Meta Pixel purchase
   trackMetaPixelPurchase(orderData);
 };
 
-// Track Meta Pixel purchase event
-export const trackMetaPixelPurchase = (orderData: {
-  transactionId: string;
-  value: number;
-  currency: string;
-  items: Array<{
-    item_id: string;
-    item_name: string;
-    item_category: string;
-    price: number;
-    quantity: number;
-  }>;
-}) => {
-  if (typeof window === 'undefined' || !window.fbq) return;
-
-  const consent = localStorage.getItem('cookie-consent');
-  if (consent !== 'accepted') return;
+export const trackMetaPixelPurchase = (orderData: PurchasePayload) => {
+  if (typeof window === 'undefined' || !window.fbq || !hasConsent()) return;
 
   window.fbq('track', 'Purchase', {
     value: orderData.value,
@@ -120,31 +116,24 @@ export const trackMetaPixelPurchase = (orderData: {
   });
 };
 
-// Track custom events
 export const trackEvent = (
   eventName: string,
   eventParams?: Record<string, unknown>,
 ) => {
-  if (typeof window === 'undefined' || !window.gtag) return;
-
-  const consent = localStorage.getItem('cookie-consent');
-  if (consent !== 'accepted') return;
-
+  if (typeof window === 'undefined' || !window.gtag || !hasConsent()) return;
   window.gtag('event', eventName, eventParams);
 };
 
-// Update consent
-export const updateConsent = (granted: boolean) => {
+export const updateConsent = (granted: boolean, locale: Locale) => {
   if (typeof window === 'undefined' || !window.gtag) return;
 
   if (granted) {
     localStorage.setItem('cookie-consent', 'accepted');
     window.gtag('consent', 'update', {
       analytics_storage: 'granted',
-      ad_storage: 'denied', // We're only using analytics
+      ad_storage: 'denied',
     });
-    // Initialize GA after consent
-    initGA();
+    initGA(locale);
   } else {
     localStorage.setItem('cookie-consent', 'rejected');
     window.gtag('consent', 'update', {
@@ -154,7 +143,6 @@ export const updateConsent = (granted: boolean) => {
   }
 };
 
-// Set default consent (before user interaction)
 export const setDefaultConsent = () => {
   if (typeof window === 'undefined') return;
 

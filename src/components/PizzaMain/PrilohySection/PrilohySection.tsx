@@ -1,21 +1,26 @@
 import React, { useState, useCallback } from 'react';
 import Toast from '../../shared/Toast/Toast';
 import ProductModal from '../ProductModal/ProductModal';
-import { prilohy } from '../../../data/prilohy';
 import { useAdminSettings } from '../../../hooks/useAdminSettings';
+import { usePrilohy } from '../../../hooks/useMenu';
+import { useLocale } from '../../../i18n/LocaleContext';
 import { isProductDisabled } from '../../../utils/productAvailability';
 import { PrilohyCard } from './PrilohyCard/PrilohyCard';
-import type { Product } from '../../../types';
+import type { LocalizedProduct } from '../../../types';
 import './PrilohySection.less';
 
 export const PrilohySection: React.FC = () => {
   const adminSettings = useAdminSettings();
-  const [selectedItem, setSelectedItem] = useState<Product | null>(null);
+  const { t } = useLocale();
+  const prilohy = usePrilohy();
+  const [selectedItem, setSelectedItem] = useState<LocalizedProduct | null>(
+    null,
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
-  const handleOpenModal = useCallback((item: Product) => {
+  const handleOpenModal = useCallback((item: LocalizedProduct) => {
     setSelectedItem(item);
     setIsModalOpen(true);
   }, []);
@@ -25,16 +30,19 @@ export const PrilohySection: React.FC = () => {
     setTimeout(() => setSelectedItem(null), 300);
   }, []);
 
-  const handleItemAddedToCart = useCallback((itemName: string) => {
-    setToastMessage(`${itemName} pridaný do košíka!`);
-    setShowToast(true);
-  }, []);
+  const handleItemAddedToCart = useCallback(
+    (itemName: string) => {
+      setToastMessage(t('product_added_toast', { name: itemName }));
+      setShowToast(true);
+    },
+    [t],
+  );
 
   return (
     <>
       <section id="prilohy-menu" className="prilohy-section">
         <div className="container">
-          <h2 className="prilohy-section__title">Prílohy</h2>
+          <h2 className="prilohy-section__title">{t('section_sides_title')}</h2>
           <div className="prilohy-section__grid">
             {prilohy.map((item) => (
               <PrilohyCard

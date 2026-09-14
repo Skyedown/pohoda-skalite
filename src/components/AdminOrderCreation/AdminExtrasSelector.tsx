@@ -1,9 +1,10 @@
 import React from 'react';
-import type { Extra } from '../../types';
+import type { LocalizedExtra } from '../../types';
+import { formatPrice } from '../../i18n/format';
 import './AdminExtrasSelector.less';
 
 interface AdminExtrasSelectorProps {
-  extras: Extra[];
+  extras: LocalizedExtra[];
   selectedExtras: string[];
   onToggleExtra: (extraId: string) => void;
 }
@@ -63,7 +64,7 @@ const AdminExtrasSelector: React.FC<AdminExtrasSelectorProps> = ({
                   </span>
                 </div>
                 <span className="admin-extras-selector__price">
-                  +{extra.price.toFixed(2)} €
+                  +{formatPrice(extra.price, 'EUR')}
                 </span>
               </label>
             );
@@ -78,7 +79,7 @@ const AdminExtrasSelector: React.FC<AdminExtrasSelectorProps> = ({
       {selectedExtras.length > 0 && (
         <div className="admin-extras-selector__summary">
           <p className="admin-extras-selector__summary-text">
-            Suma príloh: <strong>{extrasPrice.toFixed(2)} €</strong>
+            Suma príloh: <strong>{formatPrice(extrasPrice, 'EUR')}</strong>
           </p>
         </div>
       )}

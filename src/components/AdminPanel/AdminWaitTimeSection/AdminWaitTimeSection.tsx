@@ -1,9 +1,7 @@
 import React from 'react';
-import {
-  WAIT_TIME_OPTIONS,
-  formatWaitTime,
-} from '../../../utils/adminSettings';
-import './AdminWaitTimeSection.less';
+import { WAIT_TIME_OPTIONS } from '../../../utils/adminSettings';
+import { formatWaitTime } from '../../../utils/waitTime';
+import { tSk } from '../../../i18n/adminT';
 import './AdminWaitTimeSection.less';
 
 interface AdminWaitTimeSectionProps {
@@ -37,8 +35,8 @@ export const AdminWaitTimeSection: React.FC<AdminWaitTimeSectionProps> = ({
         <h3>Náhľad oznámenia:</h3>
         <p>
           Z dôvodu veľkého počtu objednávok je čakacia doba momentálne
-          <strong>{formatWaitTime(waitTimeMinutes)}</strong>. Ďakujeme za
-          pochopenie."
+          <strong>{formatWaitTime(waitTimeMinutes, 'sk', tSk)}</strong>.
+          Ďakujeme za pochopenie."
         </p>
       </div>
     </div>

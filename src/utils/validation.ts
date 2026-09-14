@@ -1,52 +1,17 @@
-import type { OrderFormData, ValidationErrors } from '../types';
+import type { Locale } from '../i18n/types';
 
-export const validateEmail = (email: string): boolean => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
+/** Digits, spaces, dashes and parentheses are accepted; everything else is not. */
+function stripFormatting(phone: string): string {
+  return phone.replace(/[\s()-]/g, '');
+}
+
+const PHONE_PATTERNS: Record<Locale, RegExp> = {
+  sk: /^(\+421|00421|0)\d{9}$/,
+  pl: /^(\+48|0048)?\d{9}$/,
 };
 
-export const validatePhone = (phone: string): boolean => {
-  const phoneRegex = /^(\+421|0)[0-9]{9}$/;
-  return phoneRegex.test(phone.replace(/\s/g, ''));
-};
+export const validateEmail = (email: string): boolean =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-export const validateOrderForm = (
-  formData: OrderFormData,
-): ValidationErrors => {
-  const errors: ValidationErrors = {};
-
-  if (!formData.fullName.trim()) {
-    errors.fullName = 'Celé meno je povinné';
-  }
-
-  if (!formData.email.trim()) {
-    errors.email = 'Email je povinný';
-  } else if (!validateEmail(formData.email)) {
-    errors.email = 'Neplatný formát emailu';
-  }
-
-  if (!formData.phone.trim()) {
-    errors.phone = 'Telefónne číslo je povinné';
-  } else if (!validatePhone(formData.phone)) {
-    errors.phone = 'Neplatný formát telefónneho čísla';
-  }
-
-  // Address fields only required for delivery
-  if (formData.deliveryMethod === 'delivery') {
-    if (!formData.city) {
-      errors.city = 'Mesto je povinné';
-    }
-
-    if (!formData.street?.trim()) {
-      errors.street = 'Číslo domu je povinné';
-    } else if (!/^[0-9]+$/.test(formData.street.trim())) {
-      errors.street = 'Číslo domu musí obsahovať len čísla';
-    }
-
-    if (!formData.houseNumber?.trim()) {
-      errors.houseNumber = 'Číslo domu je povinné';
-    }
-  }
-
-  return errors;
-};
+export const validatePhone = (phone: string, locale: Locale): boolean =>
+  PHONE_PATTERNS[locale].test(stripFormatting(phone));

@@ -134,12 +134,26 @@ export function sanitizeOrder(order: any): SanitizedOrder {
   const sanitizedItems = order.items.map((item: any) => ({
     ...item,
     name: sanitizeTextInput(item.name, 100),
+    nameLocalized: item.nameLocalized
+      ? sanitizeTextInput(item.nameLocalized, 100)
+      : undefined,
     size: sanitizeTextInput(item.size, 20),
     extras: item.extras
       ? item.extras.map((extra: any) => ({
           ...extra,
           name: sanitizeTextInput(extra.name, 100),
+          nameLocalized: extra.nameLocalized
+            ? sanitizeTextInput(extra.nameLocalized, 100)
+            : undefined,
         }))
+      : [],
+    removedIngredients: Array.isArray(item.removedIngredients)
+      ? item.removedIngredients.map((i: string) => sanitizeTextInput(i, 100))
+      : [],
+    removedIngredientsLocalized: Array.isArray(item.removedIngredientsLocalized)
+      ? item.removedIngredientsLocalized.map((i: string) =>
+          sanitizeTextInput(i, 100),
+        )
       : [],
   }));
 

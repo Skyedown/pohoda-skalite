@@ -1,6 +1,8 @@
 import React, { useRef } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
+import type { Currency } from '../../../i18n/types';
+import { CURRENCY_SYMBOL } from '../OrderStats.helpers';
 
 export interface ProductStat {
   _id: string;
@@ -13,11 +15,14 @@ export interface ProductStat {
 
 interface ProductPerformanceProps {
   stats: ProductStat[];
+  currency: Currency;
 }
 
 export const ProductPerformance: React.FC<ProductPerformanceProps> = ({
   stats,
+  currency,
 }) => {
+  const symbol = CURRENCY_SYMBOL[currency];
   const revenueChartRef = useRef<HighchartsReact.RefObject>(null);
   const quantityChartRef = useRef<HighchartsReact.RefObject>(null);
 
@@ -29,15 +34,15 @@ export const ProductPerformance: React.FC<ProductPerformanceProps> = ({
 
   const revenueOptions: Highcharts.Options = {
     chart: { type: 'bar', height: Math.max(300, stats.length * 36) },
-    title: { text: 'Tržby podľa produktu (€)' },
+    title: { text: `Tržby podľa produktu (${symbol})` },
     xAxis: { categories: names, title: { text: null } },
-    yAxis: { min: 0, title: { text: 'Tržby (€)' } },
+    yAxis: { min: 0, title: { text: `Tržby (${symbol})` } },
     tooltip: {
       headerFormat: '<b>{point.key}</b><br/>',
-      pointFormat: 'Tržby: <b>{point.y:.2f} €</b>',
+      pointFormat: `Tržby: <b>{point.y:.2f} ${symbol}</b>`,
     },
     plotOptions: {
-      bar: { dataLabels: { enabled: true, format: '{point.y:.2f} €' } },
+      bar: { dataLabels: { enabled: true, format: `{point.y:.2f} ${symbol}` } },
     },
     series: [
       {

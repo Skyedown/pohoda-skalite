@@ -1,5 +1,6 @@
 import React from 'react';
 import type { CartItem as CartItemType } from '../../../types';
+import { useLocale } from '../../../i18n/LocaleContext';
 import './CartItem.less';
 
 interface CartItemProps {
@@ -15,7 +16,8 @@ const CartItem: React.FC<CartItemProps> = ({
   onRemove,
   onUpdateQuantity,
 }) => {
-  // Defensive check for item and product
+  const { t, price } = useLocale();
+
   if (!item || !item.product) {
     console.error('CartItem: Invalid item or missing product', item);
     return null;
@@ -25,12 +27,12 @@ const CartItem: React.FC<CartItemProps> = ({
     <div className="cart-item">
       <div className="cart-item__header">
         <h3 className="cart-item__name">
-          {item.product.name || 'Neznámy produkt'}
+          {item.product.name || t('cart_item_unknown')}
         </h3>
         <button
           className="cart-item__remove"
           onClick={() => onRemove(index)}
-          aria-label="Odstrániť"
+          aria-label={t('cart_item_remove_aria')}
         >
           ×
         </button>
@@ -54,7 +56,7 @@ const CartItem: React.FC<CartItemProps> = ({
 
       {item.removedIngredients && item.removedIngredients.length > 0 && (
         <p className="cart-item__removed">
-          Bez: {item.removedIngredients.join(', ')}
+          {t('cart_item_without')} {item.removedIngredients.join(', ')}
         </p>
       )}
 
@@ -80,7 +82,7 @@ const CartItem: React.FC<CartItemProps> = ({
           </button>
         </div>
 
-        <div className="cart-item__price">{item.totalPrice.toFixed(2)} €</div>
+        <div className="cart-item__price">{price(item.totalPrice)}</div>
       </div>
     </div>
   );

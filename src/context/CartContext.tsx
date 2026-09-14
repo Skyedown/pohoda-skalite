@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import type { CartItem, Product, Extra } from '../types';
+import type { CartItem, LocalizedExtra, LocalizedProduct } from '../types';
+import { useLocale } from '../i18n/LocaleContext';
 import {
   getCartFromStorage,
   saveCartToStorage,
@@ -10,10 +11,11 @@ import {
 interface CartContextType {
   cart: CartItem[];
   addToCart: (
-    pizza: Product,
+    product: LocalizedProduct,
     quantity: number,
-    extras?: Extra[],
+    extras?: LocalizedExtra[],
     removedIngredients?: string[],
+    removedIngredientsSk?: string[],
   ) => void;
   removeFromCart: (index: number) => void;
   updateQuantity: (index: number, quantity: number) => void;
@@ -38,28 +40,30 @@ interface CartProviderProps {
 }
 
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
-  // Initialize cart from localStorage on mount (lazy initialization)
+  const { locale } = useLocale();
+
+  // Prices and labels are baked into each line, so a stored cart only stays
+  // valid while the visitor is on the same language site.
   const [cart, setCart] = useState<CartItem[]>(() => {
     try {
-      return getCartFromStorage();
+      return getCartFromStorage(locale);
     } catch (error) {
       console.error('Failed to initialize cart from storage:', error);
       return [];
     }
   });
 
-  // Save cart to localStorage whenever it changes
   useEffect(() => {
-    saveCartToStorage(cart);
-  }, [cart]);
+    saveCartToStorage(cart, locale);
+  }, [cart, locale]);
 
   const addToCart = (
-    product: Product,
+    product: LocalizedProduct,
     quantity: number,
-    extras?: Extra[],
+    extras?: LocalizedExtra[],
     removedIngredients?: string[],
+    removedIngredientsSk?: string[],
   ) => {
-    // Validate product
     if (!product || !product.id || !product.name) {
       console.error('Invalid product added to cart:', product);
       return;
@@ -76,6 +80,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
       extras,
       extrasPrice,
       removedIngredients,
+      removedIngredientsSk,
     };
 
     setCart((prevCart) => [...prevCart, newItem]);
@@ -91,14 +96,18 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
       return;
     }
 
-    setCart((prevCart) => {
-      const newCart = [...prevCart];
-      const item = newCart[index];
-      item.quantity = quantity;
-      item.totalPrice =
-        (item.product.price + (item.extrasPrice || 0)) * quantity;
-      return newCart;
-    });
+    setCart((prevCart) =>
+      prevCart.map((item, i) =>
+        i === index
+          ? {
+              ...item,
+              quantity,
+              totalPrice:
+                (item.product.price + (item.extrasPrice || 0)) * quantity,
+            }
+          : item,
+      ),
+    );
   };
 
   const clearCart = () => {
@@ -106,13 +115,11 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     clearCartFromStorage();
   };
 
-  const getTotalPrice = (): number => {
-    return cart.reduce((total, item) => total + item.totalPrice, 0);
-  };
+  const getTotalPrice = (): number =>
+    cart.reduce((total, item) => total + item.totalPrice, 0);
 
-  const getTotalItems = (): number => {
-    return cart.reduce((total, item) => total + item.quantity, 0);
-  };
+  const getTotalItems = (): number =>
+    cart.reduce((total, item) => total + item.quantity, 0);
 
   const value: CartContextType = {
     cart,

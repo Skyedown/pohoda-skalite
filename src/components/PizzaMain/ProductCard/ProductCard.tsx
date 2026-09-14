@@ -1,11 +1,13 @@
 import React from 'react';
-import type { Product } from '../../../types';
+import type { LocalizedProduct } from '../../../types';
 import CartIcon from '../../shared/CartIcon/CartIcon';
+import { useLocale } from '../../../i18n/LocaleContext';
+import { getBadgeLabel } from '../productSection.helpers';
 import './ProductCard.less';
 
 interface ProductCardProps {
-  product: Product;
-  onAddToCart: (product: Product) => void;
+  product: LocalizedProduct;
+  onAddToCart: (product: LocalizedProduct) => void;
   showBadge?: boolean;
   isDisabled?: boolean;
 }
@@ -16,16 +18,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
   showBadge = true,
   isDisabled = false,
 }) => {
+  const { t, price } = useLocale();
+
   const handleClick = () => {
     onAddToCart(product);
-  };
-  const getBadgeLabel = (badge: string) => {
-    const labels: Record<string, string> = {
-      classic: 'NAŠA VOĽBA',
-      premium: 'NAŠA VOĽBA',
-      special: 'BESTSELLER',
-    };
-    return labels[badge] || '';
   };
 
   return (
@@ -37,7 +33,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <span
           className={`product-card__badge product-card__badge--${product.badge}`}
         >
-          {getBadgeLabel(product.badge)}
+          {getBadgeLabel(product.badge, t)}
         </span>
       )}
 
@@ -64,21 +60,19 @@ const ProductCard: React.FC<ProductCardProps> = ({
           {product.allergens && product.allergens.length > 0 && (
             <span className="product-card__allergens">
               {' '}
-              (Alergény: {product.allergens.join(', ')})
+              ({t('common_allergens')}: {product.allergens.join(', ')})
             </span>
           )}
         </p>
 
         <div className="product-card__footer">
-          <div className="product-card__price">
-            {product.price.toFixed(2)} €
-          </div>
+          <div className="product-card__price">{price(product.price)}</div>
           <button
             className={`product-card__button ${isDisabled ? 'product-card__button--disabled' : ''}`}
-            aria-label={`Pridať ${product.name} do košíka`}
+            aria-label={t('product_add_aria', { name: product.name })}
           >
             <CartIcon />
-            {isDisabled ? 'Nedostupné' : 'Pridať'}
+            {isDisabled ? t('common_unavailable') : t('common_add')}
           </button>
         </div>
       </div>

@@ -1,13 +1,6 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import { PRODUCT_TYPES, PRODUCT_LABELS } from '../adminPanelHelpers';
-import { pizzas } from '../../../data/pizzas';
-import { burgers } from '../../../data/burgers';
-import { langos } from '../../../data/langos';
-import { prilohy } from '../../../data/prilohy';
-import { capovane } from '../../../data/capovane';
-import { drinks } from '../../../data/drinks';
-import { snacks } from '../../../data/snacks';
-import type { Product, ProductType } from '../../../types';
+import { ADMIN_PRODUCTS_BY_CATEGORY } from '../../../data/adminMenu';
 import './AdminProductItemAvailability.less';
 
 interface AdminProductItemAvailabilityProps {
@@ -18,19 +11,6 @@ interface AdminProductItemAvailabilityProps {
 export const AdminProductItemAvailability: React.FC<
   AdminProductItemAvailabilityProps
 > = ({ disabledProductIds, onToggle }) => {
-  const productsByCategory = useMemo<Record<ProductType, Product[]>>(
-    () => ({
-      pizza: pizzas,
-      burger: burgers,
-      langos: langos,
-      sides: prilohy,
-      capovane,
-      drinks,
-      snacks,
-    }),
-    [],
-  );
-
   const handleToggle = useCallback(
     (productId: string) => () => onToggle(productId),
     [onToggle],
@@ -53,7 +33,7 @@ export const AdminProductItemAvailability: React.FC<
               {PRODUCT_LABELS[category]}
             </h3>
             <div className="admin-item-availability__grid">
-              {productsByCategory[category].map((product) => {
+              {ADMIN_PRODUCTS_BY_CATEGORY[category].map((product) => {
                 const isAvailable = !disabledProductIds.includes(product.id);
                 return (
                   <label

@@ -1,171 +1,85 @@
-import { getAdminSettings, formatWaitTime } from './adminSettings';
+import type { Locale } from '../i18n/types';
+import type { TranslationKey } from '../i18n/sk';
 import type { ProductType } from '../types';
+import type { AdminSettings } from './adminSettings';
+import { formatWaitTime } from './waitTime';
 
 export type OrderingStatus =
-  | 'before_preorder' // Before preorder time - ordering disabled
-  | 'preorder' // Preorder time - accepting preorders
-  | 'open' // During opening hours - normal ordering
-  | 'orders_closed' // After last order time - orders closed but still open
-  | 'closed' // After closing - ordering disabled
-  | 'admin_disabled' // Admin disabled ordering
-  | 'admin_wait_time'; // Admin set wait time message
+  | 'before_preorder'
+  | 'preorder'
+  | 'open'
+  | 'orders_closed'
+  | 'closed'
+  | 'admin_disabled'
+  | 'admin_wait_time';
 
 export interface OrderingStatusInfo {
   status: OrderingStatus;
   canOrder: boolean;
   message: string;
-  disabledProductTypes?: ProductType[];
+  disabledProductTypes: ProductType[];
 }
 
-function parseTime(timeStr: string): { hours: number; minutes: number } {
+type Translate = (
+  key: TranslationKey,
+  vars?: Record<string, string | number>,
+) => string;
+
+const TYPE_KEYS: Record<ProductType, TranslationKey> = {
+  pizza: 'type_pizza',
+  burger: 'type_burger',
+  langos: 'type_langos',
+  sides: 'type_sides',
+  capovane: 'type_capovane',
+  drinks: 'type_drinks',
+  snacks: 'type_snacks',
+};
+
+function timeToMinutes(timeStr: string): number {
   const [hours, minutes] = timeStr.split(':').map(Number);
-  return { hours, minutes };
+  return hours * 60 + minutes;
 }
 
-function getCurrentTimeInMinutes(): number {
+function currentMinutes(): number {
   const now = new Date();
   return now.getHours() * 60 + now.getMinutes();
 }
 
-function timeToMinutes(timeStr: string): number {
-  const { hours, minutes } = parseTime(timeStr);
-  return hours * 60 + minutes;
+function joinDisabledLabels(types: ProductType[], t: Translate): string {
+  const names = types.map((type) => t(TYPE_KEYS[type]));
+  if (names.length <= 1) return names[0] ?? '';
+  if (names.length === 2)
+    return `${names[0]} ${t('status_list_and')} ${names[1]}`;
+  return `${names.slice(0, -1).join(', ')} ${t('status_list_and')} ${names[names.length - 1]}`;
 }
 
-export async function getOrderingStatusAsync(): Promise<OrderingStatusInfo> {
-  // First check admin settings
-  const adminSettings = await getAdminSettings();
-  const disabledProductTypes = adminSettings.disabledProductTypes || [];
-
-  // Admin has disabled ordering
-  if (adminSettings.mode === 'disabled') {
-    return {
-      status: 'admin_disabled',
-      canOrder: false,
-      message: 'Objednávky sú dočasne pozastavené. Ďakujeme za pochopenie.',
-      disabledProductTypes,
-    };
-  }
-
-  // Admin set wait time message
-  if (adminSettings.mode === 'waitTime') {
-    let message = `Aktuálna čakacia doba: ${formatWaitTime(adminSettings.waitTimeMinutes)}`;
-
-    // Add info about disabled products if any
-    if (disabledProductTypes.length > 0) {
-      const disabledLabels = getDisabledProductLabels(disabledProductTypes);
-      message += `. ${disabledLabels} sú na dnes vypredané.`;
-    }
-
-    return {
-      status: 'admin_wait_time',
-      canOrder: true,
-      message,
-      disabledProductTypes,
-    };
-  }
-
-  // Admin set custom note
-  if (adminSettings.mode === 'customNote') {
-    let message = adminSettings.customNote;
-
-    // Add info about disabled products if any
-    if (disabledProductTypes.length > 0) {
-      const disabledLabels = getDisabledProductLabels(disabledProductTypes);
-      message += ` (${disabledLabels} sú vypredané)`;
-    }
-
-    return {
-      status: 'admin_wait_time', // Reuse same status type
-      canOrder: true,
-      message,
-      disabledProductTypes,
-    };
-  }
-
-  // If admin mode is 'off', proceed with time-based logic
-  const timeBasedStatus = getTimeBasedStatus();
-
-  // Add info about disabled products if any
-  let message = timeBasedStatus.message;
-  if (disabledProductTypes.length > 0) {
-    const disabledLabels = getDisabledProductLabels(disabledProductTypes);
-    if (message) {
-      message += ` ${disabledLabels} sú na dnes vypredané.`;
-    } else {
-      message = `${disabledLabels} sú na dnes vypredané.`;
-    }
-  }
-
-  return {
-    ...timeBasedStatus,
-    message,
-    disabledProductTypes,
-  };
-}
-
-function getDisabledProductLabels(disabledProductTypes: ProductType[]): string {
-  const labels: Record<ProductType, string> = {
-    pizza: 'Pizze',
-    burger: 'Burgre',
-    langos: 'Langoše',
-    sides: 'Prílohy',
-    capovane: 'Čapované',
-    drinks: 'Nápoje',
-    snacks: 'Snacky',
-  };
-
-  const names = disabledProductTypes.map((type) => labels[type]);
-
-  if (names.length === 1) {
-    return names[0];
-  } else if (names.length === 2) {
-    return `${names[0]} a ${names[1]}`;
-  } else {
-    return names.slice(0, -1).join(', ') + ' a ' + names[names.length - 1];
-  }
-}
-
-export function getOrderingStatus(): OrderingStatusInfo {
-  // This is a synchronous version that doesn't check admin settings
-  // Used for initial render, then replaced by async version
-  return getTimeBasedStatus();
-}
-
-function getTimeBasedStatus(): OrderingStatusInfo {
+export function getTimeBasedStatus(t: Translate): OrderingStatusInfo {
   const preorderStartTime = import.meta.env.VITE_PREORDER_START_TIME || '10:00';
   const openingTime = import.meta.env.VITE_OPENING_TIME || '11:00';
   const lastOrderTime = import.meta.env.VITE_LAST_ORDER_TIME || '21:30';
   const closingTime = import.meta.env.VITE_CLOSING_TIME || '22:00';
 
-  const currentMinutes = getCurrentTimeInMinutes();
-  const preorderMinutes = timeToMinutes(preorderStartTime);
-  const openingMinutes = timeToMinutes(openingTime);
-  const lastOrderMinutes = timeToMinutes(lastOrderTime);
-  const closingMinutes = timeToMinutes(closingTime);
+  const now = currentMinutes();
 
-  // Before preorder time
-  if (currentMinutes < preorderMinutes) {
+  if (now < timeToMinutes(preorderStartTime)) {
     return {
       status: 'before_preorder',
       canOrder: false,
-      message: `Objednávky sú momentálne uzavreté. Predobjednávky budú možné od ${preorderStartTime}.`,
+      message: t('status_before_preorder', { time: preorderStartTime }),
       disabledProductTypes: [],
     };
   }
 
-  // During preorder time (before opening)
-  if (currentMinutes >= preorderMinutes && currentMinutes < openingMinutes) {
+  if (now < timeToMinutes(openingTime)) {
     return {
       status: 'preorder',
       canOrder: true,
-      message: `Aktuálne prijímame predobjednávky. Jedlo bude doručené po otvorení o ${openingTime}.`,
+      message: t('status_preorder', { time: openingTime }),
       disabledProductTypes: [],
     };
   }
 
-  // During opening hours (before last order time)
-  if (currentMinutes >= openingMinutes && currentMinutes < lastOrderMinutes) {
+  if (now < timeToMinutes(lastOrderTime)) {
     return {
       status: 'open',
       canOrder: true,
@@ -174,29 +88,76 @@ function getTimeBasedStatus(): OrderingStatusInfo {
     };
   }
 
-  // After last order time but before closing
-  if (currentMinutes >= lastOrderMinutes && currentMinutes < closingMinutes) {
+  if (now < timeToMinutes(closingTime)) {
     return {
       status: 'orders_closed',
       canOrder: false,
-      message: `Objednávky na dnes sú už uzavreté. Ďakujeme za pochopenie.`,
+      message: t('status_orders_closed'),
       disabledProductTypes: [],
     };
   }
 
-  // After closing
   return {
     status: 'closed',
     canOrder: false,
-    message: `Reštaurácia už momentálne nepríjma objednávky. Online predobjednávky sa otvárajú o ${preorderStartTime}.`,
+    message: t('status_closed', { time: preorderStartTime }),
     disabledProductTypes: [],
   };
 }
 
-/**
- * Format time for display
- */
-export function formatTime(timeStr: string): string {
-  const { hours, minutes } = parseTime(timeStr);
-  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+export function resolveOrderingStatus(
+  settings: AdminSettings,
+  locale: Locale,
+  t: Translate,
+): OrderingStatusInfo {
+  const disabledProductTypes = settings.disabledProductTypes ?? [];
+  const soldOut = disabledProductTypes.length
+    ? joinDisabledLabels(disabledProductTypes, t)
+    : '';
+
+  if (settings.mode === 'disabled') {
+    return {
+      status: 'admin_disabled',
+      canOrder: false,
+      message: t('status_admin_disabled'),
+      disabledProductTypes,
+    };
+  }
+
+  if (settings.mode === 'waitTime') {
+    let message = t('status_wait_time', {
+      waitTime: formatWaitTime(settings.waitTimeMinutes, locale, t),
+    });
+    if (soldOut) {
+      message += `. ${t('status_sold_out_sentence', { products: soldOut })}`;
+    }
+    return {
+      status: 'admin_wait_time',
+      canOrder: true,
+      message,
+      disabledProductTypes,
+    };
+  }
+
+  if (settings.mode === 'customNote') {
+    let message = settings.customNote[locale];
+    if (soldOut) {
+      message += ` ${t('status_sold_out_parenthetical', { products: soldOut })}`;
+    }
+    return {
+      status: 'admin_wait_time',
+      canOrder: true,
+      message,
+      disabledProductTypes,
+    };
+  }
+
+  const timeBased = getTimeBasedStatus(t);
+  let message = timeBased.message;
+  if (soldOut) {
+    const sentence = t('status_sold_out_sentence', { products: soldOut });
+    message = message ? `${message} ${sentence}` : sentence;
+  }
+
+  return { ...timeBased, message, disabledProductTypes };
 }

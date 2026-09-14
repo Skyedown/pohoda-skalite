@@ -45,11 +45,13 @@ export const OrderCard: React.FC<OrderCardProps> = ({
         printNumber={order.printNumber}
         printed={order.printed}
         createdAt={order.createdAt}
+        tenant={order.tenant}
       />
       <OrderCardInfo
         delivery={order.delivery}
         payment={order.payment}
         total={order.pricing.total}
+        currency={order.currency ?? 'EUR'}
       />
       <OrderCardProducts items={order.items} />
       {order.delivery.notes && (

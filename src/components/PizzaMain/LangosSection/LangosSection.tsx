@@ -1,22 +1,28 @@
 import React, { useState, useCallback } from 'react';
 import Toast from '../../shared/Toast/Toast';
 import ProductModal from '../ProductModal/ProductModal';
-import { langos } from '../../../data/langos';
 import { useAdminSettings } from '../../../hooks/useAdminSettings';
+import { useLangos, useLocalizedExtras } from '../../../hooks/useMenu';
+import { useLocale } from '../../../i18n/LocaleContext';
 import { isProductDisabled } from '../../../utils/productAvailability';
 import { langosExtras } from './LangosSection.helpers';
 import { LangosCard } from './LangosCard/LangosCard';
-import type { Product } from '../../../types';
+import type { LocalizedProduct } from '../../../types';
 import './LangosSection.less';
 
 export const LangosSection: React.FC = () => {
   const adminSettings = useAdminSettings();
-  const [selectedItem, setSelectedItem] = useState<Product | null>(null);
+  const { t } = useLocale();
+  const langos = useLangos();
+  const extras = useLocalizedExtras(langosExtras);
+  const [selectedItem, setSelectedItem] = useState<LocalizedProduct | null>(
+    null,
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
-  const handleOpenModal = useCallback((item: Product) => {
+  const handleOpenModal = useCallback((item: LocalizedProduct) => {
     setSelectedItem(item);
     setIsModalOpen(true);
   }, []);
@@ -26,17 +32,22 @@ export const LangosSection: React.FC = () => {
     setTimeout(() => setSelectedItem(null), 300);
   }, []);
 
-  const handleItemAddedToCart = useCallback((itemName: string) => {
-    setToastMessage(`${itemName} pridaný do košíka!`);
-    setShowToast(true);
-  }, []);
+  const handleItemAddedToCart = useCallback(
+    (itemName: string) => {
+      setToastMessage(t('product_added_toast', { name: itemName }));
+      setShowToast(true);
+    },
+    [t],
+  );
 
   return (
     <>
       <section id="langos-menu" className="langos-section">
         <div className="container">
-          <p className="langos-section__subtitle">Chrumkavé a chutné</p>
-          <h2 className="langos-section__title">Langoše</h2>
+          <p className="langos-section__subtitle">
+            {t('section_langos_subtitle')}
+          </p>
+          <h2 className="langos-section__title">{t('section_langos_title')}</h2>
           <div className="langos-section__grid">
             {langos.map((item) => (
               <LangosCard
@@ -55,7 +66,7 @@ export const LangosSection: React.FC = () => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onAddToCart={handleItemAddedToCart}
-        extras={langosExtras}
+        extras={extras}
         isDisabled={
           selectedItem ? isProductDisabled(selectedItem, adminSettings) : false
         }

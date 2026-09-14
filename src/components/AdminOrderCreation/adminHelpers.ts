@@ -1,54 +1,57 @@
-import type { Extra, Product, DeliveryMethod } from '../../types';
+import type {
+  LocalizedExtra,
+  LocalizedProduct,
+  DeliveryMethod,
+} from '../../types';
 
 // ============================================
 // CONSTANTS
 // ============================================
 
-export const pizzaExtras: Extra[] = [
-  // Meat-based extras - 1.5 EUR
-  { id: 'sunka', name: 'Šunka', price: 1.5 },
-  { id: 'slanina', name: 'Slanina', price: 1.5 },
-  { id: 'salama', name: 'Saláma', price: 1.5 },
-  { id: 'klobasa', name: 'Klobása', price: 1.5 },
-  // Non-meat extras - 0.80 EUR
-  { id: 'mozzarella', name: 'Extra mozzarella', price: 0.8 },
-  { id: 'sampiony', name: 'Šampiňóny', price: 0.8 },
-  { id: 'cierne-olivy', name: 'Čierne olivy', price: 0.8 },
-  { id: 'rukola', name: 'Rukola', price: 0.8 },
-  { id: 'chilli', name: 'Chilli papričky', price: 0.8 },
-  { id: 'cervena-cibula', name: 'Červená cibuľa', price: 0.8 },
-  { id: 'kukurica', name: 'Kukurica', price: 0.8 },
-  { id: 'ananas', name: 'Ananás', price: 0.8 },
-  { id: 'cherry-paradajky', name: 'Cherry paradajky', price: 0.8 },
+/** Admin-created orders are always Slovak, so extras carry plain Slovak labels. */
+function skExtra(id: string, name: string, price: number): LocalizedExtra {
+  return { id, name, nameSk: name, price };
+}
+
+export const pizzaExtras: LocalizedExtra[] = [
+  skExtra('sunka', 'Šunka', 1.5),
+  skExtra('slanina', 'Slanina', 1.5),
+  skExtra('salama', 'Saláma', 1.5),
+  skExtra('klobasa', 'Klobása', 1.5),
+  skExtra('mozzarella', 'Extra mozzarella', 0.8),
+  skExtra('sampiony', 'Šampiňóny', 0.8),
+  skExtra('cierne-olivy', 'Čierne olivy', 0.8),
+  skExtra('rukola', 'Rukola', 0.8),
+  skExtra('chilli', 'Chilli papričky', 0.8),
+  skExtra('cervena-cibula', 'Červená cibuľa', 0.8),
+  skExtra('kukurica', 'Kukurica', 0.8),
+  skExtra('ananas', 'Ananás', 0.8),
+  skExtra('cherry-paradajky', 'Cherry paradajky', 0.8),
 ];
 
-export const burgerExtras: Extra[] = [
-  // Special extras
-  { id: 'extra-patty', name: 'Extra mäso', price: 4.5 },
-  { id: 'extra-cheddar', name: 'Extra cheddar', price: 1.2 },
-  { id: 'grilovan-encian', name: 'Grilovaný encián', price: 3.5 },
-  // Meat-based extras - 1.5 EUR
-  { id: 'slanina', name: 'Slanina', price: 1.5 },
-  // Non-meat extras - 0.80 EUR
-  { id: 'salat', name: 'Šalát', price: 0.8 },
-  { id: 'paradajka', name: 'Paradajka', price: 0.8 },
-  { id: 'karamelizona-cibuľka', name: 'Karamelizovaná cibuľka', price: 0.8 },
-  { id: 'kysla-uhorka', name: 'Kyslá uhorka', price: 0.8 },
-  { id: 'sampiony', name: 'Šampiňóny', price: 0.8 },
-  { id: 'cibuľka', name: 'Cibuľka', price: 0.8 },
-  { id: 'jalapeno', name: 'Jallapeño', price: 0.8 },
-  { id: 'baby-spenat', name: 'Baby špenát', price: 0.8 },
-  { id: 'volske-oko', name: 'Volské oko', price: 0.8 },
+export const burgerExtras: LocalizedExtra[] = [
+  skExtra('extra-patty', 'Extra mäso', 4.5),
+  skExtra('extra-cheddar', 'Extra cheddar', 1.2),
+  skExtra('grilovan-encian', 'Grilovaný encián', 3.5),
+  skExtra('slanina', 'Slanina', 1.5),
+  skExtra('salat', 'Šalát', 0.8),
+  skExtra('paradajka', 'Paradajka', 0.8),
+  skExtra('karamelizona-cibuľka', 'Karamelizovaná cibuľka', 0.8),
+  skExtra('kysla-uhorka', 'Kyslá uhorka', 0.8),
+  skExtra('sampiony', 'Šampiňóny', 0.8),
+  skExtra('cibuľka', 'Cibuľka', 0.8),
+  skExtra('jalapeno', 'Jallapeño', 0.8),
+  skExtra('baby-spenat', 'Baby špenát', 0.8),
+  skExtra('volske-oko', 'Volské oko', 0.8),
 ];
 
-export const langosExtras: Extra[] = [
-  // All extras - 0.80 EUR
-  { id: 'extra-cheese', name: 'Extra syr', price: 0.8 },
-  { id: 'ketchup', name: 'Kečup', price: 0.8 },
-  { id: 'tartar-sauce', name: 'Tatárska omáčka', price: 0.8 },
-  { id: 'sour-cream', name: 'Kyslá smotana', price: 0.8 },
-  { id: 'nutella', name: 'Nutella', price: 0.8 },
-  { id: 'banana', name: 'Banán', price: 0.8 },
+export const langosExtras: LocalizedExtra[] = [
+  skExtra('extra-cheese', 'Extra syr', 0.8),
+  skExtra('ketchup', 'Kečup', 0.8),
+  skExtra('tartar-sauce', 'Tatárska omáčka', 0.8),
+  skExtra('sour-cream', 'Kyslá smotana', 0.8),
+  skExtra('nutella', 'Nutella', 0.8),
+  skExtra('banana', 'Banán', 0.8),
 ];
 
 // Keep backward compatibility
@@ -57,7 +60,9 @@ export const defaultExtras = pizzaExtras;
 /**
  * Get extras for a specific product type
  */
-export const getExtrasForProductType = (productType: string): Extra[] => {
+export const getExtrasForProductType = (
+  productType: string,
+): LocalizedExtra[] => {
   switch (productType) {
     case 'burger':
       return burgerExtras;
@@ -84,9 +89,9 @@ export const categoryLabels: Record<string, string> = {
 // ============================================
 
 export interface AdminOrderItem {
-  product: Product;
+  product: LocalizedProduct;
   quantity: number;
-  extras: Extra[];
+  extras: LocalizedExtra[];
   removedIngredients?: string[];
 }
 
@@ -133,7 +138,7 @@ export const calculateSubtotal = (orderItems: AdminOrderItem[]): number => {
 /**
  * Calculate extras price for a single item
  */
-export const calculateExtrasPrice = (extras: Extra[]): number => {
+export const calculateExtrasPrice = (extras: LocalizedExtra[]): number => {
   return extras.reduce((sum, extra) => sum + extra.price, 0);
 };
 
@@ -198,12 +203,18 @@ export const buildOrderPayload = (
     items: orderItems.map((item) => ({
       product: {
         id: item.product.id,
-        name: item.product.name,
+        name: item.product.nameSk,
+        nameLocalized: item.product.name,
         price: item.product.price,
         type: item.product.type,
       },
       quantity: item.quantity,
-      extras: item.extras,
+      extras: item.extras.map((extra) => ({
+        id: extra.id,
+        name: extra.nameSk,
+        nameLocalized: extra.name,
+        price: extra.price,
+      })),
       removedIngredients: item.removedIngredients || [],
       totalPrice:
         (item.product.price +
@@ -235,6 +246,8 @@ export const buildOrderPayload = (
       total: orderType === 'dine-in' ? subtotal : subtotal + deliveryFee,
     },
     createdBy: 'admin',
+    tenant: 'sk' as const,
+    currency: 'EUR' as const,
   };
 };
 
@@ -297,7 +310,7 @@ export const getInitialFormState = (): FormData => ({
  */
 export const addProductToOrder = (
   orderItems: AdminOrderItem[],
-  product: Product,
+  product: LocalizedProduct,
 ): AdminOrderItem[] => {
   const existingIndex = orderItems.findIndex(
     (item) =>
@@ -322,7 +335,7 @@ export const confirmExtras = (
   orderItems: AdminOrderItem[],
   editingItemIndex: number,
   tempSelectedExtras: string[],
-  allExtras: Extra[],
+  allExtras: LocalizedExtra[],
 ): AdminOrderItem[] => {
   const item = orderItems[editingItemIndex];
   if (!item) return orderItems;

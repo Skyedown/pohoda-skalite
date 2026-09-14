@@ -2,19 +2,25 @@
  * Type definitions for the Pizza Pohoda API
  */
 
+import type { Currency, Tenant } from './utils/tenant.js';
+
 export interface Extra {
   name: string;
+  /** Wording the customer saw; falls back to `name` (Slovak) when absent. */
+  nameLocalized?: string;
   price: number;
 }
 
 export interface OrderItem {
   name: string;
+  nameLocalized?: string;
   size: string;
   quantity: number;
   basePrice: number;
   totalPrice: number;
   extras?: Extra[];
   removedIngredients?: string[];
+  removedIngredientsLocalized?: string[];
 }
 
 export interface Delivery {
@@ -34,6 +40,8 @@ export interface Pricing {
 
 export interface Order {
   timestamp: string;
+  tenant: Tenant;
+  currency: Currency;
   items: OrderItem[];
   delivery: Delivery;
   pricing: Pricing;

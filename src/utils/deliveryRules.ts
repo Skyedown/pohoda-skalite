@@ -1,51 +1,56 @@
+import type { DeliveryCity } from './adminSettings';
+
 export interface DeliveryRule {
   minOrder: number;
   fee: number;
   displayName: string;
 }
 
-export const DELIVERY_RULES: Record<string, DeliveryRule> = {
-  Skalité: { minOrder: 8.0, fee: 0, displayName: 'Skalité' },
-  Skalite: { minOrder: 8.0, fee: 0, displayName: 'Skalité' },
-  Čierne: { minOrder: 8.0, fee: 0, displayName: 'Čierne' },
-  Cierne: { minOrder: 8.0, fee: 0, displayName: 'Čierne' },
-  Oščadnica: { minOrder: 30, fee: 0, displayName: 'Oščadnica' },
-  Oscadnica: { minOrder: 30, fee: 0, displayName: 'Oščadnica' },
-  Svrčinovec: { minOrder: 30, fee: 0, displayName: 'Svrčinovec' },
-  Svrcinovec: { minOrder: 30, fee: 0, displayName: 'Svrčinovec' },
-};
-
 export const DEFAULT_RULE: DeliveryRule = {
   minOrder: 0,
   fee: 0,
-  displayName: 'Iné mesto',
+  displayName: '',
 };
 
-export function getDeliveryRule(city: string): DeliveryRule {
-  const normalizedCity = city.trim();
-  return DELIVERY_RULES[normalizedCity] || DEFAULT_RULE;
+function normalize(value: string): string {
+  return value
+    .trim()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
 }
 
-export function isMinimumOrderMet(city: string, orderTotal: number): boolean {
-  const rule = getDeliveryRule(city);
-  return orderTotal >= rule.minOrder;
+/** Matching ignores diacritics so "Oscadnica" resolves the same as "Oščadnica". */
+export function getDeliveryRule(
+  cities: DeliveryCity[],
+  city: string,
+): DeliveryRule {
+  if (!city) return DEFAULT_RULE;
+
+  const target = normalize(city);
+  const match = cities.find((entry) => normalize(entry.name) === target);
+
+  return match
+    ? { minOrder: match.minOrder, fee: match.fee, displayName: match.name }
+    : DEFAULT_RULE;
 }
 
-export function getMinimumOrderMessage(
+export function isMinimumOrderMet(
+  cities: DeliveryCity[],
   city: string,
   orderTotal: number,
-): string | null {
-  const rule = getDeliveryRule(city);
+): boolean {
+  return orderTotal >= getDeliveryRule(cities, city).minOrder;
+}
 
-  if (rule.minOrder === 0) {
-    return null;
-  }
+export function getMinimumOrderShortfall(
+  cities: DeliveryCity[],
+  city: string,
+  orderTotal: number,
+): { rule: DeliveryRule; remaining: number } | null {
+  const rule = getDeliveryRule(cities, city);
+  if (rule.minOrder === 0) return null;
 
   const remaining = rule.minOrder - orderTotal;
-
-  if (remaining > 0) {
-    return `Minimálna suma objednávky pre ${rule.displayName} je ${rule.minOrder.toFixed(2)}€. Do minimálnej sumy chýba ešte ${remaining.toFixed(2)}€.`;
-  }
-
-  return null;
+  return remaining > 0 ? { rule, remaining } : null;
 }

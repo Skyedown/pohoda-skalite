@@ -1,3 +1,5 @@
+import type { LocalizedPrice, LocalizedText } from '../i18n/types';
+
 export type ProductType =
   | 'pizza'
   | 'burger'
@@ -6,6 +8,8 @@ export type ProductType =
   | 'capovane'
   | 'drinks'
   | 'snacks';
+
+export type ProductBadge = 'classic' | 'premium' | 'special';
 
 export interface AdminSettings {
   mode: 'off' | 'disabled' | 'waitTime' | 'customNote';
@@ -17,15 +21,36 @@ export interface AdminSettings {
   cardPaymentPickupEnabled?: boolean;
 }
 
+/** Menu entry as authored — every customer-facing string carries both languages. */
 export interface Product {
   id: string;
+  name: LocalizedText;
+  description?: LocalizedText;
+  price: LocalizedPrice;
+  image: string;
+  ingredients?: LocalizedText[];
+  allergens?: string[];
+  badge?: ProductBadge;
+  type: ProductType;
+  weight?: string;
+  spicy?: boolean;
+}
+
+/**
+ * Menu entry resolved for the active locale. `nameSk`/`ingredientsSk` ride along
+ * so the kitchen ticket and the admin stay Slovak regardless of the storefront.
+ */
+export interface LocalizedProduct {
+  id: string;
   name: string;
+  nameSk: string;
   description?: string;
   price: number;
   image: string;
   ingredients?: string[];
+  ingredientsSk?: string[];
   allergens?: string[];
-  badge?: 'classic' | 'premium' | 'special';
+  badge?: ProductBadge;
   type: ProductType;
   weight?: string;
   spicy?: boolean;
@@ -33,17 +58,25 @@ export interface Product {
 
 export interface Extra {
   id: string;
+  name: LocalizedText;
+  price: LocalizedPrice;
+}
+
+export interface LocalizedExtra {
+  id: string;
   name: string;
+  nameSk: string;
   price: number;
 }
 
 export interface CartItem {
-  product: Product;
+  product: LocalizedProduct;
   quantity: number;
   totalPrice: number;
-  extras?: Extra[];
+  extras?: LocalizedExtra[];
   extrasPrice?: number;
   removedIngredients?: string[];
+  removedIngredientsSk?: string[];
 }
 
 export type DeliveryMethod = 'delivery' | 'pickup' | 'dine-in';

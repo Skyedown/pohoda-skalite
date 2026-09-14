@@ -2,18 +2,19 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useCart } from '../../context/CartContext';
+import { useLocale } from '../../i18n/LocaleContext';
 import CartItem from '../../components/PizzaCart/CartItem/CartItem';
 import CartIcon from '../../components/shared/CartIcon/CartIcon';
 import PaymentMethodSelector from '../../components/PizzaCart/PaymentMethodSelector/PaymentMethodSelector';
 import DeliveryAddressForm from '../../components/PizzaCart/DeliveryAddressForm/DeliveryAddressForm';
 import OrderSummary from '../../components/PizzaCart/OrderSummary/OrderSummary';
 import MinimumOrderBanner from '../../components/PizzaCart/MinimumOrderBanner/MinimumOrderBanner';
-import { isMinimumOrderMet } from '../../utils/deliveryRules';
 import { usePizzaCart } from './usePizzaCart';
 import './PizzaCart.less';
 
 const PizzaCart: React.FC = () => {
   const { cart, removeFromCart, updateQuantity } = useCart();
+  const { t } = useLocale();
   const {
     formData,
     errors,
@@ -25,6 +26,7 @@ const PizzaCart: React.FC = () => {
     setGdprConsent,
     isSubmitting,
     adminSettings,
+    cities,
     subtotal,
     delivery,
     total,
@@ -36,12 +38,13 @@ const PizzaCart: React.FC = () => {
   } = usePizzaCart();
 
   const isOrdersDisabled = adminSettings.mode === 'disabled';
+  const headTitle = `${t('cart_head_title')} | ${t('seo_site_name')}`;
 
   if (cart.length === 0) {
     return (
       <div className="pizza-cart">
         <Helmet>
-          <title>Košík | Pohoda Skalite</title>
+          <title>{headTitle}</title>
           <meta name="robots" content="noindex, nofollow" />
         </Helmet>
         <div className="container">
@@ -49,12 +52,10 @@ const PizzaCart: React.FC = () => {
             <div className="pizza-cart__empty-icon">
               <CartIcon width="80" height="80" />
             </div>
-            <h1 className="pizza-cart__empty-title">Váš košík je prázdny</h1>
-            <p className="pizza-cart__empty-text">
-              Pozrite si naše menu a vyberte si niečo chutné!
-            </p>
+            <h1 className="pizza-cart__empty-title">{t('cart_empty_title')}</h1>
+            <p className="pizza-cart__empty-text">{t('cart_empty_text')}</p>
             <Link to="/" className="pizza-cart__empty-button">
-              Prejsť na menu
+              {t('cart_empty_button')}
             </Link>
           </div>
         </div>
@@ -62,14 +63,20 @@ const PizzaCart: React.FC = () => {
     );
   }
 
+  const showTooltip = !!minimumOrderMessage && !!formData.city;
+
   return (
     <div className="pizza-cart">
       <Helmet>
-        <title>Košík | Pohoda Skalite</title>
+        <title>{headTitle}</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
-      <Link to="/" className="pizza-cart__close" aria-label="Zavrieť košík">
+      <Link
+        to="/"
+        className="pizza-cart__close"
+        aria-label={t('cart_close_aria')}
+      >
         <svg
           width="24"
           height="24"
@@ -112,6 +119,7 @@ const PizzaCart: React.FC = () => {
           <DeliveryAddressForm
             formData={{ ...formData, deliveryMethod }}
             errors={errors}
+            cities={cities}
             onChange={handleInputChange}
             onDeliveryMethodChange={handleDeliveryMethodChange}
           />
@@ -149,12 +157,9 @@ const PizzaCart: React.FC = () => {
                 className="pizza-cart__gdpr-checkbox"
               />
               <span className="pizza-cart__gdpr-text">
-                Súhlasím so spracovaním{' '}
-                <Link
-                  to="/ochrana-osobnych-udajov"
-                  className="pizza-cart__gdpr-link"
-                >
-                  osobných údajov
+                {t('cart_gdpr_prefix')}{' '}
+                <Link to={t('privacy_path')} className="pizza-cart__gdpr-link">
+                  {t('cart_gdpr_link')}
                 </Link>
               </span>
             </label>
@@ -166,25 +171,21 @@ const PizzaCart: React.FC = () => {
           </div>
 
           <div
-            className={`pizza-cart__button-wrapper ${
-              !isMinimumOrderMet(formData.city, subtotal) && formData.city
-                ? 'has-tooltip'
-                : ''
-            }`}
+            className={`pizza-cart__button-wrapper ${showTooltip ? 'has-tooltip' : ''}`}
           >
-            {!isMinimumOrderMet(formData.city, subtotal) && formData.city ? (
+            {showTooltip && (
               <div className="pizza-cart__tooltip">{minimumOrderMessage}</div>
-            ) : null}
+            )}
             <button
               className="checkout-button"
               onClick={handleSubmit}
               disabled={isSubmitting || !canSubmitOrder}
             >
               {isSubmitting
-                ? 'ODOSIELAM...'
+                ? t('cart_submitting')
                 : isOrdersDisabled
-                  ? 'OBJEDNÁVKY POZASTAVENÉ'
-                  : 'POTVRDIŤ OBJEDNÁVKU'}
+                  ? t('cart_orders_paused')
+                  : t('cart_confirm')}
             </button>
           </div>
         </div>

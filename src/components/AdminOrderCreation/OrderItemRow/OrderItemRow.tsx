@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import type { Extra } from '../../../types';
+import type { LocalizedExtra } from '../../../types';
+import { formatPrice } from '../../../i18n/format';
 import AdminExtrasSelector from '../AdminExtrasSelector';
 import type { AdminOrderItem } from '../adminHelpers';
 import './OrderItemRow.less';
@@ -8,7 +9,7 @@ interface OrderItemRowProps {
   item: AdminOrderItem;
   itemIndex: number;
   isEditing: boolean;
-  availableExtras: Extra[];
+  availableExtras: LocalizedExtra[];
   onQuantityChange: (itemIndex: number, quantity: number) => void;
   onEditExtras: (itemIndex: number) => void;
   onToggleExtra: (extraId: string) => void;
@@ -68,13 +69,13 @@ const OrderItemRow: React.FC<OrderItemRowProps> = ({
         <div className="order-item-row__details">
           <p className="order-item-row__name">{item.product.name}</p>
           <p className="order-item-row__unit-price">
-            {item.product.price.toFixed(2)} € / ks
+            {formatPrice(item.product.price, 'EUR')} / ks
           </p>
           {item.extras.length > 0 && (
             <p className="order-item-row__extras">
               <span className="order-item-row__extras-label">Extras:</span>{' '}
               {item.extras.map((e) => e.name).join(', ')} (+
-              {extrasPrice.toFixed(2)} €)
+              {formatPrice(extrasPrice, 'EUR')})
             </p>
           )}
           {item.removedIngredients && item.removedIngredients.length > 0 && (
@@ -155,7 +156,9 @@ const OrderItemRow: React.FC<OrderItemRowProps> = ({
 
       {/* Right: Total + Remove */}
       <div className="order-item-row__right">
-        <div className="order-item-row__total">{itemTotal.toFixed(2)} €</div>
+        <div className="order-item-row__total">
+          {formatPrice(itemTotal, 'EUR')}
+        </div>
         <button
           type="button"
           className="order-item-row__remove-btn"

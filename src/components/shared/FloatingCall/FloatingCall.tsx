@@ -1,6 +1,8 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useCart } from '../../../context/CartContext';
+import { useLocale } from '../../../i18n/LocaleContext';
+import { COMPANY } from '../../../constants/company';
 import './FloatingCall.less';
 
 interface FloatingCallProps {
@@ -12,14 +14,11 @@ const FloatingCall: React.FC<FloatingCallProps> = ({
 }) => {
   const location = useLocation();
   const { cart } = useCart();
-  const phoneNumber = import.meta.env.VITE_RESTAURANT_PHONE || '+421918175571';
+  const { t } = useLocale();
 
   const itemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-
-  // Check if cart would be visible (same logic as FloatingCart)
   const isCartVisible = itemsCount > 0 && location.pathname !== '/cart';
 
-  // Hide the call button when on cart page
   if (location.pathname === '/cart') {
     return null;
   }
@@ -33,7 +32,11 @@ const FloatingCall: React.FC<FloatingCallProps> = ({
     .join(' ');
 
   return (
-    <a href={`tel:${phoneNumber}`} className={className} aria-label="Zavolať">
+    <a
+      href={`tel:${COMPANY.phone}`}
+      className={className}
+      aria-label={t('floating_call_aria')}
+    >
       <svg
         width="32"
         height="32"

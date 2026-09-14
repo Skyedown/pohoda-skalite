@@ -4,10 +4,14 @@ import { sanitizeOrder } from '../utils/sanitize.js';
 import { generateCustomerEmail } from '../templates/customerEmail.js';
 import { generateRestaurantEmail } from '../templates/restaurantEmail.js';
 import { isMongoConnected } from '../utils/db.js';
+import { getMapyCzUrlForAddress } from '../utils/geocoding.js';
 import {
-  getMapyCzUrlForAddress,
-  getPostalCodeForCity,
-} from '../utils/geocoding.js';
+  countryFor,
+  currencyFor,
+  postalCodeFor,
+  toTenant,
+} from '../utils/tenant.js';
+import { CUSTOMER_EMAIL_COPY } from '../templates/emailCopy.js';
 import { publishOrder } from '../utils/messageQueue.js';
 import { Order } from '../models/Order.js';
 
@@ -37,7 +41,10 @@ router.post('/api/send-order-emails', async (req, res) => {
       items: order.items.length,
     });
 
-    const sanitizedOrder = sanitizeOrder(order);
+    const tenant = toTenant(order.tenant);
+    const currency = order.currency || currencyFor(tenant);
+    const sanitizedOrder = sanitizeOrder({ ...order, tenant, currency });
+    const copy = CUSTOMER_EMAIL_COPY[tenant];
     const customerEmailContent = generateCustomerEmail(
       sanitizedOrder,
       RESTAURANT_EMAIL,
@@ -65,8 +72,8 @@ router.post('/api/send-order-emails', async (req, res) => {
         email: process.env.SENDGRID_FROM_EMAIL || 'noreply@pizzapohoda.sk',
         name: 'Pizza Pohoda',
       },
-      replyTo: 'objednavky@pizzapohoda.sk',
-      subject: 'Potvrdenie objednávky - Pizza Pohoda',
+      replyTo: RESTAURANT_EMAIL,
+      subject: copy.subject,
       html: customerEmailContent,
     };
 
@@ -76,7 +83,7 @@ router.post('/api/send-order-emails', async (req, res) => {
         email: 'noreply@pizzapohoda.sk',
         name: 'Pizza Pohoda',
       },
-      subject: `Nová objednávka #${orderId}`,
+      subject: `${tenant === 'pl' ? '🇵🇱 PL — ' : ''}Nová objednávka #${orderId}`,
       html: restaurantEmailContent,
     };
 
@@ -101,10 +108,10 @@ router.post('/api/send-order-emails', async (req, res) => {
       try {
         console.log('📍 Resolving GPS coordinates for delivery address...');
         mapyCzUrl = await getMapyCzUrlForAddress({
-          country: 'Slovensko',
+          country: countryFor(tenant),
           city: order.delivery.city,
           houseNumber: order.delivery.houseNumber,
-          postalCode: getPostalCodeForCity(order.delivery.city),
+          postalCode: postalCodeFor(tenant, order.delivery.city),
         });
 
         if (mapyCzUrl) {
@@ -124,12 +131,17 @@ router.post('/api/send-order-emails', async (req, res) => {
       try {
         console.log('💾 Saving customer order to MongoDB...');
 
+        // `name` is the canonical Slovak wording so the printer and the admin
+        // stay Slovak; the customer-facing text is kept beside it.
         const orderData = {
+          tenant,
+          currency,
           items: order.items.map((item: Record<string, unknown>) => ({
             product: {
               id: item.id || (item.product as Record<string, unknown>)?.id,
               name:
                 item.name || (item.product as Record<string, unknown>)?.name,
+              nameLocalized: item.nameLocalized,
               price:
                 item.basePrice ||
                 (item.product as Record<string, unknown>)?.price,
@@ -141,6 +153,7 @@ router.post('/api/send-order-emails', async (req, res) => {
             totalPrice: item.totalPrice,
             requiredOption: item.requiredOption || undefined,
             removedIngredients: item.removedIngredients || [],
+            removedIngredientsLocalized: item.removedIngredientsLocalized || [],
           })),
           delivery: {
             method: order.deliveryMethod || order.delivery?.method,

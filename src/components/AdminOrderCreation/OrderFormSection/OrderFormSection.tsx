@@ -3,13 +3,13 @@ import OrderTypeSelector from '../OrderTypeSelector/OrderTypeSelector';
 import ProductGrid from '../ProductGrid/ProductGrid';
 import CustomerDetailsSection from '../CustomerDetailsSection/CustomerDetailsSection';
 import DineInNotesSection from '../DineInNotesSection/DineInNotesSection';
-import type { Product, DeliveryMethod } from '../../../types';
+import type { LocalizedProduct, DeliveryMethod } from '../../../types';
 import type { FormData, CustomerMatch } from '../adminHelpers';
 import './OrderFormSection.less';
 
 interface OrderFormSectionProps {
   orderType: 'dine-in' | 'customer';
-  productsByCategory: Record<string, Product[]>;
+  productsByCategory: Record<string, LocalizedProduct[]>;
   categoryLabels: Record<string, string>;
   formData: FormData;
   errors: Record<string, string>;
@@ -18,7 +18,7 @@ interface OrderFormSectionProps {
   customerMatches: CustomerMatch[];
   lookupField: 'fullName' | 'phone' | null;
   onOrderTypeChange: (type: 'dine-in' | 'customer') => void;
-  onProductClick: (product: Product) => void;
+  onProductClick: (product: LocalizedProduct) => void;
   onFormChange: (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement

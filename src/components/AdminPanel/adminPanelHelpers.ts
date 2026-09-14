@@ -1,7 +1,6 @@
-import type {
-  AdminSettings,
-  AnnouncementMode,
-} from '../../utils/adminSettings';
+import type { AnnouncementMode } from '../../utils/adminSettings';
+
+export { DEFAULT_SETTINGS } from '../../utils/adminSettings';
 
 export type ProductType =
   | 'pizza'
@@ -58,16 +57,3 @@ export const MODES: {
     description: 'Zobraziť vlastné oznámenie',
   },
 ];
-
-export const DEFAULT_SETTINGS: AdminSettings = {
-  mode: 'off',
-  waitTimeMinutes: 60,
-  customNote:
-    'Z dôvodu nepriaznivého počasia je donáška možná len k hlavnej ceste',
-  disabledReason:
-    'Z dôvodu veľkého počtu objednávok sme momentálne nútení pozastaviť prijímanie nových online objednávok. Ďakujeme za pochopenie a ospravedlňujeme sa za nepríjemnosti. Skúste to prosím neskôr alebo nás kontaktujte telefonicky.',
-  disabledProductTypes: [],
-  disabledProductIds: [],
-  cardPaymentDeliveryEnabled: false,
-  cardPaymentPickupEnabled: false,
-};

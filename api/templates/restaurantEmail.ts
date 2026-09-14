@@ -3,6 +3,7 @@
  */
 
 import { escapeHTML } from '../utils/sanitize.js';
+import { formatMoney } from '../utils/tenant.js';
 import type { SanitizedOrder } from '../types.js';
 
 /**
@@ -11,6 +12,11 @@ import type { SanitizedOrder } from '../types.js';
  * @returns HTML email content
  */
 export function generateRestaurantEmail(order: SanitizedOrder): string {
+  // The kitchen reads this in Slovak no matter which storefront the order came
+  // from; only the amounts follow the customer's currency.
+  const money = (amount: number) => formatMoney(amount, order.currency);
+  const isPolish = order.tenant === 'pl';
+
   // Generate unique order ID from timestamp in Europe/Bratislava timezone
   const orderDate = new Date(order.timestamp);
   const orderId = orderDate
@@ -31,7 +37,7 @@ export function generateRestaurantEmail(order: SanitizedOrder): string {
       const extrasText =
         item.extras && item.extras.length > 0
           ? `<br><small style="color: #666;">+ ${item.extras
-              .map((e) => `${escapeHTML(e.name)} (+${e.price.toFixed(2)}€)`)
+              .map((e) => `${escapeHTML(e.name)} (+${money(e.price)})`)
               .join(', ')}</small>`
           : '';
 
@@ -50,12 +56,12 @@ export function generateRestaurantEmail(order: SanitizedOrder): string {
         <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: center;">${
           item.quantity
         }x</td>
-        <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">${item.basePrice.toFixed(
-          2,
-        )} €</td>
-        <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">${item.totalPrice.toFixed(
-          2,
-        )} €</td>
+        <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">${money(
+          item.basePrice,
+        )}</td>
+        <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">${money(
+          item.totalPrice,
+        )}</td>
       </tr>
     `;
     })
@@ -77,8 +83,15 @@ export function generateRestaurantEmail(order: SanitizedOrder): string {
     </head>
     <body>
       <div class="container">
+        ${
+          isPolish
+            ? `<div style="background:#d4351c;color:white;padding:16px;text-align:center;font-size:22px;font-weight:bold;letter-spacing:1px;">
+                 🇵🇱 POĽSKÁ OBJEDNÁVKA — ADRESA V POĽSKU, PLATBA V ZŁOTÝCH
+               </div>`
+            : ''
+        }
         <div class="header">
-          <h1>NOVÁ OBJEDNÁVKA</h1>
+          <h1>NOVÁ OBJEDNÁVKA${isPolish ? ' 🇵🇱 PL' : ''}</h1>
           <p>Čas objednávky: ${new Date(order.timestamp).toLocaleString(
             'sk-SK',
             { timeZone: 'Europe/Bratislava' },
@@ -86,7 +99,7 @@ export function generateRestaurantEmail(order: SanitizedOrder): string {
         </div>
 
         <div class="urgent">
-          CELKOVÁ SUMA: ${order.pricing.total.toFixed(2)} € | PLATBA: ${
+          CELKOVÁ SUMA: ${money(order.pricing.total)} | PLATBA: ${
             order.paymentMethod === 'cash' ? 'HOTOVOSŤ' : 'KARTA'
           }
         </div>
@@ -107,21 +120,21 @@ export function generateRestaurantEmail(order: SanitizedOrder): string {
           <tfoot>
             <tr style="background-color: #f9f9f9;">
               <td colspan="3" style="padding: 10px; text-align: right;"><strong>Medzisúčet:</strong></td>
-              <td style="padding: 10px; text-align: right;"><strong>${order.pricing.subtotal.toFixed(
-                2,
-              )} €</strong></td>
+              <td style="padding: 10px; text-align: right;"><strong>${money(
+                order.pricing.subtotal,
+              )}</strong></td>
             </tr>
             <tr>
               <td colspan="3" style="padding: 10px; text-align: right;">Doprava:</td>
-              <td style="padding: 10px; text-align: right;">${order.pricing.delivery.toFixed(
-                2,
-              )} €</td>
+              <td style="padding: 10px; text-align: right;">${money(
+                order.pricing.delivery,
+              )}</td>
             </tr>
             <tr style="background-color: #d4351c; color: white; font-size: 16px;">
               <td colspan="3" style="padding: 15px; text-align: right;"><strong>CELKOM:</strong></td>
-              <td style="padding: 15px; text-align: right;"><strong>${order.pricing.total.toFixed(
-                2,
-              )} €</strong></td>
+              <td style="padding: 15px; text-align: right;"><strong>${money(
+                order.pricing.total,
+              )}</strong></td>
             </tr>
           </tfoot>
         </table>
@@ -158,7 +171,7 @@ export function generateRestaurantEmail(order: SanitizedOrder): string {
               order.deliveryMethod === 'delivery'
                 ? `<br><strong>Adresa</strong> ${escapeHTML(order.delivery.city)} ${escapeHTML(
                     order.delivery.houseNumber ?? '',
-                  )}`
+                  )}${isPolish ? ', POĽSKO' : ''}`
                 : ''
             }
           </p>

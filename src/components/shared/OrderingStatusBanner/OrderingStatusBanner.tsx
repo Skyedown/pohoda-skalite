@@ -1,9 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import {
-  getOrderingStatus,
-  getOrderingStatusAsync,
-  type OrderingStatusInfo,
-} from '../../../utils/orderingStatus';
+import React, { useEffect } from 'react';
+import { useOrderingStatus } from '../../../hooks/useOrderingStatus';
 import './OrderingStatusBanner.less';
 
 interface OrderingStatusBannerProps {
@@ -13,47 +9,24 @@ interface OrderingStatusBannerProps {
 const OrderingStatusBanner: React.FC<OrderingStatusBannerProps> = ({
   onVisibilityChange,
 }) => {
-  const [statusInfo, setStatusInfo] =
-    useState<OrderingStatusInfo>(getOrderingStatus());
+  const statusInfo = useOrderingStatus();
 
-  useEffect(() => {
-    // Fetch initial status with admin settings
-    const fetchStatus = async () => {
-      const status = await getOrderingStatusAsync();
-      setStatusInfo(status);
-    };
-    fetchStatus();
-
-    // Update status every minute
-    const interval = setInterval(async () => {
-      const status = await getOrderingStatusAsync();
-      setStatusInfo(status);
-    }, 60000); // 60 seconds
-
-    return () => clearInterval(interval);
-  }, []);
-
-  // Determine if banner should be visible
   const isVisible =
     (statusInfo.status !== 'open' && !!statusInfo.message) ||
-    (!!statusInfo.disabledProductTypes &&
-      statusInfo.disabledProductTypes.length > 0);
+    statusInfo.disabledProductTypes.length > 0;
 
-  // Notify parent about visibility changes
   useEffect(() => {
     onVisibilityChange?.(isVisible);
   }, [isVisible, onVisibilityChange]);
 
-  // Don't show banner if we're open and operating normally
   if (!isVisible) {
     return null;
   }
 
   const getBannerClass = () => {
-    // If only disabled products (no other status issue), use info styling
     if (
       statusInfo.status === 'open' &&
-      statusInfo.disabledProductTypes?.length
+      statusInfo.disabledProductTypes.length
     ) {
       return 'ordering-status-banner--info';
     }
@@ -79,7 +52,8 @@ const OrderingStatusBanner: React.FC<OrderingStatusBannerProps> = ({
           <span className="ordering-status-banner__icon">
             <img
               src={statusInfo.canOrder ? '/icons/info.svg' : '/icons/clock.svg'}
-              alt={statusInfo.canOrder ? 'Info' : 'Clock'}
+              alt=""
+              aria-hidden="true"
               className="ordering-status-banner__icon-svg"
             />
           </span>

@@ -1,12 +1,16 @@
 import React from 'react';
+import type { Currency } from '../../../i18n/types';
 import type { SummaryStats } from '../OrderStats.helpers';
+import { formatMoney } from '../OrderStats.helpers';
 
 interface OrderSummaryCardsProps {
   stats: SummaryStats;
+  currency: Currency;
 }
 
 export const OrderSummaryCards: React.FC<OrderSummaryCardsProps> = ({
   stats,
+  currency,
 }) => {
   const { totalRevenue, totalOrders, avgOrderValue } = stats;
 
@@ -15,7 +19,7 @@ export const OrderSummaryCards: React.FC<OrderSummaryCardsProps> = ({
       <div className="order-stats__summary-card order-stats__summary-card--revenue">
         <p className="order-stats__summary-label">Celkové tržby</p>
         <p className="order-stats__summary-value">
-          {totalRevenue.toFixed(2)} €
+          {formatMoney(totalRevenue, currency)}
         </p>
       </div>
       <div className="order-stats__summary-card order-stats__summary-card--orders">
@@ -25,7 +29,7 @@ export const OrderSummaryCards: React.FC<OrderSummaryCardsProps> = ({
       <div className="order-stats__summary-card order-stats__summary-card--avg">
         <p className="order-stats__summary-label">Priemerná objednávka</p>
         <p className="order-stats__summary-value">
-          {avgOrderValue.toFixed(2)} €
+          {formatMoney(avgOrderValue, currency)}
         </p>
       </div>
     </div>

@@ -3,14 +3,14 @@ import { useCart } from '../../../context/CartContext';
 import { useAdminSettings } from '../../../hooks/useAdminSettings';
 import { isProductDisabled } from '../../../utils/productAvailability';
 import { SimpleProductCard } from './SimpleProductCard/SimpleProductCard';
-import type { Product } from '../../../types';
+import type { LocalizedProduct } from '../../../types';
 import './SimpleProductSection.less';
 
 interface SimpleProductSectionProps {
   id: string;
   title: string;
   subtitle?: string;
-  items: Product[];
+  items: LocalizedProduct[];
 }
 
 export const SimpleProductSection: React.FC<SimpleProductSectionProps> = ({
@@ -29,7 +29,7 @@ export const SimpleProductSection: React.FC<SimpleProductSectionProps> = ({
   );
 
   const handleIncrement = useCallback(
-    (item: Product) => {
+    (item: LocalizedProduct) => {
       const idx = getCartIndex(item.id);
       if (idx === -1) {
         addToCart(item, 1);
@@ -41,7 +41,7 @@ export const SimpleProductSection: React.FC<SimpleProductSectionProps> = ({
   );
 
   const handleDecrement = useCallback(
-    (item: Product) => {
+    (item: LocalizedProduct) => {
       const idx = getCartIndex(item.id);
       if (idx !== -1) {
         updateQuantity(idx, cart[idx].quantity - 1);

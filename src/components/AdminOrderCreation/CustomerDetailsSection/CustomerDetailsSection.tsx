@@ -3,6 +3,7 @@ import DeliveryAddressForm from '../../PizzaCart/DeliveryAddressForm/DeliveryAdd
 import PaymentMethodSelector from '../../PizzaCart/PaymentMethodSelector/PaymentMethodSelector';
 import type { DeliveryMethod } from '../../../types';
 import type { FormData, CustomerMatch } from '../adminHelpers';
+import { useAdminSettings } from '../../../hooks/useAdminSettings';
 import './CustomerDetailsSection.less';
 
 interface CustomerDetailsSectionProps {
@@ -34,6 +35,8 @@ const CustomerDetailsSection: React.FC<CustomerDetailsSectionProps> = ({
   onPaymentMethodChange,
   onCloseSuggestions,
 }) => {
+  const adminSettings = useAdminSettings();
+
   return (
     <div className="customer-details-section">
       <h3 className="customer-details-section__title">Detaily objednávky</h3>
@@ -42,6 +45,7 @@ const CustomerDetailsSection: React.FC<CustomerDetailsSectionProps> = ({
       <DeliveryAddressForm
         formData={formData}
         errors={errors}
+        cities={adminSettings.deliveryCities.sk}
         onChange={onFormChange}
         onDeliveryMethodChange={onDeliveryMethodChange}
         hideEmail={true}

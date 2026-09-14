@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import type { Currency } from '../../../i18n/types';
 import type { ProductStat } from '../ProductPerformance/ProductPerformance';
 import { computeProductTypeSummaries } from '../OrderStats.helpers';
 import { ProductSummaryCards } from '../ProductSummaryCards/ProductSummaryCards';
@@ -29,9 +30,13 @@ const CATEGORY_OPTIONS: { value: ProductCategory; label: string }[] = [
 
 interface ProductsTabProps {
   productStats: ProductStat[];
+  currency: Currency;
 }
 
-export const ProductsTab: React.FC<ProductsTabProps> = ({ productStats }) => {
+export const ProductsTab: React.FC<ProductsTabProps> = ({
+  productStats,
+  currency,
+}) => {
   const [category, setCategory] = useState<ProductCategory>('all');
 
   const typeSummaries = computeProductTypeSummaries(productStats);
@@ -75,7 +80,7 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ productStats }) => {
         </div>
       </div>
 
-      <ProductPerformance stats={filteredStats} />
+      <ProductPerformance stats={filteredStats} currency={currency} />
     </div>
   );
 };

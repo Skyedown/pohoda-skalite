@@ -1,4 +1,6 @@
 import { escapeHTML } from '../utils/sanitize.js';
+import { formatMoney } from '../utils/tenant.js';
+import { CUSTOMER_EMAIL_COPY } from './emailCopy.js';
 import type { SanitizedOrder } from '../types.js';
 
 export function generateCustomerEmail(
@@ -6,35 +8,42 @@ export function generateCustomerEmail(
   restaurantEmail: string,
   restaurantPhone: string,
 ): string {
+  const copy = CUSTOMER_EMAIL_COPY[order.tenant];
+  const money = (amount: number) => formatMoney(amount, order.currency);
+
   const itemsList = order.items
     .map((item) => {
       const extrasText =
         item.extras && item.extras.length > 0
           ? `<br><small style="color: #634832; margin-top: 4px; display: block;">+ ${item.extras
-              .map((e) => `${escapeHTML(e.name)} (+${e.price.toFixed(2)}€)`)
+              .map(
+                (e) =>
+                  `${escapeHTML(e.nameLocalized ?? e.name)} (+${money(e.price)})`,
+              )
               .join(', ')}</small>`
           : '';
 
-      const removedIngredientsText =
-        item.removedIngredients && item.removedIngredients.length > 0
-          ? `<br><small style="color: #e74c3c; margin-top: 4px; display: block;">Bez: ${item.removedIngredients
-              .map((i: string) => escapeHTML(i))
-              .join(', ')}</small>`
-          : '';
+      const removed =
+        item.removedIngredientsLocalized ?? item.removedIngredients ?? [];
+      const removedIngredientsText = removed.length
+        ? `<br><small style="color: #e74c3c; margin-top: 4px; display: block;">${copy.without}: ${removed
+            .map((i: string) => escapeHTML(i))
+            .join(', ')}</small>`
+        : '';
 
       return `
       <tr>
         <td style="padding: 12px; border-bottom: 1px solid #f0ebe4;">
           <strong style="color: #1f2123; font-size: 15px;">${escapeHTML(
-            item.name,
+            item.nameLocalized ?? item.name,
           )}</strong>${extrasText}${removedIngredientsText}
         </td>
         <td style="padding: 12px; border-bottom: 1px solid #f0ebe4; text-align: center; color: #634832;">${
           item.quantity
         }×</td>
-        <td style="padding: 12px; border-bottom: 1px solid #f0ebe4; text-align: right; font-weight: 600; color: #1f2123;">${item.totalPrice.toFixed(
-          2,
-        )} €</td>
+        <td style="padding: 12px; border-bottom: 1px solid #f0ebe4; text-align: right; font-weight: 600; color: #1f2123;">${money(
+          item.totalPrice,
+        )}</td>
       </tr>
     `;
     })
@@ -42,7 +51,7 @@ export function generateCustomerEmail(
 
   return `
     <!DOCTYPE html>
-    <html>
+    <html lang="${order.tenant}">
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -181,21 +190,21 @@ export function generateCustomerEmail(
       <div class="container">
         <div class="header">
           <img src="https://pizzapohoda.sk/images/logo-social.png" alt="Pizza Pohoda Logo" class="logo" style="height: 80px; max-height: 80px; width: auto; margin: 0 auto; display: block;">
-          <h1>Pizza Pohoda</h1>
-          <p>Ďakujeme za vašu objednávku!</p>
+          <h1>${copy.heading}</h1>
+          <p>${copy.thanks}</p>
         </div>
 
         <div class="content">
-          <h2>Potvrdenie objednávky</h2>
-          <p>Vaša objednávka bola úspešne prijatá a je v príprave. Tešíme sa, že vás čoskoro obsúžime!</p>
+          <h2>${copy.confirmationTitle}</h2>
+          <p>${copy.confirmationBody}</p>
 
-          <h3><img src="https://pizzapohoda.sk/icons/list.png" alt="" class="icon-inline">Objednané položky:</h3>
+          <h3><img src="https://pizzapohoda.sk/icons/list.png" alt="" class="icon-inline">${copy.itemsHeading}</h3>
           <table class="order-table">
             <thead>
               <tr>
-                <th style="text-align: left;">Položka</th>
-                <th style="text-align: center; width: 80px;">Počet</th>
-                <th style="text-align: right; width: 100px;">Cena</th>
+                <th style="text-align: left;">${copy.columnItem}</th>
+                <th style="text-align: center; width: 80px;">${copy.columnCount}</th>
+                <th style="text-align: right; width: 100px;">${copy.columnPrice}</th>
               </tr>
             </thead>
             <tbody>
@@ -204,29 +213,29 @@ export function generateCustomerEmail(
           </table>
 
           <div class="summary">
-            <p><strong>Medzisúčet:</strong> <span style="float: right;">${order.pricing.subtotal.toFixed(
-              2,
-            )} €</span></p>
-            <p><strong>Doprava:</strong> <span style="float: right;">${order.pricing.delivery.toFixed(
-              2,
-            )} €</span></p>
-            <p class="total-price"><strong>Celkom:</strong> <span style="float: right;">${order.pricing.total.toFixed(
-              2,
-            )} €</span></p>
+            <p><strong>${copy.subtotal}</strong> <span style="float: right;">${money(
+              order.pricing.subtotal,
+            )}</span></p>
+            <p><strong>${copy.delivery}</strong> <span style="float: right;">${money(
+              order.pricing.delivery,
+            )}</span></p>
+            <p class="total-price"><strong>${copy.total}</strong> <span style="float: right;">${money(
+              order.pricing.total,
+            )}</span></p>
           </div>
 
           <h3><img src="https://pizzapohoda.sk/icons/location.png" alt="" class="icon-inline">${
             order.deliveryMethod === 'pickup'
-              ? 'Vyzdvihnutie v reštaurácii'
-              : 'Adresa doručenia'
+              ? copy.addressHeadingPickup
+              : copy.addressHeadingDelivery
           }:</h3>
           <div class="delivery-info">
-            <p style="margin: 5px 0;"><strong>Meno:</strong> ${escapeHTML(
+            <p style="margin: 5px 0;"><strong>${copy.name}</strong> ${escapeHTML(
               order.delivery.fullName,
             )}</p>
             ${
               order.deliveryMethod === 'delivery'
-                ? `<p style="margin: 5px 0;"><strong>Adresa</strong> ${escapeHTML(order.delivery.city)} ${escapeHTML(
+                ? `<p style="margin: 5px 0;"><strong>${copy.address}</strong> ${escapeHTML(order.delivery.city)} ${escapeHTML(
                     order.delivery.houseNumber ?? '',
                   )}</p>`
                 : ''
@@ -239,19 +248,19 @@ export function generateCustomerEmail(
             )}</p>
             ${
               order.delivery.notes
-                ? `<p style="margin: 15px 0 5px 0; padding-top: 15px; border-top: 1px solid #f0ebe4;"><em style="color: #634832;">Poznámka: ${escapeHTML(
+                ? `<p style="margin: 15px 0 5px 0; padding-top: 15px; border-top: 1px solid #f0ebe4;"><em style="color: #634832;">${copy.note} ${escapeHTML(
                     order.delivery.notes,
                   )}</em></p>`
                 : ''
             }
           </div>
 
-          <p><strong><img src="https://pizzapohoda.sk/icons/card.png" alt="" class="icon-inline">Spôsob platby:</strong> ${
-            order.paymentMethod === 'cash' ? 'V hotovosti' : 'Kartou'
+          <p><strong><img src="https://pizzapohoda.sk/icons/card.png" alt="" class="icon-inline">${copy.paymentLabel}</strong> ${
+            order.paymentMethod === 'cash' ? copy.paymentCash : copy.paymentCard
           }</p>
 
           <div class="contact-box">
-            <p style="margin-bottom: 12px; font-size: 16px;"><strong>Máte otázky?</strong></p>
+            <p style="margin-bottom: 12px; font-size: 16px;"><strong>${copy.questions}</strong></p>
             <p><img src="https://pizzapohoda.sk/icons/mail.png" alt="" class="icon-inline"><a href="mailto:${restaurantEmail}">${restaurantEmail}</a></p>
             <p><img src="https://pizzapohoda.sk/icons/phone-orange.png" alt="" class="icon-inline"><a href="tel:${restaurantPhone}">${restaurantPhone}</a></p>
           </div>
@@ -259,10 +268,14 @@ export function generateCustomerEmail(
 
         <div class="footer">
           <p><strong>Pizza Pohoda</strong></p>
-          <p>Skalité 1386, 023 14 Skalité, Kysuce</p>
+          <p>${copy.footerAddress}</p>
           <p>
             <a href="mailto:${restaurantEmail}">${restaurantEmail}</a> |
             <a href="tel:${restaurantPhone}">${restaurantPhone}</a>
+          </p>
+          <p>
+            <a href="${copy.termsUrl}">${copy.terms}</a> |
+            <a href="${copy.privacyUrl}">${copy.privacy}</a>
           </p>
         </div>
       </div>

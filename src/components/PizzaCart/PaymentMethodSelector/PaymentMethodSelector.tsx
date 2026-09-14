@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAdminSettings } from '../../../hooks/useAdminSettings';
+import { useLocale } from '../../../i18n/LocaleContext';
 import type { DeliveryMethod } from '../../../types';
 import './PaymentMethodSelector.less';
 
@@ -15,16 +16,16 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
   deliveryMethod = 'delivery',
 }) => {
   const adminSettings = useAdminSettings();
+  const { t } = useLocale();
 
   const isCardPaymentEnabled =
-    adminSettings &&
-    ((deliveryMethod === 'delivery' &&
+    (deliveryMethod === 'delivery' &&
       adminSettings.cardPaymentDeliveryEnabled) ||
-      (deliveryMethod === 'pickup' && adminSettings.cardPaymentPickupEnabled));
+    (deliveryMethod === 'pickup' && adminSettings.cardPaymentPickupEnabled);
 
   return (
     <div className="payment-method">
-      <h3 className="payment-method__title">Spôsob platby</h3>
+      <h3 className="payment-method__title">{t('payment_title')}</h3>
 
       <label className="payment-method__option">
         <div className="payment-method__radio">
@@ -49,7 +50,7 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
             <circle cx="12" cy="12" r="2" />
             <path d="M6 12h.01M18 12h.01" />
           </svg>
-          <span>V hotovosti</span>
+          <span>{t('payment_cash')}</span>
         </div>
       </label>
 
@@ -80,10 +81,12 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
             <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
             <line x1="1" y1="10" x2="23" y2="10" />
           </svg>
-          <span>Kartou pri prevzatí</span>
+          <span>{t('payment_card')}</span>
         </div>
         {!isCardPaymentEnabled && (
-          <span className="payment-method__badge">Momentálne nedostupné</span>
+          <span className="payment-method__badge">
+            {t('payment_unavailable')}
+          </span>
         )}
       </label>
     </div>

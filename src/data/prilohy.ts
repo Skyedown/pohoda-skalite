@@ -1,31 +1,31 @@
 import type { Product } from '../types';
+import { ING } from './ingredients';
 
 export const prilohy: Product[] = [
   {
     id: 'prilohy-0',
-    name: 'Klasické hranolky',
-    price: 2.0,
+    name: { sk: 'Klasické hranolky', pl: 'Frytki klasyczne' },
+    price: { EUR: 2.0, PLN: 8.5 },
     image: '/images/sides/hranolky.webp',
     type: 'sides',
-    ingredients: ['zemiaky', 'soľ'],
+    ingredients: [ING.potatoes, ING.salt],
     allergens: [],
     weight: '150g',
   },
   {
     id: 'prilohy-1',
-    name: 'Batátové hranolky',
-    price: 2.5,
+    name: { sk: 'Batátové hranolky', pl: 'Frytki z batatów' },
+    price: { EUR: 2.5, PLN: 10.5 },
     image: '/images/sides/bataty.webp',
     type: 'sides',
-    ingredients: ['zemiaky', 'soľ'],
+    ingredients: [ING.potatoes, ING.salt],
     allergens: [],
     weight: '150g',
   },
-  // Sauces
   {
     id: 'prilohy-2',
-    name: 'Syrová omáčka',
-    price: 1.0,
+    name: { sk: 'Syrová omáčka', pl: 'Sos serowy' },
+    price: { EUR: 1.0, PLN: 4.3 },
     image: '/images/sides/cheddar.webp',
     type: 'sides',
     allergens: ['7'],
@@ -33,8 +33,8 @@ export const prilohy: Product[] = [
   },
   {
     id: 'prilohy-3',
-    name: 'Medová horčica',
-    price: 1.0,
+    name: { sk: 'Medová horčica', pl: 'Musztarda miodowa' },
+    price: { EUR: 1.0, PLN: 4.3 },
     image: '/images/sides/horcica.webp',
     type: 'sides',
     allergens: ['3', '10'],
@@ -42,8 +42,8 @@ export const prilohy: Product[] = [
   },
   {
     id: 'prilohy-4',
-    name: 'Jallapeňo omáčka',
-    price: 1.0,
+    name: { sk: 'Jallapeňo omáčka', pl: 'Sos jalapeño' },
+    price: { EUR: 1.0, PLN: 4.3 },
     image: '/images/sides/jallapeno.webp',
     type: 'sides',
     allergens: ['3', '10'],
@@ -51,8 +51,8 @@ export const prilohy: Product[] = [
   },
   {
     id: 'prilohy-5',
-    name: 'Slaninová omáčka',
-    price: 1.0,
+    name: { sk: 'Slaninová omáčka', pl: 'Sos boczkowy' },
+    price: { EUR: 1.0, PLN: 4.3 },
     image: '/images/sides/slanina.webp',
     type: 'sides',
     allergens: ['3', '7'],
@@ -60,8 +60,8 @@ export const prilohy: Product[] = [
   },
   {
     id: 'prilohy-6',
-    name: 'Samuraj omáčka',
-    price: 1.0,
+    name: { sk: 'Samuraj omáčka', pl: 'Sos samuraj' },
+    price: { EUR: 1.0, PLN: 4.3 },
     image: '/images/sides/samuraj.webp',
     type: 'sides',
     allergens: ['3', '10'],
@@ -69,8 +69,8 @@ export const prilohy: Product[] = [
   },
   {
     id: 'prilohy-7',
-    name: 'Hannibal omáčka',
-    price: 1.0,
+    name: { sk: 'Hannibal omáčka', pl: 'Sos hannibal' },
+    price: { EUR: 1.0, PLN: 4.3 },
     image: '/images/sides/haniball.webp',
     type: 'sides',
     allergens: ['1', '3', '6', '10'],
@@ -78,8 +78,8 @@ export const prilohy: Product[] = [
   },
   {
     id: 'prilohy-8',
-    name: 'Pepper omáčka',
-    price: 1.0,
+    name: { sk: 'Pepper omáčka', pl: 'Sos pieprzowy' },
+    price: { EUR: 1.0, PLN: 4.3 },
     image: '/images/sides/pepper.webp',
     type: 'sides',
     allergens: ['1', '3', '6'],
@@ -87,8 +87,8 @@ export const prilohy: Product[] = [
   },
   {
     id: 'prilohy-9',
-    name: 'Kečup',
-    price: 1.0,
+    name: { sk: 'Kečup', pl: 'Ketchup' },
+    price: { EUR: 1.0, PLN: 4.3 },
     image: '/images/sides/kecup.webp',
     type: 'sides',
     allergens: [],
@@ -96,8 +96,8 @@ export const prilohy: Product[] = [
   },
   {
     id: 'prilohy-10',
-    name: 'Tatarská omáčka',
-    price: 1.0,
+    name: { sk: 'Tatarská omáčka', pl: 'Sos tatarski' },
+    price: { EUR: 1.0, PLN: 4.3 },
     image: '/images/sides/tatraska.webp',
     type: 'sides',
     allergens: ['3', '10'],
