@@ -1,4 +1,8 @@
-name: pizza-pohoda
+# Must stay `pohoda-skalite`: it is what Compose derived from the directory
+# before this file named the project explicitly. Changing it makes Compose treat
+# the stack as brand new — new volumes, and a name clash with the running
+# containers.
+name: pohoda-skalite
 
 services:
   rabbitmq:

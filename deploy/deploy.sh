@@ -52,7 +52,11 @@ fi
 # per invocation, rather than writing it into a tracked file, keeps the
 # deployed version a property of this run and never something left stale.
 bring_up() {
-    TAG="$1" docker compose up -d
+    # RabbitMQ holds the queue of tickets the printer has not taken yet, and
+    # nothing about it changes between releases — start it if it is down, but
+    # never recreate it. Only the two app containers get replaced.
+    TAG="$1" docker compose up -d rabbitmq || return 1
+    TAG="$1" docker compose up -d --no-deps --force-recreate api frontend
 }
 
 health_url() {
