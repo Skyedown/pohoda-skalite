@@ -16,9 +16,14 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
   deliveryMethod = 'delivery',
 }) => {
   const adminSettings = useAdminSettings();
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
+
+  // Poland is card-only, so cash is not offered there and the card option is
+  // always available — the admin toggles below govern the Slovak site.
+  const isCardOnly = locale === 'pl';
 
   const isCardPaymentEnabled =
+    isCardOnly ||
     (deliveryMethod === 'delivery' &&
       adminSettings.cardPaymentDeliveryEnabled) ||
     (deliveryMethod === 'pickup' && adminSettings.cardPaymentPickupEnabled);
@@ -27,32 +32,34 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
     <div className="payment-method">
       <h3 className="payment-method__title">{t('payment_title')}</h3>
 
-      <label className="payment-method__option">
-        <div className="payment-method__radio">
-          <input
-            type="radio"
-            name="payment"
-            checked={value === 'cash'}
-            onChange={() => onChange('cash')}
-          />
-          <span className="payment-method__radio-custom"></span>
-        </div>
-        <div className="payment-method__content">
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <rect x="2" y="6" width="20" height="12" rx="2" />
-            <circle cx="12" cy="12" r="2" />
-            <path d="M6 12h.01M18 12h.01" />
-          </svg>
-          <span>{t('payment_cash')}</span>
-        </div>
-      </label>
+      {!isCardOnly && (
+        <label className="payment-method__option">
+          <div className="payment-method__radio">
+            <input
+              type="radio"
+              name="payment"
+              checked={value === 'cash'}
+              onChange={() => onChange('cash')}
+            />
+            <span className="payment-method__radio-custom"></span>
+          </div>
+          <div className="payment-method__content">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <rect x="2" y="6" width="20" height="12" rx="2" />
+              <circle cx="12" cy="12" r="2" />
+              <path d="M6 12h.01M18 12h.01" />
+            </svg>
+            <span>{t('payment_cash')}</span>
+          </div>
+        </label>
+      )}
 
       <label
         className={`payment-method__option ${
@@ -89,6 +96,10 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
           </span>
         )}
       </label>
+
+      {isCardOnly && (
+        <p className="payment-method__note">{t('payment_terminal_note')}</p>
+      )}
     </div>
   );
 };

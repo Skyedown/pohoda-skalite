@@ -170,6 +170,8 @@ export const sk = {
   payment_cash: 'V hotovosti',
   payment_card: 'Kartou pri prevzatí',
   payment_unavailable: 'Momentálne nedostupné',
+  payment_terminal_note:
+    'Platba prebieha platobným terminálom v eurách. Suma v zlotých je orientačná — konečná čiastka strhnutá vašou bankou sa môže mierne líšiť podľa jej prepočítacieho kurzu.',
 
   // Validation
   validation_fullname_required: 'Celé meno je povinné',

@@ -21,6 +21,7 @@ interface CartContextType {
   updateQuantity: (index: number, quantity: number) => void;
   clearCart: () => void;
   getTotalPrice: () => number;
+  getTotalPriceEur: () => number;
   getTotalItems: () => number;
 }
 
@@ -71,12 +72,16 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
     const extrasPrice =
       extras?.reduce((sum, extra) => sum + extra.price, 0) || 0;
+    const extrasPriceEur =
+      extras?.reduce((sum, extra) => sum + extra.priceEur, 0) || 0;
     const totalPrice = (product.price + extrasPrice) * quantity;
+    const totalPriceEur = (product.priceEur + extrasPriceEur) * quantity;
 
     const newItem: CartItem = {
       product,
       quantity,
       totalPrice,
+      totalPriceEur,
       extras,
       extrasPrice,
       removedIngredients,
@@ -97,16 +102,19 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     }
 
     setCart((prevCart) =>
-      prevCart.map((item, i) =>
-        i === index
-          ? {
-              ...item,
-              quantity,
-              totalPrice:
-                (item.product.price + (item.extrasPrice || 0)) * quantity,
-            }
-          : item,
-      ),
+      prevCart.map((item, i) => {
+        if (i !== index) return item;
+
+        const extrasPriceEur =
+          item.extras?.reduce((sum, extra) => sum + extra.priceEur, 0) || 0;
+
+        return {
+          ...item,
+          quantity,
+          totalPrice: (item.product.price + (item.extrasPrice || 0)) * quantity,
+          totalPriceEur: (item.product.priceEur + extrasPriceEur) * quantity,
+        };
+      }),
     );
   };
 
@@ -118,6 +126,9 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const getTotalPrice = (): number =>
     cart.reduce((total, item) => total + item.totalPrice, 0);
 
+  const getTotalPriceEur = (): number =>
+    cart.reduce((total, item) => total + item.totalPriceEur, 0);
+
   const getTotalItems = (): number =>
     cart.reduce((total, item) => total + item.quantity, 0);
 
@@ -128,6 +139,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     updateQuantity,
     clearCart,
     getTotalPrice,
+    getTotalPriceEur,
     getTotalItems,
   };
 

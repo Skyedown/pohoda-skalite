@@ -53,6 +53,8 @@ const OrderItemsList: React.FC<OrderItemsListProps> = ({
           subtotal={subtotal}
           delivery={deliveryFee}
           total={total}
+          /* Admin orders are Slovak, so there is no second currency to show. */
+          totalEur={total}
         />
       </div>
     </div>

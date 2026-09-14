@@ -19,6 +19,7 @@ export function localizeProduct(
       ? pickText(product.description, locale)
       : undefined,
     price: pickPrice(product.price, locale),
+    priceEur: product.price.EUR,
     image: product.image,
     ingredients: product.ingredients?.map((item) => pickText(item, locale)),
     ingredientsSk: product.ingredients?.map((item) => item.sk),
@@ -43,6 +44,7 @@ export function localizeExtra(extra: Extra, locale: Locale): LocalizedExtra {
     name: pickText(extra.name, locale),
     nameSk: extra.name.sk,
     price: pickPrice(extra.price, locale),
+    priceEur: extra.price.EUR,
   };
 }
 

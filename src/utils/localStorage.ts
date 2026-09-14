@@ -7,7 +7,7 @@ const CART_STORAGE_KEY = 'pohoda-pizza-cart';
  * Bump when the persisted cart shape changes — a stale cart from an older build
  * would otherwise resurface with missing prices or labels.
  */
-const CART_VERSION = 2;
+const CART_VERSION = 3;
 
 interface StoredCart {
   version: number;

@@ -51,6 +51,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
         delivery={order.delivery}
         payment={order.payment}
         total={order.pricing.total}
+        totalEur={order.pricingEur?.total ?? order.pricing.total}
         currency={order.currency ?? 'EUR'}
       />
       <OrderCardProducts items={order.items} />

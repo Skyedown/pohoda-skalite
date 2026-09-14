@@ -31,6 +31,10 @@ export interface Order {
   pricing: {
     total: number;
   };
+  /** Present on orders placed after the Polish launch. */
+  pricingEur?: {
+    total: number;
+  };
   printed: boolean;
   printNumber?: number;
   createdBy: 'customer' | 'admin';

@@ -46,6 +46,8 @@ export interface LocalizedProduct {
   nameSk: string;
   description?: string;
   price: number;
+  /** Same item in euros — the kitchen ticket and the admin stay in EUR. */
+  priceEur: number;
   image: string;
   ingredients?: string[];
   ingredientsSk?: string[];
@@ -67,12 +69,14 @@ export interface LocalizedExtra {
   name: string;
   nameSk: string;
   price: number;
+  priceEur: number;
 }
 
 export interface CartItem {
   product: LocalizedProduct;
   quantity: number;
   totalPrice: number;
+  totalPriceEur: number;
   extras?: LocalizedExtra[];
   extrasPrice?: number;
   removedIngredients?: string[];

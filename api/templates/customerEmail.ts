@@ -1,5 +1,9 @@
 import { escapeHTML } from '../utils/sanitize.js';
-import { formatAddress, formatMoney } from '../utils/tenant.js';
+import {
+  formatAddress,
+  formatMoney,
+  formatMoneyWithEur,
+} from '../utils/tenant.js';
 import { CUSTOMER_EMAIL_COPY } from './emailCopy.js';
 import type { SanitizedOrder } from '../types.js';
 
@@ -10,6 +14,7 @@ export function generateCustomerEmail(
 ): string {
   const copy = CUSTOMER_EMAIL_COPY[order.tenant];
   const money = (amount: number) => formatMoney(amount, order.currency);
+  const pricingEur = order.pricingEur ?? order.pricing;
 
   const itemsList = order.items
     .map((item) => {
@@ -219,8 +224,10 @@ export function generateCustomerEmail(
             <p><strong>${copy.delivery}</strong> <span style="float: right;">${money(
               order.pricing.delivery,
             )}</span></p>
-            <p class="total-price"><strong>${copy.total}</strong> <span style="float: right;">${money(
+            <p class="total-price"><strong>${copy.total}</strong> <span style="float: right;">${formatMoneyWithEur(
               order.pricing.total,
+              pricingEur.total,
+              order.currency,
             )}</span></p>
           </div>
 

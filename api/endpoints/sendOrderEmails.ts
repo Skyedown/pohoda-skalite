@@ -137,6 +137,7 @@ router.post('/api/send-order-emails', async (req, res) => {
         const orderData = {
           tenant,
           currency,
+          pricingEur: order.pricingEur || order.pricing,
           items: order.items.map((item: Record<string, unknown>) => ({
             product: {
               id: item.id || (item.product as Record<string, unknown>)?.id,
@@ -146,12 +147,14 @@ router.post('/api/send-order-emails', async (req, res) => {
               price:
                 item.basePrice ||
                 (item.product as Record<string, unknown>)?.price,
+              priceEur: item.basePriceEur ?? item.basePrice,
               type:
                 item.type || (item.product as Record<string, unknown>)?.type,
             },
             quantity: item.quantity,
             extras: item.extras || [],
             totalPrice: item.totalPrice,
+            totalPriceEur: item.totalPriceEur ?? item.totalPrice,
             requiredOption: item.requiredOption || undefined,
             removedIngredients: item.removedIngredients || [],
             removedIngredientsLocalized: item.removedIngredientsLocalized || [],

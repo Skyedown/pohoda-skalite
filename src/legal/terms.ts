@@ -127,7 +127,8 @@ export const TERMS_CONTENT: LegalContent = {
         title: '4. Ceny i płatność',
         paragraphs: [
           'Wszystkie ceny podane są w złotych polskich i zawierają podatek. Cena końcowa wraz z ewentualnym kosztem dostawy jest widoczna w podsumowaniu zamówienia przed jego złożeniem.',
-          'Płatność następuje przy odbiorze zamówienia gotówką, a także kartą płatniczą, jeżeli ta opcja jest w danym momencie aktywna.',
+          'Zamówienia z dostawą na terenie Polski opłacane są wyłącznie kartą płatniczą przy odbiorze. Płatność gotówką nie jest dostępna.',
+          'Sprzedawca jest przedsiębiorcą słowackim, dlatego transakcja na terminalu płatniczym rozliczana jest w euro. Kwota w złotych podana w podsumowaniu zamówienia ma charakter orientacyjny — ostateczna kwota pobrana z rachunku zależy od kursu przeliczenia zastosowanego przez bank lub operatora karty kupującego i może się od niej nieznacznie różnić. Kwota w euro widoczna obok kwoty w złotych jest kwotą, która zostanie obciążona na terminalu.',
         ],
       },
       {

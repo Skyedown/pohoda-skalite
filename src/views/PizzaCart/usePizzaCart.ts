@@ -5,6 +5,7 @@ import { useAdminSettings } from '../../hooks/useAdminSettings';
 import { useOrderingStatus } from '../../hooks/useOrderingStatus';
 import { useLocale } from '../../i18n/LocaleContext';
 import { config } from '../../config';
+import { toEur } from '../../i18n/format';
 import { sanitizeCartForm, type CartFormData } from '../../utils/sanitize';
 import { trackPurchase } from '../../utils/analytics';
 import {
@@ -32,12 +33,14 @@ const INITIAL_FORM_DATA: CartFormData = {
 
 export function usePizzaCart() {
   const navigate = useNavigate();
-  const { cart, getTotalPrice, clearCart } = useCart();
+  const { cart, getTotalPrice, getTotalPriceEur, clearCart } = useCart();
   const adminSettings = useAdminSettings();
   const orderingStatus = useOrderingStatus();
   const { locale, currency, t, price } = useLocale();
 
-  const [paymentMethod, setPaymentMethod] = useState<'cash' | 'card'>('cash');
+  const [paymentMethod, setPaymentMethod] = useState<'cash' | 'card'>(
+    locale === 'pl' ? 'card' : 'cash',
+  );
   const [deliveryMethod, setDeliveryMethod] =
     useState<DeliveryMethod>('delivery');
   const [formData, setFormData] = useState<CartFormData>(INITIAL_FORM_DATA);
@@ -81,12 +84,15 @@ export function usePizzaCart() {
   }, []);
 
   const subtotal = useMemo(() => getTotalPrice(), [getTotalPrice]);
+  const subtotalEur = useMemo(() => getTotalPriceEur(), [getTotalPriceEur]);
   const deliveryRule = useMemo(
     () => getDeliveryRule(cities, formData.city),
     [cities, formData.city],
   );
   const delivery = deliveryMethod === 'pickup' ? 0 : deliveryRule.fee;
+  const deliveryEur = toEur(delivery, currency);
   const total = subtotal + delivery;
+  const totalEur = subtotalEur + deliveryEur;
 
   const minimumOrderMessage = useMemo(() => {
     if (deliveryMethod !== 'delivery') return null;
@@ -140,6 +146,9 @@ export function usePizzaCart() {
         subtotal,
         delivery,
         total,
+        subtotalEur,
+        deliveryEur,
+        totalEur,
         locale,
         currency,
       });
@@ -187,6 +196,9 @@ export function usePizzaCart() {
     subtotal,
     delivery,
     total,
+    subtotalEur,
+    deliveryEur,
+    totalEur,
     clearCart,
     navigate,
   ]);
@@ -206,6 +218,9 @@ export function usePizzaCart() {
     subtotal,
     delivery,
     total,
+    subtotalEur,
+    deliveryEur,
+    totalEur,
     minimumOrderMessage,
     canSubmitOrder,
     handleInputChange,

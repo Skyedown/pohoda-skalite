@@ -11,7 +11,7 @@ import { adminFetch } from '../../utils/adminAuth';
 
 /** Admin-created orders are always Slovak, so extras carry plain Slovak labels. */
 function skExtra(id: string, name: string, price: number): LocalizedExtra {
-  return { id, name, nameSk: name, price };
+  return { id, name, nameSk: name, price, priceEur: price };
 }
 
 export const pizzaExtras: LocalizedExtra[] = [
@@ -209,6 +209,7 @@ export const buildOrderPayload = (
         name: item.product.nameSk,
         nameLocalized: item.product.name,
         price: item.product.price,
+        priceEur: item.product.priceEur,
         type: item.product.type,
       },
       quantity: item.quantity,
@@ -217,11 +218,16 @@ export const buildOrderPayload = (
         name: extra.nameSk,
         nameLocalized: extra.name,
         price: extra.price,
+        priceEur: extra.priceEur,
       })),
       removedIngredients: item.removedIngredients || [],
       totalPrice:
         (item.product.price +
           item.extras.reduce((sum, e) => sum + e.price, 0)) *
+        item.quantity,
+      totalPriceEur:
+        (item.product.priceEur +
+          item.extras.reduce((sum, e) => sum + e.priceEur, 0)) *
         item.quantity,
     })),
     delivery:
@@ -248,6 +254,12 @@ export const buildOrderPayload = (
       method: paymentMethod,
     },
     pricing: {
+      subtotal: subtotal,
+      delivery: orderType === 'dine-in' ? 0 : deliveryFee,
+      total: orderType === 'dine-in' ? subtotal : subtotal + deliveryFee,
+    },
+    // Admin orders are Slovak, so both figures are the same.
+    pricingEur: {
       subtotal: subtotal,
       delivery: orderType === 'dine-in' ? 0 : deliveryFee,
       total: orderType === 'dine-in' ? subtotal : subtotal + deliveryFee,

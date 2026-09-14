@@ -72,6 +72,17 @@ export function postalCodeFor(tenant: Tenant, city: string): string {
   return POSTAL_CODES[tenant][normalizeText(city)] ?? '';
 }
 
+/** "170,00 zł (40,00 €)" — the bracket is dropped on Slovak orders. */
+export function formatMoneyWithEur(
+  amount: number,
+  amountEur: number,
+  currency: Currency,
+): string {
+  const primary = formatMoney(amount, currency);
+  if (currency === 'EUR') return primary;
+  return `${primary} (${formatMoney(amountEur, 'EUR')})`;
+}
+
 /**
  * Polish addresses read "Street 12, Town"; Slovak village addresses are just
  * "Village 123" because the houses carry no street name.

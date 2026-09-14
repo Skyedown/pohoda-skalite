@@ -31,6 +31,7 @@ const PizzaCart: React.FC = () => {
     subtotal,
     delivery,
     total,
+    totalEur,
     minimumOrderMessage,
     canSubmitOrder,
     handleInputChange,
@@ -139,7 +140,12 @@ const PizzaCart: React.FC = () => {
             />
           )}
 
-          <OrderSummary subtotal={subtotal} delivery={delivery} total={total} />
+          <OrderSummary
+            subtotal={subtotal}
+            delivery={delivery}
+            total={total}
+            totalEur={totalEur}
+          />
 
           <div
             className={`pizza-cart__gdpr-consent gdpr-consent ${

@@ -173,6 +173,8 @@ export const pl: Dictionary = {
   payment_cash: 'Gotówką',
   payment_card: 'Kartą przy odbiorze',
   payment_unavailable: 'Obecnie niedostępne',
+  payment_terminal_note:
+    'Płatność realizowana jest terminalem płatniczym w euro. Kwota w złotych ma charakter orientacyjny — ostateczna kwota pobrana przez Twój bank może się nieznacznie różnić w zależności od zastosowanego kursu przeliczenia.',
 
   // Validation
   validation_fullname_required: 'Imię i nazwisko jest wymagane',

@@ -1,7 +1,7 @@
 import React from 'react';
 import type { OrderDelivery } from '../types';
 import type { Currency } from '../../../i18n/types';
-import { formatPrice } from '../../../i18n/format';
+import { formatWithEur } from '../../../i18n/format';
 import './OrderCardInfo.less';
 import { getDeliveryMethodLabel, formatAddress } from '../adminOrdersHelpers';
 
@@ -9,6 +9,7 @@ interface OrderCardInfoProps {
   delivery: OrderDelivery;
   payment: { method: 'cash' | 'card' };
   total: number;
+  totalEur: number;
   currency: Currency;
 }
 
@@ -16,6 +17,7 @@ export const OrderCardInfo: React.FC<OrderCardInfoProps> = ({
   delivery,
   payment,
   total,
+  totalEur,
   currency,
 }) => {
   const hasAddress = (delivery.street || delivery.houseNumber) && delivery.city;
@@ -25,7 +27,7 @@ export const OrderCardInfo: React.FC<OrderCardInfoProps> = ({
       <div className="admin-orders__item-row">
         <span className="admin-orders__item-label">Suma:</span>
         <span className="admin-orders__item-value">
-          {formatPrice(total, currency)}
+          {formatWithEur(total, totalEur, currency)}
         </span>
       </div>
       <div className="admin-orders__item-row">

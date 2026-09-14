@@ -14,6 +14,8 @@ export interface IOrder extends Document {
       /** Name as the customer saw it, used in the confirmation e-mail. */
       nameLocalized?: string;
       price: number;
+      /** Same price in euros — what the kitchen ticket prints. */
+      priceEur?: number;
       type: string;
     };
     quantity: number;
@@ -22,10 +24,12 @@ export interface IOrder extends Document {
       name: string;
       nameLocalized?: string;
       price: number;
+      priceEur?: number;
     }[];
     removedIngredients?: string[];
     removedIngredientsLocalized?: string[];
     totalPrice: number;
+    totalPriceEur?: number;
   }[];
   delivery: {
     method: 'delivery' | 'pickup' | 'dine-in';
@@ -42,6 +46,12 @@ export interface IOrder extends Document {
     method: 'cash' | 'card';
   };
   pricing: {
+    subtotal: number;
+    delivery: number;
+    total: number;
+  };
+  /** The same order in euros. Identical to `pricing` on Slovak orders. */
+  pricingEur?: {
     subtotal: number;
     delivery: number;
     total: number;
@@ -73,6 +83,7 @@ const orderSchema = new Schema<IOrder>(
           name: { type: String, required: true },
           nameLocalized: { type: String },
           price: { type: Number, required: true },
+          priceEur: { type: Number },
           type: { type: String, required: true },
         },
         quantity: { type: Number, required: true },
@@ -82,11 +93,13 @@ const orderSchema = new Schema<IOrder>(
             name: { type: String },
             nameLocalized: { type: String },
             price: { type: Number },
+            priceEur: { type: Number },
           },
         ],
         removedIngredients: [{ type: String }],
         removedIngredientsLocalized: [{ type: String }],
         totalPrice: { type: Number, required: true },
+        totalPriceEur: { type: Number },
       },
     ],
     delivery: {
@@ -111,6 +124,11 @@ const orderSchema = new Schema<IOrder>(
       subtotal: { type: Number, required: true },
       delivery: { type: Number, required: true },
       total: { type: Number, required: true },
+    },
+    pricingEur: {
+      subtotal: { type: Number },
+      delivery: { type: Number },
+      total: { type: Number },
     },
     printed: { type: Boolean, default: false },
     printNumber: { type: Number },

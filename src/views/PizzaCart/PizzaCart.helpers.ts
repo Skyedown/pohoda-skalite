@@ -95,6 +95,9 @@ interface OrderPayloadInput {
   subtotal: number;
   delivery: number;
   total: number;
+  subtotalEur: number;
+  deliveryEur: number;
+  totalEur: number;
   locale: Locale;
   currency: Currency;
 }
@@ -112,6 +115,9 @@ export function buildOrderPayload({
   subtotal,
   delivery,
   total,
+  subtotalEur,
+  deliveryEur,
+  totalEur,
   locale,
   currency,
 }: OrderPayloadInput) {
@@ -123,19 +129,28 @@ export function buildOrderPayload({
       type: item.product.type,
       quantity: item.quantity,
       basePrice: item.product.price,
+      basePriceEur: item.product.priceEur,
       extras:
         item.extras?.map((e) => ({
           id: e.id,
           name: e.nameSk,
           nameLocalized: e.name,
           price: e.price,
+          priceEur: e.priceEur,
         })) || [],
       extrasPrice: item.extrasPrice || 0,
       totalPrice: item.totalPrice,
+      totalPriceEur: item.totalPriceEur,
       removedIngredients: item.removedIngredientsSk || [],
       removedIngredientsLocalized: item.removedIngredients || [],
     })),
     pricing: { subtotal, delivery, total },
+    // The kitchen works in euros regardless of what the customer paid in.
+    pricingEur: {
+      subtotal: subtotalEur,
+      delivery: deliveryEur,
+      total: totalEur,
+    },
     deliveryMethod,
     delivery: {
       fullName: formData.fullName,

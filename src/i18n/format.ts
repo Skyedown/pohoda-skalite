@@ -35,6 +35,29 @@ export function formatPrice(amount: number, currency: Currency): string {
   return getFormatter(currency).format(amount);
 }
 
+/**
+ * Only used to express a zloty delivery fee in euros. Item totals never go
+ * through it — every product carries an authored price in both currencies.
+ */
+export const PLN_PER_EUR = 4.25;
+
+export function toEur(amount: number, currency: Currency): number {
+  return currency === 'EUR'
+    ? amount
+    : Math.round((amount / PLN_PER_EUR) * 100) / 100;
+}
+
+/** "170,00 zł (40,00 €)" — the second figure is dropped on the Slovak site. */
+export function formatWithEur(
+  amount: number,
+  amountEur: number,
+  currency: Currency,
+): string {
+  const primary = formatPrice(amount, currency);
+  if (currency === 'EUR') return primary;
+  return `${primary} (${formatPrice(amountEur, 'EUR')})`;
+}
+
 export function formatPriceForLocale(amount: number, locale: Locale): string {
   return formatPrice(amount, CURRENCY_BY_LOCALE[locale]);
 }

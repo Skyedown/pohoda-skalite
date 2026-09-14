@@ -123,6 +123,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
             name: item.product.name,
             nameSk: item.product.name,
             price: item.product.price,
+            priceEur: item.product.price,
             image: '',
             type: (item.product.type as LocalizedProduct['type']) || 'pizza',
           },
@@ -132,6 +133,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
             name: e.name,
             nameSk: e.name,
             price: e.price,
+            priceEur: e.price,
           })),
           removedIngredients: item.removedIngredients || [],
         };

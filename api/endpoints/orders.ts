@@ -81,6 +81,7 @@ router.post('/api/orders', async (req, res) => {
       delivery: order.delivery,
       payment: order.payment,
       pricing: order.pricing,
+      pricingEur: order.pricingEur || order.pricing,
       printed: false,
       createdBy: order.createdBy || 'customer',
     });
@@ -293,6 +294,7 @@ router.put('/api/orders/:id', async (req, res) => {
         delivery: order.delivery,
         payment: order.payment,
         pricing: order.pricing,
+        pricingEur: order.pricingEur || order.pricing,
       },
       { new: true, runValidators: true },
     );
