@@ -151,6 +151,16 @@ export function generateCustomerEmail(
           padding-top: 15px;
           border-top: 2px solid #f0ebe4;
         }
+        .terminal-note {
+          margin-top: 12px;
+          padding: 12px 16px;
+          background: #fff;
+          border-left: 4px solid #e17c2f;
+          border-radius: 8px;
+          font-size: 13px;
+          line-height: 1.5;
+          color: #634832;
+        }
         .delivery-info {
           background: white;
           padding: 20px;
@@ -234,6 +244,12 @@ export function generateCustomerEmail(
               displayCurrency,
             )}</span></p>
           </div>
+
+          ${
+            displayCurrency === 'EUR'
+              ? ''
+              : `<p class="terminal-note">${copy.terminalNote}</p>`
+          }
 
           <h3><img src="https://pizzapohoda.sk/icons/location.png" alt="" class="icon-inline">${
             order.deliveryMethod === 'pickup'

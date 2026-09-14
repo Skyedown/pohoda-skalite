@@ -22,6 +22,8 @@ export interface CustomerEmailCopy {
   paymentLabel: string;
   paymentCash: string;
   paymentCard: string;
+  /** Shown only when the customer was quoted in a currency other than euro. */
+  terminalNote: string;
   questions: string;
   footerAddress: string;
   terms: string;
@@ -53,6 +55,8 @@ const SK: CustomerEmailCopy = {
   paymentLabel: 'Spôsob platby:',
   paymentCash: 'V hotovosti',
   paymentCard: 'Kartou',
+  terminalNote:
+    'Platba prebieha platobným terminálom v eurách. Suma v zlotých je orientačná — konečná čiastka strhnutá vašou bankou sa môže mierne líšiť podľa jej prepočítacieho kurzu.',
   questions: 'Máte otázky?',
   footerAddress: 'Skalité 1386, 023 14 Skalité, Kysuce',
   terms: 'Obchodné podmienky',
@@ -84,6 +88,8 @@ const PL: CustomerEmailCopy = {
   paymentLabel: 'Sposób płatności:',
   paymentCash: 'Gotówką',
   paymentCard: 'Kartą',
+  terminalNote:
+    'Płatność realizowana jest terminalem płatniczym w euro. Kwota w złotych ma charakter orientacyjny — ostateczna kwota pobrana przez Twój bank może się nieznacznie różnić w zależności od zastosowanego kursu przeliczenia.',
   questions: 'Masz pytania?',
   footerAddress: 'Skalité 1386, 023 14 Skalité, Słowacja',
   terms: 'Regulamin',
