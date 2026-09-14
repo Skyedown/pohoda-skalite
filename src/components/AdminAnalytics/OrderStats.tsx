@@ -3,6 +3,7 @@ import DateRangeFilter, {
   computePresetRange,
 } from '../DateRangeFilter/DateRangeFilter';
 import type { Locale } from '../../i18n/types';
+import { adminFetch } from '../../utils/adminAuth';
 import type {
   DayStat,
   DeliveryMethodFilter,
@@ -16,8 +17,6 @@ import { AnalyticsTenantFilter } from './AnalyticsTenantFilter/AnalyticsTenantFi
 import { OrdersTab } from './OrdersTab/OrdersTab';
 import { ProductsTab } from './ProductsTab/ProductsTab';
 import './OrderStats.less';
-
-const API_URL = import.meta.env.VITE_API_URL || '';
 
 const OrderStats: React.FC = () => {
   const { from: defaultFrom, to: defaultTo } = computePresetRange('7d');
@@ -59,9 +58,9 @@ const OrderStats: React.FC = () => {
 
     try {
       const [statsRes, productStatsRes] = await Promise.all([
-        fetch(`${API_URL}/api/orders/stats?${statsParams.toString()}`),
+        adminFetch(`/api/orders/stats?${statsParams.toString()}`),
         // product-stats intentionally keeps all delivery methods for the packaging breakdown
-        fetch(`${API_URL}/api/orders/product-stats?${baseParams.toString()}`),
+        adminFetch(`/api/orders/product-stats?${baseParams.toString()}`),
       ]);
       if (!statsRes.ok) throw new Error(`HTTP ${statsRes.status}`);
       if (!productStatsRes.ok)

@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { isMongoConnected } from '../utils/db.js';
+import { requireAuth } from '../utils/auth.js';
 import { Settings } from '../models/Settings.js';
 import {
   createDefaultSettings,
@@ -132,7 +133,8 @@ router.get('/api/admin-settings', async (req, res) => {
   }
 });
 
-router.post('/api/admin-settings', async (req, res) => {
+// GET stays public — the storefront reads it on every page load.
+router.post('/api/admin-settings', requireAuth, async (req, res) => {
   try {
     if (!isMongoConnected()) {
       return res.status(503).json({ error: 'Database not available' });

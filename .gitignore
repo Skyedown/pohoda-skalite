@@ -43,3 +43,6 @@ api/data/
 # Docker
 .docker-data/
 docker-compose.override.yml
+
+# Deploy bookkeeping written on the droplet
+.deploy_history

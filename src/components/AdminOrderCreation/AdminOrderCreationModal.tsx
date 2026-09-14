@@ -4,6 +4,8 @@ import {
   ADMIN_PRODUCTS_BY_CATEGORY,
 } from '../../data/adminMenu';
 import { useAdminSettings } from '../../hooks/useAdminSettings';
+import { config } from '../../config';
+import { adminFetch } from '../../utils/adminAuth';
 import { isProductDisabled } from '../../utils/productAvailability';
 import OrderFormSection from './OrderFormSection/OrderFormSection';
 import OrderSidebar from './OrderSidebar/OrderSidebar';
@@ -78,7 +80,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
     null,
   );
 
-  const API_URL = import.meta.env.VITE_API_URL || '';
+  const API_URL = config.apiUrl;
   const adminSettings = useAdminSettings();
 
   // Organize products by category, hiding items that are disabled (out of stock)
@@ -398,12 +400,10 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
 
     setIsSubmitting(true);
     try {
-      const url = editOrder
-        ? `${API_URL}/api/orders/${editOrder._id}`
-        : `${API_URL}/api/orders`;
+      const path = editOrder ? `/api/orders/${editOrder._id}` : '/api/orders';
       const method = editOrder ? 'PUT' : 'POST';
 
-      const res = await fetch(url, {
+      const res = await adminFetch(path, {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ order }),

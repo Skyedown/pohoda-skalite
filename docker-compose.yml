@@ -1,4 +1,4 @@
-version: '3.8'
+name: pizza-pohoda
 
 services:
   rabbitmq:
@@ -22,10 +22,12 @@ services:
       retries: 5
 
   api:
+    # Built and pushed by GitHub Actions; the server only pulls. `build` stays so
+    # `docker compose build` still works for local development.
     build:
       context: ./api
       dockerfile: Dockerfile
-    image: pohoda-api:latest
+    image: ghcr.io/skyedown/pohoda-skalite-api:${TAG:-latest}
     container_name: pizza-pohoda-api
     restart: unless-stopped
     ports:
@@ -33,7 +35,14 @@ services:
     env_file:
       - ./api/.env
     environment:
+      - NODE_ENV=production
       - RABBITMQ_URL=amqp://${RABBITMQ_USER:-pizzapohoda}:${RABBITMQ_PASS:-pizzapohoda_secret}@rabbitmq:5672
+      # Signs the admin session cookie. Without it sessions drop on restart.
+      - JWT_SECRET=${JWT_SECRET:-}
+      # Seeds the first admin user on an empty database. Falls back to the old
+      # VITE_ADMIN_* values so an existing deployment keeps working untouched.
+      - ADMIN_USERNAME=${ADMIN_USERNAME:-${VITE_ADMIN_NAME:-}}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-${VITE_ADMIN_PASSWORD:-}}
     volumes:
       # Persist admin settings between container restarts
       - api-data:/app/dist/data
@@ -61,11 +70,14 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: pohoda-frontend:latest
+    image: ghcr.io/skyedown/pohoda-skalite-frontend:${TAG:-latest}
     container_name: pizza-pohoda-frontend
     restart: unless-stopped
     ports:
-      - '8080:80'
+      - '${WEB_PORT:-8080}:80'
+    # Read at container start by docker/40-app-config.sh, not at build time.
+    env_file:
+      - .env
     depends_on:
       - api
     networks:

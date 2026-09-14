@@ -3,6 +3,7 @@ import type {
   LocalizedProduct,
   DeliveryMethod,
 } from '../../types';
+import { adminFetch } from '../../utils/adminAuth';
 
 // ============================================
 // CONSTANTS
@@ -268,7 +269,7 @@ export interface CustomerLookupQuery {
  * (logical AND), so matches include all details already filled in.
  */
 export async function lookupCustomers(
-  apiUrl: string,
+  _apiUrl: string,
   query: CustomerLookupQuery,
   signal: AbortSignal,
 ): Promise<CustomerMatch[]> {
@@ -279,7 +280,7 @@ export async function lookupCustomers(
   if (query.houseNumber) params.set('houseNumber', query.houseNumber);
   if (query.email) params.set('email', query.email);
 
-  const res = await fetch(`${apiUrl}/api/orders/lookup?${params.toString()}`, {
+  const res = await adminFetch(`/api/orders/lookup?${params.toString()}`, {
     signal,
   });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);

@@ -2,6 +2,8 @@ node_modules
 npm-debug.log
 .git
 .gitignore
+# Build-time config comes from build args, never from a developer's local file
+.env
 .env.local
 .env.production
 dist

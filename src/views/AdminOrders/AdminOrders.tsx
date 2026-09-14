@@ -10,6 +10,7 @@ import DateRangeFilter, {
 import { OrderCard } from '../../components/AdminOrders/OrderCard/OrderCard';
 import type { Order } from '../../components/AdminOrders/types';
 import type { Locale } from '../../i18n/types';
+import { adminFetch } from '../../utils/adminAuth';
 import './AdminOrders.less';
 
 const ordersPresets: DatePreset[] = ['today', 'yesterday', '7d', '30d'];
@@ -35,16 +36,14 @@ const AdminOrders: React.FC = () => {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [editingOrder, setEditingOrder] = useState<EditOrderData | null>(null);
 
-  const API_URL = import.meta.env.VITE_API_URL || '';
-
   const fetchOrders = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams({ from: fromDate, to: toDate });
       if (tenant !== 'all') params.set('tenant', tenant);
 
-      const response = await fetch(
-        `${API_URL}/api/orders/recent?${params.toString()}`,
+      const response = await adminFetch(
+        `/api/orders/recent?${params.toString()}`,
       );
 
       if (!response.ok) {
@@ -59,7 +58,7 @@ const AdminOrders: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [API_URL, fromDate, toDate, tenant]);
+  }, [fromDate, toDate, tenant]);
 
   useEffect(() => {
     fetchOrders();
@@ -68,7 +67,7 @@ const AdminOrders: React.FC = () => {
   const handleReprint = async (orderId: string) => {
     try {
       setReprintingId(orderId);
-      const response = await fetch(`${API_URL}/api/orders/${orderId}/reprint`, {
+      const response = await adminFetch(`/api/orders/${orderId}/reprint`, {
         method: 'POST',
       });
 
@@ -92,7 +91,7 @@ const AdminOrders: React.FC = () => {
 
     try {
       setDeletingId(orderId);
-      const response = await fetch(`${API_URL}/api/orders/${orderId}`, {
+      const response = await adminFetch(`/api/orders/${orderId}`, {
         method: 'DELETE',
       });
 
