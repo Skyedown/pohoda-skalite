@@ -9,7 +9,7 @@ export interface Extra {
   /** Wording the customer saw; falls back to `name` (Slovak) when absent. */
   nameLocalized?: string;
   price: number;
-  priceEur?: number;
+  priceDisplay?: number;
 }
 
 export interface OrderItem {
@@ -18,9 +18,9 @@ export interface OrderItem {
   size: string;
   quantity: number;
   basePrice: number;
-  basePriceEur?: number;
+  basePriceDisplay?: number;
   totalPrice: number;
-  totalPriceEur?: number;
+  totalPriceDisplay?: number;
   extras?: Extra[];
   removedIngredients?: string[];
   removedIngredientsLocalized?: string[];
@@ -49,9 +49,11 @@ export interface Order {
   currency: Currency;
   items: OrderItem[];
   delivery: Delivery;
+  /** Always in euros — the currency the payment terminal settles in. */
   pricing: Pricing;
-  /** The same order in euros. Identical to `pricing` on Slovak orders. */
-  pricingEur?: Pricing;
+  /** The same totals as shown to the customer, in `displayCurrency`. */
+  pricingDisplay?: Pricing;
+  displayCurrency?: Currency;
   paymentMethod: 'cash' | 'card';
   deliveryMethod?: 'delivery' | 'pickup';
 }

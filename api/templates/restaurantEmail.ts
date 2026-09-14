@@ -14,14 +14,17 @@ import type { SanitizedOrder } from '../types.js';
 export function generateRestaurantEmail(order: SanitizedOrder): string {
   // The kitchen reads this in Slovak no matter which storefront the order came
   // from; only the amounts follow the customer's currency.
+  // Everything on this order is already in euros — the terminal settles in
+  // euros on both storefronts.
   const eur = (amount: number) => formatMoney(amount, 'EUR');
   const isPolish = order.tenant === 'pl';
-  const pricingEur = order.pricingEur ?? order.pricing;
-  // Euro is the primary figure on the ticket; on Polish orders the zloty the
-  // customer actually hands over is kept alongside it.
-  const withPaid = (amountEur: number, amountPaid: number) =>
+  const displayCurrency = order.displayCurrency ?? order.currency;
+  const pricingDisplay = order.pricingDisplay ?? order.pricing;
+  // The zloty figure is shown once, so staff can match it to what the customer
+  // saw on screen. It is never what gets charged.
+  const withSeen = (amountEur: number, amountSeen: number) =>
     isPolish
-      ? `${eur(amountEur)} / ${formatMoney(amountPaid, order.currency)}`
+      ? `${eur(amountEur)} (zákazník videl ${formatMoney(amountSeen, displayCurrency)})`
       : eur(amountEur);
 
   // Generate unique order ID from timestamp in Europe/Bratislava timezone
@@ -44,9 +47,7 @@ export function generateRestaurantEmail(order: SanitizedOrder): string {
       const extrasText =
         item.extras && item.extras.length > 0
           ? `<br><small style="color: #666;">+ ${item.extras
-              .map(
-                (e) => `${escapeHTML(e.name)} (+${eur(e.priceEur ?? e.price)})`,
-              )
+              .map((e) => `${escapeHTML(e.name)} (+${eur(e.price)})`)
               .join(', ')}</small>`
           : '';
 
@@ -66,10 +67,10 @@ export function generateRestaurantEmail(order: SanitizedOrder): string {
           item.quantity
         }x</td>
         <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">${eur(
-          item.basePriceEur ?? item.basePrice,
+          item.basePrice,
         )}</td>
         <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">${eur(
-          item.totalPriceEur ?? item.totalPrice,
+          item.totalPrice,
         )}</td>
       </tr>
     `;
@@ -108,7 +109,7 @@ export function generateRestaurantEmail(order: SanitizedOrder): string {
         </div>
 
         <div class="urgent">
-          CELKOVÁ SUMA: ${withPaid(pricingEur.total, order.pricing.total)} | PLATBA: ${
+          CELKOVÁ SUMA: ${withSeen(order.pricing.total, pricingDisplay.total)} | PLATBA: ${
             order.paymentMethod === 'cash' ? 'HOTOVOSŤ' : 'KARTA'
           }
         </div>
@@ -130,20 +131,20 @@ export function generateRestaurantEmail(order: SanitizedOrder): string {
             <tr style="background-color: #f9f9f9;">
               <td colspan="3" style="padding: 10px; text-align: right;"><strong>Medzisúčet:</strong></td>
               <td style="padding: 10px; text-align: right;"><strong>${eur(
-                pricingEur.subtotal,
+                order.pricing.subtotal,
               )}</strong></td>
             </tr>
             <tr>
               <td colspan="3" style="padding: 10px; text-align: right;">Doprava:</td>
               <td style="padding: 10px; text-align: right;">${eur(
-                pricingEur.delivery,
+                order.pricing.delivery,
               )}</td>
             </tr>
             <tr style="background-color: #d4351c; color: white; font-size: 16px;">
               <td colspan="3" style="padding: 15px; text-align: right;"><strong>CELKOM:</strong></td>
-              <td style="padding: 15px; text-align: right;"><strong>${withPaid(
-                pricingEur.total,
+              <td style="padding: 15px; text-align: right;"><strong>${withSeen(
                 order.pricing.total,
+                pricingDisplay.total,
               )}</strong></td>
             </tr>
           </tfoot>

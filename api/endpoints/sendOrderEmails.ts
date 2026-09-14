@@ -42,8 +42,15 @@ router.post('/api/send-order-emails', async (req, res) => {
     });
 
     const tenant = toTenant(order.tenant);
-    const currency = order.currency || currencyFor(tenant);
-    const sanitizedOrder = sanitizeOrder({ ...order, tenant, currency });
+    // Stored amounts are euros on both storefronts; the zloty figures the
+    // Polish customer saw ride along for display.
+    const displayCurrency = order.displayCurrency || currencyFor(tenant);
+    const sanitizedOrder = sanitizeOrder({
+      ...order,
+      tenant,
+      currency: 'EUR',
+      displayCurrency,
+    });
     const copy = CUSTOMER_EMAIL_COPY[tenant];
     const customerEmailContent = generateCustomerEmail(
       sanitizedOrder,
@@ -136,8 +143,9 @@ router.post('/api/send-order-emails', async (req, res) => {
         // stay Slovak; the customer-facing text is kept beside it.
         const orderData = {
           tenant,
-          currency,
-          pricingEur: order.pricingEur || order.pricing,
+          currency: 'EUR',
+          displayCurrency,
+          pricingDisplay: order.pricingDisplay || order.pricing,
           items: order.items.map((item: Record<string, unknown>) => ({
             product: {
               id: item.id || (item.product as Record<string, unknown>)?.id,
@@ -147,14 +155,14 @@ router.post('/api/send-order-emails', async (req, res) => {
               price:
                 item.basePrice ||
                 (item.product as Record<string, unknown>)?.price,
-              priceEur: item.basePriceEur ?? item.basePrice,
+              priceDisplay: item.basePriceDisplay ?? item.basePrice,
               type:
                 item.type || (item.product as Record<string, unknown>)?.type,
             },
             quantity: item.quantity,
             extras: item.extras || [],
             totalPrice: item.totalPrice,
-            totalPriceEur: item.totalPriceEur ?? item.totalPrice,
+            totalPriceDisplay: item.totalPriceDisplay ?? item.totalPrice,
             requiredOption: item.requiredOption || undefined,
             removedIngredients: item.removedIngredients || [],
             removedIngredientsLocalized: item.removedIngredientsLocalized || [],

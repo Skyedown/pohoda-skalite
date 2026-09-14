@@ -76,12 +76,14 @@ router.post('/api/orders', async (req, res) => {
 
     const savedOrder = await Order.create({
       tenant,
-      currency: order.currency || currencyFor(tenant),
+      // Orders are always stored in euros; see the Order model.
+      currency: 'EUR',
+      displayCurrency: order.displayCurrency || currencyFor(tenant),
       items: order.items,
       delivery: order.delivery,
       payment: order.payment,
       pricing: order.pricing,
-      pricingEur: order.pricingEur || order.pricing,
+      pricingDisplay: order.pricingDisplay || order.pricing,
       printed: false,
       createdBy: order.createdBy || 'customer',
     });
@@ -294,7 +296,7 @@ router.put('/api/orders/:id', async (req, res) => {
         delivery: order.delivery,
         payment: order.payment,
         pricing: order.pricing,
-        pricingEur: order.pricingEur || order.pricing,
+        pricingDisplay: order.pricingDisplay || order.pricing,
       },
       { new: true, runValidators: true },
     );

@@ -336,3 +336,22 @@
     background: @primary-color;
   }
 }
+
+.pizza-cart {
+  &__consent-note {
+    margin: @spacing-md 0 0;
+    font-size: @font-size-xs;
+    line-height: 1.5;
+    color: @text-secondary;
+    text-align: center;
+  }
+
+  &__consent-link {
+    color: @primary-color;
+    text-decoration: underline;
+
+    &:hover {
+      color: darken(@primary-color, 10%);
+    }
+  }
+}

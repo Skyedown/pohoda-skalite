@@ -129,8 +129,10 @@ export const sk = {
   cart_item_unknown: 'Neznámy produkt',
   cart_item_remove_aria: 'Odstrániť',
   cart_item_without: 'Bez:',
-  cart_gdpr_prefix: 'Súhlasím so spracovaním',
-  cart_gdpr_link: 'osobných údajov',
+  cart_consent_prefix: 'Kliknutím na „Potvrdiť objednávku“ súhlasíte s',
+  cart_consent_terms_link: 'obchodnými podmienkami',
+  cart_consent_middle: 'a so spracovaním',
+  cart_consent_privacy_link: 'osobných údajov',
   cart_submitting: 'ODOSIELAM...',
   cart_orders_paused: 'OBJEDNÁVKY POZASTAVENÉ',
   cart_confirm: 'POTVRDIŤ OBJEDNÁVKU',
@@ -182,7 +184,6 @@ export const sk = {
   validation_phone_invalid: 'Zadajte platné telefónne číslo',
   validation_email_required: 'Email je povinný',
   validation_email_invalid: 'Zadajte platnú emailovú adresu',
-  validation_gdpr_required: 'Musíte súhlasiť so spracovaním osobných údajov',
 
   // Minimum order
   min_order_message:

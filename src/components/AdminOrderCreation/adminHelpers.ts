@@ -208,8 +208,8 @@ export const buildOrderPayload = (
         id: item.product.id,
         name: item.product.nameSk,
         nameLocalized: item.product.name,
-        price: item.product.price,
-        priceEur: item.product.priceEur,
+        price: item.product.priceEur,
+        priceDisplay: item.product.price,
         type: item.product.type,
       },
       quantity: item.quantity,
@@ -217,17 +217,17 @@ export const buildOrderPayload = (
         id: extra.id,
         name: extra.nameSk,
         nameLocalized: extra.name,
-        price: extra.price,
-        priceEur: extra.priceEur,
+        price: extra.priceEur,
+        priceDisplay: extra.price,
       })),
       removedIngredients: item.removedIngredients || [],
       totalPrice:
         (item.product.price +
           item.extras.reduce((sum, e) => sum + e.price, 0)) *
         item.quantity,
-      totalPriceEur:
-        (item.product.priceEur +
-          item.extras.reduce((sum, e) => sum + e.priceEur, 0)) *
+      totalPriceDisplay:
+        (item.product.price +
+          item.extras.reduce((sum, e) => sum + e.price, 0)) *
         item.quantity,
     })),
     delivery:
@@ -259,7 +259,7 @@ export const buildOrderPayload = (
       total: orderType === 'dine-in' ? subtotal : subtotal + deliveryFee,
     },
     // Admin orders are Slovak, so both figures are the same.
-    pricingEur: {
+    pricingDisplay: {
       subtotal: subtotal,
       delivery: orderType === 'dine-in' ? 0 : deliveryFee,
       total: orderType === 'dine-in' ? subtotal : subtotal + deliveryFee,
@@ -267,6 +267,7 @@ export const buildOrderPayload = (
     createdBy: 'admin',
     tenant: 'sk' as const,
     currency: 'EUR' as const,
+    displayCurrency: 'EUR' as const,
   };
 };
 

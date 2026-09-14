@@ -13,8 +13,10 @@ export function generateCustomerEmail(
   restaurantPhone: string,
 ): string {
   const copy = CUSTOMER_EMAIL_COPY[order.tenant];
-  const money = (amount: number) => formatMoney(amount, order.currency);
-  const pricingEur = order.pricingEur ?? order.pricing;
+  // Amounts are stored in euros; the customer is shown what was on screen.
+  const displayCurrency = order.displayCurrency ?? order.currency;
+  const pricingDisplay = order.pricingDisplay ?? order.pricing;
+  const money = (amount: number) => formatMoney(amount, displayCurrency);
 
   const itemsList = order.items
     .map((item) => {
@@ -23,7 +25,9 @@ export function generateCustomerEmail(
           ? `<br><small style="color: #634832; margin-top: 4px; display: block;">+ ${item.extras
               .map(
                 (e) =>
-                  `${escapeHTML(e.nameLocalized ?? e.name)} (+${money(e.price)})`,
+                  `${escapeHTML(e.nameLocalized ?? e.name)} (+${money(
+                    e.priceDisplay ?? e.price,
+                  )})`,
               )
               .join(', ')}</small>`
           : '';
@@ -47,7 +51,7 @@ export function generateCustomerEmail(
           item.quantity
         }×</td>
         <td style="padding: 12px; border-bottom: 1px solid #f0ebe4; text-align: right; font-weight: 600; color: #1f2123;">${money(
-          item.totalPrice,
+          item.totalPriceDisplay ?? item.totalPrice,
         )}</td>
       </tr>
     `;
@@ -219,15 +223,15 @@ export function generateCustomerEmail(
 
           <div class="summary">
             <p><strong>${copy.subtotal}</strong> <span style="float: right;">${money(
-              order.pricing.subtotal,
+              pricingDisplay.subtotal,
             )}</span></p>
             <p><strong>${copy.delivery}</strong> <span style="float: right;">${money(
-              order.pricing.delivery,
+              pricingDisplay.delivery,
             )}</span></p>
             <p class="total-price"><strong>${copy.total}</strong> <span style="float: right;">${formatMoneyWithEur(
+              pricingDisplay.total,
               order.pricing.total,
-              pricingEur.total,
-              order.currency,
+              displayCurrency,
             )}</span></p>
           </div>
 

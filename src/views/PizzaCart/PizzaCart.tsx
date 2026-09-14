@@ -19,12 +19,9 @@ const PizzaCart: React.FC = () => {
   const {
     formData,
     errors,
-    setErrors,
     paymentMethod,
     setPaymentMethod,
     deliveryMethod,
-    gdprConsent,
-    setGdprConsent,
     isSubmitting,
     adminSettings,
     cities,
@@ -148,37 +145,6 @@ const PizzaCart: React.FC = () => {
           />
 
           <div
-            className={`pizza-cart__gdpr-consent gdpr-consent ${
-              errors.gdprConsent ? 'pizza-cart__gdpr-consent--error' : ''
-            }`}
-          >
-            <label className="pizza-cart__gdpr-label">
-              <input
-                type="checkbox"
-                checked={gdprConsent}
-                onChange={(e) => {
-                  setGdprConsent(e.target.checked);
-                  if (errors.gdprConsent) {
-                    setErrors((prev) => ({ ...prev, gdprConsent: '' }));
-                  }
-                }}
-                className="pizza-cart__gdpr-checkbox"
-              />
-              <span className="pizza-cart__gdpr-text">
-                {t('cart_gdpr_prefix')}{' '}
-                <Link to={t('privacy_path')} className="pizza-cart__gdpr-link">
-                  {t('cart_gdpr_link')}
-                </Link>
-              </span>
-            </label>
-            {errors.gdprConsent && (
-              <span className="pizza-cart__gdpr-error">
-                {errors.gdprConsent}
-              </span>
-            )}
-          </div>
-
-          <div
             className={`pizza-cart__button-wrapper ${showTooltip ? 'has-tooltip' : ''}`}
           >
             {showTooltip && (
@@ -196,6 +162,20 @@ const PizzaCart: React.FC = () => {
                   : t('cart_confirm')}
             </button>
           </div>
+
+          {/* Placing the order is the consent; a tick box would add friction
+              without changing the legal basis, which is contract performance. */}
+          <p className="pizza-cart__consent-note">
+            {t('cart_consent_prefix')}{' '}
+            <Link to={t('terms_path')} className="pizza-cart__consent-link">
+              {t('cart_consent_terms_link')}
+            </Link>{' '}
+            {t('cart_consent_middle')}{' '}
+            <Link to={t('privacy_path')} className="pizza-cart__consent-link">
+              {t('cart_consent_privacy_link')}
+            </Link>
+            .
+          </p>
         </div>
       </div>
     </div>

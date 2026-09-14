@@ -46,7 +46,6 @@ export function usePizzaCart() {
   const [formData, setFormData] = useState<CartFormData>(INITIAL_FORM_DATA);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [gdprConsent, setGdprConsent] = useState(false);
 
   const cities = adminSettings.deliveryCities[locale];
 
@@ -123,13 +122,7 @@ export function usePizzaCart() {
   );
 
   const handleSubmit = useCallback(async () => {
-    const formErrors = validateCartForm(
-      formData,
-      deliveryMethod,
-      gdprConsent,
-      locale,
-      t,
-    );
+    const formErrors = validateCartForm(formData, deliveryMethod, locale, t);
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
       scrollToFirstError(formErrors);
@@ -187,7 +180,6 @@ export function usePizzaCart() {
   }, [
     formData,
     deliveryMethod,
-    gdprConsent,
     locale,
     currency,
     t,
@@ -210,8 +202,6 @@ export function usePizzaCart() {
     paymentMethod,
     setPaymentMethod,
     deliveryMethod,
-    gdprConsent,
-    setGdprConsent,
     isSubmitting,
     adminSettings,
     cities,

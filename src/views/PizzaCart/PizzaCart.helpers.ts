@@ -17,7 +17,6 @@ export function requiresStreet(locale: Locale): boolean {
 export function validateCartForm(
   formData: CartFormData,
   deliveryMethod: DeliveryMethod,
-  gdprConsent: boolean,
   locale: Locale,
   t: Translate,
 ): Record<string, string> {
@@ -51,10 +50,6 @@ export function validateCartForm(
     errors.email = t('validation_email_invalid');
   }
 
-  if (!gdprConsent) {
-    errors.gdprConsent = t('validation_gdpr_required');
-  }
-
   return errors;
 }
 
@@ -66,7 +61,6 @@ export function scrollToFirstError(errors: Record<string, string>): void {
     'houseNumber',
     'phone',
     'email',
-    'gdprConsent',
   ];
   const firstErrorField = fieldOrder.find((field) => errors[field]);
   if (!firstErrorField) return;
@@ -77,12 +71,6 @@ export function scrollToFirstError(errors: Record<string, string>): void {
     ) as HTMLElement;
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      element.focus();
-    } else if (firstErrorField === 'gdprConsent') {
-      const gdprElement = document.querySelector(
-        '.gdpr-consent',
-      ) as HTMLElement;
-      gdprElement?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }, 100);
 }
@@ -103,9 +91,11 @@ interface OrderPayloadInput {
 }
 
 /**
- * `name` stays Slovak on purpose: the kitchen ticket, the admin and the product
- * analytics all read it, and they must be identical across both storefronts.
- * The customer-facing wording travels alongside in `nameLocalized`.
+ * Everything stored is in euros — that is the currency the payment terminal
+ * charges, so it is the real value of the order. The zloty amounts the Polish
+ * customer saw travel alongside under `*Display` and are only ever shown, never
+ * summed. `name` stays Slovak for the same reason: the kitchen ticket, the
+ * admin and the product analytics must read the same across both storefronts.
  */
 export function buildOrderPayload({
   cart,
@@ -128,29 +118,29 @@ export function buildOrderPayload({
       nameLocalized: item.product.name,
       type: item.product.type,
       quantity: item.quantity,
-      basePrice: item.product.price,
-      basePriceEur: item.product.priceEur,
+      basePrice: item.product.priceEur,
+      basePriceDisplay: item.product.price,
       extras:
         item.extras?.map((e) => ({
           id: e.id,
           name: e.nameSk,
           nameLocalized: e.name,
-          price: e.price,
-          priceEur: e.priceEur,
+          price: e.priceEur,
+          priceDisplay: e.price,
         })) || [],
       extrasPrice: item.extrasPrice || 0,
-      totalPrice: item.totalPrice,
-      totalPriceEur: item.totalPriceEur,
+      totalPrice: item.totalPriceEur,
+      totalPriceDisplay: item.totalPrice,
       removedIngredients: item.removedIngredientsSk || [],
       removedIngredientsLocalized: item.removedIngredients || [],
     })),
-    pricing: { subtotal, delivery, total },
-    // The kitchen works in euros regardless of what the customer paid in.
-    pricingEur: {
+    pricing: {
       subtotal: subtotalEur,
       delivery: deliveryEur,
       total: totalEur,
     },
+    // What the Polish customer saw on screen. Display only.
+    pricingDisplay: { subtotal, delivery, total },
     deliveryMethod,
     delivery: {
       fullName: formData.fullName,
@@ -164,7 +154,9 @@ export function buildOrderPayload({
     paymentMethod,
     tenant: locale,
     locale,
-    currency,
+    // The terminal settles in euros on both storefronts.
+    currency: 'EUR' as const,
+    displayCurrency: currency,
     timestamp: new Date().toISOString(),
   };
 }

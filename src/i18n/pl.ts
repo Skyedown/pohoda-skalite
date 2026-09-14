@@ -132,8 +132,10 @@ export const pl: Dictionary = {
   cart_item_unknown: 'Nieznany produkt',
   cart_item_remove_aria: 'Usuń',
   cart_item_without: 'Bez:',
-  cart_gdpr_prefix: 'Wyrażam zgodę na przetwarzanie',
-  cart_gdpr_link: 'danych osobowych',
+  cart_consent_prefix: 'Klikając „Potwierdź zamówienie“, akceptujesz',
+  cart_consent_terms_link: 'Regulamin',
+  cart_consent_middle: 'i wyrażasz zgodę na przetwarzanie',
+  cart_consent_privacy_link: 'danych osobowych',
   cart_submitting: 'WYSYŁAM...',
   cart_orders_paused: 'ZAMÓWIENIA WSTRZYMANE',
   cart_confirm: 'POTWIERDŹ ZAMÓWIENIE',
@@ -185,8 +187,6 @@ export const pl: Dictionary = {
   validation_phone_invalid: 'Podaj prawidłowy numer telefonu',
   validation_email_required: 'E-mail jest wymagany',
   validation_email_invalid: 'Podaj prawidłowy adres e-mail',
-  validation_gdpr_required:
-    'Musisz wyrazić zgodę na przetwarzanie danych osobowych',
 
   // Minimum order
   min_order_message:

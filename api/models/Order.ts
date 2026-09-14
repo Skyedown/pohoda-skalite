@@ -5,7 +5,13 @@ export type Tenant = 'sk' | 'pl';
 export interface IOrder extends Document {
   /** Which storefront the order came from. Kitchen output stays Slovak either way. */
   tenant: Tenant;
-  currency: 'EUR' | 'PLN';
+  /**
+   * Everything stored on this document is in euros — the payment terminal
+   * settles in euros on both storefronts, so that is the real value.
+   */
+  currency: 'EUR';
+  /** What the customer saw on screen. Display only, never summed. */
+  displayCurrency: 'EUR' | 'PLN';
   items: {
     product: {
       id: string;
@@ -14,8 +20,8 @@ export interface IOrder extends Document {
       /** Name as the customer saw it, used in the confirmation e-mail. */
       nameLocalized?: string;
       price: number;
-      /** Same price in euros — what the kitchen ticket prints. */
-      priceEur?: number;
+      /** The same price as shown to the customer, in `displayCurrency`. */
+      priceDisplay?: number;
       type: string;
     };
     quantity: number;
@@ -24,12 +30,12 @@ export interface IOrder extends Document {
       name: string;
       nameLocalized?: string;
       price: number;
-      priceEur?: number;
+      priceDisplay?: number;
     }[];
     removedIngredients?: string[];
     removedIngredientsLocalized?: string[];
     totalPrice: number;
-    totalPriceEur?: number;
+    totalPriceDisplay?: number;
   }[];
   delivery: {
     method: 'delivery' | 'pickup' | 'dine-in';
@@ -50,8 +56,8 @@ export interface IOrder extends Document {
     delivery: number;
     total: number;
   };
-  /** The same order in euros. Identical to `pricing` on Slovak orders. */
-  pricingEur?: {
+  /** The same totals as shown to the customer. Identical on Slovak orders. */
+  pricingDisplay?: {
     subtotal: number;
     delivery: number;
     total: number;
@@ -72,6 +78,12 @@ const orderSchema = new Schema<IOrder>(
     },
     currency: {
       type: String,
+      enum: ['EUR'],
+      default: 'EUR',
+      required: true,
+    },
+    displayCurrency: {
+      type: String,
       enum: ['EUR', 'PLN'],
       default: 'EUR',
       required: true,
@@ -83,7 +95,7 @@ const orderSchema = new Schema<IOrder>(
           name: { type: String, required: true },
           nameLocalized: { type: String },
           price: { type: Number, required: true },
-          priceEur: { type: Number },
+          priceDisplay: { type: Number },
           type: { type: String, required: true },
         },
         quantity: { type: Number, required: true },
@@ -93,13 +105,13 @@ const orderSchema = new Schema<IOrder>(
             name: { type: String },
             nameLocalized: { type: String },
             price: { type: Number },
-            priceEur: { type: Number },
+            priceDisplay: { type: Number },
           },
         ],
         removedIngredients: [{ type: String }],
         removedIngredientsLocalized: [{ type: String }],
         totalPrice: { type: Number, required: true },
-        totalPriceEur: { type: Number },
+        totalPriceDisplay: { type: Number },
       },
     ],
     delivery: {
@@ -125,7 +137,7 @@ const orderSchema = new Schema<IOrder>(
       delivery: { type: Number, required: true },
       total: { type: Number, required: true },
     },
-    pricingEur: {
+    pricingDisplay: {
       subtotal: { type: Number },
       delivery: { type: Number },
       total: { type: Number },
