@@ -17,8 +17,6 @@ export interface AppConfig {
   openingTime: string;
   lastOrderTime: string;
   closingTime: string;
-  adminName: string;
-  adminPassword: string;
   companyIco: string;
   companyDic: string;
   companyIcDph: string;
@@ -41,8 +39,6 @@ const DEFAULTS: AppConfig = {
   openingTime: '11:00',
   lastOrderTime: '21:30',
   closingTime: '22:00',
-  adminName: 'admin',
-  adminPassword: 'admin123',
   companyIco: '',
   companyDic: '',
   companyIcDph: '',
@@ -80,8 +76,6 @@ export const config: AppConfig = {
   openingTime: pick('openingTime', import.meta.env.VITE_OPENING_TIME),
   lastOrderTime: pick('lastOrderTime', import.meta.env.VITE_LAST_ORDER_TIME),
   closingTime: pick('closingTime', import.meta.env.VITE_CLOSING_TIME),
-  adminName: pick('adminName', import.meta.env.VITE_ADMIN_NAME),
-  adminPassword: pick('adminPassword', import.meta.env.VITE_ADMIN_PASSWORD),
   companyIco: pick('companyIco', import.meta.env.VITE_COMPANY_ICO),
   companyDic: pick('companyDic', import.meta.env.VITE_COMPANY_DIC),
   companyIcDph: pick('companyIcDph', import.meta.env.VITE_COMPANY_IC_DPH),

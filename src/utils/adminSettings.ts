@@ -1,6 +1,7 @@
 import type { Locale, LocalizedText } from '../i18n/types';
 import type { ProductType } from '../types';
 import { config } from '../config';
+import { adminFetch } from './adminAuth';
 
 export type AnnouncementMode = 'off' | 'disabled' | 'waitTime' | 'customNote';
 
@@ -124,7 +125,7 @@ export async function saveAdminSettings(
   settings: AdminSettings,
 ): Promise<AdminSettings | null> {
   try {
-    const response = await fetch(`${API_URL}/api/admin-settings`, {
+    const response = await adminFetch('/api/admin-settings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(settings),

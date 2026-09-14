@@ -27,8 +27,6 @@ window.__APP_CONFIG__ = {
   openingTime: "$(esc "${VITE_OPENING_TIME:-}")",
   lastOrderTime: "$(esc "${VITE_LAST_ORDER_TIME:-}")",
   closingTime: "$(esc "${VITE_CLOSING_TIME:-}")",
-  adminName: "$(esc "${VITE_ADMIN_NAME:-}")",
-  adminPassword: "$(esc "${VITE_ADMIN_PASSWORD:-}")",
   companyIco: "$(esc "${VITE_COMPANY_ICO:-}")",
   companyDic: "$(esc "${VITE_COMPANY_DIC:-}")",
   companyIcDph: "$(esc "${VITE_COMPANY_IC_DPH:-}")",

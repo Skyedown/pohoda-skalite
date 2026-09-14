@@ -3,14 +3,15 @@ import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import AdminOrderCreationModal from '../../components/AdminOrderCreation/AdminOrderCreationModal';
 import { AdminQuickActions } from '../../components/AdminPanel/AdminQuickActions/AdminQuickActions';
+import { logoutAdmin } from '../../utils/adminAuth';
 import './AdminPanel.less';
 
 const AdminPanel: React.FC = () => {
   const [isOrderCreationModalOpen, setIsOrderCreationModalOpen] =
     useState(false);
 
-  const handleLogout = useCallback(() => {
-    sessionStorage.removeItem('admin_authenticated');
+  const handleLogout = useCallback(async () => {
+    await logoutAdmin();
     window.location.href = '/admin';
   }, []);
 

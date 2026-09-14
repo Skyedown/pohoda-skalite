@@ -21,6 +21,7 @@ import AdminAnalytics from './views/AdminAnalytics/AdminAnalytics';
 import AdminOrderSettings from './views/AdminOrderSettings/AdminOrderSettings';
 import AdminDeliveryAreas from './views/AdminDeliveryAreas/AdminDeliveryAreas';
 import AdminProductRestrictions from './views/AdminProductRestrictions/AdminProductRestrictions';
+import AdminUsers from './views/AdminUsers/AdminUsers';
 import AdminOrders from './views/AdminOrders/AdminOrders';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import FloatingCart from './components/shared/FloatingCart/FloatingCart';
@@ -125,6 +126,14 @@ const AppContent: React.FC = () => {
             element={
               <AdminArea>
                 <AdminOrders />
+              </AdminArea>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <AdminArea>
+                <AdminUsers />
               </AdminArea>
             }
           />

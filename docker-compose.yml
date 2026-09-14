@@ -35,7 +35,14 @@ services:
     env_file:
       - ./api/.env
     environment:
+      - NODE_ENV=production
       - RABBITMQ_URL=amqp://${RABBITMQ_USER:-pizzapohoda}:${RABBITMQ_PASS:-pizzapohoda_secret}@rabbitmq:5672
+      # Signs the admin session cookie. Without it sessions drop on restart.
+      - JWT_SECRET=${JWT_SECRET:-}
+      # Seeds the first admin user on an empty database. Falls back to the old
+      # VITE_ADMIN_* values so an existing deployment keeps working untouched.
+      - ADMIN_USERNAME=${ADMIN_USERNAME:-${VITE_ADMIN_NAME:-}}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-${VITE_ADMIN_PASSWORD:-}}
     volumes:
       # Persist admin settings between container restarts
       - api-data:/app/dist/data

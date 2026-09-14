@@ -1,48 +1,73 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { config } from '../../config';
+import React, { useState, useEffect, useCallback } from 'react';
+import {
+  ADMIN_UNAUTHORIZED_EVENT,
+  fetchCurrentAdmin,
+  loginAdmin,
+} from '../../utils/adminAuth';
 import './ProtectedRoute.less';
 
+/**
+ * The session is an httpOnly cookie issued by the API, so this component only
+ * asks the server whether the visitor is signed in — it never sees or compares
+ * credentials itself. Any admin request that comes back 401 fires
+ * ADMIN_UNAUTHORIZED_EVENT and drops straight back to this form.
+ */
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const location = useLocation();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [passwordError, setPasswordError] = useState('');
+  const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    const authenticated = sessionStorage.getItem('admin_authenticated');
-    setIsAuthenticated(authenticated === 'true');
-    setIsChecked(true);
+    let cancelled = false;
+
+    fetchCurrentAdmin().then((user) => {
+      if (cancelled) return;
+      setIsAuthenticated(!!user);
+      setIsChecked(true);
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    const validUsername = config.adminName;
-    const validPassword = config.adminPassword;
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      setIsAuthenticated(false);
+      setError('Vaše prihlásenie vypršalo. Prihláste sa znova.');
+    };
 
-    if (username === validUsername && password === validPassword) {
-      setIsAuthenticated(true);
-      sessionStorage.setItem('admin_authenticated', 'true');
-      setPasswordError('');
-    } else {
-      setPasswordError('Nesprávne prihlasovacie údaje');
-    }
-  };
+    window.addEventListener(ADMIN_UNAUTHORIZED_EVENT, handleUnauthorized);
+    return () =>
+      window.removeEventListener(ADMIN_UNAUTHORIZED_EVENT, handleUnauthorized);
+  }, []);
+
+  const handleLogin = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      setIsSubmitting(true);
+      setError('');
+
+      const result = await loginAdmin(username, password);
+
+      if ('user' in result) {
+        setPassword('');
+        setIsAuthenticated(true);
+      } else {
+        setError(result.error);
+      }
+
+      setIsSubmitting(false);
+    },
+    [username, password],
+  );
 
   if (!isChecked) return null;
-
-  // After login, always redirect to /admin
-  if (
-    isAuthenticated &&
-    location.pathname !== '/admin' &&
-    !sessionStorage.getItem('admin_navigated')
-  ) {
-    sessionStorage.setItem('admin_navigated', 'true');
-  }
 
   if (isAuthenticated) {
     return <>{children}</>;
@@ -74,11 +99,13 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
                 autoComplete="current-password"
               />
             </div>
-            {passwordError && (
-              <p className="protected-route__error">{passwordError}</p>
-            )}
-            <button type="submit" className="protected-route__submit">
-              Prihlásiť sa
+            {error && <p className="protected-route__error">{error}</p>}
+            <button
+              type="submit"
+              className="protected-route__submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Prihlasujem…' : 'Prihlásiť sa'}
             </button>
           </form>
         </div>
