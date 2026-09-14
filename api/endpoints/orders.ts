@@ -10,6 +10,7 @@ import {
   toTenant,
 } from '../utils/tenant.js';
 import { publishOrder } from '../utils/messageQueue.js';
+import { buildTicketCode } from '../utils/ticketCode.js';
 import { Order } from '../models/Order.js';
 
 const router = Router();
@@ -84,6 +85,11 @@ router.post('/api/orders', async (req, res) => {
       payment: order.payment,
       pricing: order.pricing,
       pricingDisplay: order.pricingDisplay || order.pricing,
+      ticketCode: buildTicketCode(
+        tenant,
+        order.delivery?.method,
+        order.delivery?.city,
+      ),
       printed: false,
       createdBy: order.createdBy || 'customer',
     });

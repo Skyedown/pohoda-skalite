@@ -62,6 +62,8 @@ export interface IOrder extends Document {
     delivery: number;
     total: number;
   };
+  /** Routing code for the kitchen ticket, e.g. `R-LAL` or `R-PL-LAL`. */
+  ticketCode?: string;
   printed: boolean;
   printNumber?: number;
   createdBy: 'customer' | 'admin';
@@ -142,6 +144,7 @@ const orderSchema = new Schema<IOrder>(
       delivery: { type: Number },
       total: { type: Number },
     },
+    ticketCode: { type: String },
     printed: { type: Boolean, default: false },
     printNumber: { type: Number },
     createdBy: {

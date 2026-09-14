@@ -12,6 +12,7 @@ import {
   toTenant,
 } from '../utils/tenant.js';
 import { CUSTOMER_EMAIL_COPY } from '../templates/emailCopy.js';
+import { buildTicketCode } from '../utils/ticketCode.js';
 import { publishOrder } from '../utils/messageQueue.js';
 import { Order } from '../models/Order.js';
 
@@ -146,6 +147,11 @@ router.post('/api/send-order-emails', async (req, res) => {
           currency: 'EUR',
           displayCurrency,
           pricingDisplay: order.pricingDisplay || order.pricing,
+          ticketCode: buildTicketCode(
+            tenant,
+            order.deliveryMethod || order.delivery?.method,
+            order.delivery?.city,
+          ),
           items: order.items.map((item: Record<string, unknown>) => ({
             product: {
               id: item.id || (item.product as Record<string, unknown>)?.id,
