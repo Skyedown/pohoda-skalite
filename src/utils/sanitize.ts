@@ -87,6 +87,8 @@ export const sanitizeNotes = (text: string): string => {
  */
 export interface CartFormData {
   fullName: string;
+  /** Polish addresses only — Slovak villages number houses without a street. */
+  street: string;
   houseNumber: string;
   city: string;
   phone: string;
@@ -97,6 +99,7 @@ export interface CartFormData {
 export const sanitizeCartForm = (formData: CartFormData): CartFormData => {
   return {
     fullName: sanitizeTextInput(formData.fullName, 100),
+    street: sanitizeAddress(formData.street),
     houseNumber: sanitizeAddress(formData.houseNumber),
     city: sanitizeTextInput(formData.city, 100),
     phone: sanitizePhone(formData.phone),

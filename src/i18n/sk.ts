@@ -154,8 +154,11 @@ export const sk = {
   form_fullname_placeholder: 'Napr. Ján Novák',
   form_city: 'Mesto',
   form_city_placeholder: 'Vyberte mesto',
+  form_street: 'Ulica',
+  form_street_placeholder: 'Napr. Główna',
   form_house_number: 'Číslo domu',
   form_house_number_placeholder: 'Zadajte len číslo domu (napr. 123)',
+  form_house_number_placeholder_street: 'Napr. 12A',
   form_email: 'Email',
   form_email_placeholder: 'vas@email.sk',
   form_notes: 'Poznámka (voliteľné)',
@@ -170,6 +173,7 @@ export const sk = {
 
   // Validation
   validation_fullname_required: 'Celé meno je povinné',
+  validation_street_required: 'Ulica je povinná',
   validation_house_required: 'Číslo domu je povinné',
   validation_city_required: 'Mesto je povinné',
   validation_phone_required: 'Telefónne číslo je povinné',

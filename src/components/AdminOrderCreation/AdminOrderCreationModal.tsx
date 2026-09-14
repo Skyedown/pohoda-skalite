@@ -142,10 +142,16 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
       setOrderType(isOrderDineIn ? 'dine-in' : 'customer');
       setDeliveryMethod(editOrder.delivery.method);
       setPaymentMethod(editOrder.payment.method);
+      // Polish orders fill both fields. Older Slovak orders stored the whole
+      // address in `street` with no house number — keep reading those as before.
+      const editStreet = editOrder.delivery.street || '';
+      const editHouseNumber = editOrder.delivery.houseNumber || '';
+      const hasSeparateStreet = !!editStreet && !!editHouseNumber;
+
       setFormData({
         fullName: editOrder.delivery.fullName || '',
-        houseNumber:
-          editOrder.delivery.houseNumber || editOrder.delivery.street || '',
+        street: hasSeparateStreet ? editStreet : '',
+        houseNumber: editHouseNumber || editStreet,
         city: editOrder.delivery.city || '',
         phone: editOrder.delivery.phone || '',
         email: editOrder.delivery.email || '',
@@ -470,6 +476,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
               onDeliveryMethodChange={handleDeliveryMethodChange}
               onPaymentMethodChange={setPaymentMethod}
               onCloseSuggestions={handleCloseSuggestions}
+              showStreet={!!formData.street}
               onSubmit={handleSubmit}
             />
           </div>

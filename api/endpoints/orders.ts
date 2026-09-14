@@ -58,6 +58,7 @@ router.post('/api/orders', async (req, res) => {
         const mapyCzUrl = await getMapyCzUrlForAddress({
           country: countryFor(tenant),
           city: order.delivery.city,
+          street: order.delivery.street || undefined,
           houseNumber: order.delivery.houseNumber,
           postalCode: postalCodeFor(tenant, order.delivery.city),
         });

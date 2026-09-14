@@ -17,10 +17,12 @@ import {
   validateCartForm,
   scrollToFirstError,
   buildOrderPayload,
+  requiresStreet,
 } from './PizzaCart.helpers';
 
 const INITIAL_FORM_DATA: CartFormData = {
   fullName: '',
+  street: '',
   houseNumber: '',
   city: '',
   phone: '',
@@ -52,14 +54,17 @@ export function usePizzaCart() {
       >,
     ) => {
       const { name, value } = e.target;
+      // Slovak house numbers are plain digits; Polish ones can be 12A or 34/2.
       const sanitizedValue =
-        name === 'houseNumber' ? value.replace(/[^0-9]/g, '') : value;
+        name === 'houseNumber' && !requiresStreet(locale)
+          ? value.replace(/[^0-9]/g, '')
+          : value;
       setFormData((prev) => ({ ...prev, [name]: sanitizedValue }));
       if (errors[name]) {
         setErrors((prev) => ({ ...prev, [name]: '' }));
       }
     },
-    [errors],
+    [errors, locale],
   );
 
   const handleDeliveryMethodChange = useCallback((method: DeliveryMethod) => {
@@ -68,6 +73,7 @@ export function usePizzaCart() {
       setErrors((prev) => {
         const next = { ...prev };
         delete next.city;
+        delete next.street;
         delete next.houseNumber;
         return next;
       });

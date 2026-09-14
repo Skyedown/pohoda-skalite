@@ -25,6 +25,8 @@ export interface OrderItem {
 
 export interface Delivery {
   fullName: string;
+  /** Polish addresses only — Slovak villages number houses without a street. */
+  street?: string;
   houseNumber?: string;
   city: string;
   phone: string;

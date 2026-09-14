@@ -98,6 +98,8 @@ export interface AdminOrderItem {
 
 export interface FormData {
   fullName: string;
+  /** Only used when editing a Polish order; admin-created orders are Slovak. */
+  street: string;
   houseNumber: string;
   city: string;
   phone: string;
@@ -231,6 +233,10 @@ export const buildOrderPayload = (
         : {
             method: deliveryMethod,
             fullName: formData.fullName,
+            street:
+              deliveryMethod === 'delivery' && formData.street
+                ? formData.street
+                : undefined,
             houseNumber:
               deliveryMethod === 'delivery' ? formData.houseNumber : undefined,
             city: deliveryMethod === 'delivery' ? formData.city : undefined,
@@ -298,6 +304,7 @@ export async function lookupCustomers(
  */
 export const getInitialFormState = (): FormData => ({
   fullName: '',
+  street: '',
   houseNumber: '',
   city: '',
   phone: '',

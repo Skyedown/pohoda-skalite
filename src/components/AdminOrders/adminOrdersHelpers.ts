@@ -18,13 +18,20 @@ export function getDeliveryMethodLabel(method: string): string {
   return labels[method] || method;
 }
 
+/**
+ * Polish orders read "Street 12, Town"; Slovak village orders are just
+ * "Village 123" because the houses carry no street name.
+ */
 export function formatAddress(
   street: string | undefined,
   houseNumber: string | undefined,
   city: string,
 ): string {
-  if (houseNumber) {
-    return `${city} ${houseNumber}`;
+  const trimmedStreet = street?.trim();
+
+  if (trimmedStreet) {
+    return `${trimmedStreet} ${houseNumber ?? ''}, ${city}`.replace(' ,', ',');
   }
-  return `${street}, ${city}`;
+
+  return `${city} ${houseNumber ?? ''}`.trim();
 }

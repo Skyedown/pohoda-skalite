@@ -1,5 +1,5 @@
 import { escapeHTML } from '../utils/sanitize.js';
-import { formatMoney } from '../utils/tenant.js';
+import { formatAddress, formatMoney } from '../utils/tenant.js';
 import { CUSTOMER_EMAIL_COPY } from './emailCopy.js';
 import type { SanitizedOrder } from '../types.js';
 
@@ -235,8 +235,8 @@ export function generateCustomerEmail(
             )}</p>
             ${
               order.deliveryMethod === 'delivery'
-                ? `<p style="margin: 5px 0;"><strong>${copy.address}</strong> ${escapeHTML(order.delivery.city)} ${escapeHTML(
-                    order.delivery.houseNumber ?? '',
+                ? `<p style="margin: 5px 0;"><strong>${copy.address}</strong> ${escapeHTML(
+                    formatAddress(order.delivery),
                   )}</p>`
                 : ''
             }

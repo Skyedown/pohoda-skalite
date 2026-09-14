@@ -9,6 +9,11 @@ type Translate = (
   vars?: Record<string, string | number>,
 ) => string;
 
+/** Polish addresses carry a street name; Slovak village addresses do not. */
+export function requiresStreet(locale: Locale): boolean {
+  return locale === 'pl';
+}
+
 export function validateCartForm(
   formData: CartFormData,
   deliveryMethod: DeliveryMethod,
@@ -23,6 +28,9 @@ export function validateCartForm(
   }
 
   if (deliveryMethod === 'delivery') {
+    if (requiresStreet(locale) && !formData.street.trim()) {
+      errors.street = t('validation_street_required');
+    }
     if (!formData.houseNumber.trim()) {
       errors.houseNumber = t('validation_house_required');
     }
@@ -54,6 +62,7 @@ export function scrollToFirstError(errors: Record<string, string>): void {
   const fieldOrder = [
     'fullName',
     'city',
+    'street',
     'houseNumber',
     'phone',
     'email',
@@ -130,7 +139,7 @@ export function buildOrderPayload({
     deliveryMethod,
     delivery: {
       fullName: formData.fullName,
-      street: '',
+      street: formData.street || '',
       houseNumber: formData.houseNumber || '',
       city: formData.city || '',
       phone: formData.phone,

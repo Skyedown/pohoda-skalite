@@ -10,6 +10,7 @@ import './DeliveryAddressForm.less';
 interface FormData {
   fullName: string;
   deliveryMethod: DeliveryMethod;
+  street?: string;
   houseNumber?: string;
   city?: string;
   phone: string;
@@ -27,6 +28,8 @@ interface DeliveryAddressFormProps {
     >,
   ) => void;
   onDeliveryMethodChange: (method: DeliveryMethod) => void;
+  /** Slovak villages number houses without a street; Polish ones need one. */
+  showStreet?: boolean;
   hideEmail?: boolean;
   customerMatches?: CustomerMatch[];
   lookupField?: 'fullName' | 'phone' | null;
@@ -39,6 +42,7 @@ const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
   cities,
   onChange,
   onDeliveryMethodChange,
+  showStreet = false,
   hideEmail = false,
   customerMatches = [],
   lookupField = null,
@@ -126,19 +130,42 @@ const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
             )}
           </div>
 
+          {showStreet && (
+            <div className="form-group">
+              <label className="form-group__label">{t('form_street')}</label>
+              <input
+                type="text"
+                name="street"
+                className={`form-group__input ${
+                  errors.street ? 'form-group__input--error' : ''
+                }`}
+                placeholder={t('form_street_placeholder')}
+                value={formData.street || ''}
+                onChange={onChange}
+              />
+              {errors.street && (
+                <span className="form-group__error">{errors.street}</span>
+              )}
+            </div>
+          )}
+
           <div className="form-group">
             <label className="form-group__label">
               {t('form_house_number')}
             </label>
             <input
               type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
+              inputMode={showStreet ? 'text' : 'numeric'}
+              pattern={showStreet ? undefined : '[0-9]*'}
               name="houseNumber"
               className={`form-group__input ${
                 errors.houseNumber ? 'form-group__input--error' : ''
               }`}
-              placeholder={t('form_house_number_placeholder')}
+              placeholder={
+                showStreet
+                  ? t('form_house_number_placeholder_street')
+                  : t('form_house_number_placeholder')
+              }
               value={formData.houseNumber || ''}
               onChange={onChange}
             />

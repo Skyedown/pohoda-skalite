@@ -21,6 +21,8 @@ interface CustomerDetailsSectionProps {
   onDeliveryMethodChange: (method: DeliveryMethod) => void;
   onPaymentMethodChange: (method: 'cash' | 'card') => void;
   onCloseSuggestions: () => void;
+  /** Set when editing a Polish order, which carries a street name. */
+  showStreet?: boolean;
 }
 
 const CustomerDetailsSection: React.FC<CustomerDetailsSectionProps> = ({
@@ -34,6 +36,7 @@ const CustomerDetailsSection: React.FC<CustomerDetailsSectionProps> = ({
   onDeliveryMethodChange,
   onPaymentMethodChange,
   onCloseSuggestions,
+  showStreet = false,
 }) => {
   const adminSettings = useAdminSettings();
 
@@ -46,6 +49,7 @@ const CustomerDetailsSection: React.FC<CustomerDetailsSectionProps> = ({
         formData={formData}
         errors={errors}
         cities={adminSettings.deliveryCities.sk}
+        showStreet={showStreet}
         onChange={onFormChange}
         onDeliveryMethodChange={onDeliveryMethodChange}
         hideEmail={true}

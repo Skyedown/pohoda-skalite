@@ -3,7 +3,7 @@
  */
 
 import { escapeHTML } from '../utils/sanitize.js';
-import { formatMoney } from '../utils/tenant.js';
+import { formatAddress, formatMoney } from '../utils/tenant.js';
 import type { SanitizedOrder } from '../types.js';
 
 /**
@@ -169,8 +169,8 @@ export function generateRestaurantEmail(order: SanitizedOrder): string {
             <strong>Meno:</strong> ${escapeHTML(order.delivery.fullName)}
             ${
               order.deliveryMethod === 'delivery'
-                ? `<br><strong>Adresa</strong> ${escapeHTML(order.delivery.city)} ${escapeHTML(
-                    order.delivery.houseNumber ?? '',
+                ? `<br><strong>Adresa</strong> ${escapeHTML(
+                    formatAddress(order.delivery),
                   )}${isPolish ? ', POĽSKO' : ''}`
                 : ''
             }

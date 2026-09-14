@@ -10,11 +10,12 @@ import DeliveryAddressForm from '../../components/PizzaCart/DeliveryAddressForm/
 import OrderSummary from '../../components/PizzaCart/OrderSummary/OrderSummary';
 import MinimumOrderBanner from '../../components/PizzaCart/MinimumOrderBanner/MinimumOrderBanner';
 import { usePizzaCart } from './usePizzaCart';
+import { requiresStreet } from './PizzaCart.helpers';
 import './PizzaCart.less';
 
 const PizzaCart: React.FC = () => {
   const { cart, removeFromCart, updateQuantity } = useCart();
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const {
     formData,
     errors,
@@ -120,6 +121,7 @@ const PizzaCart: React.FC = () => {
             formData={{ ...formData, deliveryMethod }}
             errors={errors}
             cities={cities}
+            showStreet={requiresStreet(locale)}
             onChange={handleInputChange}
             onDeliveryMethodChange={handleDeliveryMethodChange}
           />

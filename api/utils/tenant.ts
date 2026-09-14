@@ -72,6 +72,26 @@ export function postalCodeFor(tenant: Tenant, city: string): string {
   return POSTAL_CODES[tenant][normalizeText(city)] ?? '';
 }
 
+/**
+ * Polish addresses read "Street 12, Town"; Slovak village addresses are just
+ * "Village 123" because the houses carry no street name.
+ */
+export function formatAddress(delivery: {
+  street?: string;
+  houseNumber?: string;
+  city?: string;
+}): string {
+  const street = delivery.street?.trim();
+  const houseNumber = delivery.houseNumber?.trim() ?? '';
+  const city = delivery.city?.trim() ?? '';
+
+  if (street) {
+    return `${street} ${houseNumber}, ${city}`.replace(' ,', ',');
+  }
+
+  return `${city} ${houseNumber}`.trim();
+}
+
 const CURRENCY_LOCALE: Record<Currency, string> = {
   EUR: 'sk-SK',
   PLN: 'pl-PL',

@@ -157,8 +157,11 @@ export const pl: Dictionary = {
   form_fullname_placeholder: 'Np. Jan Kowalski',
   form_city: 'Miejscowość',
   form_city_placeholder: 'Wybierz miejscowość',
+  form_street: 'Ulica',
+  form_street_placeholder: 'Np. Zwardońska',
   form_house_number: 'Numer domu',
   form_house_number_placeholder: 'Podaj tylko numer domu (np. 123)',
+  form_house_number_placeholder_street: 'Np. 12A',
   form_email: 'E-mail',
   form_email_placeholder: 'twoj@email.pl',
   form_notes: 'Uwagi (opcjonalnie)',
@@ -173,6 +176,7 @@ export const pl: Dictionary = {
 
   // Validation
   validation_fullname_required: 'Imię i nazwisko jest wymagane',
+  validation_street_required: 'Ulica jest wymagana',
   validation_house_required: 'Numer domu jest wymagany',
   validation_city_required: 'Miejscowość jest wymagana',
   validation_phone_required: 'Numer telefonu jest wymagany',

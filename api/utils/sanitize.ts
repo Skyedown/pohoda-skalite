@@ -99,6 +99,7 @@ export function sanitizeDelivery(delivery: Partial<Delivery>): Delivery {
 
   return {
     fullName: sanitizeTextInput(delivery.fullName || '', 100),
+    street: sanitizeTextInput(delivery.street || '', 200),
     houseNumber: sanitizeTextInput(delivery.houseNumber || '', 200),
     city: sanitizeTextInput(delivery.city || '', 100),
     phone: sanitizePhone(delivery.phone || ''),
