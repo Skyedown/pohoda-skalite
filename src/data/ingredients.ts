@@ -42,7 +42,7 @@ export const ING = {
     sk: 'pažítka alebo jarná cibuľka (sezónne)',
     pl: 'szczypiorek lub dymka (sezonowo)',
   },
-  grillingCheese: { sk: 'encián', pl: 'ser grillowany encián' },
+  grillingCheese: { sk: 'encián', pl: 'ser grillowany camembert' },
   cherryTomatoes: { sk: 'cherry paradajky', pl: 'pomidorki cherry' },
   babySpinach: { sk: 'baby špenát', pl: 'baby szpinak' },
   onion: { sk: 'cibuľka', pl: 'cebula' },
@@ -69,7 +69,7 @@ export const ING = {
   samuraiSauce: { sk: 'samuraj omáčka', pl: 'sos samuraj' },
   grilledEncian110: {
     sk: 'grilovaný encián (110g)',
-    pl: 'grillowany ser encián (110 g)',
+    pl: 'grillowany ser camembert (110 g)',
   },
   cranberrySauce: { sk: 'brusnicová omáčka', pl: 'sos żurawinowy' },
   friedEgg: { sk: 'volské oko', pl: 'jajko sadzone' },

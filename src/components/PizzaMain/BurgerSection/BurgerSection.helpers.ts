@@ -13,7 +13,7 @@ export const burgerExtras: Extra[] = [
   },
   {
     id: 'grilovan-encian',
-    name: { sk: 'Grilovaný encián', pl: 'Grillowany ser encián' },
+    name: { sk: 'Grilovaný encián', pl: 'Grillowany ser camembert' },
     price: { EUR: 3.5, PLN: 15.0 },
   },
   {
