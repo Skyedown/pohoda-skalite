@@ -40,7 +40,7 @@ export function validateCartForm(
 
   if (!formData.phone.trim()) {
     errors.phone = t('validation_phone_required');
-  } else if (!validatePhone(formData.phone, locale)) {
+  } else if (!validatePhone(formData.phone)) {
     errors.phone = t('validation_phone_invalid');
   }
 

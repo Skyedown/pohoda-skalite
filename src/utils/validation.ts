@@ -1,17 +1,13 @@
-import type { Locale } from '../i18n/types';
+/** Separators people type. \s also covers the non-breaking space phones paste in. */
+const SEPARATORS = /[\s().-]/g;
 
-/** Digits, spaces, dashes and parentheses are accepted; everything else is not. */
-function stripFormatting(phone: string): string {
-  return phone.replace(/[\s()-]/g, '');
+/** Any international number: optional + or 00 prefix, then 9-15 digits (E.164). */
+const PHONE = /^(?:\+|00)?\d{9,15}$/;
+
+export function validateEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-const PHONE_PATTERNS: Record<Locale, RegExp> = {
-  sk: /^(\+421|00421|0)\d{9}$/,
-  pl: /^(\+48|0048)?\d{9}$/,
-};
-
-export const validateEmail = (email: string): boolean =>
-  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
-export const validatePhone = (phone: string, locale: Locale): boolean =>
-  PHONE_PATTERNS[locale].test(stripFormatting(phone));
+export function validatePhone(phone: string): boolean {
+  return PHONE.test(phone.replace(SEPARATORS, ''));
+}
