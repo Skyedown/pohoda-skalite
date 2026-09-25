@@ -4,6 +4,9 @@ import type {
   DeliveryMethod,
 } from '../../types';
 import { adminFetch } from '../../utils/adminAuth';
+import { getDeliveryRule } from '../../utils/deliveryRules';
+import type { Locale } from '../../i18n/types';
+import type { DeliveryCity } from '../../utils/adminSettings';
 
 // ============================================
 // CONSTANTS
@@ -114,6 +117,7 @@ export interface CustomerMatch {
     phone: string;
     email: string;
     city: string;
+    street: string;
     houseNumber: string;
   };
   method: DeliveryMethod;
@@ -402,3 +406,17 @@ export const confirmExtras = (
       : value,
   );
 };
+
+/** Which delivery area a past customer's town belongs to, so the form follows. */
+export function findTenantForCity(
+  deliveryCities: Record<Locale, DeliveryCity[]>,
+  city: string,
+): Locale | null {
+  if (!city) return null;
+  const locales: Locale[] = ['sk', 'pl'];
+  return (
+    locales.find(
+      (locale) => getDeliveryRule(deliveryCities[locale], city).displayName,
+    ) ?? null
+  );
+}

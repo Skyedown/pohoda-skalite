@@ -22,6 +22,7 @@ import {
   getInitialFormState,
   addProductToOrder,
   lookupCustomers,
+  findTenantForCity,
   type AdminOrderItem,
   type CustomerMatch,
 } from './adminHelpers';
@@ -251,6 +252,33 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
     setCustomerMatches([]);
     setLookupField(null);
   }, []);
+
+  const handleSelectCustomer = useCallback(
+    (match: CustomerMatch) => {
+      const { customer } = match;
+      const nextTenant =
+        findTenantForCity(adminSettings.deliveryCities, customer.city) ??
+        tenant;
+      const nextMethod = match.method === 'dine-in' ? 'delivery' : match.method;
+
+      setTenant(nextTenant);
+      setDeliveryMethod(nextMethod);
+      setFormData((prev) => ({
+        ...prev,
+        fullName: customer.fullName,
+        phone: customer.phone,
+        email: customer.email,
+        city: customer.city,
+        street: customer.street,
+        houseNumber: customer.houseNumber,
+        deliveryMethod: nextMethod,
+      }));
+      setErrors({});
+      setCustomerMatches([]);
+      setLookupField(null);
+    },
+    [adminSettings.deliveryCities, tenant],
+  );
 
   // Handle adding/removing products
   const handleProductClick = (product: LocalizedProduct) => {
@@ -499,6 +527,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
               onDeliveryMethodChange={handleDeliveryMethodChange}
               onPaymentMethodChange={setPaymentMethod}
               onCloseSuggestions={handleCloseSuggestions}
+              onSelectCustomer={handleSelectCustomer}
               tenant={tenant}
               onTenantChange={handleTenantChange}
               onSubmit={handleSubmit}

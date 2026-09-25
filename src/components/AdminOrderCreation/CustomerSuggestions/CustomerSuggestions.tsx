@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import type { CustomerMatch } from '../adminHelpers';
 import './CustomerSuggestions.less';
 
 interface CustomerSuggestionsProps {
   matches: CustomerMatch[];
+  onSelect: (match: CustomerMatch) => void;
   onClose: () => void;
 }
 
@@ -13,14 +14,25 @@ const methodLabels: Record<CustomerMatch['method'], string> = {
   'dine-in': 'na mieste',
 };
 
-const SuggestionRow: React.FC<{ match: CustomerMatch }> = ({ match }) => {
+interface SuggestionRowProps {
+  match: CustomerMatch;
+  onSelect: (match: CustomerMatch) => void;
+}
+
+const SuggestionRow: React.FC<SuggestionRowProps> = ({ match, onSelect }) => {
+  const handleClick = useCallback(() => onSelect(match), [onSelect, match]);
+
   const address =
-    [match.customer.city, match.customer.houseNumber]
+    [match.customer.street, match.customer.city, match.customer.houseNumber]
       .filter(Boolean)
       .join(' ') || methodLabels[match.method];
 
   return (
-    <div className="customer-suggestions__row">
+    <button
+      type="button"
+      className="customer-suggestions__row"
+      onClick={handleClick}
+    >
       <span className="customer-suggestions__name">
         {match.customer.fullName || 'Bez mena'}
       </span>
@@ -30,12 +42,13 @@ const SuggestionRow: React.FC<{ match: CustomerMatch }> = ({ match }) => {
         {address}
       </span>
       <span className="customer-suggestions__count">{match.orderCount}×</span>
-    </div>
+    </button>
   );
 };
 
 const CustomerSuggestions: React.FC<CustomerSuggestionsProps> = ({
   matches,
+  onSelect,
   onClose,
 }) => {
   if (matches.length === 0) return null;
@@ -43,7 +56,9 @@ const CustomerSuggestions: React.FC<CustomerSuggestionsProps> = ({
   return (
     <div className="customer-suggestions">
       <div className="customer-suggestions__header">
-        <span className="customer-suggestions__title">Nájdení zákazníci</span>
+        <span className="customer-suggestions__title">
+          Nájdení zákazníci — kliknutím vyplníte údaje
+        </span>
         <button
           type="button"
           className="customer-suggestions__close"
@@ -55,7 +70,11 @@ const CustomerSuggestions: React.FC<CustomerSuggestionsProps> = ({
       </div>
       <div className="customer-suggestions__list">
         {matches.map((match) => (
-          <SuggestionRow key={match.customer.phone} match={match} />
+          <SuggestionRow
+            key={match.customer.phone}
+            match={match}
+            onSelect={onSelect}
+          />
         ))}
       </div>
     </div>

@@ -34,6 +34,7 @@ interface DeliveryAddressFormProps {
   customerMatches?: CustomerMatch[];
   lookupField?: 'fullName' | 'phone' | null;
   onCloseSuggestions?: () => void;
+  onSelectCustomer?: (match: CustomerMatch) => void;
 }
 
 const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
@@ -47,15 +48,18 @@ const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
   customerMatches = [],
   lookupField = null,
   onCloseSuggestions,
+  onSelectCustomer,
 }) => {
   const { t } = useLocale();
 
   const renderSuggestions = (field: 'fullName' | 'phone') =>
     onCloseSuggestions &&
+    onSelectCustomer &&
     lookupField === field &&
     customerMatches.length > 0 ? (
       <CustomerSuggestions
         matches={customerMatches}
+        onSelect={onSelectCustomer}
         onClose={onCloseSuggestions}
       />
     ) : null;

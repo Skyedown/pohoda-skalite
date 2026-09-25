@@ -74,6 +74,16 @@
     border: 1px solid @gray-300;
     border-radius: @border-radius-sm;
     text-align: left;
+    width: 100%;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover,
+    &:focus-visible {
+      background: @action-light;
+      border-color: @action-color;
+    }
   }
 
   &__name {

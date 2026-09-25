@@ -226,6 +226,7 @@ router.get('/api/orders/lookup', async (req, res) => {
           phone: match.delivery.phone || '',
           email: match.delivery.email || '',
           city: match.delivery.city || '',
+          street: match.delivery.street || '',
           houseNumber: match.delivery.houseNumber || '',
         },
         method: match.delivery.method,
