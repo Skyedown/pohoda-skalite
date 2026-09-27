@@ -7,6 +7,7 @@ import { User } from '../models/User.js';
 export const AUTH_COOKIE = 'pohoda_admin';
 
 const TOKEN_TTL_SECONDS = 60 * 60 * 12; // 12 hours
+const TOKEN_REFRESH_AFTER_SECONDS = 60 * 15;
 const BCRYPT_ROUNDS = 12;
 
 /**
@@ -77,7 +78,15 @@ export function requireAuth(
   }
 
   try {
-    req.admin = jwt.verify(token, SECRET) as AuthPayload;
+    const { sub, username, iat } = jwt.verify(token, SECRET) as AuthPayload & {
+      iat: number;
+    };
+    req.admin = { sub, username };
+
+    // Sliding expiry: an admin who keeps working is never logged out mid-shift.
+    if (Date.now() / 1000 - iat > TOKEN_REFRESH_AFTER_SECONDS) {
+      res.cookie(AUTH_COOKIE, signToken(req.admin), cookieOptions());
+    }
     next();
   } catch {
     res.status(401).json({ error: 'Session expired' });
