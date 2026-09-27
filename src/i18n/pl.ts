@@ -276,7 +276,8 @@ export const pl: Dictionary = {
   allergen_unknown: 'Alergen {number}',
 
   // SEO
-  seo_home_title: 'Pizza Pohoda - Pizza, Burger i Langosz | dowóz do Milówki',
+  seo_home_title:
+    'Pizza Pohoda - Pizza, Burger i Langosz | dowóz ze Słowacji aż do Milówki',
   seo_home_description:
     'Pizza z dowozem od granicy po Milówkę. Świeże składniki, burgery, langosze i dodatki. Dowozimy do Zwardonia, Lalik, Rycerki, Soli, Rajczy i Milówki. Zamów online - Pizza Pohoda.',
   seo_home_keywords:
