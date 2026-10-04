@@ -184,7 +184,17 @@ export const pl: Dictionary = {
   validation_house_required: 'Numer domu jest wymagany',
   validation_city_required: 'Miejscowość jest wymagana',
   validation_phone_required: 'Numer telefonu jest wymagany',
-  validation_phone_invalid: 'Podaj prawidłowy numer telefonu',
+  validation_phone_chars:
+    'Numer telefonu może zawierać tylko cyfry, spacje i znak + na początku',
+  validation_phone_plus: 'Znak + może być tylko na początku numeru',
+  validation_phone_prefix_length:
+    'Numer z prefiksem {prefix} powinien mieć po prefiksie {expected} cyfr, wpisano {actual}',
+  validation_phone_trunk_length:
+    'Numer zaczynający się od 0 powinien mieć 10 cyfr (np. 0918 123 456), wpisano {actual}',
+  validation_phone_too_short:
+    'Numer telefonu jest za krótki. Wpisz pełny numer, np. 512 345 678 lub +48 512 345 678',
+  validation_phone_too_long:
+    'Numer telefonu jest za długi. Wpisz go np. jako 512 345 678 lub +48 512 345 678',
   validation_email_required: 'E-mail jest wymagany',
   validation_email_invalid: 'Podaj prawidłowy adres e-mail',
 

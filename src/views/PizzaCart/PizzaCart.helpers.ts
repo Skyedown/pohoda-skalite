@@ -2,7 +2,8 @@ import type { CartFormData } from '../../utils/sanitize';
 import type { CartItem, DeliveryMethod } from '../../types';
 import type { Currency, Locale } from '../../i18n/types';
 import type { TranslationKey } from '../../i18n/sk';
-import { validateEmail, validatePhone } from '../../utils/validation';
+import { validateEmail } from '../../utils/validation';
+import { phoneError } from '../../utils/phone';
 
 type Translate = (
   key: TranslationKey,
@@ -38,11 +39,8 @@ export function validateCartForm(
     }
   }
 
-  if (!formData.phone.trim()) {
-    errors.phone = t('validation_phone_required');
-  } else if (!validatePhone(formData.phone)) {
-    errors.phone = t('validation_phone_invalid');
-  }
+  const phone = phoneError(formData.phone, t);
+  if (phone) errors.phone = phone;
 
   if (!formData.email.trim()) {
     errors.email = t('validation_email_required');

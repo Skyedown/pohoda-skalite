@@ -32,6 +32,7 @@ const PizzaCart: React.FC = () => {
     minimumOrderMessage,
     canSubmitOrder,
     handleInputChange,
+    handlePhoneBlur,
     handleDeliveryMethodChange,
     handleSubmit,
   } = usePizzaCart();
@@ -121,6 +122,7 @@ const PizzaCart: React.FC = () => {
             cities={cities}
             showStreet={requiresStreet(locale)}
             onChange={handleInputChange}
+            onPhoneBlur={handlePhoneBlur}
             onDeliveryMethodChange={handleDeliveryMethodChange}
           />
 

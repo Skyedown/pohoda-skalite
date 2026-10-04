@@ -35,6 +35,7 @@ interface DeliveryAddressFormProps {
   lookupField?: 'fullName' | 'phone' | null;
   onCloseSuggestions?: () => void;
   onSelectCustomer?: (match: CustomerMatch) => void;
+  onPhoneBlur?: () => void;
 }
 
 const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
@@ -49,6 +50,7 @@ const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
   lookupField = null,
   onCloseSuggestions,
   onSelectCustomer,
+  onPhoneBlur,
 }) => {
   const { t } = useLocale();
 
@@ -83,8 +85,12 @@ const DeliveryAddressForm: React.FC<DeliveryAddressFormProps> = ({
             errors.phone ? 'form-group__input--error' : ''
           }`}
           placeholder={t('form_phone_placeholder')}
+          inputMode="tel"
+          autoComplete="tel"
+          maxLength={24}
           value={formData.phone}
           onChange={onChange}
+          onBlur={onPhoneBlur}
         />
         {errors.phone && (
           <span className="form-group__error">{errors.phone}</span>

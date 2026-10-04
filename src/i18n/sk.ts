@@ -181,7 +181,17 @@ export const sk = {
   validation_house_required: 'Číslo domu je povinné',
   validation_city_required: 'Mesto je povinné',
   validation_phone_required: 'Telefónne číslo je povinné',
-  validation_phone_invalid: 'Zadajte platné telefónne číslo',
+  validation_phone_chars:
+    'Telefónne číslo môže obsahovať len číslice, medzery a znak + na začiatku',
+  validation_phone_plus: 'Znak + môže byť len na začiatku čísla',
+  validation_phone_prefix_length:
+    'Číslo s predvoľbou {prefix} má mať za predvoľbou {expected} číslic, zadali ste {actual}',
+  validation_phone_trunk_length:
+    'Číslo začínajúce 0 má mať 10 číslic (napr. 0918 123 456), zadali ste {actual}',
+  validation_phone_too_short:
+    'Telefónne číslo je príliš krátke. Zadajte celé číslo, napr. 0918 123 456 alebo +421 918 123 456',
+  validation_phone_too_long:
+    'Telefónne číslo je príliš dlhé. Zadajte ho napr. v tvare 0918 123 456 alebo +421 918 123 456',
   validation_email_required: 'Email je povinný',
   validation_email_invalid: 'Zadajte platnú emailovú adresu',
 

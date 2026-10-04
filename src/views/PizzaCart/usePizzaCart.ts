@@ -8,6 +8,7 @@ import { config } from '../../config';
 import { toEur } from '../../i18n/format';
 import { sanitizeCartForm, type CartFormData } from '../../utils/sanitize';
 import { trackPurchase } from '../../utils/analytics';
+import { phoneError } from '../../utils/phone';
 import {
   getDeliveryRule,
   getMinimumOrderShortfall,
@@ -68,6 +69,11 @@ export function usePizzaCart() {
     },
     [errors, locale],
   );
+
+  const handlePhoneBlur = useCallback(() => {
+    if (!formData.phone.trim()) return;
+    setErrors((prev) => ({ ...prev, phone: phoneError(formData.phone, t) }));
+  }, [formData.phone, t]);
 
   const handleDeliveryMethodChange = useCallback((method: DeliveryMethod) => {
     setDeliveryMethod(method);
@@ -214,6 +220,7 @@ export function usePizzaCart() {
     minimumOrderMessage,
     canSubmitOrder,
     handleInputChange,
+    handlePhoneBlur,
     handleDeliveryMethodChange,
     handleSubmit,
   };

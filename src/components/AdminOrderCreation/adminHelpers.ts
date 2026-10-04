@@ -4,6 +4,8 @@ import type {
   DeliveryMethod,
 } from '../../types';
 import { adminFetch } from '../../utils/adminAuth';
+import { phoneError } from '../../utils/phone';
+import { tSk } from '../../i18n/adminT';
 import { getDeliveryRule } from '../../utils/deliveryRules';
 import type { Locale } from '../../i18n/types';
 import type { DeliveryCity } from '../../utils/adminSettings';
@@ -172,7 +174,8 @@ export const validateOrderForm = (
     }
   } else {
     // For customer orders, validate all fields
-    if (!formData.phone.trim()) errors.phone = 'Telefón je povinný';
+    const phone = phoneError(formData.phone, tSk);
+    if (phone) errors.phone = phone;
 
     if (deliveryMethod === 'delivery') {
       if (!formData.houseNumber.trim()) {
