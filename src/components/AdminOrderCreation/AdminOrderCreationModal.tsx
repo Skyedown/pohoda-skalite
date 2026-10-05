@@ -6,8 +6,6 @@ import {
 import { useAdminSettings } from '../../hooks/useAdminSettings';
 import { config } from '../../config';
 import { adminFetch } from '../../utils/adminAuth';
-import { phoneError } from '../../utils/phone';
-import { tSk } from '../../i18n/adminT';
 import { isProductDisabled } from '../../utils/productAvailability';
 import OrderFormSection from './OrderFormSection/OrderFormSection';
 import OrderSidebar from './OrderSidebar/OrderSidebar';
@@ -427,11 +425,6 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
     setFormData((prev) => ({ ...prev, city: '', street: '' }));
   }, []);
 
-  const handlePhoneBlur = useCallback(() => {
-    if (!formData.phone.trim()) return;
-    setErrors((prev) => ({ ...prev, phone: phoneError(formData.phone, tSk) }));
-  }, [formData.phone]);
-
   const validateForm = (): boolean => {
     const newErrors = validateOrderForm(
       orderType,
@@ -535,7 +528,6 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
               onPaymentMethodChange={setPaymentMethod}
               onCloseSuggestions={handleCloseSuggestions}
               onSelectCustomer={handleSelectCustomer}
-              onPhoneBlur={handlePhoneBlur}
               tenant={tenant}
               onTenantChange={handleTenantChange}
               onSubmit={handleSubmit}

@@ -24,7 +24,6 @@ interface CustomerDetailsSectionProps {
   onPaymentMethodChange: (method: 'cash' | 'card') => void;
   onCloseSuggestions: () => void;
   onSelectCustomer: (match: CustomerMatch) => void;
-  onPhoneBlur: () => void;
   tenant: Locale;
   onTenantChange: (tenant: Locale) => void;
 }
@@ -41,7 +40,6 @@ const CustomerDetailsSection: React.FC<CustomerDetailsSectionProps> = ({
   onPaymentMethodChange,
   onCloseSuggestions,
   onSelectCustomer,
-  onPhoneBlur,
   tenant,
   onTenantChange,
 }) => {
@@ -73,7 +71,6 @@ const CustomerDetailsSection: React.FC<CustomerDetailsSectionProps> = ({
         lookupField={lookupField}
         onCloseSuggestions={onCloseSuggestions}
         onSelectCustomer={onSelectCustomer}
-        onPhoneBlur={onPhoneBlur}
       />
 
       {/* Payment Method */}

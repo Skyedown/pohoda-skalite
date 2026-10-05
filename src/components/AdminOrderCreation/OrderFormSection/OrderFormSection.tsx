@@ -29,7 +29,6 @@ interface OrderFormSectionProps {
   onPaymentMethodChange: (method: 'cash' | 'card') => void;
   onCloseSuggestions: () => void;
   onSelectCustomer: (match: CustomerMatch) => void;
-  onPhoneBlur: () => void;
   tenant: Locale;
   onTenantChange: (tenant: Locale) => void;
   onSubmit: (e: React.FormEvent) => void;
@@ -52,7 +51,6 @@ const OrderFormSection: React.FC<OrderFormSectionProps> = ({
   onPaymentMethodChange,
   onCloseSuggestions,
   onSelectCustomer,
-  onPhoneBlur,
   tenant,
   onTenantChange,
   onSubmit,
@@ -93,7 +91,6 @@ const OrderFormSection: React.FC<OrderFormSectionProps> = ({
             onPaymentMethodChange={onPaymentMethodChange}
             onCloseSuggestions={onCloseSuggestions}
             onSelectCustomer={onSelectCustomer}
-            onPhoneBlur={onPhoneBlur}
             tenant={tenant}
             onTenantChange={onTenantChange}
           />
