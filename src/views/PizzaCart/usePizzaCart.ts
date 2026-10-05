@@ -9,6 +9,7 @@ import { toEur } from '../../i18n/format';
 import { sanitizeCartForm, type CartFormData } from '../../utils/sanitize';
 import { trackPurchase } from '../../utils/analytics';
 import { phoneError } from '../../utils/phone';
+import { COMPANY, formatPhone } from '../../constants/company';
 import {
   getDeliveryRule,
   getMinimumOrderShortfall,
@@ -47,6 +48,7 @@ export function usePizzaCart() {
   const [formData, setFormData] = useState<CartFormData>(INITIAL_FORM_DATA);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   const cities = adminSettings.deliveryCities[locale];
 
@@ -136,6 +138,7 @@ export function usePizzaCart() {
     }
 
     setIsSubmitting(true);
+    setSubmitError('');
     try {
       const order = buildOrderPayload({
         cart,
@@ -152,6 +155,14 @@ export function usePizzaCart() {
         currency,
       });
 
+      const response = await fetch(`${config.apiUrl}/api/send-order-emails`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order }),
+      });
+      if (!response.ok) throw new Error(`Order rejected: ${response.status}`);
+      const result: { customerEmailSent?: boolean } = await response.json();
+
       trackPurchase({
         transactionId: `order-${Date.now()}`,
         value: total,
@@ -166,20 +177,14 @@ export function usePizzaCart() {
         })),
       });
 
-      try {
-        await fetch(`${config.apiUrl}/api/send-order-emails`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ order }),
-        });
-      } catch {
-        // Email service unavailable but order was processed
-      }
-
       clearCart();
-      navigate('/thank-you');
+      navigate('/thank-you', {
+        state: { emailSent: result.customerEmailSent !== false },
+      });
     } catch {
-      alert(t('cart_submit_error'));
+      setSubmitError(
+        t('cart_submit_error', { phone: formatPhone(COMPANY.phone) }),
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -209,6 +214,7 @@ export function usePizzaCart() {
     setPaymentMethod,
     deliveryMethod,
     isSubmitting,
+    submitError,
     adminSettings,
     cities,
     subtotal,

@@ -33,6 +33,7 @@ const PizzaCart: React.FC = () => {
     canSubmitOrder,
     handleInputChange,
     handlePhoneBlur,
+    submitError,
     handleDeliveryMethodChange,
     handleSubmit,
   } = usePizzaCart();
@@ -164,6 +165,12 @@ const PizzaCart: React.FC = () => {
                   : t('cart_confirm')}
             </button>
           </div>
+
+          {submitError && (
+            <p className="pizza-cart__submit-error" role="alert">
+              {submitError}
+            </p>
+          )}
 
           {/* Placing the order is the consent; a tick box would add friction
               without changing the legal basis, which is contract performance. */}

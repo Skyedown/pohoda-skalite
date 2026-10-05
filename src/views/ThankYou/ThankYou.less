@@ -84,6 +84,31 @@
     }
   }
 
+  &__email-failed {
+    display: flex;
+    flex-direction: column;
+    gap: @spacing-xs;
+    max-width: 36rem;
+    margin: 0 auto @spacing-xl;
+    padding: @spacing-md @spacing-lg;
+    border: 1px solid @warning-color;
+    border-radius: @border-radius-md;
+    background: @primary-light;
+    color: @text-primary;
+    font-size: @font-size-sm;
+    line-height: 1.6;
+    text-align: left;
+
+    strong {
+      font-size: @font-size-base;
+    }
+
+    @media (max-width: @breakpoint-sm) {
+      padding: @spacing-sm @spacing-md;
+      margin-bottom: @spacing-lg;
+    }
+  }
+
   &__info {
     font-size: 16px;
     color: @text-secondary;

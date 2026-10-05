@@ -137,7 +137,7 @@ export const sk = {
   cart_orders_paused: 'OBJEDNÁVKY POZASTAVENÉ',
   cart_confirm: 'POTVRDIŤ OBJEDNÁVKU',
   cart_submit_error:
-    'Vyskytla sa chyba pri spracovaní objednávky. Skúste to prosím znova.',
+    'Objednávku sa nepodarilo odoslať. Skúste to prosím znova alebo nám zavolajte na {phone}.',
 
   // Order summary
   summary_title: 'Súhrn objednávky',
@@ -204,6 +204,9 @@ export const sk = {
   thankyou_title: 'Ďakujeme za Vašu objednávku!',
   thankyou_message: 'Vaša objednávka bola úspešne prijatá a spracováva sa.',
   thankyou_info_1: 'Potvrdenie objednávky sme Vám poslali na email.',
+  thankyou_email_failed_title: 'Potvrdzovací email sa nepodarilo odoslať',
+  thankyou_email_failed_text:
+    'Vašu objednávku sme prijali a pripravujeme ju, nemusíte objednávať znova. Len Vám neprišlo potvrdenie emailom. Ak potrebujete niečo zmeniť, zavolajte nám na {phone}.',
   thankyou_info_2: 'Budeme Vás kontaktovať v prípade akýchkoľvek otázok.',
   thankyou_prep_title: 'Príprava',
   thankyou_prep_text: 'Vaša objednávka sa práve pripravuje',

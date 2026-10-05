@@ -10,13 +10,60 @@ import {
   currencyFor,
   postalCodeFor,
   toTenant,
+  type Tenant,
 } from '../utils/tenant.js';
 import { CUSTOMER_EMAIL_COPY } from '../templates/emailCopy.js';
-import { buildTicketCode } from '../utils/ticketCode.js';
+import {
+  buildCustomerOrderDocument,
+  type CustomerOrderPayload,
+} from '../utils/customerOrder.js';
 import { publishOrder } from '../utils/messageQueue.js';
 import { Order } from '../models/Order.js';
 
 const router = Router();
+
+async function resolveMapyCzUrl(
+  order: CustomerOrderPayload,
+  tenant: Tenant,
+): Promise<string | null> {
+  const { delivery } = order;
+  if (
+    order.deliveryMethod !== 'delivery' ||
+    !delivery?.houseNumber ||
+    !delivery.city
+  ) {
+    return null;
+  }
+
+  try {
+    const url = await getMapyCzUrlForAddress({
+      country: countryFor(tenant),
+      city: delivery.city,
+      street: delivery.street || undefined,
+      houseNumber: delivery.houseNumber,
+      postalCode: postalCodeFor(tenant, delivery.city),
+    });
+    if (!url) console.warn('⚠️ Could not resolve GPS coordinates for address');
+    return url;
+  } catch (geoError) {
+    console.error('❌ Error resolving Mapy.cz URL:', geoError);
+    return null;
+  }
+}
+
+function logEmailFailure(
+  recipient: 'customer' | 'restaurant',
+  result: PromiseSettledResult<unknown>,
+): void {
+  if (result.status === 'fulfilled') {
+    console.log(`✅ ${recipient} email sent`);
+    return;
+  }
+  const reason: unknown = result.reason;
+  const message = reason instanceof Error ? reason.message : String(reason);
+  const body = (reason as { response?: { body?: unknown } })?.response?.body;
+  console.error(`❌ ${recipient} email failed:`, message, JSON.stringify(body));
+}
 
 const RESTAURANT_EMAIL =
   process.env.VITE_RESTAURANT_EMAIL || 'objednavky@pizzapohoda.sk';
@@ -95,150 +142,52 @@ router.post('/api/send-order-emails', async (req, res) => {
       html: restaurantEmailContent,
     };
 
-    console.log('📧 Attempting to send emails...');
-    console.log('   From:', customerEmail.from);
-    console.log('   To Customer:', customerEmail.to);
-    console.log('   To Restaurant:', restaurantEmail.to);
+    const mapyCzUrl = await resolveMapyCzUrl(order, tenant);
 
-    await Promise.all([
+    if (!isMongoConnected()) {
+      console.error('❌ MongoDB not connected — order rejected');
+      return res.status(503).json({ error: 'Order could not be received' });
+    }
+
+    // The kitchen works only from tickets printed out of the database, so an
+    // order that is not saved has not been received, whatever the emails do.
+    let savedOrderId: string;
+    try {
+      const savedOrder = await Order.create(
+        buildCustomerOrderDocument(order, tenant, displayCurrency, mapyCzUrl),
+      );
+      savedOrderId = savedOrder._id.toString();
+      console.log('✅ Order saved to MongoDB:', savedOrderId);
+    } catch (dbError) {
+      console.error('❌ Failed to save customer order to MongoDB:', dbError);
+      return res.status(503).json({ error: 'Order could not be received' });
+    }
+
+    const published = await publishOrder({ _id: savedOrderId });
+    if (published) {
+      console.log('📤 Order published to RabbitMQ:', savedOrderId);
+    } else {
+      console.warn('⚠️ Order NOT published to RabbitMQ:', savedOrderId);
+    }
+
+    const [customerResult, restaurantResult] = await Promise.allSettled([
       sgMail.send(customerEmail),
       sgMail.send(restaurantEmail),
     ]);
+    logEmailFailure('customer', customerResult);
+    logEmailFailure('restaurant', restaurantResult);
 
-    console.log('✅ Emails sent successfully!');
-
-    let mapyCzUrl: string | null = null;
-    if (
-      order.deliveryMethod === 'delivery' &&
-      order.delivery?.houseNumber &&
-      order.delivery?.city
-    ) {
-      try {
-        console.log('📍 Resolving GPS coordinates for delivery address...');
-        mapyCzUrl = await getMapyCzUrlForAddress({
-          country: countryFor(tenant),
-          city: order.delivery.city,
-          street: order.delivery.street || undefined,
-          houseNumber: order.delivery.houseNumber,
-          postalCode: postalCodeFor(tenant, order.delivery.city),
-        });
-
-        if (mapyCzUrl) {
-          console.log('✅ Mapy.cz URL generated:', mapyCzUrl);
-        } else {
-          console.warn('⚠️ Could not resolve GPS coordinates for address');
-        }
-      } catch (geoError) {
-        console.error('❌ Error resolving Mapy.cz URL:', geoError);
-      }
-    }
-
-    let savedOrderId = null;
-    let published = false;
-
-    if (isMongoConnected()) {
-      try {
-        console.log('💾 Saving customer order to MongoDB...');
-
-        // `name` is the canonical Slovak wording so the printer and the admin
-        // stay Slovak; the customer-facing text is kept beside it.
-        const orderData = {
-          tenant,
-          currency: 'EUR',
-          displayCurrency,
-          pricingDisplay: order.pricingDisplay || order.pricing,
-          ticketCode: buildTicketCode(
-            tenant,
-            order.deliveryMethod || order.delivery?.method,
-            order.delivery?.city,
-          ),
-          items: order.items.map((item: Record<string, unknown>) => ({
-            product: {
-              id: item.id || (item.product as Record<string, unknown>)?.id,
-              name:
-                item.name || (item.product as Record<string, unknown>)?.name,
-              nameLocalized: item.nameLocalized,
-              price:
-                item.basePrice ||
-                (item.product as Record<string, unknown>)?.price,
-              priceDisplay: item.basePriceDisplay ?? item.basePrice,
-              type:
-                item.type || (item.product as Record<string, unknown>)?.type,
-            },
-            quantity: item.quantity,
-            extras: item.extras || [],
-            totalPrice: item.totalPrice,
-            totalPriceDisplay: item.totalPriceDisplay ?? item.totalPrice,
-            requiredOption: item.requiredOption || undefined,
-            removedIngredients: item.removedIngredients || [],
-            removedIngredientsLocalized: item.removedIngredientsLocalized || [],
-          })),
-          delivery: {
-            method: order.deliveryMethod || order.delivery?.method,
-            fullName: order.delivery?.fullName,
-            street: order.delivery?.street,
-            houseNumber: order.delivery?.houseNumber,
-            city: order.delivery?.city,
-            phone: order.delivery?.phone,
-            email: order.delivery?.email,
-            notes: order.delivery?.notes,
-            mapyCzUrl: mapyCzUrl || undefined,
-          },
-          payment: {
-            method: order.paymentMethod || order.payment?.method,
-          },
-          pricing: order.pricing,
-          printed: false,
-          createdBy: 'customer',
-        };
-
-        const savedOrder = await Order.create(orderData);
-        savedOrderId = savedOrder._id;
-        console.log('✅ Order saved to MongoDB:', savedOrder._id);
-
-        published = await publishOrder({ _id: savedOrder._id.toString() });
-
-        if (published) {
-          console.log('📤 Order published to RabbitMQ:', savedOrder._id);
-        } else {
-          console.warn('⚠️ Order NOT published to RabbitMQ:', savedOrder._id);
-        }
-      } catch (dbError) {
-        console.error('❌ Failed to save customer order to MongoDB:', dbError);
-      }
-    } else {
-      console.warn(
-        '⚠️ MongoDB not connected — customer order not saved to database',
-      );
-    }
-
-    res.json({
+    res.status(201).json({
       success: true,
-      message: 'Emails sent successfully',
       orderId: savedOrderId,
       published,
+      customerEmailSent: customerResult.status === 'fulfilled',
     });
   } catch (error: unknown) {
     const errorMessage =
       error instanceof Error ? error.message : 'Unknown error';
-    const errorResponse = (error as any)?.response?.body;
-
-    console.error('❌ Error sending emails:', errorMessage);
-    console.error(
-      '📧 SendGrid Response Body:',
-      JSON.stringify(errorResponse, null, 2),
-    );
-    console.error(
-      '📮 From Email:',
-      process.env.SENDGRID_FROM_EMAIL || 'noreply@pizzapohoda.sk',
-    );
-    console.error('📨 To Restaurant:', RESTAURANT_EMAIL);
-
-    res.status(500).json({
-      error: 'Failed to send emails',
-      details: errorMessage,
-      sendgridError: errorResponse,
-    });
+    console.error('❌ Error processing order:', errorMessage);
+    res.status(500).json({ error: 'Failed to process order' });
   }
 });
 

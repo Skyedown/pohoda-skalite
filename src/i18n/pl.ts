@@ -140,7 +140,7 @@ export const pl: Dictionary = {
   cart_orders_paused: 'ZAMÓWIENIA WSTRZYMANE',
   cart_confirm: 'POTWIERDŹ ZAMÓWIENIE',
   cart_submit_error:
-    'Wystąpił błąd podczas przetwarzania zamówienia. Spróbuj ponownie.',
+    'Nie udało się wysłać zamówienia. Spróbuj ponownie lub zadzwoń do nas pod numer {phone}.',
 
   // Order summary
   summary_title: 'Podsumowanie zamówienia',
@@ -207,6 +207,9 @@ export const pl: Dictionary = {
   thankyou_title: 'Dziękujemy za Twoje zamówienie!',
   thankyou_message: 'Twoje zamówienie zostało przyjęte i jest przetwarzane.',
   thankyou_info_1: 'Potwierdzenie zamówienia wysłaliśmy na Twój e-mail.',
+  thankyou_email_failed_title: 'Nie udało się wysłać e-maila z potwierdzeniem',
+  thankyou_email_failed_text:
+    'Twoje zamówienie zostało przyjęte i już je przygotowujemy, nie musisz zamawiać ponownie. Nie dotarło tylko potwierdzenie e-mailem. Jeśli chcesz coś zmienić, zadzwoń do nas pod numer {phone}.',
   thankyou_info_2: 'Skontaktujemy się z Tobą w razie jakichkolwiek pytań.',
   thankyou_prep_title: 'Przygotowanie',
   thankyou_prep_text: 'Twoje zamówienie jest właśnie przygotowywane',

@@ -1,11 +1,15 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useLocale } from '../../i18n/LocaleContext';
+import { COMPANY, formatPhone } from '../../constants/company';
 import './ThankYou.less';
 
 const ThankYou: React.FC = () => {
   const { t } = useLocale();
+  const location = useLocation();
+  const emailSent =
+    (location.state as { emailSent?: boolean } | null)?.emailSent !== false;
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -46,11 +50,22 @@ const ThankYou: React.FC = () => {
 
           <p className="thank-you__message">{t('thankyou_message')}</p>
 
-          <p className="thank-you__info">
-            {t('thankyou_info_1')}
-            <br />
-            {t('thankyou_info_2')}
-          </p>
+          {emailSent ? (
+            <p className="thank-you__info">
+              {t('thankyou_info_1')}
+              <br />
+              {t('thankyou_info_2')}
+            </p>
+          ) : (
+            <div className="thank-you__email-failed" role="status">
+              <strong>{t('thankyou_email_failed_title')}</strong>
+              <span>
+                {t('thankyou_email_failed_text', {
+                  phone: formatPhone(COMPANY.phone),
+                })}
+              </span>
+            </div>
+          )}
 
           <div className="thank-you__details">
             {details.map((detail) => (
