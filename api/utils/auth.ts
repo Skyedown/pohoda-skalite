@@ -6,8 +6,9 @@ import { User } from '../models/User.js';
 
 export const AUTH_COOKIE = 'pohoda_admin';
 
-const TOKEN_TTL_SECONDS = 60 * 60 * 12; // 12 hours
-const TOKEN_REFRESH_AFTER_SECONDS = 60 * 15;
+// Sliding: every admin request renews it, so it lapses 24 h after the last one.
+const TOKEN_TTL_SECONDS = 60 * 60 * 24;
+const TOKEN_REFRESH_AFTER_SECONDS = 60;
 const BCRYPT_ROUNDS = 12;
 
 /**
@@ -65,6 +66,14 @@ declare module 'express-serve-static-core' {
   }
 }
 
+function logRejection(req: Request, reason: string): void {
+  const client = req.headers['cf-connecting-ip'] || req.ip;
+  const agent = String(req.headers['user-agent'] || '').slice(0, 80);
+  console.warn(
+    `🔒 401 ${req.method} ${req.originalUrl} — ${reason} — ${client} — ${agent}`,
+  );
+}
+
 export function requireAuth(
   req: Request,
   res: Response,
@@ -73,6 +82,7 @@ export function requireAuth(
   const token = req.cookies?.[AUTH_COOKIE];
 
   if (!token) {
+    logRejection(req, 'no cookie');
     res.status(401).json({ error: 'Authentication required' });
     return;
   }
@@ -88,7 +98,13 @@ export function requireAuth(
       res.cookie(AUTH_COOKIE, signToken(req.admin), cookieOptions());
     }
     next();
-  } catch {
+  } catch (error) {
+    logRejection(
+      req,
+      error instanceof jwt.TokenExpiredError
+        ? `expired at ${error.expiredAt.toISOString()}`
+        : 'invalid signature (JWT_SECRET changed?)',
+    );
     res.status(401).json({ error: 'Session expired' });
   }
 }

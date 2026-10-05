@@ -30,6 +30,26 @@ export async function adminFetch(
   return response;
 }
 
+export type SessionStatus = 'authenticated' | 'unauthenticated' | 'unreachable';
+
+/**
+ * Only a 401 means signed out. A tablet waking up often reloads the page before
+ * its Wi-Fi is back, and that failure must not look like a logout.
+ */
+export async function checkAdminSession(attempt = 1): Promise<SessionStatus> {
+  const query = attempt > 1 ? `?attempt=${attempt}` : '';
+  try {
+    const response = await fetch(`${config.apiUrl}/api/auth/me${query}`, {
+      credentials: 'include',
+      cache: 'no-store',
+    });
+    if (response.ok) return 'authenticated';
+    return response.status === 401 ? 'unauthenticated' : 'unreachable';
+  } catch {
+    return 'unreachable';
+  }
+}
+
 export async function fetchCurrentAdmin(): Promise<AdminUser | null> {
   try {
     const response = await fetch(`${config.apiUrl}/api/auth/me`, {

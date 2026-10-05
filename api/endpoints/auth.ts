@@ -61,6 +61,13 @@ router.post('/api/auth/logout', (_req, res) => {
 });
 
 router.get('/api/auth/me', requireAuth, (req, res) => {
+  const attempt = Number(req.query.attempt);
+  if (attempt > 1) {
+    const agent = String(req.headers['user-agent'] || '').slice(0, 80);
+    console.log(
+      `🔁 ${req.admin?.username} reached the API on attempt ${attempt} — ${agent}`,
+    );
+  }
   res.json({ user: { username: req.admin?.username } });
 });
 
