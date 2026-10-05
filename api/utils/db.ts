@@ -1,9 +1,7 @@
 import mongoose from 'mongoose';
 
-let isConnected = false;
-
 export async function connectToMongoDB(): Promise<void> {
-  if (isConnected) return;
+  if (isMongoConnected()) return;
 
   const mongoUri = process.env.MONGODB_URI;
   if (!mongoUri) {
@@ -13,7 +11,6 @@ export async function connectToMongoDB(): Promise<void> {
 
   try {
     await mongoose.connect(mongoUri);
-    isConnected = true;
     console.log('✅ Connected to MongoDB Atlas');
   } catch (error) {
     console.error('❌ Failed to connect to MongoDB:', error);
@@ -22,5 +19,5 @@ export async function connectToMongoDB(): Promise<void> {
 }
 
 export function isMongoConnected(): boolean {
-  return isConnected;
+  return mongoose.connection.readyState === 1;
 }

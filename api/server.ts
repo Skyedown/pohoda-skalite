@@ -64,14 +64,24 @@ app.use(sendOrderEmailsRouter);
 app.use(ordersRouter);
 app.use(orderStatsRouter);
 
-async function startServer() {
+const MONGO_RETRY_MS = 10_000;
+
+// Mongoose reconnects on its own only after a first successful connection.
+async function connectDatabase(): Promise<void> {
   try {
     await connectToMongoDB();
     await seedFirstAdmin();
   } catch (error) {
-    console.warn('⚠️ MongoDB connection failed — continuing without database');
+    console.warn(
+      `⚠️ MongoDB connection failed — retrying in ${MONGO_RETRY_MS / 1000}s`,
+    );
     console.warn(error);
+    setTimeout(connectDatabase, MONGO_RETRY_MS);
   }
+}
+
+async function startServer() {
+  await connectDatabase();
 
   try {
     await connectToRabbitMQ();
