@@ -27,6 +27,11 @@ export const defaultPizzaExtras: Extra[] = [
     price: { EUR: 0.8, PLN: 3.4 },
   },
   {
+    id: 'niva',
+    name: { sk: 'Niva', pl: 'Ser pleśniowy' },
+    price: { EUR: 0.8, PLN: 3.4 },
+  },
+  {
     id: 'sampiony',
     name: { sk: 'Šampiňóny', pl: 'Pieczarki' },
     price: { EUR: 0.8, PLN: 3.4 },
@@ -44,6 +49,11 @@ export const defaultPizzaExtras: Extra[] = [
   {
     id: 'chilli',
     name: { sk: 'Chilli papričky', pl: 'Papryczki chilli' },
+    price: { EUR: 0.8, PLN: 3.4 },
+  },
+  {
+    id: 'jalapeno',
+    name: { sk: 'Jallapeño', pl: 'Jalapeño' },
     price: { EUR: 0.8, PLN: 3.4 },
   },
   {
