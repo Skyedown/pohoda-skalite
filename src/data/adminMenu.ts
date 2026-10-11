@@ -2,6 +2,7 @@ import { localizeProducts } from './localize';
 import { pizzas } from './pizzas';
 import { burgers } from './burgers';
 import { langos } from './langos';
+import { fried } from './fried';
 import { prilohy } from './prilohy';
 import { capovane } from './capovane';
 import { drinks } from './drinks';
@@ -16,6 +17,7 @@ export const ADMIN_PRODUCTS_BY_CATEGORY: Record<
   pizza: localizeProducts(pizzas, 'sk'),
   burger: localizeProducts(burgers, 'sk'),
   langos: localizeProducts(langos, 'sk'),
+  fried: localizeProducts(fried, 'sk'),
   sides: localizeProducts(prilohy, 'sk'),
   capovane: localizeProducts(capovane, 'sk'),
   drinks: localizeProducts(drinks, 'sk'),

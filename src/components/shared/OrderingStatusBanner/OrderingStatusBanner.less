@@ -21,8 +21,12 @@
   }
 
   &--info {
-    background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
-    color: white;
+    background: linear-gradient(
+      135deg,
+      @primary-dark 0%,
+      darken(@primary-dark, 8%) 100%
+    );
+    color: @text-white;
   }
 
   &__content {

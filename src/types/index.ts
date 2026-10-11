@@ -4,6 +4,7 @@ export type ProductType =
   | 'pizza'
   | 'burger'
   | 'langos'
+  | 'fried'
   | 'sides'
   | 'capovane'
   | 'drinks'

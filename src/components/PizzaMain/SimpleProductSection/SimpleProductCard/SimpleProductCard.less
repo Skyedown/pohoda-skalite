@@ -67,10 +67,12 @@
     color: @text-secondary;
     text-align: center;
     margin-bottom: 12px;
-    flex: 1;
   }
 
+  // Weight and the price row sit at the bottom so cards in a row line up
+  // whether or not they carry a description.
   &__weight {
+    margin-top: auto;
     font-family: @font-family-primary;
     font-size: 14px;
     font-weight: 300;
@@ -86,6 +88,7 @@
   }
 
   &__footer {
+    margin-top: auto;
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -93,6 +96,10 @@
     width: 100%;
     padding-top: 16px;
     border-top: 0.54px solid @border-color;
+  }
+
+  &__weight + &__footer {
+    margin-top: 0;
   }
 
   &__price {

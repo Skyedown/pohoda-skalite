@@ -30,6 +30,7 @@ export const VALID_PRODUCT_TYPES = [
   'pizza',
   'burger',
   'langos',
+  'fried',
   'sides',
   'capovane',
   'drinks',

@@ -6,6 +6,7 @@ import sgMail from '@sendgrid/mail';
 import { connectToMongoDB } from './utils/db.js';
 import { connectToRabbitMQ, closeRabbitMQ } from './utils/messageQueue.js';
 import { requireAuth, seedFirstAdmin } from './utils/auth.js';
+import { disableNewProducts } from './utils/productLaunch.js';
 import healthRouter from './endpoints/health.js';
 import authRouter from './endpoints/auth.js';
 import adminSettingsRouter from './endpoints/adminSettings.js';
@@ -71,6 +72,7 @@ async function connectDatabase(): Promise<void> {
   try {
     await connectToMongoDB();
     await seedFirstAdmin();
+    await disableNewProducts();
   } catch (error) {
     console.warn(
       `⚠️ MongoDB connection failed — retrying in ${MONGO_RETRY_MS / 1000}s`,

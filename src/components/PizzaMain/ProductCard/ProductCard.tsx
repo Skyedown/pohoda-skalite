@@ -53,7 +53,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           )}
         </h3>
         <p className="product-card__description">
-          {product.ingredients?.join(', ')}
+          {product.description ?? product.ingredients?.join(', ')}
         </p>
         <p className="product-card__weight">
           {product.weight}

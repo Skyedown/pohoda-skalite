@@ -6,6 +6,7 @@ import {
   useCapovane,
   useDrinks,
   useSnacks,
+  useFried,
 } from '../../hooks/useMenu';
 import { useAdminSettings } from '../../hooks/useAdminSettings';
 import { useLocale } from '../../i18n/LocaleContext';
@@ -48,6 +49,7 @@ const PizzaMain: React.FC = () => {
   const capovane = useCapovane();
   const drinks = useDrinks();
   const snacks = useSnacks();
+  const fried = useFried();
 
   const [selectedPizza, setSelectedPizza] = useState<LocalizedProduct | null>(
     null,
@@ -182,6 +184,11 @@ const PizzaMain: React.FC = () => {
 
       <BurgerSection />
       <LangosSection />
+      <SimpleProductSection
+        id="fried-menu"
+        title={t('section_fried_title')}
+        items={fried}
+      />
       <PrilohySection />
 
       <SimpleProductSection

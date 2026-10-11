@@ -6,6 +6,7 @@ export type ProductType =
   | 'pizza'
   | 'burger'
   | 'langos'
+  | 'fried'
   | 'sides'
   | 'capovane'
   | 'drinks'
@@ -15,6 +16,7 @@ export const PRODUCT_TYPES: ProductType[] = [
   'pizza',
   'burger',
   'langos',
+  'fried',
   'sides',
   'capovane',
   'drinks',
@@ -25,6 +27,7 @@ export const PRODUCT_LABELS: Record<ProductType, string> = {
   pizza: 'Pizze',
   burger: 'Burgre',
   langos: 'Langoše',
+  fried: 'Vyprážané',
   sides: 'Prílohy',
   capovane: 'Čapované',
   drinks: 'Nápoje',

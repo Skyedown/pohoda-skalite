@@ -148,4 +148,17 @@ export const pizzas: Product[] = [
     type: 'pizza',
     weight: '600g',
   },
+  {
+    id: 'pizza-11',
+    name: { sk: '11. Pizza štangle', pl: '11. Paluchy pizzowe' },
+    description: {
+      sk: 'Štangle z pizza cesta potreté cesnakom',
+      pl: 'Paluchy z ciasta na pizzę posmarowane czosnkiem',
+    },
+    price: { EUR: 6.0, PLN: 25.5 },
+    image: '/images/pizzas/stangle.webp',
+    ingredients: [ING.garlic],
+    allergens: ['1'],
+    type: 'pizza',
+  },
 ];

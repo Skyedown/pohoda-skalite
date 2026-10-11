@@ -19,6 +19,7 @@ export interface ISettings extends Document {
   disabledReason: ILocalizedText;
   disabledProductTypes: string[];
   disabledProductIds: string[];
+  introducedProductIds: string[];
   cardPaymentDeliveryEnabled: boolean;
   cardPaymentPickupEnabled: boolean;
   deliveryCities: {
@@ -57,6 +58,7 @@ const settingsSchema = new Schema<ISettings>(
     disabledReason: { type: localizedTextSchema, default: () => ({}) },
     disabledProductTypes: [{ type: String }],
     disabledProductIds: [{ type: String }],
+    introducedProductIds: [{ type: String }],
     cardPaymentDeliveryEnabled: { type: Boolean, default: false },
     cardPaymentPickupEnabled: { type: Boolean, default: false },
     deliveryCities: {

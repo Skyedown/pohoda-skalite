@@ -4,6 +4,7 @@ import { localizeExtras, localizeProducts } from '../data/localize';
 import { pizzas } from '../data/pizzas';
 import { burgers } from '../data/burgers';
 import { langos } from '../data/langos';
+import { fried } from '../data/fried';
 import { prilohy } from '../data/prilohy';
 import { capovane } from '../data/capovane';
 import { drinks } from '../data/drinks';
@@ -37,6 +38,10 @@ export function useLangos(): LocalizedProduct[] {
   return useLocalizedProducts(langos);
 }
 
+export function useFried(): LocalizedProduct[] {
+  return useLocalizedProducts(fried);
+}
+
 export function usePrilohy(): LocalizedProduct[] {
   return useLocalizedProducts(prilohy);
 }
@@ -58,6 +63,7 @@ export const ALL_PRODUCTS: Product[] = [
   ...pizzas,
   ...burgers,
   ...langos,
+  ...fried,
   ...prilohy,
   ...capovane,
   ...drinks,

@@ -103,4 +103,14 @@ export const prilohy: Product[] = [
     allergens: ['3', '10'],
     weight: '50ml',
   },
+  {
+    id: 'prilohy-11',
+    name: { sk: 'Cesnaková omáčka', pl: 'Sos czosnkowy' },
+    price: { EUR: 1.0, PLN: 4.3 },
+    // Placeholder until the garlic sauce photo arrives.
+    image: '/images/sides/tatraska.webp',
+    type: 'sides',
+    allergens: ['3', '7'],
+    weight: '50ml',
+  },
 ];

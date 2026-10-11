@@ -94,6 +94,7 @@ const Header: React.FC<HeaderProps> = ({ isStatic = false }) => {
     { label: t('nav_item_pizza'), id: 'pizza-menu' },
     { label: t('nav_item_burger'), id: 'burger-menu' },
     { label: t('nav_item_langos'), id: 'langos-menu' },
+    { label: t('nav_item_fried'), id: 'fried-menu' },
     { label: t('nav_item_sides'), id: 'prilohy-menu' },
     { label: t('nav_item_tap'), id: 'capovane-menu' },
     { label: t('nav_item_drinks'), id: 'drinks-menu' },

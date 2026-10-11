@@ -30,6 +30,7 @@ const TYPE_KEYS: Record<ProductType, TranslationKey> = {
   pizza: 'type_pizza',
   burger: 'type_burger',
   langos: 'type_langos',
+  fried: 'type_fried',
   sides: 'type_sides',
   capovane: 'type_capovane',
   drinks: 'type_drinks',

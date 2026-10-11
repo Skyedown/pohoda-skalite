@@ -195,7 +195,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
                   )}
                 </h2>
                 <p className="product-modal__description">
-                  {product.ingredients?.join(', ')}
+                  {product.description ?? product.ingredients?.join(', ')}
                 </p>
                 {product.weight && (
                   <p className="product-modal__weight">{product.weight}</p>
