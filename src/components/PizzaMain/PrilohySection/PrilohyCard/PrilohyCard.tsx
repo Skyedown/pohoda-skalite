@@ -31,7 +31,7 @@ export const PrilohyCard: React.FC<PrilohyCardProps> = ({
         </span>
       )}
       <div className="prilohy-card__image">
-        <img src={item.image} alt={item.name} />
+        <img src={item.image} alt={item.name} loading="lazy" decoding="async" />
       </div>
       <h3 className="prilohy-card__name">
         {item.name}

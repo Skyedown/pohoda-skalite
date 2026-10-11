@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { Suspense, lazy, useState, useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
@@ -12,17 +12,6 @@ import { LocaleProvider, useLocale } from './i18n/LocaleContext';
 import { ALL_LEGAL_ROUTES } from './legal/paths';
 import Header from './sections/Header/Header';
 import PizzaMain from './views/PizzaMain/PizzaMain';
-import PizzaCart from './views/PizzaCart/PizzaCart';
-import ThankYou from './views/ThankYou/ThankYou';
-import PrivacyPolicy from './views/PrivacyPolicy/PrivacyPolicy';
-import Terms from './views/Terms/Terms';
-import AdminPanel from './views/AdminPanel/AdminPanel';
-import AdminAnalytics from './views/AdminAnalytics/AdminAnalytics';
-import AdminOrderSettings from './views/AdminOrderSettings/AdminOrderSettings';
-import AdminDeliveryAreas from './views/AdminDeliveryAreas/AdminDeliveryAreas';
-import AdminProductRestrictions from './views/AdminProductRestrictions/AdminProductRestrictions';
-import AdminUsers from './views/AdminUsers/AdminUsers';
-import AdminOrders from './views/AdminOrders/AdminOrders';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import FloatingCart from './components/shared/FloatingCart/FloatingCart';
 import FloatingCall from './components/shared/FloatingCall/FloatingCall';
@@ -30,6 +19,27 @@ import OrderingStatusBanner from './components/shared/OrderingStatusBanner/Order
 import CookieConsent from './components/shared/CookieConsent/CookieConsent';
 import { setDefaultConsent, initGA, trackPageView } from './utils/analytics';
 import './styles/global.less';
+
+// Everything but the menu loads on demand so the first page stays small.
+const PizzaCart = lazy(() => import('./views/PizzaCart/PizzaCart'));
+const ThankYou = lazy(() => import('./views/ThankYou/ThankYou'));
+const PrivacyPolicy = lazy(() => import('./views/PrivacyPolicy/PrivacyPolicy'));
+const Terms = lazy(() => import('./views/Terms/Terms'));
+const AdminPanel = lazy(() => import('./views/AdminPanel/AdminPanel'));
+const AdminAnalytics = lazy(
+  () => import('./views/AdminAnalytics/AdminAnalytics'),
+);
+const AdminOrderSettings = lazy(
+  () => import('./views/AdminOrderSettings/AdminOrderSettings'),
+);
+const AdminDeliveryAreas = lazy(
+  () => import('./views/AdminDeliveryAreas/AdminDeliveryAreas'),
+);
+const AdminProductRestrictions = lazy(
+  () => import('./views/AdminProductRestrictions/AdminProductRestrictions'),
+);
+const AdminUsers = lazy(() => import('./views/AdminUsers/AdminUsers'));
+const AdminOrders = lazy(() => import('./views/AdminOrders/AdminOrders'));
 
 const PageTracker: React.FC = () => {
   const location = useLocation();
@@ -71,73 +81,75 @@ const AppContent: React.FC = () => {
         <OrderingStatusBanner onVisibilityChange={setIsBannerVisible} />
       )}
       <main>
-        <Routes>
-          <Route path="/" element={<PizzaMain />} />
-          <Route path="/cart" element={<PizzaCart />} />
-          <Route path="/thank-you" element={<ThankYou />} />
-          {ALL_LEGAL_ROUTES.privacy.map((path) => (
-            <Route key={path} path={path} element={<PrivacyPolicy />} />
-          ))}
-          {ALL_LEGAL_ROUTES.terms.map((path) => (
-            <Route key={path} path={path} element={<Terms />} />
-          ))}
-          <Route
-            path="/admin"
-            element={
-              <AdminArea>
-                <AdminPanel />
-              </AdminArea>
-            }
-          />
-          <Route
-            path="/admin/analytics"
-            element={
-              <AdminArea>
-                <AdminAnalytics />
-              </AdminArea>
-            }
-          />
-          <Route
-            path="/admin/settings"
-            element={
-              <AdminArea>
-                <AdminOrderSettings />
-              </AdminArea>
-            }
-          />
-          <Route
-            path="/admin/delivery"
-            element={
-              <AdminArea>
-                <AdminDeliveryAreas />
-              </AdminArea>
-            }
-          />
-          <Route
-            path="/admin/products"
-            element={
-              <AdminArea>
-                <AdminProductRestrictions />
-              </AdminArea>
-            }
-          />
-          <Route
-            path="/admin/orders"
-            element={
-              <AdminArea>
-                <AdminOrders />
-              </AdminArea>
-            }
-          />
-          <Route
-            path="/admin/users"
-            element={
-              <AdminArea>
-                <AdminUsers />
-              </AdminArea>
-            }
-          />
-        </Routes>
+        <Suspense fallback={null}>
+          <Routes>
+            <Route path="/" element={<PizzaMain />} />
+            <Route path="/cart" element={<PizzaCart />} />
+            <Route path="/thank-you" element={<ThankYou />} />
+            {ALL_LEGAL_ROUTES.privacy.map((path) => (
+              <Route key={path} path={path} element={<PrivacyPolicy />} />
+            ))}
+            {ALL_LEGAL_ROUTES.terms.map((path) => (
+              <Route key={path} path={path} element={<Terms />} />
+            ))}
+            <Route
+              path="/admin"
+              element={
+                <AdminArea>
+                  <AdminPanel />
+                </AdminArea>
+              }
+            />
+            <Route
+              path="/admin/analytics"
+              element={
+                <AdminArea>
+                  <AdminAnalytics />
+                </AdminArea>
+              }
+            />
+            <Route
+              path="/admin/settings"
+              element={
+                <AdminArea>
+                  <AdminOrderSettings />
+                </AdminArea>
+              }
+            />
+            <Route
+              path="/admin/delivery"
+              element={
+                <AdminArea>
+                  <AdminDeliveryAreas />
+                </AdminArea>
+              }
+            />
+            <Route
+              path="/admin/products"
+              element={
+                <AdminArea>
+                  <AdminProductRestrictions />
+                </AdminArea>
+              }
+            />
+            <Route
+              path="/admin/orders"
+              element={
+                <AdminArea>
+                  <AdminOrders />
+                </AdminArea>
+              }
+            />
+            <Route
+              path="/admin/users"
+              element={
+                <AdminArea>
+                  <AdminUsers />
+                </AdminArea>
+              }
+            />
+          </Routes>
+        </Suspense>
       </main>
       {!isAdminPage && (
         <>

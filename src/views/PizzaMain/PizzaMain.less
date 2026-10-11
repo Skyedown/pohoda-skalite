@@ -136,11 +136,11 @@
     align-items: center;
     justify-content: center;
     padding: 15.118px 25.512px;
-    background: @primary-color;
+    background: @primary-cta;
     color: @text-white;
     font-family: @font-family-primary;
     font-size: 20.517px;
-    font-weight: 500;
+    font-weight: 700;
     text-transform: uppercase;
     border: none;
     border-radius: 70.866px;
@@ -154,8 +154,9 @@
       box-shadow: 0 8px 20px rgba(225, 124, 47, 0.3);
     }
 
+    // Large bold text keeps the white label readable on the brand orange.
     @media (max-width: @breakpoint-sm) {
-      font-size: 16px;
+      font-size: 1.1875rem;
       padding: 12px 20px;
     }
   }

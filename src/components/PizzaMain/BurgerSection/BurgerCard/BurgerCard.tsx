@@ -31,7 +31,7 @@ export const BurgerCard: React.FC<BurgerCardProps> = ({
         </span>
       )}
       <div className="burger-card__image">
-        <img src={item.image} alt={item.name} />
+        <img src={item.image} alt={item.name} loading="lazy" decoding="async" />
       </div>
       <h3 className="burger-card__name">
         {item.name}

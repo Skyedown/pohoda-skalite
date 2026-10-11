@@ -69,7 +69,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <div className="product-card__price">{price(product.price)}</div>
           <button
             className={`product-card__button ${isDisabled ? 'product-card__button--disabled' : ''}`}
-            aria-label={t('product_add_aria', { name: product.name })}
+            aria-label={
+              isDisabled
+                ? `${t('common_unavailable')}: ${product.name}`
+                : t('product_add_aria', { name: product.name })
+            }
           >
             <CartIcon />
             {isDisabled ? t('common_unavailable') : t('common_add')}

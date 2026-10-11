@@ -43,7 +43,7 @@ export const SimpleProductCard: React.FC<SimpleProductCardProps> = ({
       onClick={handleCardClick}
     >
       <div className="simple-product-card__image">
-        <img src={item.image} alt={item.name} loading="lazy" />
+        <img src={item.image} alt={item.name} loading="lazy" decoding="async" />
       </div>
       <h3 className="simple-product-card__name">{item.name}</h3>
       {item.description && (
@@ -86,7 +86,11 @@ export const SimpleProductCard: React.FC<SimpleProductCardProps> = ({
             className={`simple-product-card__button ${isDisabled ? 'simple-product-card__button--disabled' : ''}`}
             onClick={handleIncrement}
             disabled={isDisabled}
-            aria-label={t('product_add_aria', { name: item.name })}
+            aria-label={
+              isDisabled
+                ? `${t('common_unavailable')}: ${item.name}`
+                : t('product_add_aria', { name: item.name })
+            }
           >
             <CartIcon />
             {isDisabled ? t('common_unavailable_upper') : t('common_add_upper')}

@@ -10,7 +10,12 @@ const LocationSection: React.FC = () => {
       <div className="container">
         <div className="location-section__content">
           <div className="location-section__image">
-            <img src="/images/bar-pohoda.webp" alt="Pizza Pohoda" />
+            <img
+              src="/images/bar-pohoda.webp"
+              alt="Pizza Pohoda"
+              loading="lazy"
+              decoding="async"
+            />
           </div>
           <div className="location-section__info">
             <h2 className="location-section__title">Pizza Pohoda</h2>

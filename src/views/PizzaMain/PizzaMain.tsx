@@ -40,6 +40,11 @@ import {
 } from '../../hooks/useGsapAnimations';
 import './PizzaMain.less';
 
+// Preloaded in index.html; keep both in sync.
+const HERO_IMAGE = '/images/large-hero-pizza.webp';
+// React 18 does not know fetchPriority yet, so pass the attribute through.
+const HIGH_PRIORITY = { fetchpriority: 'high' };
+
 gsap.registerPlugin(ScrollTrigger);
 
 const PizzaMain: React.FC = () => {
@@ -145,9 +150,13 @@ const PizzaMain: React.FC = () => {
         </div>
         <div className="pizza-main__hero-pizza" ref={heroPizzaRef}>
           <img
-            src="/images/large-hero-pizza.png"
+            src={HERO_IMAGE}
             alt="Pizza Pohoda"
             className="pizza-main__hero-pizza-image"
+            width={1131}
+            height={1131}
+            decoding="async"
+            {...HIGH_PRIORITY}
           />
         </div>
       </section>

@@ -31,7 +31,7 @@ export const LangosCard: React.FC<LangosCardProps> = ({
         </span>
       )}
       <div className="langos-card__image">
-        <img src={item.image} alt={item.name} />
+        <img src={item.image} alt={item.name} loading="lazy" decoding="async" />
       </div>
       <h3 className="langos-card__name">
         {item.name}

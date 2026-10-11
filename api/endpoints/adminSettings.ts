@@ -110,10 +110,7 @@ async function loadOrSeed(): Promise<AdminSettingsPayload> {
 }
 
 router.get('/api/admin-settings', async (req, res) => {
-  res.setHeader(
-    'Cache-Control',
-    'no-store, no-cache, must-revalidate, private',
-  );
+  res.setHeader('Cache-Control', 'no-cache, must-revalidate, private');
   res.setHeader('Pragma', 'no-cache');
   res.setHeader('Expires', '0');
 
