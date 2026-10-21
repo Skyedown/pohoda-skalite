@@ -66,12 +66,13 @@ export const langosExtras: LocalizedExtra[] = [
 export const defaultExtras = pizzaExtras;
 
 /**
- * Get extras for a specific product type
+ * Get the extras a product can take, by its type
  */
-export const getExtrasForProductType = (
-  productType: string,
+export const getExtrasForProduct = (
+  product: LocalizedProduct,
 ): LocalizedExtra[] => {
-  switch (productType) {
+  if (product.noExtras) return [];
+  switch (product.type) {
     case 'burger':
       return burgerExtras;
     case 'langos':

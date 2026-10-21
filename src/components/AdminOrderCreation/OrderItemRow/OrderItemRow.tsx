@@ -89,24 +89,26 @@ const OrderItemRow: React.FC<OrderItemRowProps> = ({
 
       {/* Center: Quantity Controls + Prílohy Button + Upravit Button */}
       <div className="order-item-row__center">
-        <button
-          ref={extrasBtnRef}
-          type="button"
-          className="order-item-row__extras-btn"
-          onClick={() => onEditExtras(itemIndex)}
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
+        {availableExtras.length > 0 && (
+          <button
+            ref={extrasBtnRef}
+            type="button"
+            className="order-item-row__extras-btn"
+            onClick={() => onEditExtras(itemIndex)}
           >
-            <path d="M12 5v14M5 12h14" />
-          </svg>
-          Prílohy
-        </button>
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+            Prílohy
+          </button>
+        )}
         {item.product.ingredients &&
           item.product.ingredients.length > 0 &&
           item.product.type !== 'sides' &&

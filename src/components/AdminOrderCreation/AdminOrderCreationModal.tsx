@@ -14,7 +14,7 @@ import type { LocalizedProduct, DeliveryMethod } from '../../types';
 import type { Locale } from '../../i18n/types';
 import { getDeliveryRule } from '../../utils/deliveryRules';
 import {
-  getExtrasForProductType,
+  getExtrasForProduct,
   categoryLabels,
   calculateSubtotal,
   validateOrderForm,
@@ -321,8 +321,7 @@ const AdminOrderCreationModal: React.FC<AdminOrderCreationModalProps> = ({
       const item = prev[editingItemIndex];
       if (!item) return prev;
 
-      // Get the correct extras for this product type
-      const availableExtras = getExtrasForProductType(item.product.type);
+      const availableExtras = getExtrasForProduct(item.product);
 
       const currentExtraIds = item.extras.map((e) => e.id);
       const newExtraIds = currentExtraIds.includes(extraId)

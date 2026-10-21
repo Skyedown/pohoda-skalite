@@ -28,6 +28,7 @@ export function localizeProduct(
     type: product.type,
     weight: product.weight,
     spicy: product.spicy,
+    noExtras: product.noExtras,
   };
 }
 

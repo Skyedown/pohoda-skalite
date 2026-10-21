@@ -160,5 +160,6 @@ export const pizzas: Product[] = [
     ingredients: [ING.garlic],
     allergens: ['1'],
     type: 'pizza',
+    noExtras: true,
   },
 ];

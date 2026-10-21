@@ -2,7 +2,7 @@ import React from 'react';
 import OrderItemRow from '../OrderItemRow/OrderItemRow';
 import OrderSummary from '../../PizzaCart/OrderSummary/OrderSummary';
 import type { AdminOrderItem } from '../adminHelpers';
-import { getExtrasForProductType } from '../adminHelpers';
+import { getExtrasForProduct } from '../adminHelpers';
 import './OrderItemsList.less';
 
 interface OrderItemsListProps {
@@ -38,7 +38,7 @@ const OrderItemsList: React.FC<OrderItemsListProps> = ({
           item={item}
           itemIndex={itemIndex}
           isEditing={editingItemIndex === itemIndex}
-          availableExtras={getExtrasForProductType(item.product.type)}
+          availableExtras={getExtrasForProduct(item.product)}
           onQuantityChange={onQuantityChange}
           onEditExtras={onEditExtras}
           onToggleExtra={onToggleExtra}

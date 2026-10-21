@@ -35,6 +35,8 @@ export interface Product {
   type: ProductType;
   weight?: string;
   spicy?: boolean;
+  /** Sold as is: ingredients may be removed, but no extras can be added. */
+  noExtras?: boolean;
 }
 
 /**
@@ -57,6 +59,7 @@ export interface LocalizedProduct {
   type: ProductType;
   weight?: string;
   spicy?: boolean;
+  noExtras?: boolean;
 }
 
 export interface Extra {
