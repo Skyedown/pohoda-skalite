@@ -104,16 +104,13 @@ export function getTimeBasedStatus(t: Translate): OrderingStatusInfo {
   };
 }
 
-export function resolveOrderingStatus(
+function getAdminStatus(
   settings: AdminSettings,
   locale: Locale,
   t: Translate,
-): OrderingStatusInfo {
-  const disabledProductTypes = settings.disabledProductTypes ?? [];
-  const soldOut = disabledProductTypes.length
-    ? joinDisabledLabels(disabledProductTypes, t)
-    : '';
-
+  disabledProductTypes: ProductType[],
+  soldOut: string,
+): OrderingStatusInfo | null {
   if (settings.mode === 'disabled') {
     return {
       status: 'admin_disabled',
@@ -144,14 +141,39 @@ export function resolveOrderingStatus(
       message += ` ${t('status_sold_out_parenthetical', { products: soldOut })}`;
     }
     return {
-      status: 'admin_wait_time',
-      canOrder: true,
+      status: 'admin_disabled',
+      canOrder: false,
       message,
       disabledProductTypes,
     };
   }
 
+  return null;
+}
+
+export function resolveOrderingStatus(
+  settings: AdminSettings,
+  locale: Locale,
+  t: Translate,
+): OrderingStatusInfo {
+  const disabledProductTypes = settings.disabledProductTypes ?? [];
+  const soldOut = disabledProductTypes.length
+    ? joinDisabledLabels(disabledProductTypes, t)
+    : '';
+
   const timeBased = getTimeBasedStatus(t);
+  // Outside opening hours no admin mode may re-enable ordering.
+  if (timeBased.canOrder) {
+    const adminStatus = getAdminStatus(
+      settings,
+      locale,
+      t,
+      disabledProductTypes,
+      soldOut,
+    );
+    if (adminStatus) return adminStatus;
+  }
+
   let message = timeBased.message;
   if (soldOut) {
     const sentence = t('status_sold_out_sentence', { products: soldOut });

@@ -38,7 +38,8 @@ const PizzaCart: React.FC = () => {
     handleSubmit,
   } = usePizzaCart();
 
-  const isOrdersDisabled = adminSettings.mode === 'disabled';
+  const isOrdersDisabled =
+    adminSettings.mode === 'disabled' || adminSettings.mode === 'customNote';
   const headTitle = `${t('cart_head_title')} | ${t('seo_site_name')}`;
 
   if (cart.length === 0) {

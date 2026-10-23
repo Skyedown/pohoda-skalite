@@ -150,9 +150,7 @@ const OrderOverloadModal: React.FC<OrderOverloadModalProps> = ({
         </div>
 
         <button className="order-overload-modal__button" onClick={onClose}>
-          {isWaitTimeMode || isCustomNoteMode
-            ? t('overload_continue')
-            : t('overload_understood')}
+          {isWaitTimeMode ? t('overload_continue') : t('overload_understood')}
         </button>
       </div>
     </div>

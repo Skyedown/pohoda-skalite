@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useAdminSettings } from '../../hooks/useAdminSettings';
 import { useOrderingStatus } from '../../hooks/useOrderingStatus';
+import { getTimeBasedStatus } from '../../utils/orderingStatus';
 import { useLocale } from '../../i18n/LocaleContext';
 import { config } from '../../config';
 import { toEur } from '../../i18n/format';
@@ -130,6 +131,13 @@ export function usePizzaCart() {
   );
 
   const handleSubmit = useCallback(async () => {
+    // The status hook refreshes once a minute; check the clock at click time.
+    const timeStatus = getTimeBasedStatus(t);
+    if (!timeStatus.canOrder) {
+      setSubmitError(timeStatus.message);
+      return;
+    }
+
     const formErrors = validateCartForm(formData, deliveryMethod, locale, t);
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);

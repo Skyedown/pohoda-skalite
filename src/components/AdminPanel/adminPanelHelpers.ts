@@ -57,6 +57,6 @@ export const MODES: {
   {
     value: 'customNote',
     label: 'Vlastná poznámka',
-    description: 'Zobraziť vlastné oznámenie',
+    description: 'Zobrazí vlastné oznámenie a pozastaví objednávky',
   },
 ];

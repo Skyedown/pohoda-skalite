@@ -46,6 +46,9 @@ services:
       # VITE_ADMIN_* values so an existing deployment keeps working untouched.
       - ADMIN_USERNAME=${ADMIN_USERNAME:-${VITE_ADMIN_NAME:-}}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD:-${VITE_ADMIN_PASSWORD:-}}
+      # Same hours the frontend reads, so the API can reject late orders.
+      - PREORDER_START_TIME=${VITE_PREORDER_START_TIME:-10:00}
+      - LAST_ORDER_TIME=${VITE_LAST_ORDER_TIME:-21:30}
     volumes:
       # Persist admin settings between container restarts
       - api-data:/app/dist/data

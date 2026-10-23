@@ -9,6 +9,7 @@ import {
   useFried,
 } from '../../hooks/useMenu';
 import { useAdminSettings } from '../../hooks/useAdminSettings';
+import { useOrderingStatus } from '../../hooks/useOrderingStatus';
 import { useLocale } from '../../i18n/LocaleContext';
 import { isProductDisabled } from '../../utils/productAvailability';
 import {
@@ -50,6 +51,10 @@ gsap.registerPlugin(ScrollTrigger);
 const PizzaMain: React.FC = () => {
   const { t, locale } = useLocale();
   const adminSettings = useAdminSettings();
+  const orderingStatus = useOrderingStatus();
+  const isAdminAnnouncement =
+    orderingStatus.status === 'admin_disabled' ||
+    orderingStatus.status === 'admin_wait_time';
   const pizzas = usePizzas();
   const capovane = useCapovane();
   const drinks = useDrinks();
@@ -68,10 +73,10 @@ const PizzaMain: React.FC = () => {
   useAllMenuAnimations();
 
   useEffect(() => {
-    if (adminSettings.mode !== 'off') {
+    if (isAdminAnnouncement) {
       setShowOverloadModal(true);
     }
-  }, [adminSettings.mode]);
+  }, [isAdminAnnouncement]);
 
   const handleAddToCart = useCallback((pizza: LocalizedProduct) => {
     setSelectedPizza(pizza);

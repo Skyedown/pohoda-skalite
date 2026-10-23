@@ -18,6 +18,7 @@ import {
   type CustomerOrderPayload,
 } from '../utils/customerOrder.js';
 import { publishOrder } from '../utils/messageQueue.js';
+import { isWithinOrderingHours } from '../utils/orderingHours.js';
 import { Order } from '../models/Order.js';
 
 const router = Router();
@@ -81,6 +82,11 @@ router.post('/api/send-order-emails', async (req, res) => {
     if (!order || !order.delivery || !order.delivery.email) {
       console.error('❌ Invalid order data received');
       return res.status(400).json({ error: 'Invalid order data' });
+    }
+
+    if (!isWithinOrderingHours()) {
+      console.warn('⛔ Order rejected outside ordering hours');
+      return res.status(403).json({ error: 'Ordering is closed' });
     }
 
     console.log('📦 Order details:', {
