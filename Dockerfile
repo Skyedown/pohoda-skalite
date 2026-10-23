@@ -4,7 +4,7 @@
 # from the container's environment on startup, so the same image runs against
 # any .env — no rebuild for a changed phone number, GA id or admin password.
 
-FROM node:20-alpine AS builder
+FROM node:22.23.4-alpine AS builder
 
 WORKDIR /app
 

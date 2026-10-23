@@ -1,5 +1,5 @@
 # Node.js API Dockerfile
-FROM node:20-alpine
+FROM node:22.23.4-alpine
 
 # Install wget for healthcheck
 RUN apk add --no-cache wget
