@@ -57,6 +57,7 @@ export const MODES: {
   {
     value: 'customNote',
     label: 'Vlastná poznámka',
-    description: 'Zobrazí vlastné oznámenie a pozastaví objednávky',
+    description:
+      'Zobrazí vlastné oznámenie (napr. promo akciu) s obrázkom, objednávky môžu zostať zapnuté',
   },
 ];

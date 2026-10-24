@@ -16,6 +16,8 @@ export interface ISettings extends Document {
   mode: 'off' | 'disabled' | 'waitTime' | 'customNote';
   waitTimeMinutes: number;
   customNote: ILocalizedText;
+  customNoteOrderingEnabled: boolean;
+  customNoteImageId: string;
   disabledReason: ILocalizedText;
   disabledProductTypes: string[];
   disabledProductIds: string[];
@@ -55,6 +57,8 @@ const settingsSchema = new Schema<ISettings>(
     },
     waitTimeMinutes: { type: Number, default: 60 },
     customNote: { type: localizedTextSchema, default: () => ({}) },
+    customNoteOrderingEnabled: { type: Boolean, default: false },
+    customNoteImageId: { type: String, default: '' },
     disabledReason: { type: localizedTextSchema, default: () => ({}) },
     disabledProductTypes: [{ type: String }],
     disabledProductIds: [{ type: String }],

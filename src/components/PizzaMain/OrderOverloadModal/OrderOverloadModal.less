@@ -102,6 +102,20 @@
     }
   }
 
+  &__image {
+    display: block;
+    max-width: 100%;
+    max-height: 50vh;
+    margin: 0 auto @spacing-lg;
+    object-fit: contain;
+    border-radius: @border-radius-lg;
+
+    @media (max-width: @breakpoint-sm) {
+      max-height: 40vh;
+      margin-bottom: @spacing-md;
+    }
+  }
+
   &__title {
     font-family: @font-family-heading;
     font-size: 32px;

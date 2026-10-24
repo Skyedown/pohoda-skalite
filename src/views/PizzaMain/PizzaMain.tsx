@@ -12,6 +12,7 @@ import { useAdminSettings } from '../../hooks/useAdminSettings';
 import { useOrderingStatus } from '../../hooks/useOrderingStatus';
 import { useLocale } from '../../i18n/LocaleContext';
 import { isProductDisabled } from '../../utils/productAvailability';
+import { getAnnouncementImageUrl } from '../../utils/adminSettings';
 import {
   buildAlternates,
   buildDeliverySchema,
@@ -54,7 +55,8 @@ const PizzaMain: React.FC = () => {
   const orderingStatus = useOrderingStatus();
   const isAdminAnnouncement =
     orderingStatus.status === 'admin_disabled' ||
-    orderingStatus.status === 'admin_wait_time';
+    orderingStatus.status === 'admin_wait_time' ||
+    orderingStatus.status === 'admin_note';
   const pizzas = usePizzas();
   const capovane = useCapovane();
   const drinks = useDrinks();
@@ -255,6 +257,10 @@ const PizzaMain: React.FC = () => {
         mode={adminSettings.mode}
         waitTimeMinutes={adminSettings.waitTimeMinutes}
         customNote={adminSettings.customNote[locale]}
+        customNoteImageUrl={getAnnouncementImageUrl(
+          adminSettings.customNoteImageId,
+        )}
+        customNoteOrderingEnabled={adminSettings.customNoteOrderingEnabled}
         disabledReason={adminSettings.disabledReason[locale]}
       />
     </div>

@@ -13,6 +13,8 @@ export interface AdminSettingsPayload {
   mode: 'off' | 'disabled' | 'waitTime' | 'customNote';
   waitTimeMinutes: number;
   customNote: LocalizedText;
+  customNoteOrderingEnabled: boolean;
+  customNoteImageId: string;
   disabledReason: LocalizedText;
   disabledProductTypes: string[];
   disabledProductIds: string[];
@@ -62,6 +64,8 @@ export function createDefaultSettings(): AdminSettingsPayload {
     mode: 'off',
     waitTimeMinutes: 60,
     customNote: { sk: '', pl: '' },
+    customNoteOrderingEnabled: false,
+    customNoteImageId: '',
     disabledReason: {
       sk: 'Z dôvodu veľkého počtu objednávok sme momentálne nútení pozastaviť prijímanie nových online objednávok. Ďakujeme za pochopenie a ospravedlňujeme sa za nepríjemnosti. Skúste to prosím neskôr alebo nás kontaktujte telefonicky.',
       pl: 'Z powodu dużej liczby zamówień jesteśmy zmuszeni tymczasowo wstrzymać przyjmowanie nowych zamówień online. Dziękujemy za wyrozumiałość i przepraszamy za niedogodności. Spróbuj później lub skontaktuj się z nami telefonicznie.',

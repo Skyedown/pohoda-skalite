@@ -12,7 +12,8 @@ export type OrderingStatus =
   | 'orders_closed'
   | 'closed'
   | 'admin_disabled'
-  | 'admin_wait_time';
+  | 'admin_wait_time'
+  | 'admin_note';
 
 export interface OrderingStatusInfo {
   status: OrderingStatus;
@@ -141,8 +142,10 @@ function getAdminStatus(
       message += ` ${t('status_sold_out_parenthetical', { products: soldOut })}`;
     }
     return {
-      status: 'admin_disabled',
-      canOrder: false,
+      status: settings.customNoteOrderingEnabled
+        ? 'admin_note'
+        : 'admin_disabled',
+      canOrder: settings.customNoteOrderingEnabled,
       message,
       disabledProductTypes,
     };

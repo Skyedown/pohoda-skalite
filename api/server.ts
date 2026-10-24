@@ -10,6 +10,7 @@ import { disableNewProducts } from './utils/productLaunch.js';
 import healthRouter from './endpoints/health.js';
 import authRouter from './endpoints/auth.js';
 import adminSettingsRouter from './endpoints/adminSettings.js';
+import announcementImageRouter from './endpoints/announcementImage.js';
 import sendOrderEmailsRouter from './endpoints/sendOrderEmails.js';
 import ordersRouter from './endpoints/orders.js';
 import orderStatsRouter from './endpoints/orderStats.js';
@@ -61,6 +62,7 @@ app.use(authRouter);
 app.use('/api/orders', requireAuth);
 
 app.use(adminSettingsRouter);
+app.use(announcementImageRouter);
 app.use(sendOrderEmailsRouter);
 app.use(ordersRouter);
 app.use(orderStatsRouter);

@@ -15,6 +15,8 @@ export interface AdminSettings {
   mode: AnnouncementMode;
   waitTimeMinutes: number;
   customNote: LocalizedText;
+  customNoteOrderingEnabled: boolean;
+  customNoteImageId: string;
   disabledReason: LocalizedText;
   disabledProductTypes: ProductType[];
   disabledProductIds: string[];
@@ -35,6 +37,8 @@ export const DEFAULT_SETTINGS: AdminSettings = {
   mode: 'off',
   waitTimeMinutes: 60,
   customNote: { sk: '', pl: '' },
+  customNoteOrderingEnabled: false,
+  customNoteImageId: '',
   disabledReason: {
     sk: 'Z dôvodu veľkého počtu objednávok sme momentálne nútení pozastaviť prijímanie nových online objednávok. Ďakujeme za pochopenie a ospravedlňujeme sa za nepríjemnosti. Skúste to prosím neskôr alebo nás kontaktujte telefonicky.',
     pl: 'Z powodu dużej liczby zamówień jesteśmy zmuszeni tymczasowo wstrzymać przyjmowanie nowych zamówień online. Dziękujemy za wyrozumiałość i przepraszamy za niedogodności. Spróbuj później lub skontaktuj się z nami telefonicznie.',
@@ -86,6 +90,9 @@ function normalizeSettings(raw: Record<string, unknown>): AdminSettings {
     ...DEFAULT_SETTINGS,
     ...raw,
     customNote: toLocalizedText(raw.customNote, DEFAULT_SETTINGS.customNote),
+    customNoteOrderingEnabled: raw.customNoteOrderingEnabled === true,
+    customNoteImageId:
+      typeof raw.customNoteImageId === 'string' ? raw.customNoteImageId : '',
     disabledReason: toLocalizedText(
       raw.disabledReason,
       DEFAULT_SETTINGS.disabledReason,
@@ -137,6 +144,31 @@ export async function saveAdminSettings(
     }
   } catch (error) {
     console.error('Failed to save admin settings to server:', error);
+  }
+
+  return null;
+}
+
+export function getAnnouncementImageUrl(imageId: string): string {
+  return imageId ? `${API_URL}/api/announcement-image/${imageId}` : '';
+}
+
+export async function uploadAnnouncementImage(
+  image: Blob,
+): Promise<string | null> {
+  try {
+    const response = await adminFetch('/api/announcement-image', {
+      method: 'POST',
+      headers: { 'Content-Type': image.type },
+      body: image,
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      return typeof result.id === 'string' ? result.id : null;
+    }
+  } catch (error) {
+    console.error('Failed to upload announcement image:', error);
   }
 
   return null;

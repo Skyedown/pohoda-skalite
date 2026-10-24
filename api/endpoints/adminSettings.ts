@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import { isMongoConnected } from '../utils/db.js';
 import { requireAuth } from '../utils/auth.js';
 import { Settings } from '../models/Settings.js';
+import { AnnouncementImage, isImageId } from '../models/AnnouncementImage.js';
 import {
   createDefaultSettings,
   sanitizeDeliveryCities,
@@ -70,6 +71,10 @@ function normalize(raw: Record<string, unknown>): AdminSettingsPayload {
         ? raw.waitTimeMinutes
         : defaults.waitTimeMinutes,
     customNote: toLocalizedText(raw.customNote, defaults.customNote),
+    customNoteOrderingEnabled: !!raw.customNoteOrderingEnabled,
+    customNoteImageId: isImageId(raw.customNoteImageId)
+      ? raw.customNoteImageId
+      : '',
     disabledReason: toLocalizedText(
       raw.disabledReason,
       defaults.disabledReason,
@@ -192,10 +197,22 @@ router.post('/api/admin-settings', requireAuth, async (req, res) => {
       return res.status(400).json({ error: 'Invalid deliveryCities' });
     }
 
+    const customNoteImageId =
+      typeof body.customNoteImageId === 'string' ? body.customNoteImageId : '';
+    if (
+      customNoteImageId &&
+      (!isImageId(customNoteImageId) ||
+        !(await AnnouncementImage.exists({ _id: customNoteImageId })))
+    ) {
+      return res.status(400).json({ error: 'Invalid customNoteImageId' });
+    }
+
     const settings: AdminSettingsPayload = {
       mode: body.mode,
       waitTimeMinutes: body.waitTimeMinutes,
       customNote,
+      customNoteOrderingEnabled: !!body.customNoteOrderingEnabled,
+      customNoteImageId,
       disabledReason,
       disabledProductTypes: body.disabledProductTypes || [],
       disabledProductIds: body.disabledProductIds || [],
@@ -212,6 +229,11 @@ router.post('/api/admin-settings', requireAuth, async (req, res) => {
       new: true,
       setDefaultsOnInsert: true,
     });
+
+    // Uploads that were replaced or never saved are no longer referenced.
+    await AnnouncementImage.deleteMany(
+      customNoteImageId ? { _id: { $ne: customNoteImageId } } : {},
+    );
 
     writeMirror(settings);
     res.json({ success: true, settings });

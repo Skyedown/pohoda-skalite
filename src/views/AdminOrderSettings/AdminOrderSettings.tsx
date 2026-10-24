@@ -12,6 +12,8 @@ import type { LocalizedText } from '../../i18n/types';
 import { AdminModeSelector } from '../../components/AdminPanel/AdminModeSelector/AdminModeSelector';
 import { AdminWaitTimeSection } from '../../components/AdminPanel/AdminWaitTimeSection/AdminWaitTimeSection';
 import { AdminLocalizedTextareaSection } from '../../components/AdminPanel/AdminLocalizedTextareaSection/AdminLocalizedTextareaSection';
+import { AdminCustomNoteOrdering } from '../../components/AdminPanel/AdminCustomNoteOrdering/AdminCustomNoteOrdering';
+import { AdminAnnouncementImage } from '../../components/AdminPanel/AdminAnnouncementImage/AdminAnnouncementImage';
 import { AdminCardPayment } from '../../components/AdminPanel/AdminCardPayment/AdminCardPayment';
 import { AdminSaveActions } from '../../components/AdminPanel/AdminSaveActions/AdminSaveActions';
 import '../AdminPanel/AdminPanel.less';
@@ -42,6 +44,22 @@ const AdminOrderSettings: React.FC = () => {
     setSettings((prev) => ({ ...prev, customNote }));
     setSaveSuccess(false);
   }, []);
+
+  const handleCustomNoteOrderingToggle = useCallback(() => {
+    setSettings((prev) => ({
+      ...prev,
+      customNoteOrderingEnabled: !prev.customNoteOrderingEnabled,
+    }));
+    setSaveSuccess(false);
+  }, []);
+
+  const handleCustomNoteImageChange = useCallback(
+    (customNoteImageId: string) => {
+      setSettings((prev) => ({ ...prev, customNoteImageId }));
+      setSaveSuccess(false);
+    },
+    [],
+  );
 
   const handleDisabledReasonChange = useCallback(
     (disabledReason: LocalizedText) => {
@@ -128,15 +146,25 @@ const AdminOrderSettings: React.FC = () => {
           )}
 
           {settings.mode === 'customNote' && (
-            <AdminLocalizedTextareaSection
-              id="customNote"
-              title="Vlastná poznámka"
-              label="Text oznámenia"
-              placeholderSk="Zadajte vlastné oznámenie pre zákazníkov..."
-              placeholderPl="Wpisz własne ogłoszenie dla klientów..."
-              value={settings.customNote}
-              onChange={handleCustomNoteChange}
-            />
+            <>
+              <AdminLocalizedTextareaSection
+                id="customNote"
+                title="Vlastná poznámka"
+                label="Text oznámenia"
+                placeholderSk="Zadajte vlastné oznámenie pre zákazníkov..."
+                placeholderPl="Wpisz własne ogłoszenie dla klientów..."
+                value={settings.customNote}
+                onChange={handleCustomNoteChange}
+              />
+              <AdminAnnouncementImage
+                imageId={settings.customNoteImageId}
+                onChange={handleCustomNoteImageChange}
+              />
+              <AdminCustomNoteOrdering
+                enabled={settings.customNoteOrderingEnabled}
+                onToggle={handleCustomNoteOrderingToggle}
+              />
+            </>
           )}
 
           <AdminCardPayment

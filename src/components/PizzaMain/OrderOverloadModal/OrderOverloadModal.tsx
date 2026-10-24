@@ -3,6 +3,10 @@ import { useLocale } from '../../../i18n/LocaleContext';
 import { formatWaitTime } from '../../../utils/waitTime';
 import { COMPANY, formatPhone } from '../../../constants/company';
 import type { AnnouncementMode } from '../../../utils/adminSettings';
+import {
+  OverloadModalIcon,
+  type OverloadIconVariant,
+} from './OverloadModalIcon';
 import './OrderOverloadModal.less';
 
 interface OrderOverloadModalProps {
@@ -11,6 +15,8 @@ interface OrderOverloadModalProps {
   mode: AnnouncementMode;
   waitTimeMinutes: number;
   customNote: string;
+  customNoteImageUrl: string;
+  customNoteOrderingEnabled: boolean;
   disabledReason: string;
 }
 
@@ -20,6 +26,8 @@ const OrderOverloadModal: React.FC<OrderOverloadModalProps> = ({
   mode,
   waitTimeMinutes,
   customNote,
+  customNoteImageUrl,
+  customNoteOrderingEnabled,
   disabledReason,
 }) => {
   const { t, locale } = useLocale();
@@ -28,12 +36,19 @@ const OrderOverloadModal: React.FC<OrderOverloadModalProps> = ({
 
   const isWaitTimeMode = mode === 'waitTime';
   const isCustomNoteMode = mode === 'customNote';
+  const canContinue =
+    isWaitTimeMode || (isCustomNoteMode && customNoteOrderingEnabled);
+  const imageUrl = isCustomNoteMode ? customNoteImageUrl : '';
 
   const title = isCustomNoteMode
     ? t('overload_title_note')
     : isWaitTimeMode
       ? t('overload_title_wait')
       : t('overload_title_disabled');
+
+  let iconVariant: OverloadIconVariant = 'warning';
+  if (isWaitTimeMode) iconVariant = 'clock';
+  else if (canContinue) iconVariant = 'info';
 
   return (
     <div className="order-overload-modal-overlay" onClick={onClose}>
@@ -62,56 +77,18 @@ const OrderOverloadModal: React.FC<OrderOverloadModalProps> = ({
           </svg>
         </button>
 
-        <div className="order-overload-modal__icon">
-          {isWaitTimeMode ? (
-            <svg
-              width="64"
-              height="64"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <polyline
-                points="12 6 12 12 16 14"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          ) : (
-            <svg
-              width="64"
-              height="64"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path
-                d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <line
-                x1="12"
-                y1="9"
-                x2="12"
-                y2="13"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <line
-                x1="12"
-                y1="17"
-                x2="12.01"
-                y2="17"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          )}
-        </div>
+        {imageUrl ? (
+          <img
+            src={imageUrl}
+            alt={title}
+            className="order-overload-modal__image"
+            decoding="async"
+          />
+        ) : (
+          <div className="order-overload-modal__icon">
+            <OverloadModalIcon variant={iconVariant} />
+          </div>
+        )}
 
         <h2 className="order-overload-modal__title">{title}</h2>
 
@@ -150,7 +127,7 @@ const OrderOverloadModal: React.FC<OrderOverloadModalProps> = ({
         </div>
 
         <button className="order-overload-modal__button" onClick={onClose}>
-          {isWaitTimeMode ? t('overload_continue') : t('overload_understood')}
+          {canContinue ? t('overload_continue') : t('overload_understood')}
         </button>
       </div>
     </div>

@@ -40,6 +40,8 @@ const OrderingStatusBanner: React.FC<OrderingStatusBannerProps> = ({
       case 'preorder':
       case 'admin_wait_time':
         return 'ordering-status-banner--preorder';
+      case 'admin_note':
+        return 'ordering-status-banner--note';
       default:
         return '';
     }
