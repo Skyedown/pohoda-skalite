@@ -150,7 +150,8 @@ export async function saveAdminSettings(
 }
 
 export function getAnnouncementImageUrl(imageId: string): string {
-  return imageId ? `${API_URL}/api/announcement-image/${imageId}` : '';
+  // `v` busts empty responses that an earlier API build cached as immutable.
+  return imageId ? `${API_URL}/api/announcement-image/${imageId}?v=2` : '';
 }
 
 export async function uploadAnnouncementImage(

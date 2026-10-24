@@ -69,13 +69,14 @@ router.get('/api/announcement-image/:id', async (req, res) => {
   }
 
   try {
-    const image = await AnnouncementImage.findById(id).lean();
+    // Not lean(): a lean doc holds a BSON Binary, which Buffer.from() empties.
+    const image = await AnnouncementImage.findById(id);
     if (!image) return res.status(404).end();
 
     // Every upload gets a fresh id, so a cached copy never goes stale.
     res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
     res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.type(image.contentType).send(Buffer.from(image.data));
+    res.type(image.contentType).send(image.data);
   } catch (error) {
     console.error('❌ Error reading announcement image:', error);
     res.status(500).end();
