@@ -13,6 +13,7 @@ import {
   VALID_MODES,
   VALID_PRODUCT_TYPES,
   type AdminSettingsPayload,
+  type LocalizedText,
 } from '../utils/settingsDefaults.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -52,6 +53,16 @@ function readMirror(): AdminSettingsPayload | null {
   }
 }
 
+// Older records held one image id shared by both storefronts.
+function toImageIds(value: unknown): LocalizedText {
+  if (isImageId(value)) return { sk: value, pl: value };
+  const record = (value ?? {}) as Partial<Record<keyof LocalizedText, unknown>>;
+  return {
+    sk: isImageId(record.sk) ? record.sk : '',
+    pl: isImageId(record.pl) ? record.pl : '',
+  };
+}
+
 function normalize(raw: Record<string, unknown>): AdminSettingsPayload {
   const defaults = createDefaultSettings();
 
@@ -72,9 +83,7 @@ function normalize(raw: Record<string, unknown>): AdminSettingsPayload {
         : defaults.waitTimeMinutes,
     customNote: toLocalizedText(raw.customNote, defaults.customNote),
     customNoteOrderingEnabled: !!raw.customNoteOrderingEnabled,
-    customNoteImageId: isImageId(raw.customNoteImageId)
-      ? raw.customNoteImageId
-      : '',
+    customNoteImageId: toImageIds(raw.customNoteImageId),
     disabledReason: toLocalizedText(
       raw.disabledReason,
       defaults.disabledReason,
@@ -197,12 +206,13 @@ router.post('/api/admin-settings', requireAuth, async (req, res) => {
       return res.status(400).json({ error: 'Invalid deliveryCities' });
     }
 
-    const customNoteImageId =
-      typeof body.customNoteImageId === 'string' ? body.customNoteImageId : '';
+    const customNoteImageId = toImageIds(body.customNoteImageId);
+    const imageIds = [
+      ...new Set([customNoteImageId.sk, customNoteImageId.pl]),
+    ].filter(Boolean);
     if (
-      customNoteImageId &&
-      (!isImageId(customNoteImageId) ||
-        !(await AnnouncementImage.exists({ _id: customNoteImageId })))
+      (await AnnouncementImage.countDocuments({ _id: { $in: imageIds } })) !==
+      imageIds.length
     ) {
       return res.status(400).json({ error: 'Invalid customNoteImageId' });
     }
@@ -231,9 +241,7 @@ router.post('/api/admin-settings', requireAuth, async (req, res) => {
     });
 
     // Uploads that were replaced or never saved are no longer referenced.
-    await AnnouncementImage.deleteMany(
-      customNoteImageId ? { _id: { $ne: customNoteImageId } } : {},
-    );
+    await AnnouncementImage.deleteMany({ _id: { $nin: imageIds } });
 
     writeMirror(settings);
     res.json({ success: true, settings });

@@ -54,7 +54,7 @@ const AdminOrderSettings: React.FC = () => {
   }, []);
 
   const handleCustomNoteImageChange = useCallback(
-    (customNoteImageId: string) => {
+    (customNoteImageId: LocalizedText) => {
       setSettings((prev) => ({ ...prev, customNoteImageId }));
       setSaveSuccess(false);
     },
@@ -157,7 +157,7 @@ const AdminOrderSettings: React.FC = () => {
                 onChange={handleCustomNoteChange}
               />
               <AdminAnnouncementImage
-                imageId={settings.customNoteImageId}
+                imageIds={settings.customNoteImageId}
                 onChange={handleCustomNoteImageChange}
               />
               <AdminCustomNoteOrdering

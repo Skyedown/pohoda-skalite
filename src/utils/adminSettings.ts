@@ -16,7 +16,7 @@ export interface AdminSettings {
   waitTimeMinutes: number;
   customNote: LocalizedText;
   customNoteOrderingEnabled: boolean;
-  customNoteImageId: string;
+  customNoteImageId: LocalizedText;
   disabledReason: LocalizedText;
   disabledProductTypes: ProductType[];
   disabledProductIds: string[];
@@ -38,7 +38,7 @@ export const DEFAULT_SETTINGS: AdminSettings = {
   waitTimeMinutes: 60,
   customNote: { sk: '', pl: '' },
   customNoteOrderingEnabled: false,
-  customNoteImageId: '',
+  customNoteImageId: { sk: '', pl: '' },
   disabledReason: {
     sk: 'Z dôvodu veľkého počtu objednávok sme momentálne nútení pozastaviť prijímanie nových online objednávok. Ďakujeme za pochopenie a ospravedlňujeme sa za nepríjemnosti. Skúste to prosím neskôr alebo nás kontaktujte telefonicky.',
     pl: 'Z powodu dużej liczby zamówień jesteśmy zmuszeni tymczasowo wstrzymać przyjmowanie nowych zamówień online. Dziękujemy za wyrozumiałość i przepraszamy za niedogodności. Spróbuj później lub skontaktuj się z nami telefonicznie.',
@@ -91,8 +91,12 @@ function normalizeSettings(raw: Record<string, unknown>): AdminSettings {
     ...raw,
     customNote: toLocalizedText(raw.customNote, DEFAULT_SETTINGS.customNote),
     customNoteOrderingEnabled: raw.customNoteOrderingEnabled === true,
-    customNoteImageId:
-      typeof raw.customNoteImageId === 'string' ? raw.customNoteImageId : '',
+    customNoteImageId: toLocalizedText(
+      raw.customNoteImageId,
+      typeof raw.customNoteImageId === 'string'
+        ? { sk: raw.customNoteImageId, pl: raw.customNoteImageId }
+        : DEFAULT_SETTINGS.customNoteImageId,
+    ),
     disabledReason: toLocalizedText(
       raw.disabledReason,
       DEFAULT_SETTINGS.disabledReason,

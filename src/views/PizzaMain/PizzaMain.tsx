@@ -258,7 +258,7 @@ const PizzaMain: React.FC = () => {
         waitTimeMinutes={adminSettings.waitTimeMinutes}
         customNote={adminSettings.customNote[locale]}
         customNoteImageUrl={getAnnouncementImageUrl(
-          adminSettings.customNoteImageId,
+          adminSettings.customNoteImageId[locale],
         )}
         customNoteOrderingEnabled={adminSettings.customNoteOrderingEnabled}
         disabledReason={adminSettings.disabledReason[locale]}
