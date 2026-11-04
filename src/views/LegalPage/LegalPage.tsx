@@ -76,27 +76,6 @@ const LegalPage: React.FC<LegalPageProps> = ({
         ))}
       </Helmet>
 
-      <Link
-        to="/"
-        className="privacy-policy__close"
-        aria-label={t('common_close')}
-      >
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-        >
-          <path
-            d="M18 6L6 18M6 6l12 12"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </Link>
-
       <div className="container">
         <div className="privacy-policy__content">
           <h1 className="privacy-policy__title">{title}</h1>

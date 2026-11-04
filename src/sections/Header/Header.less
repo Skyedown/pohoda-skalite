@@ -332,17 +332,20 @@
   }
 
   // Mobile Menu Content
+  // Centred with auto margins, not align-items: when the menu is taller than
+  // the visible area (iOS Safari toolbars), it starts at the top and scrolls
+  // instead of clipping the logo off-screen.
   &__mobile-menu {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
+    height: 100dvh;
     z-index: 1600;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px;
+    padding: max(40px, calc(env(safe-area-inset-top) + 24px)) 40px
+      max(40px, calc(env(safe-area-inset-bottom) + 24px));
     overflow-y: auto;
 
     &--closing {
@@ -357,6 +360,7 @@
       gap: 32px;
       width: 100%;
       max-width: 400px;
+      margin: auto;
       opacity: 0;
       animation: fadeInLinks 0.4s ease 0.3s forwards;
     }
