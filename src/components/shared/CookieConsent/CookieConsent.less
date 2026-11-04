@@ -104,6 +104,7 @@
   }
 
   &__button {
+    min-height: 2.75rem; // 44 px touch target
     padding: 12px 28px;
     font-family: @font-family-primary;
     font-size: 14px;
@@ -210,8 +211,8 @@
 
   &__close {
     flex-shrink: 0;
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2.75rem;
+    height: 2.75rem;
     border: none;
     border-radius: @border-radius-full;
     background: @background-color;
@@ -245,6 +246,7 @@
 
   // Every way out looks the same, so no choice is visually preferred.
   &__button {
+    min-height: 2.75rem;
     padding: 0.75rem @spacing-md;
     border: 2px solid @primary-dark;
     border-radius: @border-radius-full;
@@ -273,11 +275,17 @@
     gap: @spacing-md;
   }
 
+  // The label spans the row, so a tap anywhere beside the switch toggles it.
   &__title {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    min-height: 2.75rem;
     font-family: @font-family-primary;
     font-size: @font-size-base;
     font-weight: 500;
     color: @text-primary;
+    cursor: pointer;
   }
 
   &__locked {
