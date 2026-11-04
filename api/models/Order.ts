@@ -68,6 +68,8 @@ export interface IOrder extends Document {
   printNumber?: number;
   createdBy: 'customer' | 'admin';
   createdAt: Date;
+  /** Set when the customer's details were wiped after the retention period. */
+  anonymisedAt?: Date | null;
 }
 
 const orderSchema = new Schema<IOrder>(
@@ -152,6 +154,7 @@ const orderSchema = new Schema<IOrder>(
       enum: ['customer', 'admin'],
       default: 'customer',
     },
+    anonymisedAt: { type: Date, default: null },
   },
   {
     timestamps: true,

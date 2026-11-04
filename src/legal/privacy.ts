@@ -66,6 +66,10 @@ export const PRIVACY_CONTENT: LegalContent = {
             text: '— súhlas podľa čl. 6 ods. 1 písm. a) GDPR, ktorý môžete kedykoľvek odvolať',
           },
           {
+            term: 'Vyhľadanie stáleho zákazníka pri telefonickej objednávke (administrácia)',
+            text: '— oprávnený záujem podľa čl. 6 ods. 1 písm. f) GDPR na rýchlom prijatí objednávky',
+          },
+          {
             term: 'Vybavovanie reklamácií a obrana právnych nárokov',
             text: '— oprávnený záujem podľa čl. 6 ods. 1 písm. f) GDPR',
           },
@@ -75,8 +79,8 @@ export const PRIVACY_CONTENT: LegalContent = {
         title: '5. Doba uchovávania',
         items: [
           {
-            term: 'Údaje o objednávke',
-            text: '— 90 dní od vybavenia objednávky',
+            term: 'Kontaktné údaje v objednávke',
+            text: '— 3 roky od objednávky, potom ich automaticky anonymizujeme; položky a sumy bez osobných údajov ponechávame na štatistiky',
           },
           {
             term: 'Účtovné doklady',
@@ -103,8 +107,8 @@ export const PRIVACY_CONTENT: LegalContent = {
         title: '6. Príjemcovia osobných údajov',
         items: [
           {
-            term: 'Poskytovatelia IT a hostingových služieb',
-            text: '— prevádzka webovej stránky a databázy',
+            term: 'DigitalOcean, LLC a MongoDB, Inc. (MongoDB Atlas)',
+            text: '— hosting webu a databáza objednávok',
           },
           {
             term: 'SendGrid (Twilio Inc.)',
@@ -113,6 +117,10 @@ export const PRIVACY_CONTENT: LegalContent = {
           {
             term: 'Google Ireland Ltd. (Google Analytics)',
             text: '— meranie návštevnosti, len pri udelenom súhlase',
+          },
+          {
+            term: 'Komoot GmbH (služba Photon, Nemecko)',
+            text: '— určenie GPS polohy adresy doručenia pre kuriéra; odovzdáva sa len obec, ulica a číslo domu, bez mena a kontaktov',
           },
           {
             term: 'Meta Platforms Ireland Ltd. (Meta Pixel)',
@@ -297,6 +305,10 @@ export const PRIVACY_CONTENT: LegalContent = {
             text: '— zgoda, art. 6 ust. 1 lit. a) RODO, którą możesz w każdej chwili wycofać',
           },
           {
+            term: 'Wyszukanie stałego klienta przy zamówieniu telefonicznym (panel administracyjny)',
+            text: '— prawnie uzasadniony interes, art. 6 ust. 1 lit. f) RODO, polegający na szybkim przyjęciu zamówienia',
+          },
+          {
             term: 'Rozpatrywanie reklamacji i dochodzenie roszczeń',
             text: '— prawnie uzasadniony interes, art. 6 ust. 1 lit. f) RODO',
           },
@@ -309,8 +321,8 @@ export const PRIVACY_CONTENT: LegalContent = {
         title: '5. Okres przechowywania',
         items: [
           {
-            term: 'Dane o zamówieniu',
-            text: '— 90 dni od zrealizowania zamówienia',
+            term: 'Dane kontaktowe w zamówieniu',
+            text: '— 3 lata od zamówienia, następnie automatycznie je anonimizujemy; pozycje i kwoty bez danych osobowych zachowujemy do statystyk',
           },
           {
             term: 'Dokumenty księgowe',
@@ -337,8 +349,8 @@ export const PRIVACY_CONTENT: LegalContent = {
         title: '6. Odbiorcy danych osobowych',
         items: [
           {
-            term: 'Dostawcy usług IT i hostingu',
-            text: '— utrzymanie strony internetowej i bazy danych',
+            term: 'DigitalOcean, LLC i MongoDB, Inc. (MongoDB Atlas)',
+            text: '— hosting strony i baza danych zamówień',
           },
           {
             term: 'SendGrid (Twilio Inc.)',
@@ -347,6 +359,10 @@ export const PRIVACY_CONTENT: LegalContent = {
           {
             term: 'Google Ireland Ltd. (Google Analytics)',
             text: '— pomiar ruchu, wyłącznie po wyrażeniu zgody',
+          },
+          {
+            term: 'Komoot GmbH (usługa Photon, Niemcy)',
+            text: '— ustalenie położenia GPS adresu dostawy dla kuriera; przekazywane są tylko miejscowość, ulica i numer domu, bez imienia i danych kontaktowych',
           },
           {
             term: 'Meta Platforms Ireland Ltd. (Meta Pixel)',

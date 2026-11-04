@@ -32,6 +32,11 @@ services:
       context: ./api
       dockerfile: Dockerfile
     image: ghcr.io/skyedown/pohoda-skalite-api:${TAG:-latest}
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
     container_name: pizza-pohoda-api
     restart: unless-stopped
     ports:
@@ -77,6 +82,11 @@ services:
       context: .
       dockerfile: Dockerfile
     image: ghcr.io/skyedown/pohoda-skalite-frontend:${TAG:-latest}
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
     container_name: pizza-pohoda-frontend
     restart: unless-stopped
     ports:

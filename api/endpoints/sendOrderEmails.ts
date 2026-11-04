@@ -89,8 +89,8 @@ router.post('/api/send-order-emails', async (req, res) => {
       return res.status(403).json({ error: 'Ordering is closed' });
     }
 
+    // No contact details in the logs: they would outlive the retention period.
     console.log('📦 Order details:', {
-      email: order.delivery.email,
       total: order.pricing.total,
       items: order.items.length,
     });
