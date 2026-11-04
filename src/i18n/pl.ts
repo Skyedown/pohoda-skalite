@@ -324,4 +324,10 @@ export const pl: Dictionary = {
   contest_head_description:
     'Regulamin konkursu Pizza Pohoda na Instagramie o bon na 30 €.',
   footer_contest_link: 'Regulamin konkursu',
+  notfound_head_title: 'Nie znaleziono strony',
+  notfound_title: 'Ups, ten kawałek ktoś już zjadł',
+  notfound_text:
+    'Strona, której szukasz, nie istnieje lub została przeniesiona. Ale piec wciąż jest rozgrzany, a pizza gorąca.',
+  notfound_cta_menu: 'Wróć do menu',
+  notfound_cta_call: 'Zamów telefonicznie',
 };

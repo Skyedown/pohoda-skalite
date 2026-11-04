@@ -321,6 +321,12 @@ export const sk = {
   contest_head_description:
     'Pravidlá Instagram súťaže Pizza Pohoda o poukaz na 30 €: ako sa zapojiť, žrebovanie, výhra a ochrana osobných údajov.',
   footer_contest_link: 'Pravidlá súťaže',
+  notfound_head_title: 'Stránka nenájdená',
+  notfound_title: 'Ups, tento kúsok už niekto zjedol',
+  notfound_text:
+    'Stránka, ktorú hľadáte, neexistuje alebo sa presunula. Pec je však stále rozpálená a pizza horúca.',
+  notfound_cta_menu: 'Späť na menu',
+  notfound_cta_call: 'Zavolať objednávku',
 } as const;
 
 export type TranslationKey = keyof typeof sk;

@@ -24,6 +24,7 @@ import './styles/global.less';
 const PizzaCart = lazy(() => import('./views/PizzaCart/PizzaCart'));
 const ThankYou = lazy(() => import('./views/ThankYou/ThankYou'));
 const ContestRules = lazy(() => import('./views/ContestRules/ContestRules'));
+const NotFound = lazy(() => import('./views/NotFound/NotFound'));
 const PrivacyPolicy = lazy(() => import('./views/PrivacyPolicy/PrivacyPolicy'));
 const Terms = lazy(() => import('./views/Terms/Terms'));
 const AdminPanel = lazy(() => import('./views/AdminPanel/AdminPanel'));
@@ -150,6 +151,7 @@ const AppContent: React.FC = () => {
                 </AdminArea>
               }
             />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
       </main>

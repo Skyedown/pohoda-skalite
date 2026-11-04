@@ -1,0 +1,47 @@
+@import '../../../styles/variables.less';
+
+.pizza-zero {
+  width: 1em;
+  height: 1.05em;
+  overflow: visible;
+
+  &__crust {
+    fill: @pizza-crust;
+  }
+
+  &__cheese {
+    fill: @secondary-color;
+  }
+
+  &__pepperoni {
+    fill: @pizza-pepperoni;
+  }
+
+  &__basil {
+    fill: @success-dark;
+  }
+
+  &__crumb {
+    fill: @pizza-crust;
+  }
+
+  &__slice {
+    transform: translate(14px, -14px);
+    animation: pizza-zero-drift 3.2s ease-in-out infinite;
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
+  }
+}
+
+@keyframes pizza-zero-drift {
+  0%,
+  100% {
+    transform: translate(14px, -14px) rotate(0deg);
+  }
+
+  50% {
+    transform: translate(22px, -26px) rotate(6deg);
+  }
+}
