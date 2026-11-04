@@ -123,35 +123,30 @@
       width: 100%;
     }
 
-    &--accept {
-      background: @secondary-color;
-      color: @text-primary;
+    // Accept and reject share one style: neither choice is nudged.
+    &--choice {
+      background: @text-white;
+      color: @primary-dark;
 
       &:hover {
-        background: lighten(@secondary-color, 5%);
+        background: @secondary-color;
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(255, 202, 40, 0.4);
-      }
-
-      &:active {
-        transform: translateY(0);
       }
     }
 
-    &--reject {
-      background: rgba(255, 255, 255, 0.15);
+    &--settings {
+      background: transparent;
       color: @text-white;
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.6);
 
       &:hover {
-        background: rgba(255, 255, 255, 0.25);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        background: rgba(255, 255, 255, 0.15);
       }
+    }
 
-      &:active {
-        transform: translateY(0);
-      }
+    &:focus-visible {
+      outline: 2px solid @secondary-color;
+      outline-offset: 2px;
     }
   }
 }
@@ -165,5 +160,176 @@
     &:hover {
       color: @text-white;
     }
+  }
+}
+
+.cookie-preferences {
+  position: fixed;
+  inset: 0;
+  z-index: @z-index-modal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: @spacing-md;
+  background: fade(@text-primary, 55%);
+
+  &__dialog {
+    width: 100%;
+    max-width: 36rem;
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+    padding: @spacing-xl;
+    border-radius: @border-radius-lg;
+    background: @text-white;
+    box-shadow: @shadow-lg;
+
+    @media (max-width: @breakpoint-sm) {
+      padding: @spacing-lg @spacing-md;
+    }
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: @spacing-md;
+    margin-bottom: @spacing-sm;
+  }
+
+  &__title {
+    margin: 0;
+    font-family: @font-family-heading;
+    font-size: @font-size-2xl;
+    font-weight: 400;
+    color: @text-primary;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  &__close {
+    flex-shrink: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: none;
+    border-radius: @border-radius-full;
+    background: @background-color;
+    color: @text-primary;
+    font-size: @font-size-base;
+    cursor: pointer;
+  }
+
+  &__intro {
+    margin: 0 0 @spacing-md;
+    font-family: @font-family-primary;
+    font-size: @font-size-sm;
+    line-height: 1.6;
+    color: @text-secondary;
+
+    a {
+      color: @primary-text;
+    }
+  }
+
+  &__actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: @spacing-sm;
+    margin-top: @spacing-lg;
+
+    @media (max-width: @breakpoint-sm) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  // Every way out looks the same, so no choice is visually preferred.
+  &__button {
+    padding: 0.75rem @spacing-md;
+    border: 2px solid @primary-dark;
+    border-radius: @border-radius-full;
+    background: @text-white;
+    color: @primary-dark;
+    font-family: @font-family-primary;
+    font-size: @font-size-sm;
+    font-weight: 500;
+    cursor: pointer;
+
+    &:hover {
+      background: @primary-dark;
+      color: @text-white;
+    }
+  }
+}
+
+.cookie-category {
+  padding: @spacing-md 0;
+  border-top: 1px solid @border-light;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: @spacing-md;
+  }
+
+  &__title {
+    font-family: @font-family-primary;
+    font-size: @font-size-base;
+    font-weight: 500;
+    color: @text-primary;
+  }
+
+  &__locked {
+    font-family: @font-family-primary;
+    font-size: @font-size-sm;
+    color: @success-text;
+  }
+
+  &__switch {
+    appearance: none;
+    position: relative;
+    flex-shrink: 0;
+    width: 2.75rem;
+    height: 1.5rem;
+    margin: 0;
+    border-radius: @border-radius-full;
+    background: fade(@text-primary, 35%);
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0.1875rem;
+      left: 0.1875rem;
+      width: 1.125rem;
+      height: 1.125rem;
+      border-radius: 50%;
+      background: @text-white;
+      box-shadow: @shadow-md;
+      transition: transform 0.2s ease;
+    }
+
+    &:checked {
+      background: @primary-dark;
+
+      &::after {
+        transform: translateX(1.25rem);
+      }
+    }
+
+    &:focus-visible {
+      outline: 2px solid @primary-text;
+      outline-offset: 2px;
+    }
+  }
+
+  &__description {
+    margin: @spacing-xs 0 0;
+    font-family: @font-family-primary;
+    font-size: @font-size-sm;
+    line-height: 1.5;
+    color: @text-secondary;
   }
 }

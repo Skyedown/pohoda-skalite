@@ -118,9 +118,26 @@ export const sk = {
   // Cookie consent
   cookie_title: 'Súbory cookies',
   cookie_description:
-    'Táto webová stránka používa súbory cookies na zlepšenie používateľskej skúsenosti a analýzu návštevnosti. Používame Google Analytics pre meranie výkonnosti webu. Vaše údaje sú anonymizované a slúžia len na štatistické účely.',
-  cookie_reject: 'Odmietnuť',
-  cookie_accept: 'Súhlasím',
+    'Nevyhnutné cookies a lokálne úložisko používame, aby fungoval košík a objednávka. S Vaším súhlasom použijeme aj analytické cookies (Google Analytics) na meranie návštevnosti a marketingové cookies (Meta Pixel) na meranie úspešnosti reklám na Facebooku a Instagrame. Súhlas môžete kedykoľvek zmeniť cez odkaz „Nastavenia cookies“ v pätičke.',
+  cookie_more: 'Podrobnosti nájdete v dokumente',
+  cookie_reject_all: 'Odmietnuť všetko',
+  cookie_accept_all: 'Prijať všetko',
+  cookie_settings: 'Nastavenia',
+  cookie_save: 'Uložiť výber',
+  cookie_settings_title: 'Nastavenia cookies',
+  cookie_settings_intro:
+    'Vyberte, ktoré kategórie cookies povolíte. Nevyhnutné sú vždy zapnuté, ostatné sa použijú až po Vašom súhlase. Výber môžete kedykoľvek zmeniť a odvolanie súhlasu je rovnako jednoduché ako jeho udelenie.',
+  cookie_always_on: 'Vždy zapnuté',
+  cookie_cat_necessary_title: 'Nevyhnutné',
+  cookie_cat_necessary_text:
+    'Zabezpečujú základné fungovanie webu: obsah košíka, zvolený jazyk, uloženie Vašej voľby cookies, ochranu webu pred útokmi a prihlásenie obsluhy do administrácie. Bez nich web nefunguje, preto sa nedajú vypnúť.',
+  cookie_cat_analytics_title: 'Analytické',
+  cookie_cat_analytics_text:
+    'Google Analytics 4 (Google Ireland Ltd.) meria návštevnosť a používanie webu, aby sme ho mohli zlepšovať. Cookies _ga a _ga_* sa uchovávajú najviac 2 roky. Údaje sa môžu prenášať do USA na základe rámca EU-US Data Privacy Framework.',
+  cookie_cat_marketing_title: 'Marketingové',
+  cookie_cat_marketing_text:
+    'Meta Pixel (Meta Platforms Ireland Ltd.) meria, či naše reklamy na Facebooku a Instagrame vedú k návštevám a objednávkam. Cookies _fbp a _fbc sa uchovávajú 90 dní. Údaje sa môžu prenášať do USA na základe rámca EU-US Data Privacy Framework.',
+  footer_cookie_settings: 'Nastavenia cookies',
 
   // Cart
   cart_head_title: 'Košík',

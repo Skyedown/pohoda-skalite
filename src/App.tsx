@@ -17,7 +17,7 @@ import FloatingCart from './components/shared/FloatingCart/FloatingCart';
 import FloatingCall from './components/shared/FloatingCall/FloatingCall';
 import OrderingStatusBanner from './components/shared/OrderingStatusBanner/OrderingStatusBanner';
 import CookieConsent from './components/shared/CookieConsent/CookieConsent';
-import { setDefaultConsent, initGA, trackPageView } from './utils/analytics';
+import { startConsentedTracking, trackPageView } from './utils/analytics';
 import './styles/global.less';
 
 // Everything but the menu loads on demand so the first page stays small.
@@ -48,9 +48,7 @@ const PageTracker: React.FC = () => {
   const { locale } = useLocale();
 
   useEffect(() => {
-    if (localStorage.getItem('cookie-consent') === 'accepted') {
-      initGA(locale);
-    }
+    startConsentedTracking(locale);
   }, [locale]);
 
   useEffect(() => {
@@ -167,10 +165,6 @@ const AppContent: React.FC = () => {
 };
 
 const App: React.FC = () => {
-  useEffect(() => {
-    setDefaultConsent();
-  }, []);
-
   return (
     <HelmetProvider>
       <LocaleProvider>

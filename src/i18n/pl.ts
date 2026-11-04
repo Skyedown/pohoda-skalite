@@ -121,9 +121,26 @@ export const pl: Dictionary = {
   // Cookie consent
   cookie_title: 'Pliki cookies',
   cookie_description:
-    'Ta strona internetowa używa plików cookies w celu poprawy doświadczenia użytkownika i analizy ruchu. Korzystamy z Google Analytics do mierzenia wydajności strony. Twoje dane są anonimizowane i służą wyłącznie celom statystycznym.',
-  cookie_reject: 'Odrzuć',
-  cookie_accept: 'Zgadzam się',
+    'Niezbędnych plików cookies i pamięci lokalnej używamy, aby działał koszyk i zamówienie. Za Twoją zgodą użyjemy także analitycznych plików cookies (Google Analytics) do pomiaru ruchu oraz marketingowych plików cookies (Meta Pixel) do pomiaru skuteczności reklam na Facebooku i Instagramie. Zgodę możesz w każdej chwili zmienić przez link „Ustawienia cookies” w stopce.',
+  cookie_more: 'Szczegóły znajdziesz w dokumencie',
+  cookie_reject_all: 'Odrzuć wszystkie',
+  cookie_accept_all: 'Akceptuj wszystkie',
+  cookie_settings: 'Ustawienia',
+  cookie_save: 'Zapisz wybór',
+  cookie_settings_title: 'Ustawienia cookies',
+  cookie_settings_intro:
+    'Wybierz, na które kategorie plików cookies się zgadzasz. Niezbędne są zawsze włączone, pozostałe zostaną użyte dopiero po wyrażeniu zgody. Wybór możesz zmienić w każdej chwili, a wycofanie zgody jest równie proste jak jej udzielenie.',
+  cookie_always_on: 'Zawsze włączone',
+  cookie_cat_necessary_title: 'Niezbędne',
+  cookie_cat_necessary_text:
+    'Zapewniają podstawowe działanie strony: zawartość koszyka, wybrany język, zapisanie Twojego wyboru cookies, ochronę strony przed atakami i logowanie obsługi do panelu administracyjnego. Bez nich strona nie działa, dlatego nie można ich wyłączyć.',
+  cookie_cat_analytics_title: 'Analityczne',
+  cookie_cat_analytics_text:
+    'Google Analytics 4 (Google Ireland Ltd.) mierzy ruch i sposób korzystania ze strony, abyśmy mogli ją ulepszać. Pliki _ga i _ga_* są przechowywane maksymalnie 2 lata. Dane mogą być przekazywane do USA na podstawie EU-US Data Privacy Framework.',
+  cookie_cat_marketing_title: 'Marketingowe',
+  cookie_cat_marketing_text:
+    'Meta Pixel (Meta Platforms Ireland Ltd.) mierzy, czy nasze reklamy na Facebooku i Instagramie prowadzą do odwiedzin i zamówień. Pliki _fbp i _fbc są przechowywane 90 dni. Dane mogą być przekazywane do USA na podstawie EU-US Data Privacy Framework.',
+  footer_cookie_settings: 'Ustawienia cookies',
 
   // Cart
   cart_head_title: 'Koszyk',

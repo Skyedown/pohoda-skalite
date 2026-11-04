@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useLocale } from '../../../i18n/LocaleContext';
 import { CONTEST_PATH } from '../../../legal/paths';
+import { openCookieSettings } from '../../../utils/consent';
 import './Footer.less';
 
 const Footer: React.FC = () => {
@@ -30,6 +31,16 @@ const Footer: React.FC = () => {
               </Link>
             </>
           )}
+          <span className="footer__separator" aria-hidden="true">
+            ·
+          </span>
+          <button
+            type="button"
+            className="footer__link footer__link--button"
+            onClick={openCookieSettings}
+          >
+            {t('footer_cookie_settings')}
+          </button>
         </nav>
         <p className="footer__credits">
           {t('footer_created_by')}{' '}
