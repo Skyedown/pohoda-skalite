@@ -319,4 +319,9 @@ export const pl: Dictionary = {
     'Regulamin pizzerii Pizza Pohoda — zamawianie, dostawa, płatność, reklamacje i prawa konsumenta.',
   terms_path: '/regulamin',
   terms_title: 'Regulamin',
+  contest_title: 'Regulamin konkursu Pohoda o bon na 30 €',
+  contest_head_title: 'Regulamin konkursu o bon na 30 €',
+  contest_head_description:
+    'Regulamin konkursu Pizza Pohoda na Instagramie o bon na 30 €.',
+  footer_contest_link: 'Regulamin konkursu',
 };

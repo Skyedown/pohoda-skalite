@@ -5,6 +5,7 @@ import { useLocale } from '../../i18n/LocaleContext';
 import { buildAlternates, canonicalUrl } from '../../utils/seo';
 import { resolveLegalDocument } from '../../legal/render';
 import type { LegalContent } from '../../legal/types';
+import { LegalBlocks } from './LegalBlocks/LegalBlocks';
 import type { Locale } from '../../i18n/types';
 import '../PrivacyPolicy/PrivacyPolicy.less';
 
@@ -13,8 +14,10 @@ interface LegalPageProps {
   title: string;
   headTitle: string;
   description: string;
-  pathByLocale: Record<Locale, string>;
-  lastUpdatedLabel: string;
+  /** A page that exists on one domain only lists just that locale. */
+  pathByLocale: Partial<Record<Locale, string>>;
+  /** Omitted when the document carries its own effective date. */
+  lastUpdatedLabel?: string;
 }
 
 const LegalPage: React.FC<LegalPageProps> = ({
@@ -37,9 +40,13 @@ const LegalPage: React.FC<LegalPageProps> = ({
   );
 
   const alternates = useMemo(
-    () => buildAlternates(pathByLocale),
+    () =>
+      pathByLocale.sk && pathByLocale.pl
+        ? buildAlternates({ sk: pathByLocale.sk, pl: pathByLocale.pl })
+        : [],
     [pathByLocale],
   );
+  const canonicalPath = pathByLocale[locale];
 
   const lastUpdated = useMemo(
     () =>
@@ -56,10 +63,9 @@ const LegalPage: React.FC<LegalPageProps> = ({
         <title>{headTitle}</title>
         <meta name="description" content={description} />
         <meta name="robots" content="index, follow" />
-        <link
-          rel="canonical"
-          href={canonicalUrl(locale, pathByLocale[locale])}
-        />
+        {canonicalPath && (
+          <link rel="canonical" href={canonicalUrl(locale, canonicalPath)} />
+        )}
         {alternates.map((alternate) => (
           <link
             key={alternate.hrefLang}
@@ -118,14 +124,17 @@ const LegalPage: React.FC<LegalPageProps> = ({
               {section.paragraphs?.map((paragraph) => (
                 <p key={paragraph}>{paragraph}</p>
               ))}
+              {section.blocks && <LegalBlocks blocks={section.blocks} />}
             </div>
           ))}
 
-          <div className="privacy-policy__section">
-            <p>
-              <strong>{lastUpdatedLabel}</strong> {lastUpdated}
-            </p>
-          </div>
+          {lastUpdatedLabel && (
+            <div className="privacy-policy__section">
+              <p>
+                <strong>{lastUpdatedLabel}</strong> {lastUpdated}
+              </p>
+            </div>
+          )}
 
           <div className="privacy-policy__back">
             <Link to="/" className="privacy-policy__back-button">

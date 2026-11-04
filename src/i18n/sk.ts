@@ -316,6 +316,11 @@ export const sk = {
     'Všeobecné obchodné podmienky pizzerie Pizza Pohoda — objednávanie, donáška, platba a reklamácie.',
   terms_path: '/obchodne-podmienky',
   terms_title: 'Obchodné podmienky',
+  contest_title: 'Pravidlá súťaže Pohoda o poukaz na 30 €',
+  contest_head_title: 'Pravidlá súťaže o poukaz na 30 €',
+  contest_head_description:
+    'Pravidlá Instagram súťaže Pizza Pohoda o poukaz na 30 €: ako sa zapojiť, žrebovanie, výhra a ochrana osobných údajov.',
+  footer_contest_link: 'Pravidlá súťaže',
 } as const;
 
 export type TranslationKey = keyof typeof sk;

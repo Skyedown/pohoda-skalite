@@ -9,7 +9,7 @@ import {
 import { HelmetProvider } from 'react-helmet-async';
 import { CartProvider } from './context/CartContext';
 import { LocaleProvider, useLocale } from './i18n/LocaleContext';
-import { ALL_LEGAL_ROUTES } from './legal/paths';
+import { ALL_LEGAL_ROUTES, CONTEST_PATH } from './legal/paths';
 import Header from './sections/Header/Header';
 import PizzaMain from './views/PizzaMain/PizzaMain';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
@@ -23,6 +23,7 @@ import './styles/global.less';
 // Everything but the menu loads on demand so the first page stays small.
 const PizzaCart = lazy(() => import('./views/PizzaCart/PizzaCart'));
 const ThankYou = lazy(() => import('./views/ThankYou/ThankYou'));
+const ContestRules = lazy(() => import('./views/ContestRules/ContestRules'));
 const PrivacyPolicy = lazy(() => import('./views/PrivacyPolicy/PrivacyPolicy'));
 const Terms = lazy(() => import('./views/Terms/Terms'));
 const AdminPanel = lazy(() => import('./views/AdminPanel/AdminPanel'));
@@ -92,6 +93,7 @@ const AppContent: React.FC = () => {
             {ALL_LEGAL_ROUTES.terms.map((path) => (
               <Route key={path} path={path} element={<Terms />} />
             ))}
+            <Route path={CONTEST_PATH} element={<ContestRules />} />
             <Route
               path="/admin"
               element={

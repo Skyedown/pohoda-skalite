@@ -126,7 +126,8 @@
       }
     }
 
-    ul {
+    ul,
+    ol {
       margin: 16px 0;
       padding-left: 24px;
 
@@ -152,6 +153,60 @@
     strong {
       color: @text-primary;
       font-weight: 500;
+    }
+  }
+
+  &__table-wrapper {
+    margin: @spacing-md 0;
+    overflow-x: auto;
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: @font-family-primary;
+    font-size: @font-size-sm;
+    line-height: 1.5;
+    color: @text-secondary;
+
+    th,
+    td {
+      padding: @spacing-sm @spacing-md;
+      border: 1px solid @border-light;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: @background-light;
+      color: @text-primary;
+      font-weight: 500;
+    }
+
+    // Phones stack each row into a card, labelled by its column header.
+    @media (max-width: @breakpoint-sm) {
+      thead {
+        display: none;
+      }
+
+      tr {
+        display: block;
+        margin-bottom: @spacing-md;
+        border: 1px solid @border-light;
+        border-radius: @border-radius-md;
+      }
+
+      td {
+        display: block;
+        border: none;
+
+        &::before {
+          content: attr(data-label);
+          display: block;
+          color: @text-primary;
+          font-weight: 500;
+        }
+      }
     }
   }
 

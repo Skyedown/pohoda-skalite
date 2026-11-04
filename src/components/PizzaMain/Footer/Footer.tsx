@@ -1,10 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useLocale } from '../../../i18n/LocaleContext';
+import { CONTEST_PATH } from '../../../legal/paths';
 import './Footer.less';
 
 const Footer: React.FC = () => {
-  const { t } = useLocale();
+  const { locale, t } = useLocale();
 
   return (
     <footer className="footer">
@@ -19,6 +20,16 @@ const Footer: React.FC = () => {
           <Link to={t('terms_path')} className="footer__link">
             {t('terms_title')}
           </Link>
+          {locale === 'sk' && (
+            <>
+              <span className="footer__separator" aria-hidden="true">
+                ·
+              </span>
+              <Link to={CONTEST_PATH} className="footer__link">
+                {t('footer_contest_link')}
+              </Link>
+            </>
+          )}
         </nav>
         <p className="footer__credits">
           {t('footer_created_by')}{' '}

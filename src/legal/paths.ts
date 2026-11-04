@@ -18,6 +18,9 @@ export const LEGAL_PATHS: Record<
   },
 };
 
+/** Slovak only: the contest runs on the Slovak Instagram profile. */
+export const CONTEST_PATH = '/sutaz-o-konzumne';
+
 export const ALL_LEGAL_ROUTES = {
   privacy: Object.values(LEGAL_PATHS.privacy),
   terms: Object.values(LEGAL_PATHS.terms),

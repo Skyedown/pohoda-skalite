@@ -23,4 +23,10 @@
     <priority>0.3</priority>
   </url>
 
+  <url>
+    <loc>https://pizzapohoda.sk/sutaz-o-konzumne</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+
 </urlset>
