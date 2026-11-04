@@ -30,7 +30,7 @@ export const CONTEST_CONTENT: LegalDocument = {
         },
         {
           type: 'p',
-          text: 'Každý kalendárny mesiac je jedno súťažné kolo. Organizátor žrebuje vždy 1. deň nasledujúceho mesiaca náhodným výberom z príspevkov splnených v danom kole. V každom kole je jeden výherca.',
+          text: 'Každý kalendárny mesiac je jedno súťažné kolo. Organizátor žrebuje vždy 1. deň nasledujúceho mesiaca náhodným výberom z príspevkov, ktoré v danom kole splnili pravidlá súťaže. V každom kole je jeden výherca.',
         },
       ],
     },
