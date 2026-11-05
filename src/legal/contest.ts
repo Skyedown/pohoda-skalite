@@ -54,7 +54,7 @@ export const CONTEST_CONTENT: LegalDocument = {
           type: 'ol',
           items: [
             'Sleduj profil @pizzapohoda.sk na Instagrame a nechaj si ho sledovaný aj v deň žrebovania.',
-            'Odfoť jedlo, ktoré si si objednal(a) od Pizza Pohoda.',
+            'Odfoť jedlo, ktoré si si v danom kole objednal(a) od Pizza Pohoda.',
             'Fotku pridaj do Instagram Story a viditeľne označ @pizzapohoda.sk.',
           ],
         },
@@ -98,6 +98,10 @@ export const CONTEST_CONTENT: LegalDocument = {
         },
         {
           type: 'p',
+          text: 'Organizátor vyzve výhercu, aby preukázal, že si v danom kole naozaj objednal(a) od Pizza Pohoda. Výherca uvedie meno alebo telefónne číslo, na ktoré bola objednávka vytvorená, a organizátor ho overí vo svojej evidencii objednávok. Ak objednávku z daného kola nemožno overiť, výhra prepadá a organizátor môže vyžrebovať náhradníka.',
+        },
+        {
+          type: 'p',
           text: 'Výherca sa musí ozvať do 7 dní od správy. Inak výhra prepadá a organizátor môže vyžrebovať náhradníka s rovnakou lehotou. Výhru nemôže získať osoba, ktorá nespĺňa tieto pravidlá.',
         },
       ],
@@ -107,7 +111,7 @@ export const CONTEST_CONTENT: LegalDocument = {
       blocks: [
         {
           type: 'p',
-          text: 'Prevádzkovateľom je organizátor. Spracúva Instagramové meno a obsah súťažnej Story a od výhercu aj meno, telefón, vek a pri donáške adresu.',
+          text: 'Prevádzkovateľom je organizátor. Spracúva Instagramové meno a obsah súťažnej Story a od výhercu aj meno, telefón, vek, údaje potrebné na overenie objednávky a pri donáške adresu.',
         },
         {
           type: 'table',
